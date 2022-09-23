@@ -1,0 +1,18 @@
+cookietemple_version: '1.4.1 # <<COOKIETEMPLE_NO_BUMP>>'
+domain: cli
+language: python
+project_slug: cornflakes
+project_slug_no_hyphen: cornflakes
+template_version: '2.1.1 # <<COOKIETEMPLE_NO_BUMP>>'
+template_handle: cli-python
+github_username: semmjon
+creator_github_username: semmjon
+is_github_repo: true
+is_repo_private: false
+is_github_orga: false
+full_name: Semjon Geist
+email: semjon-geist@gmx.de
+project_name: cornflakes
+project_short_description: Create generic any easy to manage Configs for your Project.
+version: 1.4.4
+license: Apache2.0
