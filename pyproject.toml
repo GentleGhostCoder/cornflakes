@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "cornflakes"
 version = "1.4.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
-description = "Create generic any easy to manage Configs for your Project."
-authors = ["Semjon Geist <semjon-geist@gmx.de>"]
+description = "Create generic any easy to manage Configs for your Project"
+authors = ["Semjon Geist <semjon.geist@ionos.com>"]
 license = "Apache2.0"
 readme = "README.rst"
-homepage = "https://github.com/semmjon/cornflakes"
-repository = "https://github.com/semmjon/cornflakes"
+homepage = "https://github.com/sgeist/cornflakes"
+repository = "https://github.com/sgeist/cornflakes"
 documentation = "https://cornflakes.readthedocs.io"
 packages = [
-    { include = "cornflakes" },
+    { include = "cornflakes/*.py"}
 ]
 classifiers = [
     "Programming Language :: Python :: 3.7",
@@ -17,12 +17,16 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
 ]
-
+include = [ # include cpp sources for not compiled dist
+    { path = "inst/ext", format = "sdist" },
+    { path = "inst/_cornflakes", format = "sdist" }
+]
+exclude = [
+    { path = "cornflakes/__pycache__" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.7.0"
-click = ">=8.0.0"
-rich = ">=10.3.0"
 PyYAML = ">=5.4.1"
 
 [tool.poetry.dev-dependencies]
@@ -53,9 +57,12 @@ sphinx-rtd-dark-mode = ">=1.2.3"
 Jinja2 = ">=3.0.1"
 mypy = ">=0.910"
 pyupgrade = ">=2.31.0"
+myst_parser = ">=0.18.0"
+breathe = ">=4.34.0"
+Cython  = ">=0.29.32"
 
 [tool.poetry.scripts]
-cornflakes = "cornflakes.__main__:main"
+#cornflakes = "cornflakes.__main__:main"
 
 [tool.black]
 line-length = 120
@@ -85,6 +92,30 @@ source = ["cornflakes"]
 [tool.coverage.report]
 show_missing = true
 
+[tool.poetry.build]
+script = "build.py"
+
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = [
+    "poetry-core>=1.0.0",
+    "wheel",
+    "ninja",
+    "cmake>=3.12",
+    "setuptools",
+    "docutils",
+]
+#build-backend = "setuptools.build_meta"
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+minversion = "6.0"
+addopts = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
+xfail_strict = true
+filterwarnings = ["error"]
+testpaths = ["tests"]
+
+[tool.cibuildwheel]
+test-command = "pytest {project}/tests"
+before-build = "rm -rf {project}/build"
+after-build = "rm -rf {project}/build"

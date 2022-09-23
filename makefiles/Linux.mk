@@ -30,6 +30,7 @@ clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and 
 
 clean-build: ## remove build artifacts
 	rm -fr build/
+	rm -fr setup.py
 	rm -fr dist/
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
@@ -65,7 +66,7 @@ coverage: ## check code coverage quickly with the default Python
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/cornflakes.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ cornflakes
+	sphinx-apidoc -o docs cornflakes
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
@@ -73,11 +74,15 @@ docs: ## generate Sphinx HTML documentation, including API docs
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
+bump:
+	poetry version $(git describe --tags --abbrev=0)
+
 release: dist ## package and upload a release
 	poetry release
 
-dist: clean-build clean-pyc ## builds source and wheel package
+dist: clean-build clean-pyc bump ## builds source and wheel package
 	poetry build
 
 install: clean-build clean-pyc ## install the package to the active Python's site-packages
-	poetry install
+	# pip install dist/*.whl
+	poetry install # not working for some reason -> not copying source files

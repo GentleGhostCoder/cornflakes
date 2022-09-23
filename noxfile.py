@@ -1,5 +1,6 @@
 """Nox sessions."""
 import os
+import re
 import shlex
 import shutil
 import sys
@@ -7,7 +8,8 @@ from pathlib import Path
 from textwrap import dedent
 
 import nox
-from rich import print
+
+# from rich import print
 
 try:
     from nox_poetry import Session, session
@@ -17,7 +19,7 @@ except ImportError:
     sys.exit(1)
 
 package = "cornflakes"
-python_versions = ["3.8", "3.9"]
+python_versions = ["3.8", "3.9", "3.10"]
 nox.options.sessions = (
     "pre-commit",
     "safety",
@@ -132,7 +134,14 @@ def safety(session: Session) -> None:
 def mypy(session: Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or ["cornflakes", "tests", "docs/conf.py"]
-    session.install(".")
+    session.run("pip", "install", "poetry")
+    session.run("poetry", "build")
+    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
+    search = f"*cp{version}*.whl"
+    print(search)
+    file = list(Path("dist").glob(search))[0].name
+    print(file)
+    session.run("pip", "install", f"dist/{file}")
     session.install("mypy", "pytest", "types-pkg-resources", "types-requests", "types-attrs")
     session.run("mypy", *args)
 
@@ -140,7 +149,12 @@ def mypy(session: Session) -> None:
 @session(python=python_versions)
 def tests(session: Session) -> None:
     """Run the test suite."""
-    session.install(".")
+    session.run("pip", "install", "poetry")
+    session.run("poetry", "build")
+    version = session.name.replace("tests-", "").replace(".", "")
+    search = f"*cp{version}*.whl"
+    file = list(Path("dist").glob(search))[0].name
+    session.run("pip", "install", f"dist/{file}")
     session.install("coverage[toml]", "pytest", "pygments")
     try:
         session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
@@ -168,7 +182,12 @@ def coverage(session: Session) -> None:
 @session(python=python_versions)
 def typeguard(session: Session) -> None:
     """Runtime type checking using Typeguard."""
-    session.install(".")
+    session.run("pip", "install", "poetry")
+    session.run("poetry", "build")
+    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
+    search = f"*cp{version}*.whl"
+    file = list(Path("dist").glob(search))[0].name
+    session.run("pip", "install", f"dist/{file}")
     session.install("pytest", "typeguard", "pygments")
     session.run("pytest", f"--typeguard-packages={package}", *session.posargs)
 
@@ -177,7 +196,12 @@ def typeguard(session: Session) -> None:
 def xdoctest(session: Session) -> None:
     """Run examples with xdoctest."""
     args = session.posargs or ["all"]
-    session.install(".")
+    session.run("pip", "install", "poetry")
+    session.run("poetry", "build")
+    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
+    search = f"*cp{version}*.whl"
+    file = list(Path("dist").glob(search))[0].name
+    session.run("pip", "install", f"dist/{file}")
     session.install("xdoctest[colors]")
     session.run("python", "-m", "xdoctest", package, *args)
 
@@ -186,7 +210,12 @@ def xdoctest(session: Session) -> None:
 def docs_build(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or ["docs", "docs/_build"]
-    session.install(".")
+    session.run("pip", "install", "poetry")
+    session.run("poetry", "build")
+    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
+    search = f"*cp{version}*.whl"
+    file = list(Path("dist").glob(search))[0].name
+    session.run("pip", "install", f"dist/{file}")
     session.install("sphinx", "sphinx-click", "sphinx-rtd-theme", "sphinx-rtd-dark-mode")
 
     build_dir = Path("docs", "_build")
@@ -200,8 +229,21 @@ def docs_build(session: Session) -> None:
 def docs(session: Session) -> None:
     """Build and serve the documentation with live reloading on file changes."""
     args = session.posargs or ["--open-browser", "docs", "docs/_build"]
-    session.install(".")
-    session.install("sphinx", "sphinx-autobuild", "sphinx-click", "sphinx-rtd-theme", "sphinx-rtd-dark-mode")
+    session.run("pip", "install", "poetry")
+    session.run("poetry", "build")
+    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
+    search = f"*cp{version}*.whl"
+    file = list(Path("dist").glob(search))[0].name
+    session.run("pip", "install", f"dist/{file}")
+    session.install(
+        "sphinx",
+        "sphinx-autobuild",
+        "sphinx-click",
+        "sphinx-rtd-theme",
+        "sphinx-rtd-dark-mode",
+        "myst_parser",
+        "breathe",
+    )
 
     build_dir = Path("docs", "_build")
     if build_dir.exists():

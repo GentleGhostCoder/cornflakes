@@ -64,11 +64,34 @@ jobs:
         steps:
             - name: Check out the repository
               uses: actions/checkout@v2.3.4
+              with:
+                  remote: true
+                  submodules: recursive
 
             - name: Set up Python ${{ matrix.python-version }}
               uses: actions/setup-python@v2.2.2
               with:
                   python-version: ${{ matrix.python-version }}
+
+            - name: Install doxygen
+              run: |
+                  echo $RUNNER_OS &&
+                  if [ "$RUNNER_OS" == "Linux" ]; then
+                    sudo apt-get install -y doxygen;
+                  elif [ "$RUNNER_OS" == "macOS" ]; then
+                    brew install doxygen;
+                  elif [ "$RUNNER_OS" == "Windows" ]; then
+                    choco install doxygen.install;
+                  else
+                    echo "$RUNNER_OS not supported";
+                    exit 1
+                  fi
+              shell: bash
+
+            - name: Install Ninja
+              run: |
+                  pip install ninja
+                  ninja --version
 
             - name: Install Poetry
               run: |
@@ -135,10 +158,19 @@ jobs:
               with:
                   python-version: 3.8
 
+            - name: Install doxygen
+              run: |
+                  sudo apt-get install -y doxygen
+
             - name: Install Poetry
               run: |
                   pipx install poetry
                   poetry --version
+
+            - name: Install Ninja
+              run: |
+                  pipx install ninja
+                  ninja --version
 
             - name: Install nox nox-poetry rich
               run: |
@@ -159,4 +191,4 @@ jobs:
               run: nox --force-color --session=coverage -- xml -i
 
             - name: Upload coverage report
-              uses: codecov/codecov-action@v2.1.0
+              uses: codecov/codecov-action@v3.1.0

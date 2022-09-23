@@ -13,9 +13,9 @@ Here is a list of important resources for contributors:
 - `Code of Conduct`_
 
 .. _Apache2.0 license: https://opensource.org/licenses/Apache2.0
-.. _Source Code: https://github.com/semmjon/cornflakes
+.. _Source Code: https://github.com/sgeist/cornflakes
 .. _Documentation: https://cornflakes.readthedocs.io/
-.. _Issue Tracker: https://github.com/semmjon/cornflakes/issues
+.. _Issue Tracker: https://github.com/sgeist/cornflakes/issues
 
 How to report a bug
 -------------------
@@ -134,5 +134,5 @@ To run linting and code formatting checks before committing your change, you can
 It is recommended to open an issue before starting work on anything.
 This will allow a chance to talk it over with the owners and validate your approach.
 
-.. _pull request: https://github.com/semmjon/cornflakes/pulls
+.. _pull request: https://github.com/sgeist/cornflakes/pulls
 .. _Code of Conduct: CODE_OF_CONDUCT.rst

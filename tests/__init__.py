@@ -1,1 +1,1 @@
-"""Test suite for the cornflakes package."""
+"""Main Test Suite."""
