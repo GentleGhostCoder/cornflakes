@@ -1,0 +1,134 @@
+stages:
+    - build
+    - test
+    - publish
+
+variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    TWINE_USERNAME: $TWINE_USERNAME
+    TWINE_PASSWORD: $TWINE_PASSWORD
+    VERSION: $CI_COMMIT_TAG
+    PYPI_REPO_TAG: pypi
+
+.build_before_script: &build_before_script
+    before_script:
+        - ldd --version ldd # For debugging
+        - python3.8 --version # For debugging
+        - python3.10 --version # For debugging
+        - ls -l # For debugging
+        - |
+            VERSION=$(echo $(curl --insecure -Ss --request GET --header "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" "https://gitlab.blubblub.tech/api/v4/projects/$CI_PROJECT_ID/repository/tags" |  grep -Po '("[0-9]\.[0-9].[0-9]?")' | sed "s/\"//g" | sed 's/\n.*//') | sed 's/ .*//')
+        - eval "sed -i 's/os.environ.get(\"VERSION\", .*)/\"$VERSION\"/' setup.py"
+        - python3.8 -m pip install --upgrade pip
+        - python3.8 -m pip install virtualenv
+        - python3.8 -m .venv ./venv38
+        - python3.9 -m pip install --upgrade pip
+        - python3.9 -m pip install virtualenv
+        - python3.9 -m .venv ./venv39
+        - python3.10 -m pip install --upgrade pip
+        - python3.10 -m pip install virtualenv
+        - python3.10 -m .venv ./venv310
+        - source venv38/bin/activate
+        - python -m pip install build
+        - python -m pip install pytest
+        - source venv39/bin/activate
+        - python -m pip install build
+        - python -m pip install pytest
+        - source venv310/bin/activate
+        - python -m pip install build
+        - python -m pip install pytest
+        - python -m pip install auditwheel
+        - python -m pip install twine
+        - cat $PYPIRC > /root/.pypirc
+
+build_windows:
+    stage: build
+    image: mcr.microsoft.com/windows/servercore:ltsc2016-amd64
+    when: manual
+    script:
+        - ldd --version ldd
+        - ls -l
+        - python3 --version # For debugging
+        - python3.10 --version
+        - python3.9 --version
+        - python3.8 --version
+
+build_manylinux1_x86_64:
+    <<: *build_before_script
+    image: quay.io/pypa/manylinux2014_x86_64:latest
+    #when: manual
+    stage: build
+    script:
+        - source venv38/bin/activate
+        - python -m build
+        - source venv39/bin/activate
+        - python -m build
+        - source venv310/bin/activate
+        - python -m build
+    artifacts:
+        paths:
+            - dist/*.whl
+            - dist/*.tar.gz
+
+test_manylinux1_x86_64:
+    <<: *build_before_script
+    image: quay.io/pypa/manylinux2014_x86_64:latest
+    #when: manual
+    stage: test
+    script:
+        - source venv38/bin/activate
+        - pip install $(ls dist/*38*.whl)
+        - python -m pytest
+        - source venv39/bin/activate
+        - pip install $(ls dist/*39*.whl)
+        - python -m pytest
+        - source venv310/bin/activate
+        - pip install $(ls dist/*310*.whl)
+        - python -m pytest
+    needs:
+        - job: build_manylinux1_x86_64
+          artifacts: true
+
+publish_manylinux1_x86_64:
+    <<: *build_before_script
+    image: quay.io/pypa/manylinux2014_x86_64:latest
+    # when: manual
+    stage: publish
+    only:
+        - tags
+    script:
+        - source venv310/bin/activate
+        - python -m auditwheel repair $(ls dist/*38*.whl)
+        - python -m auditwheel repair $(ls dist/*39*.whl)
+        - python -m auditwheel repair $(ls dist/*310*.whl)
+        - python -m twine upload -r pypi $(ls wheelhouse/*38*.whl) --verbose
+        - python -m twine upload -r pypi $(ls wheelhouse/*39*.whl) --verbose
+        - python -m twine upload -r pypi $(ls wheelhouse/*310*.whl) --verbose
+        - python -m twine upload -r pypi $(ls dist/*.tar.gz) --verbose
+    needs:
+        - job: build_manylinux1_x86_64
+          artifacts: true
+        - job: test_manylinux1_x86_64
+
+push_to_github:
+    image: alpine/git
+    stage: publish
+    #when: manual
+    before_script:
+        - git config --global user.email $GITHUB_EMAIL
+        - git config --global user.name $GITHUB_USERNAME
+    script:
+        - git clone https://$GITLAB_USER:$GITLAB_TOKEN@gitlab.blubblub.tech/sgeist/cpputils.git
+        - cd cpputils
+        - git checkout $CI_COMMIT_REF_NAME
+        - git checkout main
+        - git remote set-url origin https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/semmjon/cpputils.git
+        - git pull
+        - git add .
+        - git commit -m "$CI_COMMIT_MESSAGE" || echo "nothing to commit!"
+        - git push
+
+    needs:
+        - job: build_manylinux1_x86_64
+          artifacts: true
+        - job: test_manylinux1_x86_64

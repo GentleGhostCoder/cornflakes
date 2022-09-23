@@ -48,11 +48,11 @@ repos:
             types: [text]
             stages: [commit, push, manual]
     - repo: https://github.com/pre-commit/mirrors-prettier
-      rev: v2.5.1
+      rev: v3.0.0-alpha.0
       hooks:
           - id: prettier
     - repo: https://github.com/pycqa/isort
-      rev: 5.8.0
+      rev: 5.10.1
       hooks:
           - id: isort
             name: isort (python)
@@ -62,3 +62,26 @@ repos:
           - id: isort
             name: isort (pyi)
             types: [pyi]
+    - repo: https://github.com/cheshirekow/cmake-format-precommit
+      rev: v0.6.13
+      hooks:
+          - id: cmake-format
+            additional_dependencies: [pyyaml]
+            types: [file]
+            files: (\.cmake|CMakeLists.txt)(.in)?$
+    - repo: https://github.com/pre-commit/mirrors-clang-format
+      rev: v14.0.6
+      hooks:
+          - id: clang-format
+            args: [--style=Google]
+    - repo: https://github.com/bmorcos/pre-commit-hooks-cpp
+      rev: 9a5aa38207bf557961110d6a4f7e3a9d352911f9
+      hooks:
+          - id: cpplint
+            args:
+                [
+                    --exclude=inst/ext/*,
+                    --exclude=inst/_cornflakes/datetime_utils.h,
+                    --exclude=cmake-build-debug/*,
+                    --filter=-build/c++11,
+                ]

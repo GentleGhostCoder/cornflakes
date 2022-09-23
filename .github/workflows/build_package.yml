@@ -13,6 +13,9 @@ jobs:
 
         steps:
             - uses: actions/checkout@v3
+              with:
+                  remote: true
+                  submodules: recursive
               name: Check out source-code repository
 
             - name: Setup Python
@@ -24,6 +27,11 @@ jobs:
               run: |
                   pip install poetry
                   poetry --version
+
+            - name: Install Ninja
+              run: |
+                  pip install ninja
+                  ninja --version
 
             - name: Build package
               run: poetry build --ansi

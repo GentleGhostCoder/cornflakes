@@ -8,10 +8,10 @@
 # absolute, like shown here.
 #
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.abspath(".."))
-
 
 # -- General configuration ---------------------------------------------
 
@@ -29,15 +29,56 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_click",
     "sphinx_rtd_dark_mode",
+    "sphinx.ext.autosummary",
+    "myst_parser",
+    "breathe",
 ]
-
 default_dark_mode = True
+
+breathe_projects = {
+    "_cornflakes": "_build/breathe/doxygen/_cornflakes/xml",
+    "hash_library": "_build/breathe/doxygen/hash_library/xml",
+}
+breathe_default_project = "_cornflakes"
+
+excluded_files_pattern = r"(.*datetime_utils.h.*|.*strtk.*|.*pybind11.*)"
+breathe_projects_source_path_cornflakes = os.path.abspath("../inst/_cornflakes")
+breathe_projects_source_path_hash_library = os.path.abspath("../inst/ext/hash-library")
+
+breathe_projects_source = {
+    "_cornflakes": (
+        breathe_projects_source_path_cornflakes,
+        [
+            file
+            for file in os.listdir(breathe_projects_source_path_cornflakes)
+            if not re.match(excluded_files_pattern, file)
+        ],
+    ),
+    "hash_library": (
+        breathe_projects_source_path_hash_library,
+        [
+            file
+            for file in os.listdir(breathe_projects_source_path_hash_library)
+            if not re.match(excluded_files_pattern, file)
+        ],
+    ),
+}
+breathe_doxygen_config_options = {
+    "PREDEFINED": "DOXYGEN_SHOULD_SKIP_THIS",
+    "EXCLUDE": "datetime_utils.h",
+    "GENERATE_HTML": "NO",
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
-source_suffix = ".rst"
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".txt": "markdown",
+    ".md": "markdown",
+}
+source_parsers = {".md": "recommonmark.parser.CommonMarkParser"}
 
 # The master toctree document.
 master_doc = "index"
@@ -74,7 +115,6 @@ pygments_style = "sphinx"
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-
 # -- Options for HTML output -------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -93,12 +133,10 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-
 # -- Options for HTMLHelp output ---------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = "cornflakesdoc"
-
 
 # -- Options for LaTeX output ------------------------------------------
 
@@ -130,7 +168,6 @@ latex_documents = [
     ),
 ]
 
-
 # -- Options for manual page output ------------------------------------
 
 # One entry per manual page. List of tuples
@@ -146,7 +183,6 @@ man_pages = [
 ]
 
 autodoc_typehints = "description"
-
 
 # -- Options for Texinfo output ----------------------------------------
 

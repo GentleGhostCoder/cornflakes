@@ -25,9 +25,9 @@ jobs:
 
             - uses: oleksiyrudenko/gha-git-credentials@v2.1
               with:
-                  name: "semmjon"
-                  email: "semjon-geist@gmx.de"
-                  actor: "semmjon"
+                  name: "sgeist"
+                  email: "semjon.geist@ionos.com"
+                  actor: "sgeist"
                   token: "${{ secrets.CT_SYNC_TOKEN}}"
 
             - name: Sync project

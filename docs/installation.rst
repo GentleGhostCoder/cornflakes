@@ -33,13 +33,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/semmjon/cornflakes
+    $ git clone git://github.com/sgeist/cornflakes
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/semmjon/cornflakes/tarball/master
+    $ curl -OJL https://github.com/sgeist/cornflakes/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -48,6 +48,6 @@ Once you have a copy of the source, you can install it with:
     $ make install
 
 
-.. _Github repo: https://github.com/semmjon/cornflakes
-.. _tarball: https://github.com/semmjon/cornflakes/tarball/master
+.. _Github repo: https://github.com/sgeist/cornflakes
+.. _tarball: https://github.com/sgeist/cornflakes/tarball/master
 .. _poetry: https://python-poetry.org/
