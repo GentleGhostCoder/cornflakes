@@ -5,6 +5,12 @@ Reference
     :local:
     :backlinks: none
 
+.. automodule:: cornflakes
 
-.. automodule:: cornflakes.__main__
-   :members:
+
+
+.. toctree::
+
+    .. automodule:: _cornflakes
+    .. automodule:: _cornflakes._types
+    .. automodule:: _cornflakes._default_ca_path
