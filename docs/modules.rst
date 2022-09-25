@@ -1,5 +1,5 @@
 cornflakes
-=========
+==========
 
 .. toctree::
    :maxdepth: 4
