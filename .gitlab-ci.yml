@@ -36,8 +36,8 @@ variables:
         - pip install poetry
         - pip install ninja
         - pip install nox-poetry
-        - poetry init
         - poetry config pypi-token.pypi $PYPI_TOKEN
+        - poetry install
 
 #build_windows:
 #    stage: build
