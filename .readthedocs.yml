@@ -13,6 +13,7 @@ build:
         - libc6
         - cmake
         - make
+        - libncurses-dev
     tools:
         python: "3.10"
     jobs:
