@@ -14,6 +14,7 @@ variables:
 .poetry_before_script: &poetry_before_script
     before_script:
         - yum install -y gcc libstdc++
+        - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
         - nvm install 16
         - ldd --version ldd # For debugging
         - python3.8 --version # For debugging
