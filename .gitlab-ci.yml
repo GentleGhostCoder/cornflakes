@@ -23,7 +23,19 @@ variables:
         - python3.8 -m pip install --upgrade pip
         - python3.9 -m pip install --upgrade pip
         - python3.10 -m pip install --upgrade pip
+
+        - python3.8 -m pip install virtualenv
+        - python3.9 -m pip install virtualenv
+        - python3.10 -m pip install virtualenv
+
+        - python3.8 -m venv ./venv38
+        #        - python3.9 -m venv ./venv39
+        #        - python3.10 -m venv ./venv310
+
+        - source venv38/bin/activate
         - pip install poetry
+        - pip install ninja
+        - pip install nox-poetry
         - poetry init
         - poetry config pypi-token.pypi $PYPI_TOKEN
 
