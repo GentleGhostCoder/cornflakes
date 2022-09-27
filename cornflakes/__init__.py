@@ -14,24 +14,13 @@ __________________________________
     eval_csv
     extract_between
     apply_match
-    simple_hmac
-    simple_sha256
 """  # noqa: RST303 D205
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
 __version__ = "1.4.4"
 
-from _cornflakes import (
-    apply_match,
-    eval_csv,
-    eval_datetime,
-    eval_type,
-    extract_between,
-    ini_load,
-    simple_hmac,
-    simple_sha256,
-)
+from _cornflakes import apply_match, eval_csv, eval_datetime, eval_type, extract_between, ini_load
 from cornflakes._default_ca_path import default_ca_path
 from cornflakes._types import DatetimeMS, datetime_ms
 

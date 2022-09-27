@@ -20,8 +20,6 @@ PYBIND11_MODULE(_cornflakes, module) {
             eval_csv
             extract_between
             apply_match
-            simple_hmac
-            simple_sha256
     )pbdoc";
 
   module.def(
@@ -107,28 +105,29 @@ PYBIND11_MODULE(_cornflakes, module) {
             :project: _cornflakes
         )pbdoc");
 
-  module.def(
-      "simple_hmac",
-      [](const py::list &data, const std::string &algo) -> py::object {
-        return py::cast(
-            digest::simple_hmac(data.cast<std::vector<std::string>>(), algo));
-      },
-      py::arg("data").none(false), py::arg("algo").none(true) = "SHA256",
-      R"pbdoc(
-        .. doxygenfunction:: digest::simple_hmac
-            :project: _cornflakes
-        )pbdoc");
-
-  module.def(
-      "simple_sha256",
-      [](const py::object &data) -> py::object {
-        return py::cast(digest::simple_sha256(data.cast<std::string>()));
-      },
-      py::arg("data").none(false),
-      R"pbdoc(
-        .. doxygenfunction:: digest::simple_sha256
-            :project: _cornflakes
-        )pbdoc");
+  //  module.def(
+  //      "simple_hmac",
+  //      [](const py::list &data, const std::string &algo) -> py::object {
+  //        return py::cast(
+  //            digest::simple_hmac(data.cast<std::vector<std::string>>(),
+  //            algo));
+  //      },
+  //      py::arg("data").none(false), py::arg("algo").none(true) = "SHA256",
+  //      R"pbdoc(
+  //        .. doxygenfunction:: digest::simple_hmac
+  //            :project: _cornflakes
+  //        )pbdoc");
+  //
+  //  module.def(
+  //      "simple_sha256",
+  //      [](const py::object &data) -> py::object {
+  //        return py::cast(digest::simple_sha256(data.cast<std::string>()));
+  //      },
+  //      py::arg("data").none(false),
+  //      R"pbdoc(
+  //        .. doxygenfunction:: digest::simple_sha256
+  //            :project: _cornflakes
+  //        )pbdoc");
 
   module.attr("__name__") = "_cornflakes";
 #ifdef VERSION_INFO

@@ -2,7 +2,7 @@
 #ifndef INST__CORNFLAKES_BINDINGS_H_
 #define INST__CORNFLAKES_BINDINGS_H_
 
-#include <digest.h>
+// #include <digest.h>
 #include <ini.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
