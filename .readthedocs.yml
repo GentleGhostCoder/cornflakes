@@ -9,6 +9,9 @@ submodules:
 
 build:
     os: "ubuntu-20.04"
+    apt_packages:
+        - libclang
+        - cmake
     tools:
         python: "3.10"
     jobs:
