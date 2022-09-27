@@ -37,7 +37,7 @@ variables:
         - pip install ninja
         - pip install nox-poetry
         - poetry config pypi-token.pypi $PYPI_TOKEN
-        - make install
+        - make dist
 
 #build_windows:
 #    stage: build
