@@ -36,6 +36,7 @@ variables:
         - source venv38/bin/activate
         - pip install poetry
         - pip install ninja
+        - pip install pytest
         - pip install nox-poetry
         - poetry config pypi-token.pypi $PYPI_TOKEN
         - make dist
@@ -58,7 +59,7 @@ test_manylinux1_x86_64:
     #when: manual
     stage: test
     script:
-        - make test
+        - make test-all
 
 build_manylinux1_x86_64:
     <<: *poetry_before_script
