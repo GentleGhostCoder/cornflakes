@@ -85,4 +85,4 @@ dist: clean-build clean-pyc bump ## builds source and wheel package
 
 install: clean-build clean-pyc ## install the package to the active Python's site-packages
 	# pip install dist/*.whl
-	poetry install # not working for some reason -> not copying source files
+	poetry install --verbose # not working for some reason -> not copying source files

@@ -85,4 +85,4 @@ dist: clean-build clean-pyc ## builds source and wheel package
 
 install: clean-build clean-pyc dist ## install the package to the active Python's site-packages
 	# pip install dist/*.whl
-	poetry install # not working for some reason
+	poetry install --verbose # not working for some reason
