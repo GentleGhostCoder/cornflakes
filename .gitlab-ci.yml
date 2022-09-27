@@ -51,8 +51,6 @@ build_manylinux1_x86_64:
     stage: build
     script:
         - make dist
-    needs:
-        - job: test_manylinux1_x86_64
     artifacts:
         paths:
             - dist/*.whl
@@ -70,6 +68,5 @@ publish_manylinux1_x86_64:
     script:
         - make release
     needs:
-        - job: test_manylinux1_x86_64
         - job: build_manylinux1_x86_64
           artifacts: true
