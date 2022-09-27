@@ -1,5 +1,5 @@
 cornflakes
-=========
+==========
 
 |PyPI| |Python Version| |License| |Read the Docs| |Build| |Tests| |Codecov|
 
