@@ -64,7 +64,9 @@ publish_manylinux1_x86_64:
     # when: manual
     stage: publish
     only:
+        - main
         - tags
+
     script:
         - make release
     needs:
