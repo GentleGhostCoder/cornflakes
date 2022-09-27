@@ -172,6 +172,10 @@ jobs:
                   pipx install ninja
                   ninja --version
 
+            - name: Install Docs Requirements
+              run: |
+                  pipx install docs/requirements.txt
+
             - name: Install nox nox-poetry rich
               run: |
                   pipx install nox
