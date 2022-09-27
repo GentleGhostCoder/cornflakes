@@ -13,6 +13,7 @@ variables:
 
 .poetry_before_script: &poetry_before_script
     before_script:
+        - yum install -y gcc libstdc++
         - ldd --version ldd # For debugging
         - python3.8 --version # For debugging
         - python3.9 --version # For debugging
@@ -57,7 +58,7 @@ test_manylinux1_x86_64:
     #when: manual
     stage: test
     script:
-        - make test-all
+        - make test
 
 build_manylinux1_x86_64:
     <<: *poetry_before_script
