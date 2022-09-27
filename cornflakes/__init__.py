@@ -32,7 +32,6 @@ from _cornflakes import (
     simple_hmac,
     simple_sha256,
 )
-
 from cornflakes._default_ca_path import default_ca_path
 from cornflakes._types import DatetimeMS, datetime_ms
 
