@@ -241,7 +241,7 @@ def docs(session: Session) -> None:
         "sphinx-click",
         "sphinx-rtd-theme",
         "sphinx-rtd-dark-mode",
-        "myst_parser",
+        "myst-parser",
         "breathe",
     )
 
