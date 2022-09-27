@@ -1,6 +1,6 @@
 stages:
-    - build
     - test
+    - build
     - publish
 
 variables:
@@ -22,6 +22,9 @@ variables:
             VERSION=$(echo $(curl --insecure -Ss --request GET --header "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" "https://gitlab.blubblub.tech/api/v4/projects/$CI_PROJECT_ID/repository/tags" |  grep -Po '("[0-9]\.[0-9].[0-9]?")' | sed "s/\"//g" | sed 's/\n.*//') | sed 's/ .*//')
         - pip install poetry
         - poetry init
+        - python3.8 -m pip install --upgrade pip
+        - python3.9 -m pip install --upgrade pip
+        - python3.10 -m pip install --upgrade pip
         - poetry config pypi-token.pypi $PYPI_TOKEN
 
 #build_windows:
@@ -51,6 +54,8 @@ build_manylinux1_x86_64:
     stage: build
     script:
         - make dist
+    needs:
+        - job: test_manylinux1_x86_64
     artifacts:
         paths:
             - dist/*.whl
@@ -68,5 +73,6 @@ publish_manylinux1_x86_64:
     script:
         - make release
     needs:
+        - job: test_manylinux1_x86_64
         - job: build_manylinux1_x86_64
           artifacts: true
