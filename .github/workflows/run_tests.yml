@@ -100,7 +100,7 @@ jobs:
 
             - name: Install Docs Requirements
               run: |
-                  pipx install ../docs/requirements.txt
+                  pip install -r ../docs/requirements.txt
 
             - name: Install nox nox-poetry rich
               run: |
@@ -178,7 +178,7 @@ jobs:
 
             - name: Install Docs Requirements
               run: |
-                  pipx install ../docs/requirements.txt
+                  pip install -r ../docs/requirements.txt
 
             - name: Install nox nox-poetry rich
               run: |
