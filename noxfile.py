@@ -103,7 +103,7 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
 @session(name="pre-commit", python=python_versions)
 def precommit(session: Session) -> None:
     """Lint using pre-commit."""
-    args = session.posargs or ["run", "--all-files"]
+    args = session.posargs or ["run", "--all-files", "--verbose"]
     session.install(
         "black",
         "flake8",
