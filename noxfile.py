@@ -235,15 +235,8 @@ def docs(session: Session) -> None:
     search = f"*cp{version}*.whl"
     file = list(Path("dist").glob(search))[0].name
     session.run("pip", "install", f"dist/{file}")
-    session.install(
-        "sphinx",
-        "sphinx-autobuild",
-        "sphinx-click",
-        "sphinx-rtd-theme",
-        "sphinx-rtd-dark-mode",
-        "myst_parser",
-        "breathe",
-    )
+    session.install("myst-parser", "breathe")
+    session.install("sphinx", "sphinx-autobuild", "sphinx-click", "sphinx-rtd-theme", "sphinx-rtd-dark-mode")
 
     build_dir = Path("docs", "_build")
     if build_dir.exists():
