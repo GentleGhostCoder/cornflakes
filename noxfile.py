@@ -1,10 +1,10 @@
 """Nox sessions."""
 import os
+from pathlib import Path
 import re
 import shlex
 import shutil
 import sys
-from pathlib import Path
 from textwrap import dedent
 
 import nox

@@ -1,5 +1,5 @@
-import unittest
 from datetime import date, datetime, time
+import unittest
 
 import cornflakes
 
