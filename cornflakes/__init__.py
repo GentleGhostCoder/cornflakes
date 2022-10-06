@@ -24,6 +24,18 @@ __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
 __version__ = "1.4.4"
 
+__all__ = [
+    "datetime_ms",
+    "DatetimeMS",
+    "default_ca_path",
+    "ini_load",
+    "eval_type",
+    "eval_datetime",
+    "eval_csv",
+    "extract_between",
+    "apply_match",
+]
+
 # static definition for reference to
 # ini_load = None
 # eval_type = None
@@ -52,16 +64,3 @@ __version__ = "1.4.4"
 #     """,
 #         locals(),
 #     )
-
-
-__all__ = [
-    "datetime_ms",
-    "DatetimeMS",
-    "default_ca_path",
-    "ini_load",
-    "eval_type",
-    "eval_datetime",
-    "eval_csv",
-    "extract_between",
-    "apply_match",
-]
