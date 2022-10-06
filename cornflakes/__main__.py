@@ -5,7 +5,7 @@
 
 
 # @click.command()
-# @click.version_option(version="1.4.4", message=click.style("cornflakes Version: 1.4.4"))
+# @click.version_option(version="1.4.5", message=click.style("cornflakes Version: 1.4.5"))
 def main() -> None:
     """cornflakes."""
 
