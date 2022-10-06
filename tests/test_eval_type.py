@@ -1,7 +1,7 @@
-import sys
-import unittest
 from datetime import datetime, timedelta, timezone
 from ipaddress import ip_address
+import sys
+import unittest
 
 import cornflakes
 
