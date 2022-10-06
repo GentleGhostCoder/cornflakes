@@ -79,8 +79,8 @@ servedocs: docs ## compile the docs watching for changes
 bump:
 	poetry version $(git describe --tags --abbrev=0)
 
-release: dist ## package and upload a release
-	poetry release
+publish: dist ## package and upload a release
+	poetry publish
 
 dist: clean-build clean-pyc bump ## builds source and wheel package
 	poetry build

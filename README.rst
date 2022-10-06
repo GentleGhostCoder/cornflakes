@@ -12,9 +12,9 @@ cornflakes
 .. |License| image:: https://img.shields.io/github/license/semmjon/cornflakes
    :target: https://opensource.org/licenses/Apache2.0
    :alt: License
-.. |Read the Docs| image:: https://img.shields.io/readthedocs/cornflakes/stable.svg?label=Read%20the%20Docs
-   :target: https://cornflakes.readthedocs.io/en/stable/
-   :alt: Read the documentation at https://cornflakes.readthedocs.io/en/stable/
+.. |Read the Docs| image:: https://img.shields.io/readthedocs/cornflakes/latest.svg?label=Read%20the%20Docs
+   :target: https://cornflakes.readthedocs.io
+   :alt: Read the documentation at https://cornflakes.readthedocs.io
 .. |Build| image:: https://github.com/semmjon/cornflakes/workflows/Build%20cornflakes%20Package/badge.svg
    :target: https://github.com/semmjon/cornflakes/actions?workflow=Package
    :alt: Build Package Status
