@@ -21,7 +21,7 @@ cornflakes
 .. |Tests| image:: https://github.com/semmjon/cornflakes/workflows/Run%20cornflakes%20Tests/badge.svg
    :target: https://github.com/semmjon/cornflakes/actions?workflow=Tests
    :alt: Run Tests Status
-.. image:: https://codecov.io/gh/semmjon/cornflakes/branch/release-1.4.5/graph/badge.svg?token=FY72EIXI82
+.. |Codecov| image:: https://codecov.io/gh/semmjon/cornflakes/branch/release-1.4.5/graph/badge.svg?token=FY72EIXI82
    :target: https://codecov.io/gh/semmjon/cornflakes
    :alt: Codecov
 
