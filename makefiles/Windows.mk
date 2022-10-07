@@ -69,6 +69,8 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	sphinx-apidoc -o docs cornflakes
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
+
+docs-preview: docs
 	$(BROWSER) docs\_build\html\index.html
 
 servedocs: docs ## compile the docs watching for changes
@@ -77,12 +79,12 @@ servedocs: docs ## compile the docs watching for changes
 bump:
 	poetry version $(git describe --tags --abbrev=0)
 
-release: dist ## package and upload a release
-	poetry release
+publish: dist ## package and upload a release
+	poetry publish
 
 dist: clean-build clean-pyc ## builds source and wheel package
 	poetry build
 
 install: clean-build clean-pyc dist ## install the package to the active Python's site-packages
 	# pip install dist/*.whl
-	poetry install # not working for some reason
+	poetry install --verbose # not working for some reason

@@ -3,6 +3,27 @@
 
 version: 2
 
+submodules:
+    include: all
+    recursive: true
+
+build:
+    os: "ubuntu-20.04"
+    apt_packages:
+        - libc6
+        - cmake
+        - make
+    tools:
+        python: "3.10"
+    jobs:
+        pre_build:
+            # Note that this HTML won't be automatically uploaded,
+            # unless your documentation build includes it somehow.
+            - python -m pip install poetry
+            - python -m pip install ninja
+            - python -m poetry install --verbose
+            - make docs
+
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
     configuration: docs/conf.py
@@ -16,6 +37,5 @@ formats: all
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
-    version: 3.8
     install:
         - requirements: docs/requirements.txt

@@ -1,10 +1,10 @@
 """Nox sessions."""
 import os
+from pathlib import Path
 import re
 import shlex
 import shutil
 import sys
-from pathlib import Path
 from textwrap import dedent
 
 import nox
@@ -103,7 +103,7 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
 @session(name="pre-commit", python=python_versions)
 def precommit(session: Session) -> None:
     """Lint using pre-commit."""
-    args = session.posargs or ["run", "--all-files"]
+    args = session.posargs or ["run", "--all-files", "--verbose"]
     session.install(
         "black",
         "flake8",
@@ -216,7 +216,7 @@ def docs_build(session: Session) -> None:
     search = f"*cp{version}*.whl"
     file = list(Path("dist").glob(search))[0].name
     session.run("pip", "install", f"dist/{file}")
-    session.install("sphinx", "sphinx-click", "sphinx-rtd-theme", "sphinx-rtd-dark-mode")
+    session.install("sphinx", "sphinx-click", "sphinx-rtd-theme", "sphinx-rtd-dark-mode", "myst-parser", "breathe")
 
     build_dir = Path("docs", "_build")
     if build_dir.exists():
@@ -241,7 +241,7 @@ def docs(session: Session) -> None:
         "sphinx-click",
         "sphinx-rtd-theme",
         "sphinx-rtd-dark-mode",
-        "myst_parser",
+        "myst-parser",
         "breathe",
     )
 
