@@ -1,7 +1,7 @@
 import datetime
 
 
-def _check_milliseconds_field(millisecond):
+def _check_milliseconds_field(millisecond) -> None:
     if not 0 <= millisecond <= 999:
         raise ValueError("microsecond must be in 0..999", millisecond)
 
@@ -30,7 +30,7 @@ class DatetimeMS(datetime.datetime):
         return self
 
     @property
-    def millisecond(self):
+    def millisecond(self) -> int:
         """Milliseconds of datetime.
 
         :return: milliseconds

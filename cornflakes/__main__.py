@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 """Command-line interface."""
-# import click
-# from rich import traceback
+
+from cornflakes.common.cli import cli
 
 
-# @click.command()
-# @click.version_option(version="1.4.5", message=click.style("cornflakes Version: 1.4.5"))
-def main() -> None:
-    """cornflakes."""
+def main(*args, **kwargs):
+    """Main CLI Entrypoint Method."""
+    cli(*args, **kwargs)
 
 
 if __name__ == "__main__":
-    pass
-    #  traceback.install()
-    #  main(prog_name="cornflakes")  # pragma: no cover
+    main()  # pragma: no cover

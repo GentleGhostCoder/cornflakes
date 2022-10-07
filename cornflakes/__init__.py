@@ -16,8 +16,8 @@ __________________________________
     apply_match
 """  # noqa: RST303 D205
 from _cornflakes import apply_match, eval_csv, eval_datetime, eval_type, extract_between, ini_load
-from cornflakes._default_ca_path import default_ca_path
-from cornflakes._types import DatetimeMS, datetime_ms
+from cornflakes.common import default_ca_path
+from cornflakes.common import DatetimeMS, datetime_ms
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
