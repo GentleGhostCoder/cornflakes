@@ -4,9 +4,9 @@
 from cornflakes.common.cli import cli
 
 
-def main(*args, **kwargs):
+def main():
     """Main CLI Entrypoint Method."""
-    cli(*args, **kwargs)
+    cli()
 
 
 if __name__ == "__main__":

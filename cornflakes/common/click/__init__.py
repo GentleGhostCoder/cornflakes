@@ -10,14 +10,13 @@ from click import argument as click_argument
 from click import command as click_command
 from click import group as click_group
 
-from . import _rich_click  # noqa: F401
-from ._rich_argument import RichArg
-from ._rich_command import RichCommand
-from ._rich_config import Config
-from ._rich_group import RichGroup
+from cornflakes.common.click._rich_argument import RichArg
+from cornflakes.common.click._rich_command import RichCommand
+from cornflakes.common.click._rich_config import Config
+from cornflakes.common.click._rich_group import RichGroup
 
 
-def group(*args, cls=RichGroup, **kwargs):  # type: ignore
+def group(*args, cls=RichGroup, **kwargs) -> click_group:  # type: ignore
     """Group decorator function.
 
     Defines the group() function so that it uses the RichGroup class by default.
@@ -25,7 +24,7 @@ def group(*args, cls=RichGroup, **kwargs):  # type: ignore
     return click_group(*args, cls=cls, **kwargs, context_settings=Config.Groups.CONTEXT_SETTINGS)
 
 
-def command(*args, cls=RichCommand, **kwargs):  # type: ignore
+def command(*args, cls=RichCommand, **kwargs) -> click_command:  # type: ignore
     """Command decorator function.
 
     Defines the command() function so that it uses the RichCommand class by default.
@@ -33,7 +32,7 @@ def command(*args, cls=RichCommand, **kwargs):  # type: ignore
     return click_command(*args, cls=cls, **kwargs, context_settings=Config.Groups.CONTEXT_SETTINGS)
 
 
-def argument(*args, cls=RichArg, **kwargs):  # type: ignore
+def argument(*args, cls=RichArg, **kwargs) -> click_argument:  # type: ignore
     """Command decorator function.
 
     Defines the command() function so that it uses the RichCommand class by default.

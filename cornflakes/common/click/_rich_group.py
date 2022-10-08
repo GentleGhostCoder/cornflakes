@@ -1,4 +1,5 @@
 import sys
+from typing import Any
 
 import click
 
@@ -16,7 +17,7 @@ class RichGroup(click.Group):
     command_class = RichCommand
     group_class = type
 
-    def main(self, *args, standalone_mode: bool = True, **kwargs):
+    def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:
         """Main function of RichGroup."""
         try:
             rv = super().main(*args, standalone_mode=False, **kwargs)  # type: ignore
@@ -33,6 +34,6 @@ class RichGroup(click.Group):
             rich_abort_error()
             sys.exit(1)
 
-    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter):
+    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         """Format function of RichGroup."""
         rich_format_help(self, ctx, formatter)

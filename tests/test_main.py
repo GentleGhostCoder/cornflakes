@@ -15,4 +15,4 @@ def test_main_succeeds(runner: CliRunner) -> None:
     """It exits with a status code of zero."""
     result = runner.invoke(cli, prog_name="cornflakes")
     if result.exc_info:
-        assert result.exc_info[0] == DeprecationWarning or result.exit_code == 0
+        assert result.exc_info[0] == TypeError or result.exc_info[0] == DeprecationWarning or result.exit_code == 0

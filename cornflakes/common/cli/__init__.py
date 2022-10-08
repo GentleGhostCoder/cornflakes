@@ -1,9 +1,7 @@
 """Main CLI module for cornflakes."""
-
-from typing import Any, List, Optional
-
 import cornflakes
 from cornflakes.common import click
+from typing import no_type_check as typeguard_ignore
 
 from ._create import create_new_config
 
@@ -51,13 +49,14 @@ click.Config.Groups.COMMAND_GROUPS = {
 click.Config.Groups.CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}  # for more see. click/core.py
 
 
-@click.group()
+@typeguard_ignore
+@click.group
 @click.version_option(
     prog_name="cornflakes",
     version=cornflakes.__version__,
     message=click.style(f"\033[95mcornflakes\033[0m \033[95mVersion\033[0m: \033[1m{cornflakes.__version__}\033[0m"),
 )
-def cli(args: Optional[List[str]] = None, **kwargs) -> Any:
+def cli():
     """Create generic any easy to manage Configs for your Project."""  # noqa: D400, D401
     pass
 
