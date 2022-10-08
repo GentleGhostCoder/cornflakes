@@ -21,7 +21,7 @@ from cornflakes.common import DatetimeMS, datetime_ms
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "1.4.6"
+__version__ = "1.4.7"
 
 __all__ = [
     "datetime_ms",
