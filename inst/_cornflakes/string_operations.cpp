@@ -277,7 +277,7 @@ py::object to_time = py::module::import("datetime").attr("time");
 py::object to_timedelta = py::module::import("datetime").attr("timedelta");
 py::object to_timezone = py::module::import("datetime").attr("timezone");
 py::object to_datetime_ms =
-    py::module::import("cornflakes._types").attr("DatetimeMS");
+    py::module::import("cornflakes.common._types").attr("DatetimeMS");
 py::object to_ip_address = py::module::import("ipaddress").attr("ip_address");
 
 py::object get_global_datetime() {
