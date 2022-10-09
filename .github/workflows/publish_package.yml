@@ -36,14 +36,13 @@ jobs:
                   pip install poetry
                   poetry --version
 
+            - name: Install Twine
+              run: |
+                  pip install twine
+
             - name: Build package
               run: |
                   poetry build --ansi
-
-            - name: Install Twine
-              run: |
-                  pip install--upgrade pip
-                  pip install twine
 
             # Build and upload to PyPI
             - name: "Builds and uploads to PyPI"
