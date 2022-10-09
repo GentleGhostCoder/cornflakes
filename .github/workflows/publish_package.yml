@@ -40,11 +40,19 @@ jobs:
               run: |
                   poetry build --ansi
 
-            - name: Publish package on PyPI
-              uses: pypa/gh-action-pypi-publish@v1.5.1
+            - uses: actions/upload-artifact@v3
               with:
                   skip_existing: true
-                  # TODO COOKIETEMPLE: Configure your PyPI Token to enable automatic deployment to PyPi on releases
-                  # https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
-                  user: __token__
-                  password: ${{ secrets.PYPI_TOKEN }}
+                  name: python-artifacts
+                  path: |
+                      ./dist/*.whl
+                      ./dist/*.gz
+
+#            - name: Publish package on PyPI
+#              uses: pypa/gh-action-pypi-publish@v1.5.1
+#              with:
+#                  skip_existing: true
+#                  # TODO COOKIETEMPLE: Configure your PyPI Token to enable automatic deployment to PyPi on releases
+#                  # https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
+#                  user: __token__
+#                  password: ${{ secrets.PYPI_TOKEN }}
