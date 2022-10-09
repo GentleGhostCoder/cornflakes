@@ -40,14 +40,19 @@ jobs:
               run: |
                   poetry build --ansi
 
-            - uses: actions/upload-artifact@v3
-              with:
-                  skip_existing: true
-                  name: python-artifacts
-                  path: |
-                      ./dist/*.whl
-                      ./dist/*.gz
+            - name: Install Twine
+              run: |
+                  pip install--upgrade pip
+                  pip install twine
 
+            # Build and upload to PyPI
+            - name: "Builds and uploads to PyPI"
+              run: |
+                  python3 setup.py sdist bdist_wheel
+                  python3 - m twine upload dist/* --skip-existing
+              env:
+                  TWINE_USERNAME: __token__
+                  TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
 #            - name: Publish package on PyPI
 #              uses: pypa/gh-action-pypi-publish@v1.5.1
 #              with:
