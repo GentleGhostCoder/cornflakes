@@ -2,7 +2,7 @@
 from click.testing import CliRunner
 import pytest
 
-from cornflakes.common.cli import cornflakes_cli
+from cornflakes.__main__ import cornflakes_cli
 
 
 @pytest.fixture
