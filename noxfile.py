@@ -152,7 +152,8 @@ def tests(session: Session) -> None:
     """Run the test suite."""
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
-    session.run("rm", "build", "-rf")
+    if os.path.exists("build"):
+        shutil.rmtree("build")
     session.run("poetry", "build")
     version = session.name.replace("tests-", "").replace(".", "")
     search = f"*cp{version}*.whl"
