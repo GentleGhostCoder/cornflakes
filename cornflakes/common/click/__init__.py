@@ -14,6 +14,7 @@ from cornflakes.common.click._rich_argument import RichArg
 from cornflakes.common.click._rich_command import RichCommand
 from cornflakes.common.click._rich_config import Config
 from cornflakes.common.click._rich_group import RichGroup
+from cornflakes.common.click._rich_config import Config as RichConfig
 
 
 def group(*args, cls=RichGroup, **kwargs) -> click_group:  # type: ignore
@@ -21,7 +22,7 @@ def group(*args, cls=RichGroup, **kwargs) -> click_group:  # type: ignore
 
     Defines the group() function so that it uses the RichGroup class by default.
     """
-    return click_group(*args, cls=cls, **kwargs, context_settings=Config.Groups.CONTEXT_SETTINGS)
+    return click_group(*args, cls=cls, **kwargs)
 
 
 def command(*args, cls=RichCommand, **kwargs) -> click_command:  # type: ignore
@@ -29,7 +30,7 @@ def command(*args, cls=RichCommand, **kwargs) -> click_command:  # type: ignore
 
     Defines the command() function so that it uses the RichCommand class by default.
     """
-    return click_command(*args, cls=cls, **kwargs, context_settings=Config.Groups.CONTEXT_SETTINGS)
+    return click_command(*args, cls=cls, **kwargs)
 
 
 def argument(*args, cls=RichArg, **kwargs) -> click_argument:  # type: ignore
@@ -56,5 +57,6 @@ __all__ = [
     "command",
     "RichGroup",
     "RichCommand",
+    "RichConfig",
     "Config",
 ]

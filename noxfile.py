@@ -152,6 +152,7 @@ def tests(session: Session) -> None:
     """Run the test suite."""
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    session.run("rm", "build", "-rf")
     session.run("poetry", "build")
     version = session.name.replace("tests-", "").replace(".", "")
     search = f"*cp{version}*.whl"
