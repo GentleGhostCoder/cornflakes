@@ -24,14 +24,14 @@ class RichCommand(click.Command):
         except click.ClickException as e:
             if not standalone_mode:
                 raise
-            rich_format_error(e)
+            rich_format_error(e, config=self.config)
             sys.exit(e.exit_code)
         except click.exceptions.Abort:
             if not standalone_mode:
                 raise
-            rich_abort_error()
+            rich_abort_error(config=self.config)
             sys.exit(1)
 
     def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         """Format function of RichGroup."""
-        rich_format_help(self, ctx, formatter)
+        rich_format_help(self, ctx, formatter, config=self.config)

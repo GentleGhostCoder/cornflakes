@@ -39,12 +39,6 @@ for command in [create_new_config]:
         command.name  # type: ignore
     )
 
-for command in []:
-    cornflakes_cli.add_command(command)
-    cornflakes_cli.config.Groups.COMMAND_GROUPS.get("cornflakes")[1].get("commands").append(
-        command.name  # type: ignore
-    )
-
 __all__ = ["make_cli", "cornflakes_cli"]
 
 
