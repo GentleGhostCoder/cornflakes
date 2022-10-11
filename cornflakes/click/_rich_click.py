@@ -19,8 +19,7 @@ from rich.text import Text
 from rich.theme import Theme
 from rich_rst import RestructuredText
 
-from cornflakes.common.click._rich_config import Config as RichConfig
-from cornflakes.common.click._rich_config import default_config
+from cornflakes.click._rich_config import Config as RichConfig
 
 # Support rich <= 10.6.0
 # try:
@@ -44,7 +43,7 @@ highlighter = OptionHighlighter()
 
 
 # type: ignore[arg-type]
-def _get_rich_console(config: RichConfig = default_config) -> Console:
+def _get_rich_console(config: RichConfig = None) -> Console:
     return Console(
         theme=Theme(
             {
@@ -64,7 +63,7 @@ def _get_rich_console(config: RichConfig = default_config) -> Console:
 
 
 def _make_rich_rext(
-    text: str, style: str = "", config: RichConfig = default_config
+    text: str, style: str = "", config: RichConfig = None
 ) -> Union[rich.markdown.Markdown, rich.text.Text, RestructuredText]:
     """Take a string, remove indentations, and return styled text.
 
@@ -97,7 +96,7 @@ def _make_rich_rext(
 
 
 @group()
-def _get_help_text(obj: Union[click.Command, click.Group], config: RichConfig = default_config) -> Generator:
+def _get_help_text(obj: Union[click.Command, click.Group], config: RichConfig = None) -> Generator:
     """Build primary help text for a click command or group.
 
     Returns the prose help text for a command or group, rendered either as a
@@ -147,7 +146,7 @@ def _get_help_text(obj: Union[click.Command, click.Group], config: RichConfig = 
 
 # flake8: noqa: C901
 def _get_parameter_help(
-    param: Union[click.Option, click.Argument, click.Parameter], ctx: click.Context, config: RichConfig = default_config
+    param: Union[click.Option, click.Argument, click.Parameter], ctx: click.Context, config: RichConfig = None
 ) -> rich.columns.Columns:
     """Build primary help text for a click option or argument.
 
@@ -244,9 +243,7 @@ def _get_parameter_help(
 
 
 # flake8: noqa: C901
-def _make_command_help(
-    help_text: str = "", config: RichConfig = default_config
-) -> Union[rich.text.Text, rich.markdown.Markdown]:
+def _make_command_help(help_text: str = "", config: RichConfig = None) -> Union[rich.text.Text, rich.markdown.Markdown]:
     """Build click help text for a click group command.
 
     That is, when calling help on groups with multiple subcommands
@@ -275,7 +272,7 @@ def rich_format_help(
     obj: Union[click.Command, click.Group],
     ctx: click.Context,
     formatter: click.HelpFormatter,
-    config: RichConfig = default_config,
+    config: RichConfig = None,
 ) -> None:
     """Print nicely formatted help text using rich.
 
@@ -549,7 +546,7 @@ def rich_format_help(
         )
 
 
-def rich_format_error(self: click.ClickException, config: RichConfig = default_config):
+def rich_format_error(self: click.ClickException, config: RichConfig = None):
     """Print richly formatted click errors.
 
     Called by custom exception handler to print richly formatted click errors.
@@ -587,7 +584,7 @@ def rich_format_error(self: click.ClickException, config: RichConfig = default_c
         console.print(config.ERRORS_EPILOGUE)
 
 
-def rich_abort_error(config: RichConfig = default_config) -> None:
+def rich_abort_error(config: RichConfig = None) -> None:
     """Print richly formatted abort error."""
     console = _get_rich_console(config=config)
     console.print(config.ABORTED_TEXT, style=config.STYLE_ABORTED)

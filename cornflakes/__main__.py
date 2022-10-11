@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Command-line interface."""
-from cornflakes._create import create_new_config
-from cornflakes.common.cli import make_cli
+from cornflakes.cli import create_new_config
+from cornflakes.click import make_cli
 
 # Banner generated with figlet and figlet-fonts/ANSI\ Shadow.flf
 cornflakes_cli = make_cli(
@@ -9,8 +9,16 @@ cornflakes_cli = make_cli(
     option_groups={
         "cornflakes": [
             {
-                "name": "Options",
-                "options": ["--name", "--description", "--help"],
+                "name": "Basic Options",
+                "options": [
+                    "--name",
+                    "--description",
+                    "--help",
+                    "--log-level",
+                    "--log-config",
+                    "--version",
+                    "--verbose",
+                ],
             },
         ],
     },
@@ -31,6 +39,7 @@ cornflakes_cli = make_cli(
  ╚██████╗╚██████╔╝██║  ██║██║ ╚████║██║     ███████╗██║  ██║██║  ██╗███████╗ ███████║
   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚══════╝""",
     HEADER_TEXT=("Create generic any easy to manage Configs for your Project."),
+    set_logger=True,
 )
 
 for command in [create_new_config]:

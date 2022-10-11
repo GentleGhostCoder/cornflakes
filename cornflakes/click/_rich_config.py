@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from os import getenv
 from typing import Dict, List, Literal, Optional, Union
 
-from cornflakes.common._add_dataclass_slots import add_slots
+from cornflakes._add_dataclass_slots import add_slots
 
 
 @add_slots
@@ -95,8 +95,3 @@ class Config:
         COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
         # Define sorted groups of panels to display options and arguments
         OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
-
-        CONTEXT_SETTINGS: Dict[str, Union[str, List[str]]] = {}
-
-
-default_config = Config()

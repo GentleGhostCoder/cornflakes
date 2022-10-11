@@ -3,8 +3,7 @@ from typing import Any
 
 import click
 
-from cornflakes.common.click._rich_config import Config as RichConfig
-from cornflakes.common.click._rich_config import default_config
+from cornflakes.click._rich_config import Config as RichConfig
 
 from ._rich_click import rich_abort_error, rich_format_error, rich_format_help
 
@@ -20,7 +19,7 @@ class RichCommand(click.Command):
 
     def __init__(self, config: RichConfig = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""
-        self.config = config or default_config
+        self.config = config or RichConfig()
         super().__init__(*args, **kwargs)
 
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:

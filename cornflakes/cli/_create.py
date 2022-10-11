@@ -1,4 +1,4 @@
-from cornflakes.common import click
+from cornflakes import click
 
 
 @click.group("create")
