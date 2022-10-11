@@ -1,14 +1,6 @@
 cornflakes package
 ==================
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   cornflakes.common
-
 Module contents
 ---------------
 
