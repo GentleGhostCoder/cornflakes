@@ -2,7 +2,6 @@ import sys
 from typing import Any, Optional
 
 import click
-from click.core import Group
 
 from cornflakes.common.click._rich_config import Config as RichConfig
 from cornflakes.common.click._rich_config import default_config
@@ -33,7 +32,7 @@ class RichGroup(click.Group):
         is not provided, the name of the command is used.
         """
         cmd.config = self.config
-        Group.add_command(self, cmd, name)
+        click.Group.add_command(self, cmd, name)
 
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:
         """Main function of RichGroup."""
