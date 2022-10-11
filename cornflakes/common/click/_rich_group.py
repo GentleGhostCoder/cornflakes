@@ -1,5 +1,5 @@
 import sys
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import click
 
@@ -25,14 +25,14 @@ class RichGroup(click.Group):
         self.config = config or default_config
         super().__init__(*args, **kwargs)
 
-    def add_command(self, cmd: RichCommand, name: Optional[str] = None) -> None:
+    def add_command(self, cmd: Union[RichCommand, Any], name: Optional[str] = None) -> None:
         """Wrapper of click.core.Groud.add_command to pass configs.
 
         Registers another :class:`Command` with this group.  If the name
         is not provided, the name of the command is used.
         """
         cmd.config = self.config
-        click.Group.add_command(self, cmd, name)
+        click.core.Group.add_command(self, cmd, name)
 
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:
         """Main function of RichGroup."""
