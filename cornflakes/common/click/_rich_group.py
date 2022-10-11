@@ -2,7 +2,7 @@ import sys
 from typing import Any, Optional
 
 import click
-from click.core import Command, Group
+from click.core import Group
 
 from cornflakes.common.click._rich_config import Config as RichConfig
 from cornflakes.common.click._rich_config import default_config
@@ -26,7 +26,7 @@ class RichGroup(click.Group):
         self.config = config or default_config
         super().__init__(*args, **kwargs)
 
-    def add_command(self, cmd: Command, name: Optional[str] = None) -> None:
+    def add_command(self, cmd: RichCommand, name: Optional[str] = None) -> None:
         """Wrapper of click.core.Groud.add_command to pass configs.
 
         Registers another :class:`Command` with this group.  If the name
