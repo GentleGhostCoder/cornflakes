@@ -22,7 +22,7 @@ from cornflakes._add_dataclass_slots import add_slots
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "2.0.7"
+__version__ = "2.0.8"
 
 __all__ = [
     "datetime_ms",
