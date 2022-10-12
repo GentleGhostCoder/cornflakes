@@ -39,7 +39,7 @@ cornflakes_cli = make_cli(
  ╚██████╗╚██████╔╝██║  ██║██║ ╚████║██║     ███████╗██║  ██║██║  ██╗███████╗ ███████║
   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚══════╝""",
     HEADER_TEXT=("Create generic any easy to manage Configs for your Project."),
-    set_logger=True,
+    BASIC_OPTIONS=True,
 )
 
 for command in [create_new_config]:

@@ -13,20 +13,36 @@ See referenced Code at https://github.com/ewels/rich-click.git
     RichConfig
 """  # noqa: RST303 D205
 import logging
+from functools import wraps
 from typing import TYPE_CHECKING
 
-import click
 import pkg_resources
-from click import *  # noqa: F401, F403
+from click import option, style, version_option, pass_obj  # noqa: F401, F403
 from click import argument as click_argument
 from click import command as click_command
 from click import group as click_group
 
 from cornflakes.click._rich_argument import RichArg
 from cornflakes.click._rich_command import RichCommand
-from cornflakes.click._rich_group import RichGroup
+from cornflakes.click._rich_group import RichGroup, verbose_option
 from cornflakes.click._rich_config import Config as RichConfig
-from cornflakes.logger import DefaultLogger
+from cornflakes.logger import logger
+
+if TYPE_CHECKING:
+    from click import Choice, Path  # noqa: F401
+
+
+def _verbose_wrapper(click_func, *wrap_args, **wrap_kwargs):
+    def wrapper_command(func):
+        @wraps(func)
+        def wrapper_func(verbose=False):
+            if verbose:
+                logger.setup_logging(default_level=logging.DEBUG)
+            return func()
+
+        return click_func(*wrap_args, **wrap_kwargs)(wrapper_func)
+
+    return wrapper_command
 
 
 def group(*args, cls=RichGroup, **kwargs) -> click_group:  # type: ignore
@@ -34,7 +50,7 @@ def group(*args, cls=RichGroup, **kwargs) -> click_group:  # type: ignore
 
     Defines the group() function so that it uses the RichGroup class by default.
     """
-    return click_group(*args, cls=cls, **kwargs)
+    return _verbose_wrapper(click_group, *args, cls=cls, **kwargs)
 
 
 def command(*args, cls=RichCommand, **kwargs) -> click_command:  # type: ignore
@@ -42,7 +58,7 @@ def command(*args, cls=RichCommand, **kwargs) -> click_command:  # type: ignore
 
     Defines the command() function so that it uses the RichCommand class by default.
     """
-    return click_command(*args, cls=cls, **kwargs)
+    return _verbose_wrapper(click_command, *args, cls=cls, **kwargs)
 
 
 def argument(*args, cls=RichArg, **kwargs) -> click_argument:  # type: ignore
@@ -53,19 +69,11 @@ def argument(*args, cls=RichArg, **kwargs) -> click_argument:  # type: ignore
     return click_argument(*args, cls=cls, **kwargs)
 
 
-click.Group = RichGroup  # type: ignore
-click.Command = RichCommand  # type: ignore
-
-if TYPE_CHECKING:
-    from click import Choice, Path, option, version_option, style  # noqa: F401
-
-
 def make_cli(
     module: str,
     option_groups: dict = None,
     command_groups: dict = None,
     context_settings: dict = None,
-    set_logger: bool = False,
     *args,
     **kwargs,
 ):
@@ -77,52 +85,22 @@ def make_cli(
     if command_groups:
         config.Groups.COMMAND_GROUPS = command_groups
 
-    if set_logger:
-
-        @group(module)
-        @option("--log-level", default=logging.INFO, help="Log-Level for the global logger.", required=False)
-        @option("--log-config", default="logging.yaml", help="Log-config file path for logger.", required=False)
-        @option(
-            "--verbose",
-            "-v",
-            default=False,
-            type=bool,
-            is_flag=True,
-            show_default=True,
-            help="Flag to set logger to debug mode.",
-            required=False,
-        )
-        @version_option(
-            prog_name=module,
-            version=pkg_resources.get_distribution(module).version,
-            message=click.style(
-                f"\033[95m{module}\033"
-                f"[0m \033[95mVersion\033[0m: \033[1m"
-                f"{pkg_resources.get_distribution(module).version}\033[0m"
-            ),
-        )
-        def cli(log_level: int, log_config: str, verbose: bool):
-            if verbose:
-                log_level = logging.DEBUG
-            DefaultLogger.setup_logging(default_level=log_level, default_path=log_config)
-
-    else:
-
-        @group(module)
-        @version_option(
-            prog_name=module,
-            version=pkg_resources.get_distribution(module).version,
-            message=click.style(
-                f"\033[95m{module}\033"
-                f"[0m \033[95mVersion\033[0m: \033[1m"
-                f"{pkg_resources.get_distribution(module).version}\033[0m"
-            ),
-        )
-        def cli():
-            pass
+    @group(module)
+    @version_option(
+        prog_name=module,
+        version=pkg_resources.get_distribution(module).version,
+        message=style(
+            f"\033[95m{module}\033"
+            f"[0m \033[95mVersion\033[0m: \033[1m"
+            f"{pkg_resources.get_distribution(module).version}\033[0m"
+        ),
+    )
+    def cli():
+        pass
 
     cli.config = config
-
+    if cli.config.BASIC_OPTIONS:
+        cli.params.append(verbose_option)
     if context_settings:
         cli.context_settings = context_settings
 

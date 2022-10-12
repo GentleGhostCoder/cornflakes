@@ -19,8 +19,8 @@ class RichCommand(click.Command):
 
     def __init__(self, config: RichConfig = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""
-        self.config = config or RichConfig()
         super().__init__(*args, **kwargs)
+        self.config = config or None
 
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:
         """Main function of RichGroup."""

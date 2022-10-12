@@ -8,6 +8,13 @@ from cornflakes.click._rich_config import Config as RichConfig
 from ._rich_click import rich_abort_error, rich_format_error, rich_format_help
 from ._rich_command import RichCommand
 
+verbose_option = click.Option(
+    ["-v", "--verbose"],
+    count=True,
+    default=0,
+    help="Base logging level is set to logging.DEBUG.",
+)
+
 
 class RichGroup(click.Group):
     """Richly formatted click Group.
@@ -25,13 +32,18 @@ class RichGroup(click.Group):
         Registers another :class:`Command` with this group.  If the name
         is not provided, the name of the command is used.
         """
-        cmd.config = self.config
+        if not cmd.config:
+            cmd.config = self.config
+        if cmd.config.BASIC_OPTIONS:
+            cmd.params.append(verbose_option)
         click.core.Group.add_command(self, cmd, name)
+
+        # click.core.Group.add_command(self, cmd_wrapper, name)
 
     def __init__(self, config: RichConfig = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""
-        self.config = config or RichConfig()
         super().__init__(*args, **kwargs)
+        self.config = config or None
 
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:
         """Main function of RichGroup."""

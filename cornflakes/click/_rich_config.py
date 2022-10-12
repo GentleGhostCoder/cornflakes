@@ -10,6 +10,8 @@ from cornflakes._add_dataclass_slots import add_slots
 class Config:
     """DataClass for click config-values."""
 
+    BASIC_OPTIONS: Optional[bool] = None  # Add Basic Options (version, verbose)
+
     # Default styles
     STYLE_OPTION = "bold cyan"
     STYLE_ARGUMENT = "bold cyan"

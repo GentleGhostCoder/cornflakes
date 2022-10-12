@@ -1,6 +1,9 @@
 from cornflakes import click
+from cornflakes.logger import logger
 
 
-@click.group("create")
+@click.command("create")
 def create_new_config():
     """Create config template."""  # noqa: D400, D401
+    logger.info("call create")
+    logger.debug("debug log?")
