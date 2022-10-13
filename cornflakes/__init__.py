@@ -22,12 +22,12 @@ from _cornflakes import apply_match, eval_csv, eval_datetime, eval_type, extract
 from cornflakes._default_ca_path import default_ca_path
 from cornflakes._types import DatetimeMS, datetime_ms
 from cornflakes._add_dataclass_slots import add_slots
-from cornflakes._generate_default_config_py import generate_default_config_py
-from cornflakes._ini_config_decorator import ini_config
+from cornflakes.config import generate_default_config_py
+from cornflakes.decorator import ini_config
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "2.1.3"
+__version__ = "2.1.4"
 
 __all__ = [
     "datetime_ms",
@@ -40,6 +40,6 @@ __all__ = [
     "extract_between",
     "apply_match",
     "add_slots",
-    "generate_default_config_py",
     "ini_config",
+    "generate_default_config_py",
 ]

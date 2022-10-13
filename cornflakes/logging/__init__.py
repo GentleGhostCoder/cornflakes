@@ -1,7 +1,7 @@
 """cornflakes Logger.
 __________________________________
 
-.. currentmodule:: cornflakes.logger
+.. currentmodule:: cornflakes.logging
 
 .. autosummary::
    :toctree: _generate
@@ -11,7 +11,7 @@ __________________________________
     LoggerInterface
     attach_log
 """  # noqa: RST303 D205
-from cornflakes.logger._logger import DefaultLogger, LoggerInterface, attach_log
+from cornflakes.logging._logger import DefaultLogger, LoggerInterface, attach_log
 
 logger = DefaultLogger
 

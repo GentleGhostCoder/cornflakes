@@ -13,7 +13,6 @@ See referenced Code at https://github.com/ewels/rich-click.git
     RichConfig
 """  # noqa: RST303 D205
 import logging
-from functools import wraps
 from typing import TYPE_CHECKING
 
 import pkg_resources
@@ -26,7 +25,7 @@ from cornflakes.click._rich_argument import RichArg
 from cornflakes.click._rich_command import RichCommand
 from cornflakes.click._rich_group import RichGroup, verbose_option
 from cornflakes.click._rich_config import Config as RichConfig
-from cornflakes.logger import logger
+from cornflakes.logging import logger
 
 if TYPE_CHECKING:
     from click import Choice, Path  # noqa: F401
@@ -34,11 +33,10 @@ if TYPE_CHECKING:
 
 def _verbose_wrapper(click_func, *wrap_args, **wrap_kwargs):
     def wrapper_command(func):
-        @wraps(func)
-        def wrapper_func(verbose=False):
+        def wrapper_func(verbose=False, *func_args, **func_kwargs):
             if verbose:
                 logger.setup_logging(default_level=logging.DEBUG)
-            return func()
+            return func(*func_args, **func_kwargs)
 
         return click_func(*wrap_args, **wrap_kwargs)(wrapper_func)
 

@@ -9,7 +9,7 @@ import yaml
 
 
 class DefaultLogger:
-    """Default logger Class that can be used for static logging."""
+    """Default logging Class that can be used for static logging."""
 
     initialized = False
 
@@ -48,7 +48,7 @@ class DefaultLogger:
     ):
         """Setup logging configuration.
 
-        :param default_path: Default path to logger config file.
+        :param default_path: Default path to logging config file.
         :param default_level: Default log-level (Logging.INFO).
         :param env_key: Environment key to use for logging configuration.
         :param force: Force logging configuration.
@@ -82,13 +82,13 @@ def attach_log(
 ):
     """Function decorator to attach Logger to functions.
 
-    :param obj: Logger function or class to attach the logger to.
-    :param log_level: log-level for the current object logger.
-    :param default_path: Default path to logger config file.
+    :param obj: Logger function or class to attach the logging to.
+    :param log_level: log-level for the current object logging.
+    :param default_path: Default path to logging config file.
     :param default_level: Default log-level (Logging.INFO).
     :param env_key: Environment key to use for logging configuration.
 
-    :returns: Object with attached logger instance
+    :returns: Object with attached logging instance
     """
     if callable(obj):
         __logger = logging.getLogger(obj.__qualname__.rsplit(".", 1)[0])
@@ -141,8 +141,8 @@ class LoggerInterface(metaclass=LoggerMetaClass):
     ):
         """Function decorator to attach Logger to functions.
 
-        :param log_level: log-level for the current object logger.
-        :param default_path: Default path to logger config file.
+        :param log_level: log-level for the current object logging.
+        :param default_path: Default path to logging config file.
         :param default_level: Default log-level (Logging.INFO).
         :param env_key: Environment key to use for logging configuration.
         :param kwargs: Passed other parameters.

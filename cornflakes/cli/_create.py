@@ -1,5 +1,5 @@
 from cornflakes import click
-from cornflakes.logger import logger
+from cornflakes.logging import logger
 
 
 @click.command("create")
