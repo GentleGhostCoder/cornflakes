@@ -1,0 +1,46 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+    simple:
+        format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+#  ecs_formatter:
+#    (): ecs_logging.StdlibFormatter
+
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: INFO
+        formatter: simple
+        stream: ext://sys.stdout
+
+    info_file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: INFO
+        formatter: simple
+        filename: info.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 20
+        encoding: utf8
+
+    error_file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: ERROR
+        formatter: simple
+        filename: errors.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 20
+        encoding: utf8
+
+    mqtt_handler:
+        class: htw_logger.logging.MqttLoggingHandler
+        level: INFO
+        configs: htw-logger.ini
+        sections: mqtt_logs
+        client_id: htw-logger-logging-handler
+        topic: htw-logger-backend-logs
+        silent: True
+#    formatter: ecs_formatter
+
+root:
+    level: DEBUG
+    handlers: [console, info_file_handler, error_file_handler]
