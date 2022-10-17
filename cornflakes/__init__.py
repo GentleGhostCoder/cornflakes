@@ -27,7 +27,7 @@ from cornflakes.decorator import ini_config
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "2.2.6"
+__version__ = "2.2.7"
 
 __all__ = [
     "datetime_ms",
