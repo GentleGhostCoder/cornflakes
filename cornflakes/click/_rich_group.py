@@ -10,8 +10,8 @@ from ._rich_command import RichCommand
 
 verbose_option = click.Option(
     ["-v", "--verbose"],
-    count=True,
-    default=0,
+    is_flag=True,
+    default=False,
     help="Base logging level is set to logging.DEBUG.",
 )
 

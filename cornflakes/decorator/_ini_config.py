@@ -2,11 +2,12 @@ import re
 from typing import List, Union
 
 from cornflakes import ini_load
+from cornflakes.logging import logger
 
 
-def ini_config(
+def ini_config(  # noqa: C901
     config_cls=None,
-    cfg_files: Union[str, List[str]] = "default-htw-logger.ini",
+    cfg_files: Union[str, List[str]] = "default.ini",
     cfg_sections: Union[str, List[str]] = None,
     use_regex: bool = False,
 ):
@@ -24,13 +25,12 @@ def ini_config(
     def wrapper(cls):
         """Wrapper function for the config decorator ini_config_decorator."""
 
-        def to_dict(self):
+        def to_dict(self) -> dict:
             return {key: getattr(self, key) for key in self.__slots__}
 
-        def to_ini(self):
-            print("ini")
+        def to_ini(self) -> str:
             return """
-            """.join(
+""".join(
                 [
                     f"""
 [{key}]
@@ -53,13 +53,19 @@ def ini_config(
         cls.__new__ = classmethod(new)
 
         def _create_config(config: dict, *args, **kwargs):
-            config.update(**kwargs)
+            error_keys = [key for key in kwargs if key not in cls.__slots__]
+            if len(error_keys):
+                logger.warning(f"Some variables in {cls.__name__} have no annotation or are not defined!")
+                logger.warning(f"Please check Keys: {error_keys}")
+            config.update({key: value for key, value in kwargs.items() if key in cls.__slots__})
             config_instance = cls(*args, **config)  # config_instance
             # config_instance.to_dict = to_dict
             # config_instance.to_ini = to_ini
             return config_instance
 
-        def from_ini(files=cfg_files, sections=cfg_sections, *args, **kwargs) -> dict:
+        def from_ini(
+            files: Union[str, List[str]] = None, sections: Union[str, List[str]] = None, *args, **kwargs
+        ) -> dict:
             """Config parser from ini files.
 
             :param files: Default config files
@@ -70,8 +76,13 @@ def ini_config(
             :returns: Nested Lists of Config Classes
 
             """
+            if not sections:
+                sections = cfg_sections
+            if not files:
+                files = cfg_files
+            logger.debug(f"Load ini from file: {cfg_files} - sections: {sections} for config {cls.__name__}")
             if not use_regex:
-                config_dict = ini_load(files, sections, keys=[key for key in cls.__slots__ if key not in args])
+                config_dict = ini_load(files, sections, keys=cls.__slots__[len(args) :])
                 return {
                     file: {
                         section: _create_config(config_dict.get(file).get(section), *args, **kwargs)
@@ -80,12 +91,12 @@ def ini_config(
                     for file in config_dict
                 }
 
-            config_dict = ini_load(files, None, keys=[key for key in cls.__slots__ if key not in args])
+            config_dict = ini_load(files, None, keys=cls.__slots__[len(args) :])
             regex = f'({"|".join(sections) if isinstance(sections, list) else sections})'
             return {
                 file: {
-                    section: _create_config(config_dict.get(file).get(section), *args, **kwargs)
-                    for section in config_dict.get(file)
+                    section: _create_config(config_dict.get(file, {}).get(section, {}), *args, **kwargs)
+                    for section in config_dict.get(file, {})
                     if bool(re.match(regex, section))
                 }
                 for file in config_dict

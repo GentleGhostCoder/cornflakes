@@ -34,8 +34,7 @@ if TYPE_CHECKING:
 def _verbose_wrapper(click_func, *wrap_args, **wrap_kwargs):
     def wrapper_command(func):
         def wrapper_func(verbose=False, *func_args, **func_kwargs):
-            if verbose:
-                logger.setup_logging(default_level=logging.DEBUG)
+            logger.setup_logging(default_level=verbose and logging.DEBUG, force=True)
             return func(*func_args, **func_kwargs)
 
         return click_func(*wrap_args, **wrap_kwargs)(wrapper_func)

@@ -4,6 +4,7 @@ import logging.config
 import os
 import sys
 from types import FunctionType
+from typing import Optional
 
 import yaml
 
@@ -12,29 +13,30 @@ class DefaultLogger:
     """Default logging Class that can be used for static logging."""
 
     initialized = False
+    default_level = logging.DEBUG
 
-    @staticmethod
-    def log(*args, **kwargs):
+    @classmethod
+    def log(cls, *args, **kwargs):
         """Static generic log."""
         return logging.getLogger(sys._getframe(1).f_code.co_name).log(*args, **kwargs)
 
-    @staticmethod
-    def info(*args, **kwargs):
+    @classmethod
+    def info(cls, *args, **kwargs):
         """Static info log."""
         return logging.getLogger(sys._getframe(1).f_code.co_name).info(*args, **kwargs)
 
-    @staticmethod
-    def debug(*args, **kwargs):
+    @classmethod
+    def debug(cls, *args, **kwargs):
         """Static debug log."""
         return logging.getLogger(sys._getframe(1).f_code.co_name).debug(*args, **kwargs)
 
-    @staticmethod
-    def warning(*args, **kwargs):
+    @classmethod
+    def warning(cls, *args, **kwargs):
         """Static warning log."""
         return logging.getLogger(sys._getframe(1).f_code.co_name).warning(*args, **kwargs)
 
-    @staticmethod
-    def error(*args, **kwargs):
+    @classmethod
+    def error(cls, *args, **kwargs):
         """Static error log."""
         return logging.getLogger(sys._getframe(1).f_code.co_name).error(*args, **kwargs)
 
@@ -42,7 +44,7 @@ class DefaultLogger:
     def setup_logging(
         cls,
         default_path: str = "logging.yaml",
-        default_level: int = logging.INFO,
+        default_level: Optional[int] = None,
         env_key: str = "LOG_CFG",
         force: bool = True,
     ):
@@ -57,25 +59,31 @@ class DefaultLogger:
             path = default_path
             if value := os.getenv(env_key, None):
                 path = value
+
+            if default_level:
+                cls.default_level = default_level
+
             if os.path.exists(path):
                 with open(path) as f:
                     config = yaml.safe_load(f.read())
+                if default_level:
+                    for handler in config["root"]["handlers"]:
+                        config["handlers"][handler]["level"] = cls.default_level
                 logging.config.dictConfig(config)
             else:
-                logging.basicConfig(level=default_level)
                 logging.basicConfig(
-                    level=default_level,
+                    level=cls.default_level,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                    filename="dfpy_s3utils.log",
+                    filename="default.log",
                     filemode="w",
                 )
-            logging.getLogger("dfpy_s3utils").setLevel(default_level)
+            logging.getLogger().setLevel(cls.default_level)
             cls.initialized = True
 
 
 def attach_log(
     obj,
-    log_level: int = logging.INFO,
+    log_level: int = DefaultLogger.default_level,
     default_level: int = None,
     default_path: str = "logging.yaml",
     env_key: str = "LOG_CFG",
@@ -109,7 +117,7 @@ def attach_log(
     obj.logger = logging.getLogger(obj.__class__.__name__)
     obj.logger.setLevel(log_level)
     if default_level:
-        DefaultLogger.setup_logging(default_path, default_level, env_key, force=False)
+        DefaultLogger.setup_logging(default_path, default_level, env_key, force=True)
 
 
 class LoggerMetaClass(type):
@@ -121,7 +129,7 @@ class LoggerMetaClass(type):
         for attribute_name, attribute in class_dict.items():
             if isinstance(attribute, FunctionType):
                 # replace it with a wrapped version
-                attribute = attach_log(attribute)
+                attribute = attach_log(obj=attribute)
             new_class_dict[attribute_name] = attribute
         return type.__new__(mcs, classname, bases, new_class_dict)
 
@@ -129,14 +137,12 @@ class LoggerMetaClass(type):
 class LoggerInterface(metaclass=LoggerMetaClass):
     """LoggerInterface to instantiate from."""
 
-    logger = logging.getLogger()
-
     def __init__(
         self,
-        log_level=logging.INFO,
+        log_level: int = DefaultLogger.default_level,
         default_path="logging.yaml",
-        default_level=logging.INFO,
-        env_key="LOG_CFG",
+        default_level: int = None,
+        env_key: str = "LOG_CFG",
         **kwargs,
     ):
         """Function decorator to attach Logger to functions.
@@ -150,5 +156,6 @@ class LoggerInterface(metaclass=LoggerMetaClass):
         """
         self.logger = logging.getLogger(self.__class__.__name__)
         self.logger.setLevel(log_level)
-        DefaultLogger.setup_logging(default_path, default_level, env_key, force=False)
+        if default_level:
+            DefaultLogger.setup_logging(default_path, default_level, env_key, force=True)
         super().__init__(**kwargs)
