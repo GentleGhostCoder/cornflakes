@@ -26,8 +26,35 @@ class DatetimeMS(datetime.datetime):
         :rtype: DatetimeMS
         """
         _check_milliseconds_field(millisecond)
-        self = datetime.datetime.__new__(cls, year, month, day, hour, minute, second, millisecond * 1000, tzinfo)
+        self: datetime.datetime = datetime.datetime.__new__(
+            cls, year, month, day, hour, minute, second, millisecond * 1000, tzinfo
+        )
+
         return self
+
+    def __repr__(self):
+        """Convert to formal string, for repr()."""
+        datetime_list = [
+            self.year,
+            self.month,
+            self.day,  # These are never zero
+            self.hour,
+            self.minute,
+            self.second,
+            self.millisecond,
+        ]
+        if datetime_list[-1] == 0:
+            del datetime_list[-1]
+        if datetime_list[-1] == 0:
+            del datetime_list[-1]
+        datetime_str = f"datetime_ms({', '.join(map(str, datetime_list))})"
+        if self.tzinfo is not None:
+            if datetime_str[-1:] == ")":
+                datetime_str = datetime_str[:-1] + ", tzinfo=%r" % self.tzinfo + ")"
+        if self.fold:
+            if datetime_str[-1:] == ")":
+                datetime_str = datetime_str[:-1] + ", fold=1)"
+        return datetime_str
 
     @property
     def millisecond(self) -> int:
@@ -40,7 +67,7 @@ class DatetimeMS(datetime.datetime):
 
     def __str__(self):
         """Convert to string, for str()."""
-        return self.isoformat(sep=" ")[:-3]
+        return self.isoformat(sep=" ", timespec="milliseconds")[:-3]
 
 
 def datetime_ms(

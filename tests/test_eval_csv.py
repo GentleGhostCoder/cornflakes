@@ -24,7 +24,7 @@ class TestEvalDatetime(unittest.TestCase):
                 "schema": [
                     {"name": "int_col", "position": 0, "types": [int]},
                     {"name": "bool_col", "position": 1, "types": [bool]},
-                    {"name": "datetime_ms_col", "position": 2, "types": [cornflakes.DatetimeMS]},
+                    {"name": "datetime_ms_col", "position": 2, "types": [datetime]},
                     {"name": "datetime_col", "position": 3, "types": [datetime]},
                     {"name": "time_col", "position": 4, "types": [time]},
                     {

@@ -269,6 +269,10 @@ dt_utils::time_format5 time_format5(global_dt);
 dt_utils::time_format6 time_format6(global_dt);
 dt_utils::time_format7 time_format7(global_dt);
 dt_utils::time_format8 time_format8(global_dt);
+dt_utils::time_format9 time_format9(global_dt);
+dt_utils::time_format10 time_format10(global_dt);
+dt_utils::time_format11 time_format11(global_dt);
+dt_utils::time_format12 time_format12(global_dt);
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 py::object to_datetime = py::module::import("datetime").attr("datetime");
@@ -276,20 +280,14 @@ py::object to_date = py::module::import("datetime").attr("date");
 py::object to_time = py::module::import("datetime").attr("time");
 py::object to_timedelta = py::module::import("datetime").attr("timedelta");
 py::object to_timezone = py::module::import("datetime").attr("timezone");
-py::object to_datetime_ms =
-    py::module::import("cornflakes._types").attr("DatetimeMS");
 py::object to_ip_address = py::module::import("ipaddress").attr("ip_address");
 
 py::object get_global_datetime() {
-  return global_dt.millisecond
-             ? to_datetime_ms(global_dt.year, global_dt.month, global_dt.day,
-                              global_dt.hour, global_dt.minute,
-                              global_dt.second, global_dt.millisecond,
-                              to_timezone(to_timedelta(0, global_dt.tzd * 60)))
-             : to_datetime(global_dt.year, global_dt.month, global_dt.day,
-                           global_dt.hour, global_dt.minute, global_dt.second,
-                           global_dt.microsecond,
-                           to_timezone(to_timedelta(0, global_dt.tzd * 60)));
+  return to_datetime(global_dt.year, global_dt.month, global_dt.day,
+                     global_dt.hour, global_dt.minute, global_dt.second,
+                     global_dt.microsecond ? global_dt.microsecond
+                                           : global_dt.millisecond * 1000,
+                     to_timezone(to_timedelta(0, global_dt.tzd * 60)));
 }
 
 py::object get_global_date() {
@@ -298,8 +296,8 @@ py::object get_global_date() {
 
 py::object get_global_time() {
   return to_time(global_dt.hour, global_dt.minute, global_dt.second,
-                 global_dt.millisecond ? global_dt.millisecond * 1000
-                                       : global_dt.microsecond,
+                 global_dt.microsecond ? global_dt.microsecond
+                                       : global_dt.millisecond * 1000,
                  to_timezone(to_timedelta(0, global_dt.tzd * 60)));
 }
 
@@ -424,6 +422,14 @@ py::object to_generic_datetime(const std::string &value) {
       return get_global_time();
     if (strtk::string_to_type_converter(value, time_format8))
       return get_global_time();
+    if (strtk::string_to_type_converter(value, time_format9))
+      return get_global_time();
+    if (strtk::string_to_type_converter(value, time_format10))
+      return get_global_time();
+    if (strtk::string_to_type_converter(value, time_format11))
+      return get_global_time();
+    if (strtk::string_to_type_converter(value, time_format12))
+      return get_global_time();
   } catch (...) {
     return py::cast(value);
   }
@@ -542,7 +548,7 @@ py::object eval_type(std::string value) {
       return (to_ip_address(value));
     }
     // ipv6
-    if (std::count(value.begin(), value.end(), ':') == 7 &&
+    if (std::count(value.begin(), value.end(), ':') > 5 &&
         std::regex_match(value, ipv6_regex)) {
       return (to_ip_address(value));
     }

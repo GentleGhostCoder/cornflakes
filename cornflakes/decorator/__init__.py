@@ -8,6 +8,6 @@ __________________________________
 
     ini_config
 """  # noqa: RST303 D205
-from cornflakes.decorator._ini_config import ini_config
+from cornflakes.decorator._ini_config import ini_config, ini_group
 
-__all__ = ["ini_config"]
+__all__ = ["ini_config", "ini_group"]

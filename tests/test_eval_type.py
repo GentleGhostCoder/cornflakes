@@ -9,6 +9,16 @@ import cornflakes
 class TestEvalType(unittest.TestCase):
     """Tests for eval_type."""
 
+    def test_py_str_conversation(self):
+        self.assertEqual(
+            str(cornflakes.eval_type(str(cornflakes.eval_type("2006-03-17 13:27:54.123+00:00")))),
+            "2006-03-17 13:27:54.123000+00:00",
+        )
+        self.assertEqual(
+            str(cornflakes.eval_type(str(cornflakes.eval_type("13:27:54.123+00:00")))),
+            "13:27:54.123000+00:00",
+        )
+
     def test_none(self):
         [self.assertEqual(cornflakes.eval_type(str(x)), None) for x in ["''", '""', ""]]
 
@@ -26,13 +36,62 @@ class TestEvalType(unittest.TestCase):
         # wrong
         [
             self.assertEqual(cornflakes.eval_type(x), x)
+            for x in ["1.1.1.01", "1:1:1:1:1:1:1:x", "0.0.0.256", "::1", ":::::::", "..."]
+        ]
+
+    def test_ipv6(self):
+        [
+            self.assertEqual(cornflakes.eval_type(x), ip_address(x))
             for x in [
-                "1.1.1.01",
-                "1:1:1:1:1:1:1:x",
-                "0.0.0.256",
+                "2001:db8:85a3::8a2e:370:7334",
+                "1:2:3:4:5:6:7:8",
+                "0:0:0:0:0:0:0:2",
+                "1:2:3:4:5:6::7",
+                "::1:2:3:4:5:6:7",
+                "1:2:3:4:5:6:7::",
+            ]
+        ]
+        # bad
+        [
+            self.assertEqual(cornflakes.eval_type(x), x)
+            for x in [
+                "::5000",  # valid but in eval_type ony with min 6 of `:`
+                "5000::",
+                "0:1:2:3:4:5:6::7",
+                "0::1:2:3:4:5:6:7",
+                "0:1:2::3:4:5:6:7",
+                "::1:2:3:4:5:6:7:8",
+                "1:2:3:4:5:6:7:8::",
+                "0:1:2:3:4:5:6:7:8:9",
+                "::5000::",
+                "5::3::4",
+                "::5::4::",
+                "::5::4",
+                "4::5::",
+                "1::2:3::4",
+                "1:2",
+                "2:::5",
+                "1::2::5",
+                ":4:",
+                ":7",
+                "7:",
+                ":5:2",
+                "5:2:",
+                "1:2:3:4:5:6:7",
+                ":::::",
+                ":::",
+                "::n::",
+                "0::1",
+                "::0:0000:0",
+                "::",
                 "::1",
-                ":::::::",
-                "...",
+                "0:0:0:0:0:0:0:0",
+                "0:0:0:0:0:0:0:1",
+                "0000:0000:0000::0000:0000:0000",
+                "2001:db8:85a3::8a2e:370:7334:",
+                ":2001:db8:85a3::8a2e:370:7334",
+                "20012:db8:85a3::8a2e:370:7334",
+                "20012:20012:20012:20012:20012:20012:20012:20012",
             ]
         ]
 
@@ -70,6 +129,9 @@ class TestEvalType(unittest.TestCase):
                 "Sat, 17 Mar 2006 13:27:54 M",
                 "Sat, 17 Mar 2006 13:27:54 -0234",
                 "Sat, 17 Mar 2006 13:27:54 +0325",
+                "2006-03-17 13:27:54.123123+10:00",
+                "2006-03-17 13:27:54.123+10:00",
+                "2006-03-17 13:27:54.123+10",
             ]
         ]
 
@@ -78,7 +140,7 @@ class TestEvalType(unittest.TestCase):
             str(cornflakes.eval_type("Sat, 17 Mar 2006 13:27:54 +0325")),
             "2006-03-17 13:27:54+03:25",
         )
-        self.assertEqual(str(cornflakes.eval_type("20060317 13:27:54.123")), "2006-03-17 13:27:54.123000+00")
+        self.assertEqual(str(cornflakes.eval_type("20060317 13:27:54.123")), "2006-03-17 13:27:54.123000+00:00")
         self.assertEqual(str(cornflakes.eval_type("Sat, 17 Mar 2006 13:27:54 EST")), "2006-03-17 13:27:54-05:00")
         self.assertEqual(cornflakes.eval_type("Sat, 17 Mar 2006 13:27:54 -0234").year, 2006)
         self.assertEqual(cornflakes.eval_type("Sat, 17 Mar 2006 13:27:54 -0234").day, 17)

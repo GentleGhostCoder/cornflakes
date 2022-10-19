@@ -88,6 +88,10 @@ namespace dt_utils
     /* HHMM         */ struct time_format6 : public base_format { explicit time_format6(datetime& d) : base_format(d) {} };
     /* HHMMSS       */ struct time_format7 : public base_format { explicit time_format7(datetime& d) : base_format(d) {} };
     /* HHMMSSmss    */ struct time_format8 : public base_format { explicit time_format8(datetime& d) : base_format(d) {} };
+    /* HH:MM:SS.mssTZD */ struct time_format9 : public base_format { explicit time_format9(datetime& d) : base_format(d) {} };
+    /* HH:MM:SSTZD     */ struct time_format10 : public base_format { explicit time_format10(datetime& d) : base_format(d) {} };
+    /* HH:MM:SS.mcssTZD */ struct time_format11 : public base_format { explicit time_format11(datetime& d) : base_format(d) {} };
+    /* HH:MM:SS.mcss */ struct time_format12 : public base_format { explicit time_format12(datetime& d) : base_format(d) {} };
 
     /* YYYYMMDD HH:MM:SS.mss    */ struct datetime_format00 : public base_format { explicit datetime_format00(datetime& d) : base_format(d) {} };
     /* YYYY/MM/DD HH:MM:SS.mss  */ struct datetime_format01 : public base_format { explicit datetime_format01(datetime& d) : base_format(d) {} };
@@ -108,21 +112,21 @@ namespace dt_utils
     /* YYYYMMDDTHHMM            */ struct datetime_format16 : public base_format { explicit datetime_format16(datetime& d) : base_format(d) {} };
     /* YYYYMMDDTHHMMSS          */ struct datetime_format17 : public base_format { explicit datetime_format17(datetime& d) : base_format(d) {} };
     /* YYYYMMDDTHHMMSSMSS       */ struct datetime_format18 : public base_format { explicit datetime_format18(datetime& d) : base_format(d) {} };
-    /* ISO8601 DateThh:mm:ssTZD */ struct datetime_format19 : public base_format { explicit datetime_format19(datetime& d) : base_format(d) {} };
-    /* ISO8601 DateThh:mmTZD    */ struct datetime_format20 : public base_format { explicit datetime_format20(datetime& d) : base_format(d) {} };
+    /* ISO8601 + py DateThh:mm:ssTZD */ struct datetime_format19 : public base_format { explicit datetime_format19(datetime& d) : base_format(d) {} };
+    /* ISO8601 + py DateThh:mmTZD    */ struct datetime_format20 : public base_format { explicit datetime_format20(datetime& d) : base_format(d) {} };
     /* NCSA Common Log DateTime */ struct datetime_format21 : public base_format { explicit datetime_format21(datetime& d) : base_format(d) {} };
     /* RFC-822 HTTP DateTime    */ struct datetime_format22 : public base_format { explicit datetime_format22(datetime& d) : base_format(d) {} };
     /* YYYYMMDD HH:MM:SS.nss    */ struct datetime_format23 : public base_format { explicit datetime_format23(datetime& d) : base_format(d) {} };
-    /* YYYY/MM/DD HH:MM:SS.nss  */ struct datetime_format24 : public base_format { explicit datetime_format24(datetime& d) : base_format(d) {} };
-    /* DD/MM/YYYY HH:MM:SS.nss  */ struct datetime_format25 : public base_format { explicit datetime_format25(datetime& d) : base_format(d) {} };
+    /* YYYY/MM/DD HH:MM:SS.mcss  */ struct datetime_format24 : public base_format { explicit datetime_format24(datetime& d) : base_format(d) {} };
+    /* DD/MM/YYYY HH:MM:SS.mcss  */ struct datetime_format25 : public base_format { explicit datetime_format25(datetime& d) : base_format(d) {} };
     /* YYYY-MM-DD HH:MM:SS.mss  */ struct datetime_format26 : public base_format { explicit datetime_format26(datetime& d) : base_format(d) {} };
     /* DD-MM-YYYY HH:MM:SS.mss  */ struct datetime_format27 : public base_format { explicit datetime_format27(datetime& d) : base_format(d) {} };
     /* YYYY-MM-DDTHH:MM:SS.mss  */ struct datetime_format28 : public base_format { explicit datetime_format28(datetime& d) : base_format(d) {} };
-    /* YYYYMMDDTHH:MM:SS.nss    */ struct datetime_format29 : public base_format { explicit datetime_format29(datetime& d) : base_format(d) {} };
-    /* DD-MM-YYYYTHH:MM:SS.nss  */ struct datetime_format30 : public base_format { explicit datetime_format30(datetime& d) : base_format(d) {} };
+    /* YYYYMMDDTHH:MM:SS.mcss    */ struct datetime_format29 : public base_format { explicit datetime_format29(datetime& d) : base_format(d) {} };
+    /* DD-MM-YYYYTHH:MM:SS.mcss  */ struct datetime_format30 : public base_format { explicit datetime_format30(datetime& d) : base_format(d) {} };
     /* YYYYMMDDTHHMMSSNSS       */ struct datetime_format31 : public base_format { explicit datetime_format31(datetime& d) : base_format(d) {} };
     /* ISO8601 DateThh:mm:ss.mssTZD  */ struct datetime_format32 : public base_format { explicit datetime_format32(datetime& d) : base_format(d) {} };
-    /* ISO8601 DateThh:mm:ss.nssTZD  */ struct datetime_format33 : public base_format { explicit datetime_format33(datetime& d) : base_format(d) {} };
+    /* ISO8601 DateThh:mm:ss.mcssTZD  */ struct datetime_format33 : public base_format { explicit datetime_format33(datetime& d) : base_format(d) {} };
 
     class dt_format
     {
@@ -350,6 +354,10 @@ namespace dt_utils
         register_datetime_format_proxy(time_format6)
         register_datetime_format_proxy(time_format7)
         register_datetime_format_proxy(time_format8)
+        register_datetime_format_proxy(time_format9)
+        register_datetime_format_proxy(time_format10)
+        register_datetime_format_proxy(time_format11)
+        register_datetime_format_proxy(time_format12)
         register_datetime_format_proxy(datetime_format00)
         register_datetime_format_proxy(datetime_format01)
         register_datetime_format_proxy(datetime_format02)
@@ -1303,6 +1311,10 @@ namespace dt_utils
         else if (format == "HHMM"                   ) return new details::time_format6_proxy     (dt);
         else if (format == "HHMMSS"                 ) return new details::time_format7_proxy     (dt);
         else if (format == "HHMMSSmss"              ) return new details::time_format8_proxy     (dt);
+        else if (format == "HHMMSS"                 ) return new details::time_format9_proxy     (dt);
+        else if (format == "HHMMSSmss"              ) return new details::time_format10_proxy     (dt);
+        else if (format == "HHMMSS"                 ) return new details::time_format11_proxy     (dt);
+        else if (format == "HHMMSS"                 ) return new details::time_format12_proxy     (dt);
         else if (format == "YYYYMMDD HH:MM:SS.mss"  ) return new details::datetime_format00_proxy(dt);
         else if (format == "YYYY/MM/DD HH:MM:SS.mss") return new details::datetime_format01_proxy(dt);
         else if (format == "DD/MM/YYYY HH:MM:SS.mss") return new details::datetime_format02_proxy(dt);
@@ -1785,6 +1797,124 @@ strtk_string_to_type_begin(dt_utils::time_format8)
             strtk::fast::numeric_convert<2>(begin + 2,t.dt.minute);
             strtk::fast::numeric_convert<2>(begin + 4,t.dt.second);
             strtk::fast::numeric_convert<3>(begin + 6,t.dt.millisecond);
+            return true;
+strtk_string_to_type_end()
+
+strtk_string_to_type_begin(dt_utils::time_format9)
+            if (18 != std::distance(begin,end))
+                return false;
+            else if (
+                    (':' != *(begin + 2)) ||
+                    (':' != *(begin + 5)) ||
+                    ('.' != *(begin + 8)) ||
+                    (('-' != *(begin + 12)) && ('+' != *(begin + 12))) ||
+                    (':' != *(begin + 15))
+                    )
+                return false;
+            else if (
+                    !strtk::fast::all_digits_check<2>(begin + 0) ||
+                    !strtk::fast::all_digits_check<2>(begin + 3) ||
+                    !strtk::fast::all_digits_check<2>(begin + 6) ||
+                    !strtk::fast::all_digits_check<3>(begin + 9) ||
+                    !strtk::fast::all_digits_check<2>(begin + 13)||
+                    !strtk::fast::all_digits_check<2>(begin + 16)
+                    )
+                return false;
+            strtk::fast::numeric_convert<2>(begin + 0,t.dt.hour       );
+            strtk::fast::numeric_convert<2>(begin + 3,t.dt.minute     );
+            strtk::fast::numeric_convert<2>(begin + 6,t.dt.second     );
+            strtk::fast::numeric_convert<3>(begin + 9,t.dt.millisecond);
+            unsigned short tzd_hh;
+            unsigned short tzd_mm;
+            strtk::fast::numeric_convert<2>(begin + 13, tzd_hh);
+            strtk::fast::numeric_convert<2>(begin + 16, tzd_mm);
+            t.dt.tzd = ((tzd_hh * 60) + tzd_mm) * (('-' == *(begin + 12)) ? -1 : 1);
+            return true;
+strtk_string_to_type_end()
+
+
+strtk_string_to_type_begin(dt_utils::time_format10)
+            if (14 != std::distance(begin,end))
+                return false;
+            else if (
+                    (':' != *(begin + 2)) ||
+                    (':' != *(begin + 5)) ||
+                    (('-' != *(begin + 8)) && ('+' != *(begin + 8))) ||
+                    (':' != *(begin + 11))
+                    )
+                return false;
+            else if (
+                    !strtk::fast::all_digits_check<2>(begin + 0) ||
+                    !strtk::fast::all_digits_check<2>(begin + 3) ||
+                    !strtk::fast::all_digits_check<2>(begin + 6) ||
+                    !strtk::fast::all_digits_check<2>(begin + 9)||
+                    !strtk::fast::all_digits_check<2>(begin + 12)
+                    )
+                return false;
+            strtk::fast::numeric_convert<2>(begin + 0,t.dt.hour  );
+            strtk::fast::numeric_convert<2>(begin + 3,t.dt.minute);
+            strtk::fast::numeric_convert<2>(begin + 6,t.dt.second);
+            unsigned short tzd_hh;
+            unsigned short tzd_mm;
+            strtk::fast::numeric_convert<2>(begin + 9, tzd_hh);
+            strtk::fast::numeric_convert<2>(begin + 12, tzd_mm);
+            t.dt.tzd = ((tzd_hh * 60) + tzd_mm) * (('-' == *(begin + 8)) ? -1 : 1);
+            return true;
+strtk_string_to_type_end()
+
+
+strtk_string_to_type_begin(dt_utils::time_format11)
+            if (21 != std::distance(begin,end))
+                return false;
+            else if (
+                    (':' != *(begin + 2)) ||
+                    (':' != *(begin + 5)) ||
+                    ('.' != *(begin + 8)) ||
+                    (('-' != *(begin + 15)) && ('+' != *(begin + 15))) ||
+                    (':' != *(begin + 18))
+                    )
+                return false;
+            else if (
+                    !strtk::fast::all_digits_check<2>(begin + 0) ||
+                    !strtk::fast::all_digits_check<2>(begin + 3) ||
+                    !strtk::fast::all_digits_check<2>(begin + 6) ||
+                    !strtk::fast::all_digits_check<6>(begin + 9) ||
+                    !strtk::fast::all_digits_check<2>(begin + 16)||
+                    !strtk::fast::all_digits_check<2>(begin + 19)
+                    )
+                return false;
+            strtk::fast::numeric_convert<2>(begin + 0,t.dt.hour       );
+            strtk::fast::numeric_convert<2>(begin + 3,t.dt.minute     );
+            strtk::fast::numeric_convert<2>(begin + 6,t.dt.second     );
+            strtk::fast::numeric_convert<6>(begin + 9,t.dt.microsecond );
+            unsigned short tzd_hh;
+            unsigned short tzd_mm;
+            strtk::fast::numeric_convert<2>(begin + 16, tzd_hh);
+            strtk::fast::numeric_convert<2>(begin + 19, tzd_mm);
+            t.dt.tzd = ((tzd_hh * 60) + tzd_mm) * (('-' == *(begin + 15)) ? -1 : 1);
+            return true;
+strtk_string_to_type_end()
+
+strtk_string_to_type_begin(dt_utils::time_format12)
+            if (15 != std::distance(begin,end))
+                return false;
+            else if (
+                    (':' != *(begin + 2)) ||
+                    (':' != *(begin + 5)) ||
+                    ('.' != *(begin + 8))
+                    )
+                return false;
+            else if (
+                    !strtk::fast::all_digits_check<2>(begin + 0) ||
+                    !strtk::fast::all_digits_check<2>(begin + 3) ||
+                    !strtk::fast::all_digits_check<2>(begin + 6) ||
+                    !strtk::fast::all_digits_check<6>(begin + 9)
+                    )
+                return false;
+            strtk::fast::numeric_convert<2>(begin + 0,t.dt.hour       );
+            strtk::fast::numeric_convert<2>(begin + 3,t.dt.minute     );
+            strtk::fast::numeric_convert<2>(begin + 6,t.dt.second     );
+            strtk::fast::numeric_convert<6>(begin + 9,t.dt.microsecond);
             return true;
 strtk_string_to_type_end()
 
@@ -2527,7 +2657,7 @@ strtk_string_to_type_begin(dt_utils::datetime_format19)
                 return false;
             else if (
                     ('-' != *(begin +  4)) || ('-' != *(begin +  7)) ||
-                    ('T' != *(begin + 10)) || (':' != *(begin + 13)) ||
+                    (!('T' == *(begin + 10) || ' ' == *(begin + 10))) || (':' != *(begin + 13)) ||
                     (':' != *(begin + 16))
                     )
                 return false;
@@ -2582,7 +2712,7 @@ strtk_string_to_type_begin(dt_utils::datetime_format32)
                 return false;
             else if (
                     ('-' != *(begin +  4)) || ('-' != *(begin +  7)) ||
-                    ('T' != *(begin + 10)) || (':' != *(begin + 13)) ||
+                    (!('T' == *(begin + 10) || ' ' == *(begin + 10))) || (':' != *(begin + 13)) ||
                     (':' != *(begin + 16)) || ('.' != *(begin + 19))
                     )
                 return false;
@@ -2639,7 +2769,7 @@ strtk_string_to_type_begin(dt_utils::datetime_format33)
                 return false;
             else if (
                     ('-' != *(begin +  4)) || ('-' != *(begin +  7)) ||
-                    ('T' != *(begin + 10)) || (':' != *(begin + 13)) ||
+                    (!('T' == *(begin + 10) || ' ' == *(begin + 10))) || (':' != *(begin + 13)) ||
                     (':' != *(begin + 16)) || ('.' != *(begin + 19))
                     )
                 return false;
@@ -2696,7 +2826,7 @@ strtk_string_to_type_begin(dt_utils::datetime_format20)
                 return false;
             else if (
                     ('-' != *(begin +  4)) || ('-' != *(begin +  7)) ||
-                    ('T' != *(begin + 10)) || (':' != *(begin + 13))
+                    (!('T' == *(begin + 10) || ' ' == *(begin + 10))) || (':' != *(begin + 13))
                     )
                 return false;
             else if ((17 == size) && ('Z' != *(begin + 16)))
