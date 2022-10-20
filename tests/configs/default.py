@@ -5,10 +5,10 @@
 !!!IF htw_logger.config not exists run ```make install``` before!!!
 """
 from cornflakes import ini_group
-from tests.test_config_module import SubConfig
+from tests.configs.sub_config import SubConfig
 
 
-@ini_group(cfg_files="tests/configs/default.ini")
+@ini_group(files="tests/configs/default.ini")
 class MainConfig:
     """Main config class of the module."""
 

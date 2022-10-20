@@ -2,9 +2,10 @@ from dataclasses import dataclass
 from decimal import Decimal
 from os import path
 import re
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 
-from cornflakes import add_slots, ini_load
+from cornflakes import ini_load
+from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.logging import logger
 
 
@@ -68,14 +69,14 @@ def _to_ini(self, out_cfg: str = None) -> Union[None, bytearray]:
 
 def ini_group(  # noqa: C901
     config_cls=None,
-    cfg_files: Union[str, List[str]] = None,
+    files: Union[str, List[str]] = None,
     *args,
     **kwargs,
 ):
     """Config decorator with a Subset of ini_configs to parse Ini Files.
 
     :param config_cls: Config class
-    :param cfg_files: Default config files
+    :param files: Default config files
     :param args: Default configs to overwrite dataclass args
     :param kwargs: Default configs to overwrite dataclass args
 
@@ -86,7 +87,7 @@ def ini_group(  # noqa: C901
     def wrapper(cls):
 
         cls = add_slots(dataclass(cls, *args, **kwargs))
-        cls.__ini_configs__ = cfg_files
+        cls.__ini_configs__ = files
 
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
@@ -117,13 +118,15 @@ def ini_group(  # noqa: C901
             if not files:
                 files = cls.__ini_configs__
 
+            config_dict = ini_load({None: files}, {None: None})
+
             for slot_class in list(cls.__annotations__.values())[len(slot_args) :]:
                 if hasattr(slot_class, "from_ini"):
-                    slot_kwargs.update(slot_class.from_ini(cfg_files=files))
+                    slot_kwargs.update(slot_class.from_ini(config_dict=config_dict))
 
             error_args = [key for key in slot_kwargs if key not in cls.__slots__]
             if error_args:
-                logger.warning(f"The variables f{error_args} in {cls.__name__} are not defined!")
+                logger.warning(f"The variables {error_args} in **{cls.__name__}** are not defined!")
                 logger.warning("Use generate_group in build script to auto generate the config group!")
 
             return cls(*slot_args, **{key: value for key, value in slot_kwargs.items() if key not in error_args})
@@ -188,45 +191,45 @@ def ini_config(  # noqa: C901
             config.update(cls_kwargs)
             error_args = [key for key in config if key not in cls.__slots__]
             if error_args:
-                logger.warning(f"Some variables in {cls.__name__} have no annotation or are not defined!")
+                logger.warning(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
                 logger.warning(f"Please check Args: {error_args}")
             #  config_instance
             config_instance = cls(*cls_args, **{key: value for key, value in config.items() if key in cls.__slots__})
             return config_instance
 
         def from_ini(
-            cfg_files: Union[str, List[str], Dict[str, Union[str, List[str]]]] = None,
-            cfg_sections: Union[str, List[str], Dict[str, Union[str, List[str]]]] = None,
+            files: Union[str, List[str], Dict[str, Union[str, List[str]]]] = None,
+            sections: str = None,
+            config_dict: Dict[str, Any] = None,
             *slot_args,
             **slot_kwargs,
         ) -> dict:
             """Config parser from ini files.
 
-            :param cfg_files: Default config files
-            :param cfg_sections: Default config sections
+            :param files: Default config files
+            :param sections: Default config sections
+            :param config_dict: Config dictionary to pass already loaded configs
             :param slot_args: Default configs to overwrite passed class
             :param slot_kwargs: Default configs to overwrite passed class
 
             :returns: Nested Lists of Config Classes
 
             """
-            if not cfg_sections:
-                cfg_sections = cls.__ini_config_sections__
-            if not cfg_files:
-                cfg_files = cls.__ini_configs__
-            logger.debug(f"Load ini from file: {cfg_files} - sections: {cfg_sections} for config {cls.__name__}")
+            if not sections:
+                sections = cls.__ini_config_sections__
+            if not files:
+                files = cls.__ini_configs__
             if not use_regex:
-                config_dict = ini_load({None: cfg_files}, {None: cfg_sections}, keys=cls.__slots__[len(slot_args) :])
+                logger.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
                 if not config_dict:
-                    config_dict = ini_load(
-                        {None: cfg_files}, {None: cfg_sections}, keys=cls.__slots__[len(slot_args) :]
-                    )
-                    return {cls.__name__.lower(): _create_config(config_dict, *slot_args, **slot_kwargs)}
-                return {cls.__name__.lower(): _create_config(config_dict, *slot_args, **slot_kwargs)}
+                    config_dict = ini_load({None: files}, {None: sections}, keys=cls.__slots__[len(slot_args) :])
+                return {sections: _create_config(config_dict, *slot_args, **slot_kwargs)}
 
-            config_dict = ini_load({None: cfg_files}, None, keys=cls.__slots__[len(slot_args) :])
-            regex = f'({"|".join(cfg_sections) if isinstance(cfg_sections, list) else cfg_sections})'
-            logger.debug(f"Load all configs that mach {regex} in {config_dict.keys()}")
+            if not config_dict:
+                config_dict = ini_load({None: files}, None, keys=cls.__slots__[len(slot_args) :])
+                logger.debug(f"Read config with sections: {config_dict.keys()}")
+            regex = f'({"|".join(sections) if isinstance(sections, list) else sections})'
+            logger.debug(f"Load all configs that mach **{regex}**")
             return {
                 section: _create_config(config_dict, *slot_args, **slot_kwargs)
                 for section, config_dict in config_dict.items()

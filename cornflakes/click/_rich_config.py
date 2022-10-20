@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from os import getenv
 from typing import Dict, List, Literal, Optional, Union
 
-from cornflakes._add_dataclass_slots import add_slots
+from cornflakes.decorator import add_slots
 
 
 @add_slots

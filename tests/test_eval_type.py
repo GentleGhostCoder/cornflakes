@@ -97,7 +97,7 @@ class TestEvalType(unittest.TestCase):
 
     def test_timestamp_formats(self):
         [
-            self.assertTrue(type(cornflakes.eval_type(str(x))) in [datetime, cornflakes.DatetimeMS])
+            self.assertTrue(type(cornflakes.eval_type(str(x))) in [datetime])
             for x in [
                 "20060317 13:27:54.123",
                 "2006/03/17 13:27:54.123",
@@ -131,7 +131,6 @@ class TestEvalType(unittest.TestCase):
                 "Sat, 17 Mar 2006 13:27:54 +0325",
                 "2006-03-17 13:27:54.123123+10:00",
                 "2006-03-17 13:27:54.123+10:00",
-                "2006-03-17 13:27:54.123+10",
             ]
         ]
 
