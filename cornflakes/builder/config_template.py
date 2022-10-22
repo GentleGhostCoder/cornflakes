@@ -4,12 +4,12 @@
 !!!Change the file default-htw-logger.ini or the default values in the base-classes of htw_logger.config!!!
 !!!IF htw_logger.config not exists run ```make install``` before!!!
 """
-from cornflakes import ini_group
+from cornflakes import config_group
 
 # import config
 
 
-@ini_group
+@config_group
 class Config:
     """Main config class of the module."""
 

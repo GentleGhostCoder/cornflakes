@@ -21,6 +21,7 @@ repos:
             entry: check-yaml
             language: system
             types: [yaml]
+            args: ["--unsafe"]
           - id: end-of-file-fixer
             name: Fix End of Files
             entry: end-of-file-fixer

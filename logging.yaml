@@ -1,8 +1,12 @@
 version: 1
 disable_existing_loggers: False
 formatters:
+    events:
+        format: '{"name": "%(name)s", "log_level": "%(levelname)s", "file": "%(pathname)s", "lineno": "%(lineno)d", "message": "%(message)s"}'
+    normal:
+        format: "%(asctime)s - %(name)s - (%(pathname)s:%(lineno)d) - %(levelname)s - %(message)s"
     simple:
-        format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        format: "%(asctime)s %(name)s - %(message)s"
 #  ecs_formatter:
 #    (): ecs_logging.StdlibFormatter
 
@@ -10,13 +14,19 @@ handlers:
     console:
         class: logging.StreamHandler
         level: INFO
-        formatter: simple
+        formatter: normal
         stream: ext://sys.stdout
+
+    rich_console:
+        class: rich.logging.RichHandler
+        level: INFO
+        formatter: simple
+        rich_tracebacks: True
 
     info_file_handler:
         class: logging.handlers.RotatingFileHandler
         level: INFO
-        formatter: simple
+        formatter: events
         filename: info.log
         maxBytes: 10485760 # 10MB
         backupCount: 20
@@ -25,7 +35,7 @@ handlers:
     error_file_handler:
         class: logging.handlers.RotatingFileHandler
         level: ERROR
-        formatter: simple
+        formatter: events
         filename: errors.log
         maxBytes: 10485760 # 10MB
         backupCount: 20
@@ -34,4 +44,4 @@ handlers:
 
 root:
     level: DEBUG
-    handlers: [console, info_file_handler, error_file_handler]
+    handlers: [rich_console, info_file_handler, error_file_handler]

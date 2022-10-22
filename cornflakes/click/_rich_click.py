@@ -314,7 +314,7 @@ def rich_format_help(
 
     # Look through OPTION_GROUPS for this command
     # stick anything unmatched into a default group at the end
-    option_groups = config.Groups.OPTION_GROUPS.get(ctx.command_path, []).copy()
+    option_groups = config.OPTION_GROUPS.get(ctx.command_path, []).copy()
     option_groups.append({"options": []})
     argument_group_options = []
 
@@ -475,7 +475,7 @@ def rich_format_help(
     if hasattr(obj, "list_commands"):
         # Look through COMMAND_GROUPS for this command
         # stick anything unmatched into a default group at the end
-        cmd_groups = config.Groups.COMMAND_GROUPS.get(ctx.command_path, []).copy()
+        cmd_groups = config.COMMAND_GROUPS.get(ctx.command_path, []).copy()
         cmd_groups.append({"commands": []})
         for command in obj.list_commands(ctx):  # type: ignore
             for cmd_group in cmd_groups:

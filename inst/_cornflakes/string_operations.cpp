@@ -280,7 +280,10 @@ py::object to_date = py::module::import("datetime").attr("date");
 py::object to_time = py::module::import("datetime").attr("time");
 py::object to_timedelta = py::module::import("datetime").attr("timedelta");
 py::object to_timezone = py::module::import("datetime").attr("timezone");
-py::object to_ip_address = py::module::import("ipaddress").attr("ip_address");
+py::object to_ipv4_address =
+    py::module::import("ipaddress").attr("IPv4Address");
+py::object to_ipv6_address =
+    py::module::import("ipaddress").attr("IPv6Address");
 
 py::object get_global_datetime() {
   return to_datetime(global_dt.year, global_dt.month, global_dt.day,
@@ -545,12 +548,14 @@ py::object eval_type(std::string value) {
     // ipv4
     if (std::count(value.begin(), value.end(), '.') == 3 &&
         std::regex_match(value, ipv4_regex)) {
-      return (to_ip_address(value));
+      return (to_ipv4_address(value));
     }
     // ipv6
-    if (std::count(value.begin(), value.end(), ':') > 5 &&
-        std::regex_match(value, ipv6_regex)) {
-      return (to_ip_address(value));
+    if (std::count(value.begin(), value.end(), ':') > 5) {
+      try {
+        return (to_ipv6_address(value));
+      } catch (...) {
+      }
     }
     if (char_size > 7) {
       return (to_generic_datetime(value));

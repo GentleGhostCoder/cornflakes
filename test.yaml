@@ -1,0 +1,52 @@
+test:
+    bool: true
+    datetime_datetime: 2006-03-17 13:27:54+00:00
+    datetime_time: !!python/object/apply:datetime.time
+        - !!binary |
+            DRs2AAAA
+        - !!python/object/apply:datetime.timezone &id001
+          - !!python/object/apply:datetime.timedelta
+            - 0
+            - 0
+            - 0
+    decimal: !!python/object/apply:decimal.Decimal
+        - 1E-40
+    float: 0.005
+    int: 1
+    ipv4: !!python/object/apply:ipaddress.IPv4Address
+        - 2130706433
+    ipv6: !!python/object/apply:ipaddress.IPv6Address
+        - 138639864568240772614187040837063802999
+    string: bla0
+test1:
+    bool: true
+    datetime_datetime: 2006-03-17 13:27:54+00:00
+    datetime_time: !!python/object/apply:datetime.time
+        - !!binary |
+            DRs2AAAA
+        - *id001
+    decimal: !!python/object/apply:decimal.Decimal
+        - 1E-40
+    float: 0.005
+    int: 1
+    ipv4: !!python/object/apply:ipaddress.IPv4Address
+        - 2130706433
+    ipv6: !!python/object/apply:ipaddress.IPv6Address
+        - 138639864568240772614187040837063802999
+    string: bla1
+test2:
+    bool: true
+    datetime_datetime: 2006-03-17 13:27:54+00:00
+    datetime_time: !!python/object/apply:datetime.time
+        - !!binary |
+            DRs2AAAA
+        - *id001
+    decimal: !!python/object/apply:decimal.Decimal
+        - 1E-40
+    float: 0.005
+    int: 1
+    ipv4: !!python/object/apply:ipaddress.IPv4Address
+        - 2130706433
+    ipv6: !!python/object/apply:ipaddress.IPv6Address
+        - 138639864568240772614187040837063802999
+    string: bla2

@@ -16,6 +16,16 @@ class RichCommand(click.Command):
     """
 
     standalone_mode = False
+    params = []
+    allow_extra_args = True
+    allow_interspersed_args = False
+    ignore_unknown_options = False
+    name = ""
+    context_settings = {}
+
+    def callback(self):
+        """Callback method with is wrapped over the command."""
+        pass
 
     def __init__(self, config: RichConfig = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""

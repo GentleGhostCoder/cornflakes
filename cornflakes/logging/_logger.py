@@ -9,81 +9,72 @@ from typing import Optional
 import yaml
 
 
-class DefaultLogger:
-    """Default logging Class that can be used for static logging."""
+def default_logger_decorator(cls):
+    """Decorator for logging.Logger to redefine Logger.name at each log."""
 
-    initialized = False
-    default_level = logging.DEBUG
+    def log_func_decorator(func):
+        def wrapper(*args, **kwargs):
+            cls.name = sys._getframe(2).f_code.co_name
+            return func(*args, **kwargs)
 
-    @classmethod
-    def log(cls, *args, **kwargs):
-        """Static generic log."""
-        return logging.getLogger(sys._getframe(1).f_code.co_name).log(*args, **kwargs)
+        return wrapper
 
-    @classmethod
-    def info(cls, *args, **kwargs):
-        """Static info log."""
-        return logging.getLogger(sys._getframe(1).f_code.co_name).info(*args, **kwargs)
+    cls._log = log_func_decorator(cls._log)
 
-    @classmethod
-    def debug(cls, *args, **kwargs):
-        """Static debug log."""
-        return logging.getLogger(sys._getframe(1).f_code.co_name).debug(*args, **kwargs)
+    return cls
 
-    @classmethod
-    def warning(cls, *args, **kwargs):
-        """Static warning log."""
-        return logging.getLogger(sys._getframe(1).f_code.co_name).warning(*args, **kwargs)
 
-    @classmethod
-    def error(cls, *args, **kwargs):
-        """Static error log."""
-        return logging.getLogger(sys._getframe(1).f_code.co_name).error(*args, **kwargs)
+logger = default_logger_decorator(logging.getLogger("default-logger"))
 
-    @classmethod
-    def setup_logging(
-        cls,
-        default_path: str = "logging.yaml",
-        default_level: Optional[int] = None,
-        env_key: str = "LOG_CFG",
-        force: bool = True,
-    ):
-        """Setup logging configuration.
+logger.initialized = False
+logger.default_level = logging.DEBUG
 
-        :param default_path: Default path to logging config file.
-        :param default_level: Default log-level (Logging.INFO).
-        :param env_key: Environment key to use for logging configuration.
-        :param force: Force logging configuration.
-        """
-        if not cls.initialized or force:
-            path = default_path
-            if value := os.getenv(env_key, None):
-                path = value
 
+def setup_logging(
+    default_path: str = "logging.yaml",
+    default_level: Optional[int] = None,
+    env_key: str = "LOG_CFG",
+    force: bool = True,
+):
+    """Setup logging configuration.
+
+    :param default_path: Default path to logging config file.
+    :param default_level: Default log-level (Logging.INFO).
+    :param env_key: Environment key to use for logging configuration.
+    :param force: Force logging configuration.
+    """
+    if not logger.initialized or force:
+        path = default_path
+        if value := os.getenv(env_key, None):
+            path = value
+
+        if default_level:
+            default_level = default_level
+
+        if os.path.exists(path):
+            with open(path) as f:
+                config = yaml.safe_load(f.read())
             if default_level:
-                cls.default_level = default_level
+                for handler in config["root"]["handlers"]:
+                    config["handlers"][handler]["level"] = default_level
+            logging.config.dictConfig(config)
+        else:
+            logging.basicConfig(
+                level=default_level,
+                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                filename="default.log",
+                filemode="w",
+            )
+        logging.getLogger().setLevel(default_level)
+        logger.initialized = True
 
-            if os.path.exists(path):
-                with open(path) as f:
-                    config = yaml.safe_load(f.read())
-                if default_level:
-                    for handler in config["root"]["handlers"]:
-                        config["handlers"][handler]["level"] = cls.default_level
-                logging.config.dictConfig(config)
-            else:
-                logging.basicConfig(
-                    level=cls.default_level,
-                    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                    filename="default.log",
-                    filemode="w",
-                )
-            logging.getLogger().setLevel(cls.default_level)
-            cls.initialized = True
+
+logger.setup_logging = setup_logging
 
 
 def attach_log(
     obj,
-    log_level: int = DefaultLogger.default_level,
+    log_level: int = logger.default_level,
     default_level: int = None,
     default_path: str = "logging.yaml",
     env_key: str = "LOG_CFG",
@@ -117,7 +108,7 @@ def attach_log(
     obj.logger = logging.getLogger(obj.__class__.__name__)
     obj.logger.setLevel(log_level)
     if default_level:
-        DefaultLogger.setup_logging(default_path, default_level, env_key, force=True)
+        setup_logging(default_path, default_level, env_key, force=True)
 
 
 class LoggerMetaClass(type):
@@ -139,7 +130,7 @@ class LoggerInterface(metaclass=LoggerMetaClass):
 
     def __init__(
         self,
-        log_level: int = DefaultLogger.default_level,
+        log_level: int = logger.default_level,
         default_path="logging.yaml",
         default_level: int = None,
         env_key: str = "LOG_CFG",
@@ -157,5 +148,5 @@ class LoggerInterface(metaclass=LoggerMetaClass):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.logger.setLevel(log_level)
         if default_level:
-            DefaultLogger.setup_logging(default_path, default_level, env_key, force=True)
+            setup_logging(default_path, default_level, env_key, force=True)
         super().__init__(**kwargs)

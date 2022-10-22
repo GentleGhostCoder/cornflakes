@@ -8,13 +8,6 @@ from cornflakes.click._rich_config import Config as RichConfig
 from ._rich_click import rich_abort_error, rich_format_error, rich_format_help
 from ._rich_command import RichCommand
 
-verbose_option = click.Option(
-    ["-v", "--verbose"],
-    is_flag=True,
-    default=False,
-    help="Base logging level is set to logging.DEBUG.",
-)
-
 
 class RichGroup(click.Group):
     """Richly formatted click Group.
@@ -25,6 +18,14 @@ class RichGroup(click.Group):
 
     command_class = RichCommand
     group_class = type
+    params = []
+    name = ""
+    context_settings = {}
+    commands = []
+
+    def callback(self):
+        """Callback method with is wrapped over the command group."""
+        pass
 
     def add_command(self, cmd: Union[RichCommand, Any], name: Optional[str] = None) -> None:
         """Wrapper of click.core.Groud.add_command to pass configs.
@@ -34,8 +35,9 @@ class RichGroup(click.Group):
         """
         if not cmd.config:
             cmd.config = self.config
-        if cmd.config.BASIC_OPTIONS:
-            cmd.params.append(verbose_option)
+        if cmd.config.GLOBAL_OPTIONS:
+            for option_obj in cmd.config.GLOBAL_OPTIONS:
+                cmd.params.extend(option_obj.params)
         click.core.Group.add_command(self, cmd, name)
 
         # click.core.Group.add_command(self, cmd_wrapper, name)

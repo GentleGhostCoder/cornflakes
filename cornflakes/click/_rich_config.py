@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from os import getenv
 from typing import Dict, List, Literal, Optional, Union
 
@@ -9,8 +9,6 @@ from cornflakes.decorator import add_slots
 @dataclass(frozen=True)
 class Config:
     """DataClass for click config-values."""
-
-    BASIC_OPTIONS: Optional[bool] = None  # Add Basic Options (version, verbose)
 
     # Default styles
     STYLE_OPTION = "bold cyan"
@@ -91,9 +89,10 @@ class Config:
     # Define sorted groups of panels to display subcommands
     USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
 
-    class Groups:
-        """Non DataClass for groups in click config-values."""
+    CONTEXT_SETTINGS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
 
-        COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
-        # Define sorted groups of panels to display options and arguments
-        OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
+    COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
+    # Define sorted groups of panels to display options and arguments
+    OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
+    # Add basic global options (verbose)
+    GLOBAL_OPTIONS: List = field(default_factory=list)

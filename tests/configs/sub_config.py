@@ -1,11 +1,15 @@
 import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
+import logging
 
-from cornflakes import ini_config
+from cornflakes.decorator.config import config
+from cornflakes.logging import logger
+
+logger.setup_logging(default_level=logging.DEBUG)
 
 
-@ini_config(sections="test", use_regex=True, frozen=True)
+@config(sections="test", use_regex=True, frozen=True)
 class SubConfig:
     """Test Config Class."""
 

@@ -7,12 +7,9 @@ __________________________________
    :toctree: _generate
 
     logger
-    DefaultLogger
     LoggerInterface
     attach_log
 """  # noqa: RST303 D205
-from cornflakes.logging._logger import DefaultLogger, LoggerInterface, attach_log
-
-logger = DefaultLogger
+from cornflakes.logging._logger import LoggerInterface, attach_log, logger
 
 __all__ = ["LoggerInterface", "attach_log", "logger"]

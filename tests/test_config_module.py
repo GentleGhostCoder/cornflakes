@@ -2,11 +2,12 @@ import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
 import time
+from typing import Any
 import unittest
 
-from cornflakes.config import generate_ini_group_module
+from cornflakes.builder import generate_group_module
 import tests
-from tests.configs import MainConfig, SubConfig
+from tests.configs import SubConfig
 
 
 class TestConfigGeneration(unittest.TestCase):
@@ -14,12 +15,13 @@ class TestConfigGeneration(unittest.TestCase):
 
     def test_auto_config_generation(self):
         """Test-function config module generation."""
+
         source_files = "tests/configs/default.ini"
         target_module_file = "tests/configs/default.py"
         test_file = "tests/configs/default.py.txt"
         ini_group_args = {"files": "tests/configs/default.ini"}
 
-        generate_ini_group_module(
+        generate_group_module(
             class_name="MainConfig",
             source_module=tests.configs.sub_config,
             source_files=source_files,
@@ -33,6 +35,8 @@ class TestConfigGeneration(unittest.TestCase):
             defined_config_module = file.read()
 
         self.assertEqual(generated_config_module, defined_config_module)
+
+        MainConfig = __import__("tests.configs.default").configs.default.MainConfig
 
         MainConfig.from_ini().to_ini("tests/configs/default_auto_created.ini")
 
@@ -48,7 +52,7 @@ class TestConfigGeneration(unittest.TestCase):
             repr(
                 MainConfig(
                     test=SubConfig(
-                        string="bla123",
+                        string="bla0",
                         datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                         datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                         int=1,
@@ -59,7 +63,7 @@ class TestConfigGeneration(unittest.TestCase):
                         bool=True,
                     ),
                     test1=SubConfig(
-                        string="bla123",
+                        string="bla1",
                         datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                         datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                         int=1,
@@ -70,7 +74,7 @@ class TestConfigGeneration(unittest.TestCase):
                         bool=True,
                     ),
                     test2=SubConfig(
-                        string="bla123",
+                        string="bla2",
                         datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                         datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                         int=1,
