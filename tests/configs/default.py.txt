@@ -7,15 +7,15 @@
 from cornflakes import config_group
 
 from tests.configs.sub_config import SubConfig
+from dataclasses import field
+from typing import List
 
 
 @config_group(files="tests/configs/default.ini")
 class MainConfig:
     """Main config class of the module."""
 
-    test: SubConfig = SubConfig()
-    test1: SubConfig = SubConfig()
-    test2: SubConfig = SubConfig()
+    sub_config: List[SubConfig] = field(default_factory=list)
 
 
 __all__ = ["MainConfig"]

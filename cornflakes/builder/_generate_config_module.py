@@ -44,24 +44,39 @@ def generate_group_module(
 
     ini_config_objects = {}
     imports = []
+    has_list_field = False
     for cls_name, cls in inspect.getmembers(source_module):
         if inspect.isclass(cls) and is_config(cls):
             ini_config_objects.update(cls.from_ini(source_files))
+            if cls.__config_list__:
+                has_list_field = True
             imports.append(cls_name)
 
     logger.debug(f"Found configs: {imports}")
 
+    extra_imports = ["from dataclasses import field", "from typing import List"] if has_list_field else []
+    declaration = (
+        [
+            f"{cfg_name}: List[{cfg[0].__class__.__name__}] = field(default_factory={cfg.__class__.__name__})"
+            for cfg_name, cfg in ini_config_objects.items()
+        ]
+        if has_list_field
+        else [
+            f"{cfg_name}: {cfg.__class__.__name__} = {cfg.__class__.__name__}()"
+            for cfg_name, cfg in ini_config_objects.items()
+        ]
+    )
     template = template.replace(
         "# import config",
         f"""from {source_module.__name__} import ({''',
     '''.join(imports)}
-    )""",
+    )\n{'''
+'''.join(extra_imports)}""",
     )
     template = template.replace(
         "pass",
         f"""{'''
-    '''.join([f'{cfg_name}: {cfg.__class__.__name__} = {cfg.__class__.__name__}()'
-              for cfg_name, cfg in ini_config_objects.items()])}""",
+    '''.join(declaration)}""",
         1,
     )
 

@@ -70,7 +70,6 @@ def verbose_option(verbose):
 def bg_process_option(background_process, cls, *func_args, **func_kwargs):
     """Default Option for running in background."""
     if background_process:
-        print("background_process")
         stdout_file = f"{cls.__name__}.logs"
         stderr_file = f"{cls.__name__}_error.logs"
         logger.debug(

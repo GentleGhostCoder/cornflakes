@@ -1,12 +1,11 @@
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator._add_dataclass_slots import add_slots
-from cornflakes.decorator.config._dict import to_dict
-from cornflakes.decorator.config._ini import to_ini, to_ini_bytes
-from cornflakes.decorator.config._yaml import to_yaml, to_yaml_bytes
-from cornflakes.logging import logger
+from cornflakes.decorator.config._dict import create_dict_group_loader, to_dict
+from cornflakes.decorator.config._ini import create_ini_group_loader, to_ini, to_ini_bytes
+from cornflakes.decorator.config._yaml import create_yaml_group_loader, to_yaml, to_yaml_bytes
 
 
 def config_group(  # noqa: C901
@@ -16,12 +15,10 @@ def config_group(  # noqa: C901
     loader: Callable[
         [
             Union[
-                str,
-                List[str],
-                Dict[str, Union[str, List[str]]],
-                Optional[Union[str, List[str], Dict[str, Union[str, List[str]]]]],
-                Optional[Union[str, List[str], Dict[str, Union[str, List[str]]]]],
-                Optional[Union[str, List[str], Dict[str, str]]],
+                Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
+                Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
+                Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
+                Optional[Union[str, List[str], Dict[str, Any]]],
             ]
         ],
         Dict,
@@ -60,38 +57,9 @@ def config_group(  # noqa: C901
 
         cls.__new__ = classmethod(_new)
 
-        def from_ini(
-            files: Union[str, List[str], Dict[str, Union[str, List[str]]]] = None,
-            *slot_args,
-            **slot_kwargs,
-        ) -> cls:
-            """Config parser from ini files.
-
-            :param files: Default config files
-            :param slot_args: Default configs to overwrite passed class
-            :param slot_kwargs: Default configs to overwrite passed class
-
-            :returns: Nested Lists of Config Classes
-
-            """
-            if not files:
-                files = cls.__config_files__
-
-            config_dict = loader({None: files})
-            logger.debug(f"Read config with sections: {config_dict.keys()}")
-
-            for slot_class in list(cls.__annotations__.values())[len(slot_args) :]:
-                if hasattr(slot_class, "from_ini"):
-                    slot_kwargs.update(slot_class.from_ini(config_dict=config_dict))
-
-            error_args = [key for key in slot_kwargs if key not in cls.__slots__]
-            if error_args:
-                logger.warning(f"The variables {error_args} in **{cls.__name__}** are not defined!")
-                logger.warning("Use generate_group in build script to auto generate the config group!")
-
-            return cls(*slot_args, **{key: value for key, value in slot_kwargs.items() if key not in error_args})
-
-        cls.from_ini = staticmethod(from_ini)  # class not dependent method
+        cls.from_yaml = staticmethod(create_yaml_group_loader(cls=cls))
+        cls.from_ini = staticmethod(create_ini_group_loader(cls=cls))  # class not dependent method
+        cls.from_dict = staticmethod(create_dict_group_loader(cls=cls))
 
         return cls
 

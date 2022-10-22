@@ -9,7 +9,7 @@ from cornflakes.logging import logger
 logger.setup_logging(default_level=logging.DEBUG)
 
 
-@config(sections="test", use_regex=True, frozen=True)
+@config(sections="sub_config", use_regex=True, is_list=True, frozen=True)
 class SubConfig:
     """Test Config Class."""
 

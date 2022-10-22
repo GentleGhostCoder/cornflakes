@@ -2,7 +2,6 @@ import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
 import time
-from typing import Any
 import unittest
 
 from cornflakes.builder import generate_group_module
@@ -51,39 +50,41 @@ class TestConfigGeneration(unittest.TestCase):
             repr(MainConfig.from_ini()),
             repr(
                 MainConfig(
-                    test=SubConfig(
-                        string="bla0",
-                        datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
-                        datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
-                        int=1,
-                        float=0.005,
-                        decimal=Decimal("1E-40"),
-                        ip4v=IPv4Address("127.0.0.1"),
-                        ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                        bool=True,
-                    ),
-                    test1=SubConfig(
-                        string="bla1",
-                        datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
-                        datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
-                        int=1,
-                        float=0.005,
-                        decimal=Decimal("1E-40"),
-                        ip4v=IPv4Address("127.0.0.1"),
-                        ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                        bool=True,
-                    ),
-                    test2=SubConfig(
-                        string="bla2",
-                        datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
-                        datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
-                        int=1,
-                        float=0.005,
-                        decimal=Decimal("1E-40"),
-                        ip4v=IPv4Address("127.0.0.1"),
-                        ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                        bool=True,
-                    ),
+                    sub_config=[
+                        SubConfig(
+                            string="bla0",
+                            datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
+                            datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
+                            int=1,
+                            float=0.005,
+                            decimal=Decimal("1E-40"),
+                            ip4v=IPv4Address("127.0.0.1"),
+                            ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                            bool=True,
+                        ),
+                        SubConfig(
+                            string="bla1",
+                            datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
+                            datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
+                            int=1,
+                            float=0.005,
+                            decimal=Decimal("1E-40"),
+                            ip4v=IPv4Address("127.0.0.1"),
+                            ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                            bool=True,
+                        ),
+                        SubConfig(
+                            string="bla2",
+                            datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
+                            datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
+                            int=1,
+                            float=0.005,
+                            decimal=Decimal("1E-40"),
+                            ip4v=IPv4Address("127.0.0.1"),
+                            ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                            bool=True,
+                        ),
+                    ]
                 )
             ),
         )
