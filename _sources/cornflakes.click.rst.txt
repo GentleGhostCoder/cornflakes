@@ -1,10 +1,10 @@
-cornflakes.common package
-=========================
+cornflakes.click package
+========================
 
 Module contents
 ---------------
 
-.. automodule:: cornflakes.common
+.. automodule:: cornflakes.click
    :members:
    :undoc-members:
    :show-inheritance:

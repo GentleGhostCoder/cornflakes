@@ -1,10 +1,10 @@
-cornflakes.common package
+cornflakes.config package
 =========================
 
 Module contents
 ---------------
 
-.. automodule:: cornflakes.common
+.. automodule:: cornflakes.config
    :members:
    :undoc-members:
    :show-inheritance:

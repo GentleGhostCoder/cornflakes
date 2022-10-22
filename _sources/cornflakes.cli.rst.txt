@@ -1,10 +1,10 @@
-cornflakes.common package
-=========================
+cornflakes.cli package
+======================
 
 Module contents
 ---------------
 
-.. automodule:: cornflakes.common
+.. automodule:: cornflakes.cli
    :members:
    :undoc-members:
    :show-inheritance:
