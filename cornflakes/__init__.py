@@ -27,7 +27,7 @@ from cornflakes.parser import yaml_load
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "2.6.1"
+__version__ = "2.6.2"
 
 __all__ = [
     "ini_load",
