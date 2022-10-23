@@ -1,6 +1,7 @@
 from typing import Any, Callable, Dict, List, Union
 
 from cornflakes import ini_load
+from cornflakes.decorator.config._loader import DICT_LOADER
 from cornflakes.logging import logger
 
 
@@ -13,7 +14,7 @@ def create_group_loader(
         Dict,
     ] = ini_load,
 ):
-    """Config decorator to parse Ini Files and implements from_ini method to config-group-classes.
+    """Config decorator to parse Ini Files and implements from_file method to config-group-classes.
 
     :param cls: Config class
     :param loader: Config Loader (ini_load, yaml_load)
@@ -27,7 +28,7 @@ def create_group_loader(
         *slot_args,
         **slot_kwargs,
     ) -> cls:
-        """Config parser from ini files.
+        """Config parser from config files.
 
         :param files: Default config files
         :param config_dict: Config dictionary to pass already loaded configs
@@ -48,7 +49,7 @@ def create_group_loader(
             if is_list:
                 slot_class = slot_class.__args__[0]
             if hasattr(slot_class, "__config_sections__"):
-                slot_kwargs.update(slot_class.from_dict(config_dict=config_dict))
+                slot_kwargs.update(getattr(slot_class, DICT_LOADER)(config_dict=config_dict))
         error_args = [key for key in slot_kwargs if key not in cls.__slots__]
         if error_args:
             logger.warning(f"The variables {error_args} in **{cls.__name__}** are not defined!")

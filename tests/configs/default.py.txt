@@ -4,11 +4,11 @@
 !!!Change the file default-htw-logger.ini or the default values in the base-classes of htw_logger.config!!!
 !!!IF htw_logger.config not exists run ```make install``` before!!!
 """
-from cornflakes import config_group
-
-from tests.configs.sub_config import SubConfig
 from dataclasses import field
 from typing import List
+
+from tests.configs.sub_config import SubConfig
+from cornflakes import config_group
 
 
 @config_group(files="tests/configs/default.ini")

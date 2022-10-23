@@ -1,4 +1,5 @@
 import collections.abc
+from os.path import abspath, expanduser
 from typing import Any, Dict, List, Optional, Union
 
 import yaml
@@ -26,7 +27,11 @@ def _get_updated_key(config: Dict, values: List[str], defaults: Dict):
 
 def _get_values(config, value: Union[str, List[str]], defaults: Dict):
     return (
-        _get_updated_key(config, value, defaults) if isinstance(value, list) else config.get(value, defaults.get(value))
+        config
+        if isinstance(config, str)
+        else _get_updated_key(config, value, defaults)
+        if isinstance(value, list)
+        else config.get(value, defaults.get(value))
     )
 
 
@@ -67,7 +72,7 @@ def _yaml_read(
     defaults: Optional[Union[str, List[str], Dict[str, Any]]],
     loader: Optional[Union[UnsafeLoader, SafeLoader]],
 ) -> Dict:
-    with open(file, "rb") as f:
+    with open(abspath(expanduser(file)), "rb") as f:
         data = f.read()
         if not loader:
             loader = yaml.UnsafeLoader if b": !!" in data else yaml.SafeLoader
@@ -85,9 +90,10 @@ def _to_map(obj: Union[str, List[str], Dict[str, Union[str, List[str]]], None]) 
     return (
         isinstance(obj, str)
         and {obj: obj}  # string
-        or isinstance(obj, list)
+        or (isinstance(obj, list) or isinstance(obj, tuple))
         and {key: key for key in obj}  # list
         or obj
+        or {}
     )  # dict
 
 
@@ -105,7 +111,6 @@ def yaml_load(
     defaults = _to_map(defaults)
 
     config = {}
-
     for file_key, file_names in files.items():
         if not file_key:
             _update(config, _yaml_read(file_names, sections, keys, defaults, loader))

@@ -2,7 +2,7 @@
 from click.testing import CliRunner
 import pytest
 
-from cornflakes.__main__ import cornflakes_cli
+from cornflakes.__main__ import main
 
 
 @pytest.fixture
@@ -13,6 +13,6 @@ def runner() -> CliRunner:
 
 def test_main_succeeds(runner: CliRunner) -> None:
     """It exits with a status code of zero."""
-    result = runner.invoke(cornflakes_cli, prog_name="cornflakes")
+    result = runner.invoke(main)
     if result.exc_info:
         assert result.exc_info[0] == TypeError or result.exc_info[0] == DeprecationWarning or result.exit_code == 0

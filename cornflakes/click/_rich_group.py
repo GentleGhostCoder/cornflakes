@@ -33,11 +33,6 @@ class RichGroup(click.Group):
         Registers another :class:`Command` with this group.  If the name
         is not provided, the name of the command is used.
         """
-        if not cmd.config:
-            cmd.config = self.config
-        if cmd.config.GLOBAL_OPTIONS:
-            for option_obj in cmd.config.GLOBAL_OPTIONS:
-                cmd.params.extend(option_obj.params)
         click.core.Group.add_command(self, cmd, name)
 
         # click.core.Group.add_command(self, cmd_wrapper, name)
@@ -47,9 +42,15 @@ class RichGroup(click.Group):
         super().__init__(*args, **kwargs)
         self.config = config or None
 
-    def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:
+    def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:  # noqa: C901
         """Main function of RichGroup."""
         try:
+            for cmd in self.commands.values():
+                if not cmd.config:
+                    cmd.config = self.config
+                if cmd.config.GLOBAL_OPTIONS:
+                    for option_obj in cmd.config.GLOBAL_OPTIONS:
+                        cmd.params.extend(option_obj.params)
             rv = super().main(*args, standalone_mode=False, **kwargs)  # type: ignore
             if not standalone_mode:
                 return rv

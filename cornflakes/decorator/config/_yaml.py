@@ -10,7 +10,7 @@ from cornflakes.parser import specific_yaml_loader
 
 def to_yaml_bytes(self, *args, **kwargs):
     """Method to write an instance of the main config class of the module into a yaml bytearray."""
-    return yaml.dump(self.to_dict(), *args, **kwargs).encode("utf-8")
+    return yaml.dump({self.__class__.__name__.lower(): self.to_dict()}, *args, **kwargs).encode("utf-8")
 
 
 def to_yaml(self, out_cfg: str = None, *args, **kwargs) -> Union[None, bytearray]:

@@ -462,23 +462,18 @@ py::object eval_type(std::string value) {
     return (py::cast(value));
   }
 
-  char first_char = value[0];
-
-  const char last_char = value.back();
-
   // remove quote
-  if (is_quoted(first_char, last_char)) {
+  if (is_quoted(value[0], value.back())) {
     value = value.erase(0, 1).erase(char_size - 2);
     char_size = char_size - 2;
-    first_char = value[0];
 
     if (value.empty()) {
       return py::none();
     }
 
     if (char_size == 1) {
-      if (std::isdigit(first_char)) return (py::cast(std::stoi(&first_char)));
-      return (py::cast(first_char));
+      if (std::isdigit(value[0])) return (py::cast(std::stoi(&value[0])));
+      return (py::cast(value[0]));
     }
   }
 
@@ -494,7 +489,7 @@ py::object eval_type(std::string value) {
     }
 
     // parse numeric
-    if (first_char == MINUS_CHAR) {
+    if (value[0] == MINUS_CHAR) {
       value = value.erase(0, 1);
       uint64_t integer = parse64(value.c_str());
       if (integer < UINT_MAX) {
@@ -510,17 +505,17 @@ py::object eval_type(std::string value) {
     return (to_integer(value));
   }
 
-  char_size = static_cast<int>(value.size());
-  first_char = value[0];
-
-  if (char_size == 1) {
-    if (std::isdigit(first_char)) return (py::cast(std::stoi(&first_char)));
-    return (py::cast(first_char));
+  // is hex char
+  if (value[0] == HEX_CHAR[0] && std::toupper(value[1]) == HEX_CHAR[1] &&
+      std::regex_match(value, hex_regex)) {
+    return (py::cast(std::stoul(value, nullptr, 16)));
   }
 
+  const char upper_first_char = static_cast<char>(std::toupper(value[0]));
+
   // boolean true or boolan false
-  if (char_size < 6 && (std::toupper(first_char) == TRUE_CHAR ||
-                        std::toupper(first_char) == FALSE_CHAR)) {
+  if (char_size < 6 &&
+      (upper_first_char == TRUE_CHAR || upper_first_char == FALSE_CHAR)) {
     if (std::regex_match(value, boolen_true_regex)) {
       return (py::cast(true));
     }

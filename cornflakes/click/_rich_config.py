@@ -1,56 +1,55 @@
-from dataclasses import dataclass, field
+from dataclasses import field
 from os import getenv
 from typing import Dict, List, Literal, Optional, Union
 
-from cornflakes.decorator import add_slots
+from cornflakes.decorator import config
 
 
-@add_slots
-@dataclass(frozen=True)
+@config(files=".click_cli.yaml")
 class Config:
     """DataClass for click config-values."""
 
     # Default styles
-    STYLE_OPTION = "bold cyan"
-    STYLE_ARGUMENT = "bold cyan"
-    STYLE_SWITCH = "bold green"
-    STYLE_METAVAR = "bold yellow"
-    STYLE_METAVAR_APPEND = "dim yellow"
-    STYLE_METAVAR_SEPARATOR = "dim"
-    STYLE_HEADER_TEXT = ""
-    STYLE_FOOTER_TEXT = ""
-    STYLE_USAGE = "yellow"
-    STYLE_USAGE_COMMAND = "bold"
-    STYLE_DEPRECATED = "red"
-    STYLE_HELPTEXT_FIRST_LINE = ""
-    STYLE_HELPTEXT = "dim"
-    STYLE_OPTION_HELP = ""
-    STYLE_OPTION_DEFAULT = "dim"
-    STYLE_OPTION_ENVVAR = "dim yellow"
-    STYLE_REQUIRED_SHORT = "red"
-    STYLE_REQUIRED_LONG = "dim red"
-    STYLE_OPTIONS_PANEL_BORDER = "dim"
-    ALIGN_OPTIONS_PANEL = "left"
+    STYLE_OPTION: str = "bold cyan"
+    STYLE_ARGUMENT: str = "bold cyan"
+    STYLE_SWITCH: str = "bold green"
+    STYLE_METAVAR: str = "bold yellow"
+    STYLE_METAVAR_APPEND: str = "dim yellow"
+    STYLE_METAVAR_SEPARATOR: str = "dim"
+    STYLE_HEADER_TEXT: str = ""
+    STYLE_FOOTER_TEXT: str = ""
+    STYLE_USAGE: str = "yellow"
+    STYLE_USAGE_COMMAND: str = "bold"
+    STYLE_DEPRECATED: str = "red"
+    STYLE_HELPTEXT_FIRST_LINE: str = ""
+    STYLE_HELPTEXT: str = "dim"
+    STYLE_OPTION_HELP: str = ""
+    STYLE_OPTION_DEFAULT: str = "dim"
+    STYLE_OPTION_ENVVAR: str = "dim yellow"
+    STYLE_REQUIRED_SHORT: str = "red"
+    STYLE_REQUIRED_LONG: str = "dim red"
+    STYLE_OPTIONS_PANEL_BORDER: str = "dim"
+    ALIGN_OPTIONS_PANEL: str = "left"
     STYLE_OPTIONS_TABLE_SHOW_LINES = False
     STYLE_OPTIONS_TABLE_LEADING = 0
     STYLE_OPTIONS_TABLE_PAD_EDGE = False
     STYLE_OPTIONS_TABLE_PADDING = (0, 1)
-    STYLE_OPTIONS_TABLE_BOX = ""
+    STYLE_OPTIONS_TABLE_BOX: str = ""
     STYLE_OPTIONS_TABLE_ROW_STYLES = None
     STYLE_OPTIONS_TABLE_BORDER_STYLE = None
-    STYLE_COMMANDS_PANEL_BORDER = "dim"
-    ALIGN_COMMANDS_PANEL = "left"
+    STYLE_COMMANDS_PANEL_BORDER: str = "dim"
+    ALIGN_COMMANDS_PANEL: str = "left"
     STYLE_COMMANDS_TABLE_SHOW_LINES = False
     STYLE_COMMANDS_TABLE_LEADING = 0
     STYLE_COMMANDS_TABLE_PAD_EDGE = False
     STYLE_COMMANDS_TABLE_PADDING = (0, 1)
-    STYLE_COMMANDS_TABLE_BOX = ""
+    STYLE_COMMANDS_TABLE_BOX: str = ""
     STYLE_COMMANDS_TABLE_ROW_STYLES = None
     STYLE_COMMANDS_TABLE_BORDER_STYLE = None
-    STYLE_ERRORS_PANEL_BORDER = "red"
-    ALIGN_ERRORS_PANEL = "left"
-    STYLE_ERRORS_SUGGESTION = "dim"
-    STYLE_ABORTED = "red"
+    STYLE_ERRORS_PANEL_BORDER: str = "red"
+    ALIGN_ERRORS_PANEL: str = "left"
+    STYLE_ERRORS_SUGGESTION: str = "dim"
+    STYLE_ABORTED: str = "red"
     MAX_WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore
     COLOR_SYSTEM: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = "auto"
     # Set to None to disable colors
@@ -60,20 +59,20 @@ class Config:
     HEADER_TEXT: Optional[str] = None
     HEADER_LOGO: Optional[str] = None
     FOOTER_TEXT: Optional[str] = None
-    DEPRECATED_STRING = "(Deprecated) "
-    DEFAULT_STRING = "[default: {}]"
-    ENVVAR_STRING = "[env var: {}]"
-    REQUIRED_SHORT_STRING = "*"
-    REQUIRED_LONG_STRING = "[required]"
-    RANGE_STRING = " [{}]"
-    APPEND_METAVARS_HELP_STRING = "({})"
-    ARGUMENTS_PANEL_TITLE = "Arguments"
-    OPTIONS_PANEL_TITLE = "Options"
+    DEPRECATED_STRING: str = "(Deprecated) "
+    DEFAULT_STRING: str = "[default: {}]"
+    ENVVAR_STRING: str = "[env var: {}]"
+    REQUIRED_SHORT_STRING: str = "*"
+    REQUIRED_LONG_STRING: str = "[required]"
+    RANGE_STRING: str = " [{}]"
+    APPEND_METAVARS_HELP_STRING: str = "({})"
+    ARGUMENTS_PANEL_TITLE: str = "Arguments"
+    OPTIONS_PANEL_TITLE: str = "Options"
     COMMANDS_PANEL_TITLE: str = "Commands"
-    ERRORS_PANEL_TITLE = "Error"
+    ERRORS_PANEL_TITLE: str = "Error"
     ERRORS_SUGGESTION: Optional[str] = None  # Default: Try 'cmd -h' for help. Set too False to disable.
     ERRORS_EPILOGUE: Optional[str] = None
-    ABORTED_TEXT = "Aborted."
+    ABORTED_TEXT: str = "Aborted."
 
     # Behaviours
     SHOW_ARGUMENTS = True  # Show positional arguments

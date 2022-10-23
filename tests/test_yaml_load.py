@@ -6,6 +6,15 @@ import unittest
 
 import cornflakes
 
+cornflakes.yaml_load(
+    files={"default": ["tests/configs/default.yaml", "tests/configs/logging.yaml"]},
+    sections=["test", "test3", "handlers"],
+    keys={"ip4v": ["ip4v"], "handlers": ["handlers", "formatters"], "not_existing": "not_existing"},
+    defaults={
+        "not_existing": True,
+    },
+)
+
 
 class TestIniLoad(unittest.TestCase):
     """Tests for ini_load."""

@@ -6,8 +6,6 @@
 """
 from cornflakes import config_group
 
-# import config
-
 
 @config_group
 class Config:

@@ -7,15 +7,16 @@ from typing import Dict, List, Union
 
 import cornflakes.builder.config_template
 from cornflakes.common import import_component
-from cornflakes.decorator.config import config_group, is_config
+from cornflakes.decorator.config import INI_LOADER, config_group, is_config
 from cornflakes.logging import logger
 
 
 def generate_group_module(
     source_module: Union[ModuleType, str],
-    source_files: Union[str, List[str], Dict[str, Union[str, List[str]]]] = None,
+    source_config: Union[str, List[str], Dict[str, Union[str, List[str]]]] = None,
     target_module_file: str = None,
     class_name: str = None,
+    loader=INI_LOADER,
     *args,
     **kwargs,
 ):
@@ -32,7 +33,10 @@ def generate_group_module(
     if args or kwargs:
         template = template.replace(
             f"@{config_group.__name__}",
-            f"@{config_group.__name__}({', '.join([*args, *[f'{key}={repr(value)}' for key, value in kwargs.items()]])})",
+            (
+                f"@{config_group.__name__}("
+                f"{', '.join([*args, *[f'{key}={repr(value)}' for key, value in kwargs.items()]])})"
+            ),
         )
 
     # Write Template to prevent import errors
@@ -44,34 +48,32 @@ def generate_group_module(
 
     ini_config_objects = {}
     imports = []
-    has_list_field = False
-    for cls_name, cls in inspect.getmembers(source_module):
-        if inspect.isclass(cls) and is_config(cls):
-            ini_config_objects.update(cls.from_ini(source_files))
-            if cls.__config_list__:
-                has_list_field = True
-            imports.append(cls_name)
+    for cfg_name, cfg_class in inspect.getmembers(source_module):
+        if inspect.isclass(cfg_class) and is_config(cfg_class):
+            cfg = getattr(cfg_class, loader)(source_config)
+            ini_config_objects.update(cfg)
+            imports.append(cfg_name)
 
     logger.debug(f"Found configs: {imports}")
 
-    extra_imports = ["from dataclasses import field", "from typing import List"] if has_list_field else []
-    declaration = (
-        [
+    declaration = [
+        (
             f"{cfg_name}: List[{cfg[0].__class__.__name__}] = field(default_factory={cfg.__class__.__name__})"
-            for cfg_name, cfg in ini_config_objects.items()
-        ]
-        if has_list_field
-        else [
-            f"{cfg_name}: {cfg.__class__.__name__} = {cfg.__class__.__name__}()"
-            for cfg_name, cfg in ini_config_objects.items()
-        ]
-    )
+            if isinstance(cfg, list)
+            else f"{cfg_name}: {cfg.__class__.__name__} = {cfg.__class__.__name__}()"
+        )
+        for cfg_name, cfg in ini_config_objects.items()
+    ]
+
+    extra_imports = ["from dataclasses import field", "from typing import List"] if declaration else []
     template = template.replace(
-        "# import config",
-        f"""from {source_module.__name__} import ({''',
+        "from",
+        (
+            f"""{'''
+'''.join(extra_imports)}\n\nfrom {source_module.__name__} import ({''',
     '''.join(imports)}
-    )\n{'''
-'''.join(extra_imports)}""",
+    )\nfrom"""
+        ),
     )
     template = template.replace(
         "pass",
@@ -85,4 +87,4 @@ def generate_group_module(
 
     if "black" in os.listdir(sysconfig.get_paths()["purelib"]):
         # fix format
-        os.system(f"black {source_files} {target_module_file}")  # noqa: S605
+        os.system(f"black {source_config} {target_module_file}")  # noqa: S605

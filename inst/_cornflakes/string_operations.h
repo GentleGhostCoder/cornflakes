@@ -28,6 +28,7 @@ namespace string_operations {
 inline const char *QUOTE_CHARS = "\"\'";
 inline const char MINUS_CHAR = '-';
 //    inline const char PLUS_CHAR = '+';
+inline const char *HEX_CHAR = "0X";
 inline const char TRUE_CHAR = 'T';
 inline const char FALSE_CHAR = 'F';
 inline const char *NUMBER_CHARS = "+-.0123456789";
@@ -37,6 +38,7 @@ inline const std::string SPECIAL_CHARS =
     COLUM_SEPERATORS + "!@#$%^&*()+?=,<>/\\ ";
 inline const std::vector<std::string> NAN_STRINGS = {"NA", "NONE", "NULL",
                                                      "UNDEFINED"};
+inline const std::regex hex_regex = std::regex("0[xX][0-9a-fA-F]+");
 inline const std::regex boolen_true_regex =
     std::regex("(true|t)", std::regex::icase);
 inline const std::regex boolen_false_regex =

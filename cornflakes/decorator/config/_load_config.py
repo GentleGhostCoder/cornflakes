@@ -16,7 +16,7 @@ def create_file_loader(
         Dict,
     ] = ini_load,
 ):
-    """Config decorator to parse Ini Files and implements from_ini method to config-classes.
+    """Config decorator to parse Ini Files and implements from_file method to config-classes.
 
     :param cls: Config class
     :param loader: Config Loader (ini_load, yaml_load)
@@ -90,7 +90,7 @@ def create_file_loader(
                 )
                 if bool(re.match(regex, section))
             ]
-            or [_create_config(config_dict, *slot_args, **slot_kwargs)]
+            or [_create_config(config_dict, *slot_args, **slot_kwargs)] * cls.__config_list__
         }
 
     return from_file

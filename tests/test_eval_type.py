@@ -165,3 +165,13 @@ class TestEvalType(unittest.TestCase):
             cornflakes.eval_type("2017-01-01 24:23:23"),
             "2017-01-01 24:23:23",
         )
+
+    def test_hex(self):
+        self.assertEqual(
+            cornflakes.eval_type("0x00"),
+            0,
+        )
+        self.assertEqual(
+            cornflakes.eval_type("0xFF"),
+            255,
+        )

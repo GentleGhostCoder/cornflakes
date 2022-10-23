@@ -12,4 +12,4 @@ class TestSpeed(unittest.TestCase):
         cornflakes.ini_load("tests/configs/default.ini")
         s -= perf_counter()
 
-        self.assertTrue(s > -0.0005)
+        self.assertTrue(s > -0.001)

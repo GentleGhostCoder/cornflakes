@@ -15,7 +15,7 @@ class TestConfigGeneration(unittest.TestCase):
     def test_auto_config_generation(self):
         """Test-function config module generation."""
 
-        source_files = "tests/configs/default.ini"
+        source_config = "tests/configs/default.ini"
         target_module_file = "tests/configs/default.py"
         test_file = "tests/configs/default.py.txt"
         ini_group_args = {"files": "tests/configs/default.ini"}
@@ -23,7 +23,7 @@ class TestConfigGeneration(unittest.TestCase):
         generate_group_module(
             class_name="MainConfig",
             source_module=tests.configs.sub_config,
-            source_files=source_files,
+            source_config=source_config,
             target_module_file=target_module_file,
             **ini_group_args
         )
