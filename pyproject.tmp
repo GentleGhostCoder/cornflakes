@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cornflakes"
-version = "2.7.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
+version = "2.7.3"  # <<COOKIETEMPLE_FORCE_BUMP>>
 description = "Create generic any easy to manage Configs for your Project"
 authors = ["Semjon Geist <semjon.geist@ionos.com>"]
 license = "Apache2.0"
@@ -108,7 +108,6 @@ requires = [
     "cmake>=3.12",
     "setuptools",
     "docutils",
-    "fastentrypoints"
 ]
 #build-backend = "setuptools.build_meta"
 build-backend = "poetry.core.masonry.api"
