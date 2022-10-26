@@ -4,9 +4,9 @@ formatters:
     events:
         format: '{"name": "%(name)s", "log_level": "%(levelname)s", "file": "%(pathname)s", "lineno": "%(lineno)d", "message": "%(message)s"}'
     normal:
-        format: "%(asctime)s - %(name)s - (%(pathname)s:%(lineno)d) - %(levelname)s - %(message)s"
+        format: "%(asctime)s - %(name)s - %(funcName)s()  - (%(pathname)s:%(lineno)d) - %(levelname)s - %(message)s"
     simple:
-        format: "%(asctime)s %(name)s - %(message)s"
+        format: "%(name)s - %(funcName)s() - %(message)s"
 #  ecs_formatter:
 #    (): ecs_logging.StdlibFormatter
 
