@@ -1,10 +1,12 @@
+from dataclasses import asdict
+
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
 
 
 def to_dict(self) -> dict:
     """Method to convert Dataclass with slots to dict."""
-    return {key: getattr(self, key) for key in self.__slots__}
+    return asdict(self)
 
 
 def create_dict_file_loader(

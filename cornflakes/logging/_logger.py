@@ -1,10 +1,11 @@
 from functools import wraps
+from inspect import isclass
 import logging
 import logging.config
 import os
 import sys
 from types import FunctionType
-from typing import Optional
+from typing import Any, Callable, Optional, Union
 
 import yaml
 
@@ -72,13 +73,19 @@ def setup_logging(
 logger.setup_logging = setup_logging
 
 
+class LoggerMetaClass(type):
+    """LoggerMetaClass used for Type Annotation."""
+
+    logger: logging.Logger = None
+
+
 def attach_log(
     obj,
     log_level: int = logger.default_level,
     default_level: int = None,
     default_path: str = "logging.yaml",
     env_key: str = "LOG_CFG",
-):
+) -> Union[Callable[..., Any], LoggerMetaClass]:
     """Function decorator to attach Logger to functions.
 
     :param obj: Logger function or class to attach the logging to.
@@ -89,64 +96,37 @@ def attach_log(
 
     :returns: Object with attached logging instance
     """
-    if callable(obj):
-        __logger = logging.getLogger(obj.__qualname__.rsplit(".", 1)[0])
-        if __logger.level == logging.DEBUG:
+    if isclass(obj):
+        obj.logger = logging.getLogger(obj.__class__.__name__)
+        obj.logger.setLevel(log_level)
+        if default_level:
+            setup_logging(default_path, default_level, env_key, force=True)
 
-            @wraps(obj)
-            def wrapper(*args, **kwargs):
-                call_signature = ", ".join([repr(a) for a in args] + [f"{k}={v!r}" for k, v in kwargs.items()])
-                __logger.debug(f"function {obj.__name__} called with args {call_signature}")
-                try:
-                    return obj(*args, **kwargs)
-                except Exception as e:
-                    __logger.exception(f"Exception raised in {obj.__name__}. exception: {str(e)}")
-                    raise e
-
-            return wrapper
-        return obj
-    obj.logger = logging.getLogger(obj.__class__.__name__)
-    obj.logger.setLevel(log_level)
-    if default_level:
-        setup_logging(default_path, default_level, env_key, force=True)
-
-
-class LoggerMetaClass(type):
-    """LoggerMetaClass used by LoggerInterface."""
-
-    def __new__(mcs, classname, bases, class_dict):  # noqa: N804
-        """Function to create new Logger."""
         new_class_dict = {}
-        for attribute_name, attribute in class_dict.items():
+        for attribute_name, attribute in obj.__dict__.items():
             if isinstance(attribute, FunctionType):
                 # replace it with a wrapped version
                 attribute = attach_log(obj=attribute)
             new_class_dict[attribute_name] = attribute
-        return type.__new__(mcs, classname, bases, new_class_dict)
 
+        return obj.__name__(obj, obj.__name__, obj.__bases__, new_class_dict)
 
-class LoggerInterface(metaclass=LoggerMetaClass):
-    """LoggerInterface to instantiate from."""
+    if callable(obj):
+        __logger = logging.getLogger(obj.__qualname__.rsplit(".", 1)[0])
 
-    def __init__(
-        self,
-        log_level: int = logger.default_level,
-        default_path="logging.yaml",
-        default_level: int = None,
-        env_key: str = "LOG_CFG",
-        **kwargs,
-    ):
-        """Function decorator to attach Logger to functions.
+        if __logger.level != logging.DEBUG:
+            return obj
 
-        :param log_level: log-level for the current object logging.
-        :param default_path: Default path to logging config file.
-        :param default_level: Default log-level (Logging.INFO).
-        :param env_key: Environment key to use for logging configuration.
-        :param kwargs: Passed other parameters.
+        @wraps(obj)
+        def wrapper(*args, **kwargs):
+            call_signature = ", ".join([repr(a) for a in args] + [f"{k}={v!r}" for k, v in kwargs.items()])
+            __logger.debug(f"function {obj.__name__} called with args {call_signature}")
+            try:
+                return obj(*args, **kwargs)
+            except Exception as e:
+                __logger.exception(f"Exception raised in {obj.__name__}. exception: {str(e)}")
+                raise e
 
-        """
-        self.logger = logging.getLogger(self.__class__.__name__)
-        self.logger.setLevel(log_level)
-        if default_level:
-            setup_logging(default_path, default_level, env_key, force=True)
-        super().__init__(**kwargs)
+        return wrapper
+
+    return obj

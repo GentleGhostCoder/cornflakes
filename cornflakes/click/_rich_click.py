@@ -43,7 +43,7 @@ highlighter = OptionHighlighter()
 
 
 # type: ignore[arg-type]
-def _get_rich_console(config: RichConfig = None) -> Console:
+def get_rich_console(config: RichConfig = None) -> Console:
     return Console(
         theme=Theme(
             {
@@ -273,6 +273,7 @@ def rich_format_help(
     ctx: click.Context,
     formatter: click.HelpFormatter,
     config: RichConfig = None,
+    console: Console = None,
 ) -> None:
     """Print nicely formatted help text using rich.
 
@@ -282,12 +283,14 @@ def rich_format_help(
     Replacement for the click function format_help().
     Takes a command or group and builds the help text output.
 
-    Args:
-        obj (click.Command or click.Group): Command or group to build help text for
-        ctx (click.Context): Click Context object
-        formatter (click.HelpFormatter): Click HelpFormatter object
+    :param formatter: Click Format Helper
+    :param obj: Command or group to build help text for
+    :param ctx: Click Context object
+    :param config: Rich Config
+    :param console: Rich Console
     """
-    console = _get_rich_console(config=config)
+    if not console:
+        console = get_rich_console(config=config)
 
     # Header logo if we have it
     if config.HEADER_LOGO:
@@ -546,7 +549,7 @@ def rich_format_help(
         )
 
 
-def rich_format_error(self: click.ClickException, config: RichConfig = None):
+def rich_format_error(self: click.ClickException, config: RichConfig = None, console: Console = None):
     """Print richly formatted click errors.
 
     Called by custom exception handler to print richly formatted click errors.
@@ -555,7 +558,8 @@ def rich_format_error(self: click.ClickException, config: RichConfig = None):
     Args:
         click.ClickException: Click exception to format.
     """
-    console = _get_rich_console(config=config)
+    if not console:
+        console = get_rich_console(config=config)
     if getattr(self, "ctx", None) is not None:
         console.print(self.ctx.get_usage())  # type: ignore
     if config.ERRORS_SUGGESTION:
@@ -584,7 +588,8 @@ def rich_format_error(self: click.ClickException, config: RichConfig = None):
         console.print(config.ERRORS_EPILOGUE)
 
 
-def rich_abort_error(config: RichConfig = None) -> None:
+def rich_abort_error(config: RichConfig = None, console: Console = None) -> None:
     """Print richly formatted abort error."""
-    console = _get_rich_console(config=config)
+    if not console:
+        console = get_rich_console(config=config)
     console.print(config.ABORTED_TEXT, style=config.STYLE_ABORTED)

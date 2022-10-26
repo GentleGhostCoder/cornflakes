@@ -1,11 +1,11 @@
 from click import style, version_option
 import pkg_resources
 
-from cornflakes import click
+from cornflakes.click import command, group, pass_context
 from cornflakes.logging import logger
 
 
-@click.command("create")
+@group("create")
 @version_option(
     prog_name="cornflakes",
     version=pkg_resources.get_distribution("cornflakes").version,
@@ -15,12 +15,21 @@ from cornflakes.logging import logger
         f"{pkg_resources.get_distribution('cornflakes').version}\033[0m"
     ),
 )
-def create_new_config():
-    """Create config template."""  # noqa: D400, D401
+@pass_context
+def create_new_config(ctx, parent):
+    """Create config template."""
+    if ctx.invoked_subcommand is None:
+        parent.console.print("[blue]I was invoked without subcommand")
+        test(parent)
+
+
+@command("test")
+def test(parent):  # verbose, background_process, self, parent
+    """Test click."""
     logger.info("call create")
     logger.debug("debug log?")
-    for _ in range(10):
-        print("blub")
+    for _ in range(5):
+        parent.console.print("[blue]HI")
 
-    with open("/home/sgeist/arbeit/cornflakes/test.txt", "wb") as f:
-        f.write(b"blub\n")
+
+create_new_config.add_command(test)

@@ -33,12 +33,14 @@ def to_ini_bytes(self, title: str = None) -> bytearray:  # TODO: implement more 
         _ini_bytes.extend(
             bytes("\n".join([f'{cfg}="{type_to_str(getattr(self, cfg))}"' for cfg in self.__slots__]), "utf-8")
         )
-        _ini_bytes.extend(b"\n")
+        _ini_bytes.extend(b"\n\n")
         return _ini_bytes
 
     for cfg_name in self.__slots__:
         cfg = getattr(self, cfg_name)
         _ini_bytes.extend(_parse_config_list(cfg, cfg_name, title))
+
+    _ini_bytes.pop()  # at least remove second line-break
 
     return _ini_bytes
 

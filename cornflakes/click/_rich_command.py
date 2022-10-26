@@ -31,8 +31,9 @@ class RichCommand(click.Command):
         """Init function of RichGroup with extra config argument."""
         super().__init__(*args, **kwargs)
         self.config = config or None
+        self.console = None
 
-    def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:
+    def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:  # noqa: C901
         """Main function of RichGroup."""
         try:
             rv = super().main(*args, standalone_mode=False, **kwargs)  # type: ignore
