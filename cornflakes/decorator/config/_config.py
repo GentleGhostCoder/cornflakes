@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import logging
-from typing import Any, Callable, Dict, List, Optional, Protocol, Union
+from typing import Any, Callable, Dict, List, Optional, Protocol, TypeVar, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator._add_dataclass_slots import add_slots
@@ -8,6 +8,20 @@ from cornflakes.decorator.config._config_group import config_group
 from cornflakes.decorator.config._dict import create_dict_file_loader, to_dict
 from cornflakes.decorator.config._ini import create_ini_file_loader, to_ini, to_ini_bytes
 from cornflakes.decorator.config._yaml import create_yaml_file_loader, to_yaml, to_yaml_bytes
+
+F_loader = TypeVar(
+    "F_loader",
+    bound=Callable[
+        [
+            Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
+            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
+            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
+            Optional[Union[str, List[str], Dict[str, Any]]],
+            Optional[Any],
+        ],
+        Any,
+    ],
+)
 
 
 class Config(Protocol):
@@ -20,14 +34,14 @@ class Config(Protocol):
     __config_files__: str = None
     __multi_config__: str = None
     __config_list__: str = None
-    to_dict: Callable[[...], Any]
-    to_ini: Callable[[...], Any]
-    to_yaml: Callable[[...], Any]
-    to_yaml_bytes: Callable[[...], Any]
-    to_ini_bytes: Callable[[...], Any]
-    from_yaml: Callable[[...], Any]
-    from_ini: Callable[[...], Any]  # class not dependent method
-    from_dict: Callable[[...], Any]
+    to_dict: F_loader
+    to_ini: F_loader
+    to_yaml: F_loader
+    to_yaml_bytes: F_loader
+    to_ini_bytes: F_loader
+    from_yaml: F_loader
+    from_ini: F_loader  # class not dependent method
+    from_dict: F_loader
 
 
 def config(  # noqa: C901

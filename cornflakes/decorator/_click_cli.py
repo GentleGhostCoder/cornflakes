@@ -5,7 +5,6 @@ from click import Group, style, version_option
 import pkg_resources
 
 from cornflakes.click import RichConfig, group
-from cornflakes.decorator.config import INI_LOADER, YAML_LOADER
 
 
 def click_cli(  # noqa: C901
@@ -20,12 +19,12 @@ def click_cli(  # noqa: C901
     if not config:
         if not files:
             config = RichConfig(*args, **kwargs)
-        elif loader in [INI_LOADER, YAML_LOADER]:
+        elif loader in ["from_ini", "from_yaml"]:
             config = getattr(RichConfig, loader)(*args, **kwargs).popitem()[1]
         elif ".ini" in files:
             config = RichConfig.from_ini(files, *args, **kwargs).popitem()[1]
         elif ".yaml" in files:
-            config = RichConfig.from_ini(files, *args, **kwargs).popitem()[1]
+            config = RichConfig.from_yaml(files, *args, **kwargs).popitem()[1]
         else:
             config = RichConfig(*args, **kwargs)
 
