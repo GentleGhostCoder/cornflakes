@@ -79,6 +79,10 @@ def create_file_loader(
                     or [(section, {}) for section in sections]
                 )
                 if bool(re.match(regex, section))
+            } or {
+                re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): _create_config(
+                    config_dict, *slot_args, **slot_kwargs
+                )
             }
         return {
             re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): [

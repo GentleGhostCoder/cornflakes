@@ -25,18 +25,23 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
         if not callable(callback):
             raise TypeError("Wrapped object should be a function!")
 
-        def wrapper(file_name: str = None, section_name: str = None, *args, **kwargs):
+        def wrapper(config_args: tuple = None, *args, **kwargs):
             __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
-                files=file_name, sections=section_name
+                files=config_args[0], sections=config_args[1]
             )
             if not __config:
-                logging.error(f"Config is empty {__config} for file {file_name} and section {section_name}")
+                logging.error(f"Config is empty {__config} for file {config_args[0]} and section {config_args[1]}")
                 raise ValueError
             if _is_config:
                 __config = __config.popitem()[1]
                 if isinstance(__config, list):
                     __config = __config[1]
-            kwargs.update({"config": __config, "file_name": file_name, "section_name": section_name})
+            kwargs.update(
+                {
+                    "config": __config,
+                    "config_args": config_args,
+                }
+            )
             return callback(
                 *args, **{key: value for key, value in kwargs.items() if key in callback.__code__.co_varnames}
             )
@@ -54,11 +59,7 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
         for slot_name in config.__slots__:
             wrapper = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(wrapper)
 
-        wrapper = argument("file_name", required=False, nargs=1, help="Passed Config to Method")(wrapper)
-        if _is_config:
-            wrapper = argument("section_name", required=False, nargs=1, help="Passed Section of Config to Method")(
-                wrapper
-            )
+        wrapper = argument("config_args", required=False, nargs=-1, help="Passed Config to Method")(wrapper)
 
         return wrapper
 
