@@ -4,7 +4,7 @@ import logging
 import logging.config
 import os
 from types import FunctionType
-from typing import Any, Callable, Optional, Protocol
+from typing import Any, Callable, Optional, Protocol, cast
 
 from rich.logging import RichHandler
 import yaml
@@ -125,10 +125,10 @@ def attach_log(
 
     def obj_wrapper(w_obj):
         if isclass(w_obj):
-            return __wrap_class(w_obj, log_level)
+            return cast(w_obj, __wrap_class(w_obj, log_level))
 
         if callable(w_obj):
-            return __wrap_function(w_obj, log_level)
+            return cast(w_obj, __wrap_function(w_obj, log_level))
 
     if not obj:
         return obj_wrapper
