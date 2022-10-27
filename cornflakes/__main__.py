@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Command-line interface."""
 from cornflakes.click import RichGroup, bg_process_option, verbose_option
 from cornflakes.decorator import click_cli
@@ -44,7 +43,8 @@ from cornflakes.decorator import click_cli
  ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚══════╝""",
     # Banner generated with figlet and figlet-fonts/ANSI\ Shadow.flf
     HEADER_TEXT="Create generic any easy to manage Configs for your Project.",
-    GLOBAL_OPTIONS=[verbose_option, bg_process_option, verbose_option, verbose_option],
+    GLOBAL_OPTIONS=[verbose_option, bg_process_option],
+    VERSION_INFO=True,
 )
 def main():
     """Main CLI Entrypoint Method."""

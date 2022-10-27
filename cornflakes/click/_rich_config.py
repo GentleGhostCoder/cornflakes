@@ -2,6 +2,7 @@ from dataclasses import field
 from os import getenv
 from typing import Dict, List, Literal, Optional, Union
 
+from cornflakes.click.options._global import GlobalOption
 from cornflakes.decorator import config
 
 
@@ -75,18 +76,20 @@ class Config:
     ABORTED_TEXT: str = "Aborted."
 
     # Behaviours
-    SHOW_ARGUMENTS = True  # Show positional arguments
-    SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGER)
-    APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
-    APPEND_METAVARS_REQUIRED = False  # Append metavar REQUIRED_LONG_STRING (eg. [required]) after the help text
-    GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
-    OPTION_ENVVAR_FIRST = False  # Show env vars before option help text instead of avert
-    USE_RST = True
-    USE_MARKDOWN = False  # Parse help strings as markdown
-    USE_MARKDOWN_EMOJI = True  # Parse emoji codes in markdown :smile:
-    USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
+    SHOW_ARGUMENTS: bool = True  # Show positional arguments
+    SHOW_METAVARS_COLUMN: bool = True  # Show a column with the option metavar (eg. INTEGER)
+    APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
+    APPEND_METAVARS_REQUIRED: bool = False  # Append metavar REQUIRED_LONG_STRING (eg. [required]) after the help text
+    GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
+    OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
+    USE_RST: bool = True
+    USE_MARKDOWN: bool = False  # Parse help strings as markdown
+    USE_MARKDOWN_EMOJI: bool = True  # Parse emoji codes in markdown :smile:
+    USE_RICH_MARKUP: bool = False  # Parse help strings for rich markup (eg. [red]my text[/])
     # Define sorted groups of panels to display subcommands
-    USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
+    USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
+
+    VERSION_INFO: bool = False
 
     CONTEXT_SETTINGS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
 
@@ -94,4 +97,4 @@ class Config:
     # Define sorted groups of panels to display options and arguments
     OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
     # Add basic global options (verbose)
-    GLOBAL_OPTIONS: List = field(default_factory=list)
+    GLOBAL_OPTIONS: List[GlobalOption] = field(default_factory=list)

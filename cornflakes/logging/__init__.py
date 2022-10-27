@@ -6,8 +6,8 @@ __________________________________
 .. autosummary::
    :toctree: _generate
 
-    logger
     attach_log
+    setup_logging
 """  # noqa: RST303 D205
 from cornflakes.logging._logger import attach_log, setup_logging
 

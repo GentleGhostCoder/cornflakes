@@ -26,7 +26,7 @@ from cornflakes.click._rich_argument import RichArg
 from cornflakes.click._rich_command import RichCommand
 from cornflakes.click._rich_group import RichGroup
 from cornflakes.click._rich_config import Config as RichConfig
-from cornflakes.click.options import bg_process_option, verbose_option, global_option, version_option
+from cornflakes.click.options import bg_process_option, verbose_option, global_option
 
 
 F = TypeVar("F", bound=Callable[..., Union[RichCommand, RichGroup, RichArg]])
@@ -86,11 +86,9 @@ def argument(*args, cls=RichArg, **kwargs) -> F:  # type: ignore
 
 
 __all__ = [
-    *dir(click),
     "global_option",
     "verbose_option",
     "bg_process_option",
-    "version_option",
     "group",
     "command",
     "argument",
@@ -98,3 +96,5 @@ __all__ = [
     "RichCommand",
     "RichConfig",
 ]
+
+__all__.extend([key for key in dir(click) if key not in __all__])

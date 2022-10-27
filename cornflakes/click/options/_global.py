@@ -1,11 +1,14 @@
-from typing import Callable, Union
+from typing import Callable, List, Protocol, TypeVar, Union
 
 from click import Command, Group, Option
 
+F = TypeVar(
+    "F",
+    bound=Callable[[Union[Command, Group, Callable[..., None]]], Union[Command, Group, Callable[..., None], Callable]],
+)
 
-def global_option(
-    *option_args, **option_kwargs
-) -> Callable[[Union[Command, Group, Callable[..., None]]], Union[Command, Group, Callable[..., None], Callable]]:
+
+def global_option(*option_args, **option_kwargs) -> F:
     """Click Option Decorator to define a global option for cli decorator."""
     _option = Option(*option_args, **option_kwargs)
 
@@ -20,3 +23,9 @@ def global_option(
         return option_func
 
     return global_option_decorator
+
+
+class GlobalOption(Protocol):
+    """GlobalOption Protocol which requires params."""
+
+    params: List[Option] = None

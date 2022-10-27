@@ -81,7 +81,7 @@ def config(  # noqa: C901
         cls.__multi_config__ = use_regex
         cls.__config_list__ = is_list
 
-        def _new(self, *new_args, **new_kwargs):
+        def new(self, *new_args, **new_kwargs):
             # two chars missing in original of next line ...
             setattr(self, DICT_PARSER, to_dict)
             setattr(self, INI_WRITER, to_ini)
@@ -90,7 +90,7 @@ def config(  # noqa: C901
             setattr(self, INI_BYTES_PARSER, to_ini_bytes)
             return super(cls, self).__new__(self)
 
-        cls.__new__ = classmethod(_new)
+        cls.__new__ = classmethod(new)
 
         setattr(cls, YAML_LOADER, staticmethod(create_yaml_file_loader(cls=cls)))
         setattr(cls, INI_LOADER, staticmethod(create_ini_file_loader(cls=cls)))

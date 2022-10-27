@@ -33,7 +33,7 @@ def setup_logging(
             config = yaml.safe_load(f.read())
             if default_level and force:
                 for handler in config["root"]["handlers"]:
-                    config["handlers"][handler]["level"] = default_level
+                    config["handlers"][handler]["level"] = default_level or logging.WARNING
             logging.config.dictConfig(config)
     else:
         if not any([isinstance(handler, RichHandler) for handler in logging.root.handlers]):
@@ -64,6 +64,8 @@ def __wrap_class(
     w_obj.logger = logging.getLogger(w_obj.__name__)
     if log_level:
         w_obj.logger.setLevel(log_level)
+    else:
+        w_obj.logger.level = logging.root.level  # reference to global logger
 
     if w_obj.logger.level == logging.DEBUG:
         for attribute_name, attribute in w_obj.__dict__.items():
@@ -82,7 +84,7 @@ def __wrap_function(
     log_level: int = None,
 ):
     logger = logging.getLogger(w_obj.__qualname__.rsplit(".", 1)[0])
-    logger.setLevel(log_level)
+    logger.setLevel(log_level or logging.root.level)
     if logger.level != logging.DEBUG:
         return w_obj
 
@@ -100,7 +102,7 @@ def __wrap_function(
 
 
 def attach_log(
-    obj,
+    obj=None,
     log_level: int = None,
     default_level: int = None,
     default_path: str = "logging.yaml",
@@ -121,10 +123,10 @@ def attach_log(
 
     def obj_wrapper(w_obj):
         if isclass(w_obj):
-            return __wrap_class(w_obj)
+            return __wrap_class(w_obj, log_level)
 
         if callable(w_obj):
-            return __wrap_function(w_obj)
+            return __wrap_function(w_obj, log_level)
 
     if not obj:
         return obj_wrapper

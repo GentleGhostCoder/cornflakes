@@ -1,14 +1,20 @@
 from inspect import getfile
 from typing import Callable
 
-from click import Group
+from click import Group, style, version_option
+import pkg_resources
 
 from cornflakes.click import RichConfig, group
 from cornflakes.decorator.config import INI_LOADER, YAML_LOADER
 
 
 def click_cli(  # noqa: C901
-    callback: Callable = None, config: RichConfig = None, files: str = None, loader: str = None, *args, **kwargs
+    callback: Callable = None,
+    config: RichConfig = None,
+    files: str = None,
+    loader: str = None,
+    *args,
+    **kwargs,
 ):
     """Function that creates generic click CLI Object."""
     if not config:
@@ -28,10 +34,24 @@ def click_cli(  # noqa: C901
             return w_callback
 
         module = getfile(w_callback)
-        if hasattr(w_callback, "__module__"):
-            module = w_callback.__module__.split(".", 1)[0]
-
         cli_group = group(module.split(".", 1)[0], config=config)(w_callback)
+        if config.VERSION_INFO:
+            name = w_callback.__qualname__
+            __version = "0.0.1"
+
+            if hasattr(w_callback, "__module__"):
+                module = w_callback.__module__.split(".", 1)[0]
+                if module != "__main__":
+                    __version = pkg_resources.get_distribution(module).version
+
+            version_args = {
+                "prog_name": name,
+                "version": __version,
+                "message": style(
+                    f"\033[95m{module}\033" f"[0m \033[95m" f"Version\033[0m: \033[1m" f"{__version}\033[0m"
+                ),
+            }
+            cli_group = version_option(**version_args)(cli_group)
 
         if cli_group.config.GLOBAL_OPTIONS:
             for option_obj in cli_group.config.GLOBAL_OPTIONS:
