@@ -383,8 +383,7 @@ inline void ParseAllFiles(const ParserData &t_ParserData) {
       item_value = system_operations::path_exanduser(item_value);
       if (!system_operations::file_exists(item_value) &&
           !string_operations::is_nan(item_value)) {
-        py::object logger =
-            py::module::import("cornflakes.logging").attr("logger");
+        py::object logger = py::module::import("logging");
         logger.attr("debug")("skipping file '" + item_value +
                              "', because not exists!");
         continue;
@@ -398,7 +397,7 @@ inline void ParseAllFiles(const ParserData &t_ParserData) {
   // load defaults if no file exists / providing
   if (t_ParserData.m_ParserConfig.envir.empty() &&
       !t_ParserData.m_ParserConfig.defaults.empty()) {
-    py::object logger = py::module::import("cornflakes.logging").attr("logger");
+    py::object logger = py::module::import("logging");
     logger.attr("debug")(
         "no sections or files to load, loading default values only.");
     py::dict file_envir = t_ParserData.m_ParserConfig.envir;
