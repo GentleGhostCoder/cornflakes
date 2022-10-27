@@ -33,9 +33,11 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
         for slot_name in config.__slots__:
             callback = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(callback)
 
-        callback = argument("File Name", type=str, required=False, nargs=1)(callback)
+        callback = argument("File Name", type=str, required=False, nargs=1, help="Passed Config to Method")(callback)
         if is_config(config):
-            callback = argument("Section Name", type=str, required=False, nargs=1)(callback)
+            callback = argument(
+                "Section Name", type=str, required=False, nargs=1, help="Passed Section of Config to Method"
+            )(callback)
 
         @wraps(callback)
         def wrapper(*args, **kwargs):
