@@ -31,16 +31,18 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
         for slot_name in config.__slots__:
             callback = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(callback)
 
-        callback = argument("File Name", type=str, required=False, nargs=1, help="Passed Config to Method")(callback)
+        callback = argument("file_name", type=str, required=False, nargs=1, help="Passed Config to Method")(callback)
         if is_config(config):
             callback = argument(
-                "Section Name", type=str, required=False, nargs=1, help="Passed Section of Config to Method"
+                "section_name", type=str, required=False, nargs=1, help="Passed Section of Config to Method"
             )(callback)
 
         @wraps(callback)
-        def wrapper(*args, **kwargs):
-            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(*args, **kwargs)
-            if len(args) == 2:
+        def wrapper(file_name: str = None, section_name: str = None, **kwargs):
+            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
+                files=file_name, sections=section_name, **kwargs
+            )
+            if file_name and section_name:
                 __config = __config.popitem()[1]
                 if isinstance(__config, list):
                     __config = __config[1]
