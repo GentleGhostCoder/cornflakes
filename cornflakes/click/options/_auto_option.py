@@ -26,6 +26,9 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
             raise TypeError("Wrapped object should be a function!")
 
         def wrapper(config_args: tuple = None, *args, **kwargs):
+            config_args = (
+                (None, None) if not config_args else (config_args[0], None) if len(config_args) == 1 else config_args
+            )
             __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
                 files=config_args[0], sections=config_args[1]
             )
