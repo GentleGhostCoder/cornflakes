@@ -1,4 +1,3 @@
-from functools import wraps
 from inspect import isclass
 from typing import Any, Callable, Dict, List, TypeVar, Union
 
@@ -25,6 +24,22 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
         if not callable(callback):
             raise TypeError("Wrapped object should be a function!")
 
+        def wrapper(file_name: str = None, section_name: str = None, *args, **kwargs):
+            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
+                files=file_name, sections=section_name
+            )
+            if _is_config:
+                __config = __config.popitem()[1]
+                if isinstance(__config, list):
+                    __config = __config[1]
+            kwargs.update({"config": __config, "file_name": file_name, "section_name": section_name})
+            return callback(
+                *args, **{key: value for key, value in kwargs.items() if key in callback.__code__.co_varnames}
+            )
+
+        if hasattr(callback, "params"):
+            wrapper.params = callback.params
+
         configs = {}
         for line in config.__doc__.split("\n"):
             line = line.strip()
@@ -33,29 +48,12 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
                 configs.update({line[0]: line[1].strip()})
         configs.update(options)
         for slot_name in config.__slots__:
-            callback = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(callback)
+            wrapper = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(wrapper)
 
-        callback = argument("file_name", required=False, nargs=1, help="Passed Config to Method")(callback)
+        wrapper = argument("file_name", required=False, nargs=1, help="Passed Config to Method")(wrapper)
         if _is_config:
-            callback = argument("section_name", required=False, nargs=1, help="Passed Section of Config to Method")(
-                callback
-            )
-
-        @wraps(callback)
-        def wrapper(*args, **kwargs):
-            print(args)
-            print(kwargs)
-            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
-                files=kwargs.get("file_name", None), sections=kwargs.get("section_name", None)
-            )
-            if _is_config:
-                __config = __config.popitem()[1]
-                if isinstance(__config, list):
-                    __config = __config[1]
-            kwargs.update({"config": __config})
-
-            return callback(
-                *args, **{key: value for key, value in kwargs.items() if key in callback.__code__.co_varnames}
+            wrapper = argument("section_name", required=False, nargs=1, help="Passed Section of Config to Method")(
+                wrapper
             )
 
         return wrapper
