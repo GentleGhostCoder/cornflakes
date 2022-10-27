@@ -1,8 +1,8 @@
 from dataclasses import asdict
 
-from cornflakes.decorator.config import Config, ConfigGroup
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
+from cornflakes.decorator.config._protocols import Config, ConfigGroup
 
 
 def to_dict(self) -> dict:
