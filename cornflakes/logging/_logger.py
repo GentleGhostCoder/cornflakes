@@ -85,7 +85,7 @@ def __wrap_function(
     log_level: int = None,
 ):
     logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__qualname__}")
-    w_obj.logger.__cornflakes__ = True
+    logger.__cornflakes__ = True
     logger.setLevel(log_level or logging.root.level)
     if logger.level != logging.DEBUG:
         return w_obj
