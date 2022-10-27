@@ -9,5 +9,5 @@ class RichArg(click.Argument):
 
     def __init__(self, *args, **kwargs):
         """Init Method for Rich Argument Class."""
-        self.help = kwargs.pop("help")
+        self.help = kwargs.pop("help", None)
         super().__init__(*args, **kwargs)

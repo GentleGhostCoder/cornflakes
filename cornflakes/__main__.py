@@ -1,4 +1,5 @@
 """Command-line interface."""
+from cornflakes.cli import test
 from cornflakes.click import RichGroup, bg_process_option, verbose_option
 from cornflakes.decorator import click_cli
 
@@ -52,7 +53,7 @@ def main():
 
 
 if isinstance(main, RichGroup):
-    for command in []:
+    for command in [test]:
         main.add_command(command)
         main.config.COMMAND_GROUPS.get("cornflakes")[0].get("commands").append(command.name)  # type: ignore
 
