@@ -43,6 +43,8 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
 
         @wraps(callback)
         def wrapper(*args, **kwargs):
+            print(args)
+            print(kwargs)
             __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
                 files=kwargs.get("file_name", None), sections=kwargs.get("section_name", None)
             )
