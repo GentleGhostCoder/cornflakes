@@ -28,7 +28,7 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:
                 line = line[6:].split(":")
                 configs.update({line[0]: line[1].strip()})
         for slot_name in config.__slots__:
-            callback = option(f"--{slot_name}", help=configs.get(slot_name, ""))(callback)
+            callback = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(callback)
 
         return callback
 
