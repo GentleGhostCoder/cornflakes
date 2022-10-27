@@ -52,7 +52,6 @@ def test_main_succeeds(runner: CliRunner) -> None:
         logging.debug("debug log?")
         for _ in range(5):
             parent.console.print("[blue]HI")
-
         Test.test()
 
     create_new_config.add_command(test)

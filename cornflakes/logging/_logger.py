@@ -33,7 +33,7 @@ def setup_logging(
             config = yaml.safe_load(f.read())
             if default_level and force:
                 for handler in config["root"]["handlers"]:
-                    config["handlers"][handler]["level"] = default_level or logging.WARNING
+                    config["handlers"][handler]["level"] = default_level or logging.root.level
             logging.config.dictConfig(config)
     else:
         if not any([isinstance(handler, RichHandler) for handler in logging.root.handlers]):
@@ -43,12 +43,15 @@ def setup_logging(
             )
             rich_handler = RichHandler(rich_tracebacks=True, **rich_handler_args)
             rich_handler.setFormatter(fmt=logging.Formatter("%(name)s - %(funcName)s() - %(message)s"))
-            rich_handler.setLevel(default_level or logging.WARNING)
+            rich_handler.setLevel(default_level or logging.root.level)
             # logging.root.handlers.clear()
             logging.root.addHandler(rich_handler)
         for handler in logging.root.handlers:
-            handler.setLevel(default_level or logging.WARNING)
-        logging.root.setLevel(default_level or logging.WARNING)
+            handler.setLevel(default_level or logging.root.level)
+        for logger in logging.root.manager.loggerDict.values():
+            if getattr(logger, "__cornflakes__", False):
+                logger.setLevel(default_level or logging.root.level)
+        logging.root.setLevel(default_level or logging.root.level)
 
 
 class LoggerMetaClass(Protocol):
@@ -61,11 +64,9 @@ def __wrap_class(
     w_obj,
     log_level: int = None,
 ):
-    w_obj.logger = logging.getLogger(w_obj.__name__)
-    if log_level:
-        w_obj.logger.setLevel(log_level)
-    else:
-        w_obj.logger.level = logging.root.level  # reference to global logger
+    w_obj.logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__name__}")
+    w_obj.logger.__cornflakes__ = True
+    w_obj.logger.setLevel(log_level or logging.root.level)
 
     if w_obj.logger.level == logging.DEBUG:
         for attribute_name, attribute in w_obj.__dict__.items():
@@ -83,7 +84,8 @@ def __wrap_function(
     w_obj,
     log_level: int = None,
 ):
-    logger = logging.getLogger(w_obj.__qualname__.rsplit(".", 1)[0])
+    logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__qualname__}")
+    w_obj.logger.__cornflakes__ = True
     logger.setLevel(log_level or logging.root.level)
     if logger.level != logging.DEBUG:
         return w_obj
