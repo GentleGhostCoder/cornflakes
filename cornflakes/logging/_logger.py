@@ -4,7 +4,7 @@ import logging
 import logging.config
 import os
 from types import FunctionType
-from typing import Any, Callable, Optional, Protocol, cast
+from typing import Any, Callable, Optional, Protocol, Union, cast
 
 from rich.logging import RichHandler
 import yaml
@@ -109,7 +109,7 @@ def attach_log(
     default_level: int = None,
     default_path: str = "logging.yaml",
     env_key: str = "LOG_CFG",
-) -> Callable[[Any], None]:
+) -> Callable[[...], Union[Any, Callable[[...], Any]]]:
     """Function decorator to attach Logger to functions.
 
     :param obj: Logger function or class to attach the logging to.
