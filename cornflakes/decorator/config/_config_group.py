@@ -11,20 +11,21 @@ from cornflakes.decorator.config._yaml import create_yaml_group_loader, to_yaml,
 class ConfigGroup(Protocol):
     """ConfigGroup Protocol Type."""
 
-    __slots__: tuple = None
-    __call__: Callable[[...], Any]
+    __dataclass_fields__: dict = None
+    __dataclass_params__: dict = None
+    __call__: Callable[[...], Any] = None
     __config_sections__: str = None
     __config_files__: str = None
     __multi_config__: str = None
     __config_list__: str = None
-    to_dict: Callable[[...], Any]
-    to_ini: Callable[[...], Any]
-    to_yaml: Callable[[...], Any]
-    to_yaml_bytes: Callable[[...], Any]
-    to_ini_bytes: Callable[[...], Any]
-    from_yaml: Callable[[...], Any]
-    from_ini: Callable[[...], Any]  # class not dependent method
-    from_dict: Callable[[...], Any]
+    to_dict: Callable[[...], Any] = None
+    to_ini: Callable[[...], Any] = None
+    to_yaml: Callable[[...], Any] = None
+    to_yaml_bytes: Callable[[...], Any] = None
+    to_ini_bytes: Callable[[...], Any] = None
+    from_yaml: Callable[[...], Any] = None
+    from_ini: Callable[[...], Any] = None  # class not dependent method
+    from_dict: Callable[[...], Any] = None
 
 
 def config_group(  # noqa: C901

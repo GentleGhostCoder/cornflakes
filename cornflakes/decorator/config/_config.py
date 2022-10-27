@@ -13,7 +13,8 @@ from cornflakes.decorator.config._yaml import create_yaml_file_loader, to_yaml, 
 class Config(Protocol):
     """Config Protocol Type."""
 
-    __slots__: tuple = None
+    __dataclass_fields__: dict = None
+    __dataclass_params__: dict = None
     __call__: Callable[[...], Any]
     __config_sections__: str = None
     __config_files__: str = None
