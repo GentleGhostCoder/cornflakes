@@ -2,7 +2,9 @@ from functools import wraps
 from inspect import isclass
 from typing import Any, Callable, Dict, List, TypeVar, Union
 
-from cornflakes.click import Command, Group, argument, option
+from click import Command, Group, option
+
+from cornflakes.click.rich import RichCommand, RichGroup, argument
 from cornflakes.decorator.config import Config, ConfigGroup, is_config
 
 F = TypeVar(
@@ -16,7 +18,7 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
     if not isclass(config):
         raise TypeError("config should be a class!")
 
-    def auto_option_decorator(callback: Union[Union[Command, Group], Callable[..., None]]):
+    def auto_option_decorator(callback: Union[Union[Command, Group, RichCommand, RichGroup], Callable[..., None]]):
 
         if not callable(callback):
             raise TypeError("Wrapped object should be a function!")
@@ -38,15 +40,19 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
             )(callback)
 
         @wraps(callback)
-        def wrapper(file_name: str = None, section_name: str = None, **kwargs):
+        def wrapper(file_name: str = None, section_name: str = None, *args, **kwargs):
             __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
-                files=file_name, sections=section_name, **kwargs
+                files=file_name, sections=section_name
             )
             if file_name and section_name:
                 __config = __config.popitem()[1]
                 if isinstance(__config, list):
                     __config = __config[1]
-            return callback(config=__config)
+            kwargs.update({"config": __config})
+
+            return callback(
+                *args, **{key: value for key, value in kwargs.items() if key in callback.__code__.co_varnames}
+            )
 
         return wrapper
 

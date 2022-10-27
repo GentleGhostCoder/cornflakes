@@ -1,4 +1,4 @@
-from typing import Callable, List, Protocol, TypeVar, Union
+from typing import Callable, TypeVar, Union
 
 from click import Command, Group, Option
 
@@ -23,9 +23,3 @@ def global_option(*option_args, **option_kwargs) -> F:
         return option_func
 
     return global_option_decorator
-
-
-class GlobalOption(Protocol):
-    """GlobalOption Protocol which requires params."""
-
-    params: List[Option] = None

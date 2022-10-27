@@ -1,7 +1,7 @@
-import click
+from click import Argument
 
 
-class RichArg(click.Argument):
+class RichArg(Argument):
     """A custom argument implementation of click.
 
     Argument class in order to provide a short help message for each argument of a command.

@@ -1,14 +1,13 @@
 import sys
 from typing import Any
 
-import click
+from click import ClickException, Command, Context, HelpFormatter, exceptions
 
-from cornflakes.click._rich_config import Config as RichConfig
+from cornflakes.click.rich._rich_click import rich_abort_error, rich_format_error, rich_format_help
+from cornflakes.click.rich._rich_config import RichConfig as RichConfig
 
-from ._rich_click import rich_abort_error, rich_format_error, rich_format_help
 
-
-class RichCommand(click.Command):
+class RichCommand(Command):
     """Richly formatted click Command.
 
     Inherits click.Command and overrides help and error methods
@@ -39,17 +38,17 @@ class RichCommand(click.Command):
             rv = super().main(*args, standalone_mode=False, **kwargs)  # type: ignore
             if not standalone_mode:
                 return rv
-        except click.ClickException as e:
+        except ClickException as e:
             if not standalone_mode:
                 raise
             rich_format_error(e, config=self.config)
             sys.exit(e.exit_code)
-        except click.exceptions.Abort:
+        except exceptions.Abort:
             if not standalone_mode:
                 raise
             rich_abort_error(config=self.config)
             sys.exit(1)
 
-    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
+    def format_help(self, ctx: Context, formatter: HelpFormatter) -> None:
         """Format function of RichGroup."""
         rich_format_help(self, ctx, formatter, config=self.config)

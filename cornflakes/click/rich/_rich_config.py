@@ -1,13 +1,20 @@
 from dataclasses import field
 from os import getenv
-from typing import Dict, List, Literal, Optional, Union
+from typing import Dict, List, Literal, Optional, Protocol, Union
 
-from cornflakes.click.options._global import GlobalOption
+from click import Option
+
 from cornflakes.decorator import config
 
 
+class GlobalOption(Protocol):
+    """GlobalOption Protocol which requires params."""
+
+    params: List[Option] = None
+
+
 @config(files=".click_cli.yaml")
-class Config:
+class RichConfig:
     """DataClass for click config-values."""
 
     # Default styles

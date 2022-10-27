@@ -1,6 +1,7 @@
 """Command-line interface."""
 from cornflakes.cli import test
-from cornflakes.click import RichGroup, bg_process_option, verbose_option
+from cornflakes.click import RichGroup
+from cornflakes.click.options import bg_process_option, verbose_option
 from cornflakes.decorator import click_cli
 
 
