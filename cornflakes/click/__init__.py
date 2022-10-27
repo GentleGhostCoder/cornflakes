@@ -26,7 +26,7 @@ from cornflakes.click._rich_argument import RichArg
 from cornflakes.click._rich_command import RichCommand
 from cornflakes.click._rich_group import RichGroup
 from cornflakes.click._rich_config import Config as RichConfig
-from cornflakes.click.options import bg_process_option, verbose_option, global_option
+from cornflakes.click.options import bg_process_option, verbose_option, global_option, auto_option
 
 
 F = TypeVar("F", bound=Callable[..., Union[RichCommand, RichGroup, RichArg]])
@@ -89,6 +89,7 @@ __all__ = [
     "global_option",
     "verbose_option",
     "bg_process_option",
+    "auto_option",
     "group",
     "command",
     "argument",
