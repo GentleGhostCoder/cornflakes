@@ -1,4 +1,5 @@
 from inspect import isclass
+import logging
 from typing import Any, Callable, Dict, List, TypeVar, Union
 
 from click import Command, Group, option
@@ -28,6 +29,9 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
             __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
                 files=file_name, sections=section_name
             )
+            if not __config:
+                logging.error(f"Config is empty {__config} for file {file_name} and section {section_name}")
+                raise ValueError
             if _is_config:
                 __config = __config.popitem()[1]
                 if isinstance(__config, list):
