@@ -64,7 +64,7 @@ breathe = ">=4.34.0"
 Cython  = ">=0.29.32"
 mock = ">=4.0.3"
 docutils = ">=0.17.1"
-setuptools = ">=65.5.0"
+setuptools = "^65.5.0"
 
 [tool.poetry.scripts]
 cornflakes = "cornflakes.__main__:main"
