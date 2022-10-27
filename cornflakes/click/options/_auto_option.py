@@ -18,6 +18,8 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
     if not isclass(config):
         raise TypeError("config should be a class!")
 
+    _is_config = is_config(config)
+
     def auto_option_decorator(callback: Union[Union[Command, Group, RichCommand, RichGroup], Callable[..., None]]):
 
         if not callable(callback):
@@ -33,18 +35,18 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
         for slot_name in config.__slots__:
             callback = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(callback)
 
-        callback = argument("file_name", type=str, required=False, nargs=1, help="Passed Config to Method")(callback)
-        if is_config(config):
-            callback = argument(
-                "section_name", type=str, required=False, nargs=1, help="Passed Section of Config to Method"
-            )(callback)
+        callback = argument("file_name", required=False, nargs=1, help="Passed Config to Method")(callback)
+        if _is_config:
+            callback = argument("section_name", required=False, nargs=1, help="Passed Section of Config to Method")(
+                callback
+            )
 
         @wraps(callback)
-        def wrapper(file_name: str = None, section_name: str = None, *args, **kwargs):
+        def wrapper(*args, **kwargs):
             __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
-                files=file_name, sections=section_name
+                files=kwargs.get("file_name", None), sections=kwargs.get("section_name", None)
             )
-            if file_name and section_name:
+            if _is_config:
                 __config = __config.popitem()[1]
                 if isinstance(__config, list):
                     __config = __config[1]
