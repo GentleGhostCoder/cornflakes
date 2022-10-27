@@ -8,7 +8,7 @@ from typing import Dict, List, Union
 
 import cornflakes.builder.config_template
 from cornflakes.common import import_component
-from cornflakes.decorator.config import INI_LOADER, config_group, is_config
+from cornflakes.decorator.config import Loader, config_group, is_config
 
 
 def generate_group_module(
@@ -16,7 +16,7 @@ def generate_group_module(
     source_config: Union[str, List[str], Dict[str, Union[str, List[str]]]] = None,
     target_module_file: str = None,
     class_name: str = None,
-    loader=INI_LOADER,
+    loader: Loader = Loader.INI_LOADER,
     *args,
     **kwargs,
 ):
@@ -50,7 +50,7 @@ def generate_group_module(
     imports = []
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if inspect.isclass(cfg_class) and is_config(cfg_class):
-            cfg = getattr(cfg_class, loader)(source_config)
+            cfg = getattr(cfg_class, str(loader.value))(source_config)
             ini_config_objects.update(cfg)
             imports.append(cfg_name)
 

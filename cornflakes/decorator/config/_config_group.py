@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Protocol, TypeVar, Union
 
-from cornflakes import ini_load
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator.config._dict import create_dict_group_loader, to_dict
 from cornflakes.decorator.config._ini import create_ini_group_loader, to_ini, to_ini_bytes
@@ -46,24 +45,12 @@ def config_group(  # noqa: C901
     config_cls=None,
     files: Union[str, List[str]] = None,
     *args,
-    loader: Callable[
-        [
-            Union[
-                Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
-                Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-                Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-                Optional[Union[str, List[str], Dict[str, Any]]],
-            ]
-        ],
-        Dict,
-    ] = ini_load,
     **kwargs,
 ) -> Callable[..., ConfigGroup]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
     :param config_cls: Config class
     :param files: Default config files
-    :param loader: Config Loader (ini_load, yaml_load)
     :param args: Default configs to overwrite dataclass args
     :param kwargs: Default configs to overwrite dataclass args
 

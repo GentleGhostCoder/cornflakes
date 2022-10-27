@@ -2,7 +2,6 @@ from dataclasses import dataclass
 import logging
 from typing import Any, Callable, Dict, List, Optional, Protocol, TypeVar, Union
 
-from cornflakes import ini_load
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator.config._config_group import config_group
 from cornflakes.decorator.config._dict import create_dict_file_loader, to_dict
@@ -51,17 +50,6 @@ def config(  # noqa: C901
     use_regex: bool = False,
     is_list: Union[bool, int] = False,
     *args,
-    loader: Callable[
-        [
-            Union[
-                Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
-                Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-                Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-                Optional[Union[str, List[str], Dict[str, Any]]],
-            ]
-        ],
-        Dict,
-    ] = ini_load,
     **kwargs,
 ) -> Callable[..., Config]:
     """Config decorator to parse Ini Files and implements config loader methods to config-classes.
@@ -71,7 +59,6 @@ def config(  # noqa: C901
     :param sections: Default config sections
     :param use_regex: Flag to eval all sections by regex
     :param is_list: Flag to load Config as List of this class
-    :param loader: Config Loader (ini_load, yaml_load)
     :param args: Default configs to overwrite dataclass args
     :param kwargs: Default configs to overwrite dataclass args
 
@@ -95,7 +82,6 @@ def config(  # noqa: C901
                 *args,
                 config_cls=cls,
                 files=files,
-                loader=loader,
                 **kwargs,
             )
 
