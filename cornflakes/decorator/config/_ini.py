@@ -3,9 +3,9 @@ from typing import Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
-from cornflakes.decorator.config import Config, ConfigGroup
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
+from cornflakes.decorator.config._protocols import Config, ConfigGroup
 from cornflakes.decorator.config._write_config import write_config
 
 
