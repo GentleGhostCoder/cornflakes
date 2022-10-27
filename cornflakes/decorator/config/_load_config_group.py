@@ -2,11 +2,10 @@ import logging
 from typing import Any, Callable, Dict, List, Union
 
 from cornflakes import ini_load
-from cornflakes.decorator.config._config_group import ConfigGroup
 
 
 def create_group_loader(
-    cls: ConfigGroup = None,
+    cls=None,
     loader: Callable[
         [
             Dict[Union[str, None], Union[str, List[str]]],
