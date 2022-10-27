@@ -1,9 +1,10 @@
 from functools import wraps
 from inspect import isclass
-from typing import Any, Callable, TypeVar, Union
+from typing import Any, Callable, Dict, List, TypeVar, Union
 
 from click import Command, Group, option
 
+from cornflakes.click import argument
 from cornflakes.decorator.config import Config, ConfigGroup
 
 F = TypeVar(
@@ -32,9 +33,11 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:
         for slot_name in config.__slots__:
             callback = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(callback)
 
+        callback = argument("Section-Name", type=str, required=False, nargs=1)(callback)
+
         @wraps(callback)
         def wrapper(**kwargs):
-            __config: Config = config.from_file(**kwargs)
+            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(**kwargs)
             return callback(config=__config)
 
         return wrapper

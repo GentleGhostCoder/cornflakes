@@ -2,6 +2,7 @@ import logging
 from typing import Any, Callable, Dict, List, Union
 
 from cornflakes import ini_load
+from cornflakes.decorator.config._protocols import ConfigGroup
 
 
 def create_group_loader(
@@ -26,7 +27,7 @@ def create_group_loader(
         config_dict: Dict[str, Any] = None,
         *slot_args,
         **slot_kwargs,
-    ) -> cls:
+    ) -> ConfigGroup:
         """Config parser from config files.
 
         :param files: Default config files

@@ -3,6 +3,7 @@ import re
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from cornflakes import ini_load
+from cornflakes.decorator.config._protocols import Config
 
 
 def create_file_loader(
@@ -40,7 +41,7 @@ def create_file_loader(
         config_dict: Dict[str, Any] = None,
         *slot_args,
         **slot_kwargs,
-    ) -> Union[dict, List[Any]]:
+    ) -> Dict[str, Union[Config, List[Config]]]:
         """Config parser from ini files.
 
         :param files: Default config files
