@@ -26,7 +26,7 @@ from cornflakes.parser import yaml_load
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "2.8.3"
+__version__ = "2.8.4"
 
 __all__ = [
     "click_cli",
