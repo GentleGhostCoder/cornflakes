@@ -14,6 +14,7 @@ See referenced Code at https://github.com/ewels/rich-click.git
     verbose_option
     bg_process_option
 """  # noqa: RST303 D205
+from functools import wraps
 from inspect import signature
 from typing import Callable, Union, TypeVar
 import click
@@ -37,6 +38,7 @@ def __rich_global_option_wrapper(click_func, *wrap_args, **wrap_kwargs) -> F:
 
         click_cls = click_func(*wrap_args, **wrap_kwargs)(func)
 
+        @wraps(func)
         def click_callback(*args, **kwargs):
             kwargs["self"]: RichGroup = func
             kwargs["parent"]: RichGroup = click_cls

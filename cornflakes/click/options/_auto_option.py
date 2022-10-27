@@ -1,3 +1,4 @@
+from functools import wraps
 from inspect import isclass
 from typing import Any, Callable, TypeVar, Union
 
@@ -27,9 +28,15 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:
             if line[:5] == ":cvar":
                 line = line[6:].split(":")
                 configs.update({line[0]: line[1].strip()})
+        configs.update(options)
         for slot_name in config.__slots__:
             callback = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(callback)
 
-        return callback
+        @wraps(callback)
+        def wrapper(**kwargs):
+            __config: Config = config.from_file(**kwargs)
+            return callback(config=__config)
+
+        return wrapper
 
     return auto_option_decorator

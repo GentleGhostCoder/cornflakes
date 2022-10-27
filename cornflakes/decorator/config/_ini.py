@@ -3,6 +3,7 @@ from typing import Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
+from cornflakes.decorator.config import Config, ConfigGroup
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.config._write_config import write_config
@@ -52,7 +53,7 @@ def to_ini(self, out_cfg: str = None) -> Union[None, bytearray]:
 
 def create_ini_file_loader(
     cls=None,
-):
+) -> Config:
     """Method to create file loader for ini files."""
 
     def from_ini(*args, **kwargs):
@@ -63,7 +64,7 @@ def create_ini_file_loader(
 
 def create_ini_group_loader(
     cls=None,
-):
+) -> ConfigGroup:
     """Method to create file loader for ini files."""
 
     def from_ini(*args, **kwargs):

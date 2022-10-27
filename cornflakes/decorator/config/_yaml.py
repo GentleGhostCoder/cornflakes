@@ -2,6 +2,7 @@ from typing import Union
 
 import yaml
 
+from cornflakes.decorator.config import Config, ConfigGroup
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.config._write_config import write_config
@@ -20,7 +21,7 @@ def to_yaml(self, out_cfg: str = None, *args, **kwargs) -> Union[None, bytearray
 
 def create_yaml_file_loader(
     cls=None,
-):
+) -> Config:
     """Method to create file loader for yaml files."""
 
     def from_yaml(*args, loader: Union[yaml.SafeLoader, yaml.UnsafeLoader] = yaml.SafeLoader, **kwargs):
@@ -32,7 +33,7 @@ def create_yaml_file_loader(
 
 def create_yaml_group_loader(
     cls=None,
-):
+) -> ConfigGroup:
     """Method to create file loader for yaml files."""
 
     def from_yaml(*args, loader: Union[yaml.SafeLoader, yaml.UnsafeLoader] = yaml.SafeLoader, **kwargs):
