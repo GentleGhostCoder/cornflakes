@@ -1,11 +1,11 @@
 from inspect import getfile
+import logging
 from os.path import abspath
 import subprocess  # noqa: S404
 import sys
 from typing import Callable
 
 from cornflakes.click.options._global import global_option
-from cornflakes.logging import logger
 
 
 @global_option(
@@ -16,14 +16,14 @@ from cornflakes.logging import logger
 def bg_process_option(self: Callable[..., None], background_process: bool, *func_args, **func_kwargs):
     """Default Option for running in background."""
     if background_process:
-        stdout_file = f"{self.__name__}.logs"
+        stdout_file = f"{self.__name__}.log"
         stderr_file = f"{self.__name__}_error.log"
-        logger.debug(
+        logging.debug(
             f"Method {self.__name__} is running in background. "
             f"See logs at stdout: {stdout_file}, stderr: {stderr_file}."
         )
         stdout = open(stdout_file, "w")
-        stderr = open(f"{self.__name__}_error.logs", "w")
+        stderr = open(stderr_file, "w")
         subprocess.Popen(  # noqa: S603
             [
                 sys.executable,

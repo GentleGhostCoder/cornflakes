@@ -1,3 +1,4 @@
+import logging
 from typing import Union
 
 from cornflakes import ini_load
@@ -5,7 +6,6 @@ from cornflakes.common import type_to_str
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.config._write_config import write_config
-from cornflakes.logging import logger
 
 
 def _parse_config_list(cfg, cfg_name: str, title: str):
@@ -19,7 +19,7 @@ def _parse_config_list(cfg, cfg_name: str, title: str):
             _ini_bytes.extend(_parse_config_list(sub_cfg, f"{cfg_name}_{n}", title))
         return _ini_bytes
     else:
-        logger.warning(f"The Value {cfg_name} of {title} be in a child config class!")
+        logging.warning(f"The Value {cfg_name} of {title} be in a child config class!")
         return b""
 
 

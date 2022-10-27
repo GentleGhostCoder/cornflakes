@@ -1,12 +1,8 @@
 import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
-import logging
 
 from cornflakes.decorator.config import config
-from cornflakes.logging import logger
-
-logger.setup_logging(default_level=logging.DEBUG)
 
 
 @config(sections="sub_config", use_regex=True, is_list=True, frozen=True)

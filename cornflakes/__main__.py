@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 """Command-line interface."""
-from cornflakes.cli import create_new_config
 from cornflakes.click import RichGroup, bg_process_option, verbose_option
 from cornflakes.decorator import click_cli
 
@@ -45,7 +44,7 @@ from cornflakes.decorator import click_cli
  ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚══════╝""",
     # Banner generated with figlet and figlet-fonts/ANSI\ Shadow.flf
     HEADER_TEXT="Create generic any easy to manage Configs for your Project.",
-    GLOBAL_OPTIONS=[verbose_option, bg_process_option, verbose_option],
+    GLOBAL_OPTIONS=[verbose_option, bg_process_option, verbose_option, verbose_option],
 )
 def main():
     """Main CLI Entrypoint Method."""
@@ -53,7 +52,7 @@ def main():
 
 
 if isinstance(main, RichGroup):
-    for command in [create_new_config]:
+    for command in []:
         main.add_command(command)
         main.config.COMMAND_GROUPS.get("cornflakes")[0].get("commands").append(command.name)  # type: ignore
 

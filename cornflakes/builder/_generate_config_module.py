@@ -1,5 +1,6 @@
 """cornflakes config generation."""
 import inspect
+import logging
 import os
 import sysconfig
 from types import ModuleType
@@ -8,7 +9,6 @@ from typing import Dict, List, Union
 import cornflakes.builder.config_template
 from cornflakes.common import import_component
 from cornflakes.decorator.config import INI_LOADER, config_group, is_config
-from cornflakes.logging import logger
 
 
 def generate_group_module(
@@ -54,7 +54,7 @@ def generate_group_module(
             ini_config_objects.update(cfg)
             imports.append(cfg_name)
 
-    logger.debug(f"Found configs: {imports}")
+    logging.debug(f"Found configs: {imports}")
 
     declaration = [
         (

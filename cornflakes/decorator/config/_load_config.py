@@ -1,8 +1,8 @@
+import logging
 import re
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from cornflakes import ini_load
-from cornflakes.logging import logger
 
 
 def create_file_loader(
@@ -28,8 +28,8 @@ def create_file_loader(
         config.update(cls_kwargs)
         error_args = [key for key in config if key not in cls.__slots__]
         if error_args:
-            logger.warning(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
-            logger.warning(f"Please check Args: {error_args}")
+            logging.warning(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
+            logging.warning(f"Please check Args: {error_args}")
         #  config_instance
         config_instance = cls(*cls_args, **{key: value for key, value in config.items() if key in cls.__slots__})
         return config_instance
@@ -57,17 +57,17 @@ def create_file_loader(
         if not files:
             files = cls.__config_files__
         if not cls.__multi_config__ and isinstance(sections, str):
-            logger.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
+            logging.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
             if not config_dict:
                 config_dict = loader({None: files}, sections, cls.__slots__[len(slot_args) :])
-                logger.debug(f"Read config with sections: {config_dict.keys()}")
+                logging.debug(f"Read config with sections: {config_dict.keys()}")
             return {sections: _create_config(config_dict.get(sections, {}), *slot_args, **slot_kwargs)}
 
         if not config_dict:
             config_dict = loader({None: files}, None, cls.__slots__[len(slot_args) :])
-            logger.debug(f"Read config with sections: {config_dict.keys()}")
+            logging.debug(f"Read config with sections: {config_dict.keys()}")
         regex = f'({"|".join(sections) if isinstance(sections, list) else sections})'
-        logger.debug(f"Load all configs that mach **{regex}**")
+        logging.debug(f"Load all configs that mach **{regex}**")
         if not cls.__config_list__:
             return {
                 section: _create_config(config_dict, *slot_args, **slot_kwargs)

@@ -1,8 +1,8 @@
+import logging
 from typing import Any, Callable, Dict, List, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator.config._loader import DICT_LOADER
-from cornflakes.logging import logger
 
 
 def create_group_loader(
@@ -43,7 +43,7 @@ def create_group_loader(
 
         if not config_dict:
             config_dict = loader({None: files})
-        logger.debug(f"Read config with sections: {config_dict.keys()}")
+        logging.debug(f"Read config with sections: {config_dict.keys()}")
         for slot_class in list(cls.__annotations__.values())[len(slot_args) :]:
             is_list = hasattr(slot_class, "__args__")
             if is_list:
@@ -52,8 +52,8 @@ def create_group_loader(
                 slot_kwargs.update(getattr(slot_class, DICT_LOADER)(config_dict=config_dict))
         error_args = [key for key in slot_kwargs if key not in cls.__slots__]
         if error_args:
-            logger.warning(f"The variables {error_args} in **{cls.__name__}** are not defined!")
-            logger.warning("Use generate_group in build script to auto generate the config group!")
+            logging.warning(f"The variables {error_args} in **{cls.__name__}** are not defined!")
+            logging.warning("Use generate_group in build script to auto generate the config group!")
 
         return cls(*slot_args, **{key: value for key, value in slot_kwargs.items() if key not in error_args})
 

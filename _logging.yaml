@@ -44,4 +44,4 @@ handlers:
 
 root:
     level: DEBUG
-    handlers: [rich_console, info_file_handler, error_file_handler]
+    handlers: [rich_console]

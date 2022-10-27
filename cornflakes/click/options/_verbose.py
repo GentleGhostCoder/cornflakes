@@ -1,7 +1,7 @@
 import logging
 
 from cornflakes.click.options._global import global_option
-from cornflakes.logging import logger
+from cornflakes.logging import setup_logging
 
 
 @global_option(
@@ -11,4 +11,4 @@ from cornflakes.logging import logger
 )
 def verbose_option(verbose):
     """Default Option for verbose logging."""
-    logger.setup_logging(default_level=verbose and logging.DEBUG, force=True)
+    setup_logging(default_level=logging.DEBUG if verbose else None, force=True)

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import logging
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
@@ -17,7 +18,6 @@ from cornflakes.decorator.config._loader import (
     YAML_WRITER,
 )
 from cornflakes.decorator.config._yaml import create_yaml_file_loader, to_yaml, to_yaml_bytes
-from cornflakes.logging import logger
 
 
 def config(  # noqa: C901
@@ -58,12 +58,12 @@ def config(  # noqa: C901
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
-            logger.warning(f"{cls.__name__} missing annotations for values!")
+            logging.warning(f"{cls.__name__} missing annotations for values!")
             return cls
 
         # Check is config
         if any([hasattr(slot, "__config_sections__") for slot in cls.__annotations__.values()]):
-            logger.warning(
+            logging.warning(
                 "Wrapper config not working for a subset of config classes. "
                 f"Please use {config_group.__name__} instead."
             )

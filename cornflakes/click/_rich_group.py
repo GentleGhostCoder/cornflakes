@@ -1,7 +1,8 @@
 import sys
-from typing import Any
+from typing import Any, Callable, Optional, Union
 
 import click
+from click import Command
 
 from cornflakes.click._rich_config import Config as RichConfig
 
@@ -26,6 +27,12 @@ class RichGroup(click.Group):
     def callback(self):
         """Callback method with is wrapped over the command group."""
         pass
+
+    def add_command(
+        self, cmd: Union[Command, RichCommand, Callable[..., Optional[Any]]], name: Optional[str] = None
+    ) -> None:
+        """Registers another :class:`Command` with this group.  If the name is not provided, the name of the command is used."""
+        click.Group.add_command(self, cmd, name)
 
     def __init__(self, config: RichConfig = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""
