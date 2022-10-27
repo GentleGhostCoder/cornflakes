@@ -1,15 +1,6 @@
 """cornflakes config decorator module."""
-from cornflakes.decorator.config._config import config
-from cornflakes.decorator.config._config_group import config_group
-from cornflakes.decorator.config._loader import (
-    YAML_LOADER,
-    INI_LOADER,
-    DICT_LOADER,
-    YAML_WRITER,
-    INI_WRITER,
-    INI_BYTES_PARSER,
-    YAML_BYTES_PARSER,
-)
+from cornflakes.decorator.config._config import config, Config
+from cornflakes.decorator.config._config_group import config_group, ConfigGroup
 
 
 def is_config(cls):
@@ -26,11 +17,6 @@ __all__ = [
     "config",
     "config_group",
     "is_config",
-    "YAML_LOADER",
-    "INI_LOADER",
-    "DICT_LOADER",
-    "YAML_WRITER",
-    "INI_WRITER",
-    "INI_BYTES_PARSER",
-    "YAML_BYTES_PARSER",
+    "Config",
+    "ConfigGroup",
 ]

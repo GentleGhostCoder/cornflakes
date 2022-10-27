@@ -3,10 +3,11 @@ import re
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from cornflakes import ini_load
+from cornflakes.decorator.config._config import Config
 
 
 def create_file_loader(
-    cls=None,
+    cls: Config = None,
     loader: Callable[
         [
             Dict[Union[str, None], Union[str, List[str]]],

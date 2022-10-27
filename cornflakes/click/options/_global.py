@@ -14,7 +14,7 @@ def global_option(*option_args, **option_kwargs) -> F:
 
     def global_option_decorator(option_func: Union[Union[Command, Group], Callable[..., None]]):
         if not callable(option_func):
-            return option_func
+            raise TypeError("Wrapped object should be a function!")
 
         if not hasattr(option_func, "params"):
             option_func.params = []

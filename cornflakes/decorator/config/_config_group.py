@@ -1,11 +1,30 @@
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Protocol, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator.config._dict import create_dict_group_loader, to_dict
 from cornflakes.decorator.config._ini import create_ini_group_loader, to_ini, to_ini_bytes
 from cornflakes.decorator.config._yaml import create_yaml_group_loader, to_yaml, to_yaml_bytes
+
+
+class ConfigGroup(Protocol):
+    """ConfigGroup Protocol Type."""
+
+    __slots__: tuple = None
+    __call__: Callable[[...], Any]
+    __config_sections__: str = None
+    __config_files__: str = None
+    __multi_config__: str = None
+    __config_list__: str = None
+    to_dict: Callable[[...], Any]
+    to_ini: Callable[[...], Any]
+    to_yaml: Callable[[...], Any]
+    to_yaml_bytes: Callable[[...], Any]
+    to_ini_bytes: Callable[[...], Any]
+    from_yaml: Callable[[...], Any]
+    from_ini: Callable[[...], Any]  # class not dependent method
+    from_dict: Callable[[...], Any]
 
 
 def config_group(  # noqa: C901
@@ -24,7 +43,7 @@ def config_group(  # noqa: C901
         Dict,
     ] = ini_load,
     **kwargs,
-):
+) -> Callable[..., ConfigGroup]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
     :param config_cls: Config class
@@ -46,7 +65,7 @@ def config_group(  # noqa: C901
         if not hasattr(cls, "__annotations__"):
             return cls
 
-        def _new(self, *new_args, **new_kwargs):
+        def new(self, *new_args, **new_kwargs):
             # two chars missing in original of next line ...
             self.to_dict = to_dict
             self.to_ini = to_ini
@@ -55,7 +74,7 @@ def config_group(  # noqa: C901
             self.to_ini_bytes = to_ini_bytes
             return super(cls, self).__new__(self)
 
-        cls.__new__ = classmethod(_new)
+        cls.__new__ = classmethod(new)
 
         cls.from_yaml = staticmethod(create_yaml_group_loader(cls=cls))
         cls.from_ini = staticmethod(create_ini_group_loader(cls=cls))  # class not dependent method
