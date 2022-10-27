@@ -2,9 +2,7 @@ from functools import wraps
 from inspect import isclass
 from typing import Any, Callable, Dict, List, TypeVar, Union
 
-from click import Command, Group, option
-
-from cornflakes.click import argument
+from cornflakes.click import Command, Group, argument, option
 from cornflakes.decorator.config import Config, ConfigGroup, is_config
 
 F = TypeVar(
