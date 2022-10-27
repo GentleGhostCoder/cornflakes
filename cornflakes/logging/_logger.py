@@ -130,6 +130,8 @@ def attach_log(
         if callable(w_obj):
             return cast(w_obj, __wrap_function(w_obj, log_level))
 
+        return obj
+
     if not obj:
         return obj_wrapper
     return obj_wrapper(obj)
