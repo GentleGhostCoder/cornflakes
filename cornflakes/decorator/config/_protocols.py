@@ -6,7 +6,7 @@ class BaseConfig(Protocol):
 
     __dataclass_fields__: dict = None
     __dataclass_params__: dict = None
-    __call__: Callable[[...], Any]
+    __call__: Callable[..., Any]
     __config_sections__: str = None
     __config_files__: str = None
     __multi_config__: str = None
@@ -84,7 +84,7 @@ class Config(Protocol):
 
     __dataclass_fields__: dict = None
     __dataclass_params__: dict = None
-    __call__: Callable[[...], Any]
+    __call__: Callable[..., Any]
     __config_sections__: str = None
     __config_files__: str = None
     __multi_config__: str = None
