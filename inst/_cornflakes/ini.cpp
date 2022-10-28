@@ -380,7 +380,7 @@ inline void ParseAllFiles(const ParserData &t_ParserData) {
     }
 
     for (std::string item_value : item.second) {
-      if (item_value.empty()) {
+      if (string_operations::is_nan(item_value)) {
         continue;
       }
       item_value = system_operations::path_exanduser(item_value);
