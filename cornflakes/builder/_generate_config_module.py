@@ -30,14 +30,6 @@ def generate_group_module(
     if class_name:
         template = template.replace("class Config", f"class {class_name}")
         template = template.replace('["Config"]', f'["{class_name}"]')
-    if args or kwargs:
-        template = template.replace(
-            f"@{config_group.__name__}",
-            (
-                f"@{config_group.__name__}("
-                f"{', '.join([*args, *[f'{key}={repr(value)}' for key, value in kwargs.items()]])})"
-            ),
-        )
 
     # Write Template to prevent import errors
     with open(target_module_file, "w") as file:
@@ -48,11 +40,13 @@ def generate_group_module(
 
     ini_config_objects = {}
     imports = []
+    files = []
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if inspect.isclass(cfg_class) and is_config(cfg_class):
             cfg = getattr(cfg_class, str(loader.value))(source_config)
             ini_config_objects.update(cfg)
             imports.append(cfg_name)
+            files.extend([file for file in cfg.__config_files__ if file not in files])
 
     logging.debug(f"Found configs: {imports}")
 
@@ -66,6 +60,20 @@ def generate_group_module(
     ]
 
     extra_imports = ["from dataclasses import field", "from typing import List"] if declaration else []
+
+    kwargs.update(
+        {"files": [*kwargs.get("files", []), *(file for file in files if file not in kwargs.get("files", []))]}
+    )
+
+    if args or kwargs:
+        template = template.replace(
+            f"@{config_group.__name__}",
+            (
+                f"@{config_group.__name__}("
+                f"{', '.join([*args, *[f'{key}={repr(value)}' for key, value in kwargs.items()]])})"
+            ),
+        )
+
     template = template.replace(
         "from",
         (
