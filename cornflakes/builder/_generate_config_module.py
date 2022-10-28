@@ -40,7 +40,8 @@ def generate_group_module(
 
     ini_config_objects = {}
     imports = []
-    files = []
+    files = kwargs.get("files", [])
+    files = files if isinstance(files, list) else [files]
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if inspect.isclass(cfg_class) and is_config(cfg_class):
             cfg = getattr(cfg_class, str(loader.value))(source_config)
@@ -61,9 +62,7 @@ def generate_group_module(
 
     extra_imports = ["from dataclasses import field", "from typing import List"] if declaration else []
 
-    kwargs.update(
-        {"files": [*kwargs.get("files", []), *(file for file in files if file not in kwargs.get("files", []))]}
-    )
+    kwargs.update({"files": files})
 
     if args or kwargs:
         template = template.replace(
