@@ -56,8 +56,8 @@ def config(  # noqa: C901
             )
 
         cls = add_slots(dataclass(cls, *args, **kwargs))
-        cls.__config_sections__ = sections if isinstance(sections, list) else [sections] if sections else None
-        cls.__config_files__ = files if isinstance(files, list) else [files] if files else None
+        cls.__config_sections__ = sections if isinstance(sections, list) else [sections]
+        cls.__config_files__ = files if isinstance(files, list) else [files]
         cls.__multi_config__ = use_regex
         cls.__config_list__ = is_list
 
