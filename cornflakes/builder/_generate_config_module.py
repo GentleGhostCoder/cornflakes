@@ -46,7 +46,7 @@ def generate_group_module(
             cfg = getattr(cfg_class, str(loader.value))(source_config)
             ini_config_objects.update(cfg)
             imports.append(cfg_name)
-            files.extend([file for file in cfg_class.get("__config_files__", []) if file not in files])
+            files.extend([file for file in getattr(cfg_class, "__config_files__", []) if file not in files])
 
     logging.debug(f"Found configs: {imports}")
 
