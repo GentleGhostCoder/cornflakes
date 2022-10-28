@@ -1,22 +1,15 @@
 import logging
 import re
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Union
 
 from cornflakes import ini_load
-from cornflakes.decorator.config._protocols import Config
+from cornflakes.decorator.config._protocols import Config, ConfigLoader
 
 
 def create_file_loader(
     cls=None,
-    loader: Callable[
-        [
-            Dict[Union[str, None], Union[str, List[str]]],
-            Optional[Union[str, List[str], Tuple[str], None]],
-            Optional[Union[str, List[str], Tuple[str], None]],
-        ],
-        Dict,
-    ] = ini_load,
-):
+    loader: ConfigLoader = ini_load,
+) -> Callable[..., Dict[str, Union[Config, List[Config]]]]:
     """Config decorator to parse Ini Files and implements from_file method to config-classes.
 
     :param cls: Config class

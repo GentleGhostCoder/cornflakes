@@ -2,18 +2,13 @@ import logging
 from typing import Any, Callable, Dict, List, Union
 
 from cornflakes import ini_load
-from cornflakes.decorator.config._protocols import ConfigGroup
+from cornflakes.decorator.config._protocols import ConfigGroup, ConfigGroupLoader
 
 
 def create_group_loader(
     cls=None,
-    loader: Callable[
-        [
-            Dict[Union[str, None], Union[str, List[str]]],
-        ],
-        Dict,
-    ] = ini_load,
-):
+    loader: ConfigGroupLoader = ini_load,
+) -> Callable[..., ConfigGroup]:
     """Config decorator to parse Ini Files and implements from_file method to config-group-classes.
 
     :param cls: Config class
