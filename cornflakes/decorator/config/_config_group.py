@@ -31,7 +31,7 @@ def config_group(  # noqa: C901
     def wrapper(cls):
 
         cls = add_slots(dataclass(cls, *args, **kwargs))
-        cls.__config_files__ = files if isinstance(files, list) else [files]
+        cls.__config_files__ = files if isinstance(files, list) else [files] if files else None
 
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
