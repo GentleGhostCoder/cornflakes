@@ -13,6 +13,8 @@ def config_group(  # noqa: C901
     config_cls=None,
     files: Union[str, List[str]] = None,
     default_loader: Loader = Loader.INI_LOADER,
+    allow_empty: bool = False,
+    filter_function: Callable[..., bool] = None,
     *args,
     **kwargs,
 ) -> Callable[..., ConfigGroup]:
@@ -23,6 +25,8 @@ def config_group(  # noqa: C901
     :param default_loader: Default config parser method (enum)
     :param args: Default configs to overwrite dataclass args
     :param kwargs: Default configs to overwrite dataclass args
+    :param allow_empty: Flag that allows empty config result
+    :param filter_function: Optional filter method for config
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
 
@@ -32,6 +36,8 @@ def config_group(  # noqa: C901
 
         cls = add_slots(dataclass(cls, *args, **kwargs))
         cls.__config_files__ = files if isinstance(files, list) else [files]
+        cls.__allow_empty_config__ = allow_empty
+        cls.__config_filter_function__ = filter_function
 
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
