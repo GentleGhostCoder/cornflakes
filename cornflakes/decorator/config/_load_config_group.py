@@ -32,7 +32,7 @@ def create_group_loader(
         :param config_dict: Config dictionary to pass already loaded configs
         :param slot_args: Default configs to overwrite passed class
         :param slot_kwargs: Default configs to overwrite passed class
-        :param filter_function: Optional filter method for config list
+        :param filter_function: Optional filter method for config
 
         :returns: Nested Lists of Config Classes
 

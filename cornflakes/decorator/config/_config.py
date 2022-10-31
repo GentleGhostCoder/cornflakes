@@ -34,7 +34,7 @@ def config(  # noqa: C901
     :param args: Default configs to overwrite dataclass args
     :param kwargs: Default configs to overwrite dataclass args
     :param allow_empty: Flag that allows empty config result
-    :param filter_function: Optional filter method for config list
+    :param filter_function: Optional filter method for config
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """

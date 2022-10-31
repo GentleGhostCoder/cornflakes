@@ -51,7 +51,7 @@ def create_file_loader(  # noqa: C901
         :param config_dict: Config dictionary to pass already loaded configs
         :param slot_args: Default configs to overwrite passed class
         :param slot_kwargs: Default configs to overwrite passed class
-        :param filter_function: Optional filter method for config list
+        :param filter_function: Optional filter method for config
 
         :returns: Nested Lists of Config Classes
 
@@ -74,8 +74,14 @@ def create_file_loader(  # noqa: C901
             if not config_dict:
                 config_dict = OrderedDict(loader({None: files}, sections, cls.__slots__[len(slot_args) :]))
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
-
-            return {sections: _create_config(config_dict.get(sections, {}), *slot_args, **get_section_kwargs(sections))}
+            config = _create_config(config_dict.get(sections, {}), *slot_args, **get_section_kwargs(sections))
+            if not filter_function(config):
+                return (
+                    {sections: {}}
+                    if allow_empty(cls)
+                    else {sections: _create_config({}, *slot_args, **get_section_kwargs(sections))}
+                )
+            return {sections: config}
 
         if not config_dict:
             config_dict = OrderedDict(loader({None: files}, None, cls.__slots__[len(slot_args) :]))
@@ -88,11 +94,15 @@ def create_file_loader(  # noqa: C901
 
         if not is_config_list(cls):
             return {
-                section: _create_config(config_dict.get(section, {}), *slot_args, **slot_kwargs)
-                for section in config_dict
+                section: config
+                for section, config in {
+                    section: _create_config(config_dict.get(section, {}), *slot_args, **slot_kwargs)
+                    for section in config_dict
+                }.items()
+                if filter_function(config)
             } or {
                 re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): _create_config(
-                    config_dict, *slot_args, **slot_kwargs  # no matches
+                    {}, *slot_args, **slot_kwargs  # no matches
                 )
             }
 
@@ -109,12 +119,7 @@ def create_file_loader(  # noqa: C901
                         ),
                     )
                 )
-                or list(
-                    filter(
-                        filter_function,
-                        _none_omit([_create_config(config_dict, *slot_args, **slot_kwargs)]) * is_config_list(cls),
-                    )
-                )
+                or _none_omit([_create_config({}, *slot_args, **slot_kwargs)]) * is_config_list(cls)
             )
         }
 

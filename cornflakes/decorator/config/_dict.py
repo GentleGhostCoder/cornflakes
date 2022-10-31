@@ -13,7 +13,7 @@ def to_dict(self) -> dict:
 
 def create_dict_file_loader(
     cls=None,
-) -> Callable[..., dict[str, Config | list[Config]]]:
+) -> Callable[..., dict[str, Config, list[Config]]]:
     """Method to create file loader for ini files."""
 
     def from_dict(*args, config_dict, **kwargs) -> dict[str, Config | list[Config]]:
