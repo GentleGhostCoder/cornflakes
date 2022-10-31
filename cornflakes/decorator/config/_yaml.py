@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Callable, Union
 
 import yaml
 
@@ -21,10 +21,12 @@ def to_yaml(self, out_cfg: str = None, *args, **kwargs) -> Union[None, bytearray
 
 def create_yaml_file_loader(
     cls=None,
-) -> Config:
+) -> Callable[..., dict[str, Config | list[Config]]]:
     """Method to create file loader for yaml files."""
 
-    def from_yaml(*args, loader: Union[yaml.SafeLoader, yaml.UnsafeLoader] = yaml.SafeLoader, **kwargs):
+    def from_yaml(
+        *args, loader: Union[yaml.SafeLoader, yaml.UnsafeLoader] = yaml.SafeLoader, **kwargs
+    ) -> dict[str, Config | list[Config]]:
         _from_yaml = create_file_loader(cls=cls, loader=specific_yaml_loader(loader=loader))
         return _from_yaml(*args, **kwargs)
 
@@ -33,10 +35,10 @@ def create_yaml_file_loader(
 
 def create_yaml_group_loader(
     cls=None,
-) -> ConfigGroup:
+) -> Callable[..., ConfigGroup]:
     """Method to create file loader for yaml files."""
 
-    def from_yaml(*args, loader: Union[yaml.SafeLoader, yaml.UnsafeLoader] = yaml.SafeLoader, **kwargs):
+    def from_yaml(*args, loader: Union[yaml.SafeLoader, yaml.UnsafeLoader] = yaml.SafeLoader, **kwargs) -> ConfigGroup:
         _from_yaml = create_group_loader(cls=cls, loader=specific_yaml_loader(loader=loader))
         return _from_yaml(*args, **kwargs)
 

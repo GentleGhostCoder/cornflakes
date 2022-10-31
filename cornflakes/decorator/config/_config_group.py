@@ -28,7 +28,7 @@ def config_group(  # noqa: C901
 
     """
 
-    def wrapper(cls):
+    def wrapper(cls) -> ConfigGroup:
 
         cls = add_slots(dataclass(cls, *args, **kwargs))
         cls.__config_files__ = files if isinstance(files, list) else [files]

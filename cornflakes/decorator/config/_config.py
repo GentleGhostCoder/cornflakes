@@ -18,6 +18,8 @@ def config(  # noqa: C901
     use_regex: bool = False,
     is_list: Union[bool, int] = False,
     default_loader: Loader = Loader.INI_LOADER,
+    allow_empty: bool = False,
+    filter_function=lambda x: x.string == "bla0",
     *args,
     **kwargs,
 ) -> Callable[..., Config]:
@@ -31,11 +33,13 @@ def config(  # noqa: C901
     :param default_loader: Default config parser method (enum)
     :param args: Default configs to overwrite dataclass args
     :param kwargs: Default configs to overwrite dataclass args
+    :param allow_empty: Flag that allows empty config result
+    :param filter_function: Optional filter method for config list
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
 
-    def wrapper(cls):
+    def wrapper(cls) -> Config:
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
@@ -60,6 +64,8 @@ def config(  # noqa: C901
         cls.__config_files__ = files if isinstance(files, list) else [files]
         cls.__multi_config__ = use_regex
         cls.__config_list__ = is_list
+        cls.__allow_empty_config__ = allow_empty
+        cls.__config_filter_function__ = filter_function
 
         def new(self, *new_args, **new_kwargs):
             # two chars missing in original of next line ...

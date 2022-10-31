@@ -2,16 +2,7 @@
 from cornflakes.decorator.config._config import config, Config
 from cornflakes.decorator.config._config_group import config_group, ConfigGroup
 from cornflakes.decorator.config._loader import Loader
-
-
-def is_config(cls):
-    """Methoad to return falg that class is a config class."""
-    return hasattr(cls, "__config_sections__")
-
-
-def is_group(cls):
-    """Methoad to return falg that class is a config group class."""
-    return not hasattr(cls, "__config_sections__") and hasattr(cls, "__config_files__")
+from cornflakes.decorator.config._helper import is_config
 
 
 __all__ = [

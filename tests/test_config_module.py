@@ -1,12 +1,16 @@
 import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
+import logging
 import time
 import unittest
 
 from cornflakes.builder import generate_group_module
+from cornflakes.logging import setup_logging
 import tests
 from tests.configs import SubConfig
+
+setup_logging(default_level=logging.DEBUG)
 
 
 class TestConfigGeneration(unittest.TestCase):
@@ -36,7 +40,7 @@ class TestConfigGeneration(unittest.TestCase):
         self.assertEqual(generated_config_module, defined_config_module)
 
         MainConfig = __import__("tests.configs.default").configs.default.MainConfig
-
+        list(MainConfig.from_ini(filter_function=lambda x: x.string == "bla0").sub_config)
         MainConfig.from_ini().to_ini("tests/configs/default_auto_created.ini")
 
         time.sleep(1)

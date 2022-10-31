@@ -9,6 +9,7 @@ from cornflakes.decorator.config import config
 class SubConfig:
     """Test Config Class."""
 
+    section_name: str = ""
     string: str = "bla123"
     datetime_datetime: datetime = datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc)
     datetime_time: datetime.time = datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc)

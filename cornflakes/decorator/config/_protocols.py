@@ -89,6 +89,7 @@ class Config(Protocol):
     __config_files__: str = None
     __multi_config__: str = None
     __config_list__: str = None
+    __config_filter_function__: Callable[[BaseConfig], bool]
     to_dict: ToDict
     to_ini: ConfigWriter
     to_yaml: ConfigWriter

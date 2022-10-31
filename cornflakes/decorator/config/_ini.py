@@ -1,5 +1,5 @@
 import logging
-from typing import Union
+from typing import Callable, Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
@@ -53,10 +53,10 @@ def to_ini(self, out_cfg: str = None) -> Union[None, bytearray]:
 
 def create_ini_file_loader(
     cls=None,
-) -> Config:
+) -> Callable[..., dict[str, Config | list[Config]]]:
     """Method to create file loader for ini files."""
 
-    def from_ini(*args, **kwargs):
+    def from_ini(*args, **kwargs) -> dict[str, Config | list[Config]]:
         return create_file_loader(cls=cls, loader=ini_load)(*args, **kwargs)
 
     return from_ini
@@ -64,10 +64,10 @@ def create_ini_file_loader(
 
 def create_ini_group_loader(
     cls=None,
-) -> ConfigGroup:
+) -> Callable[..., ConfigGroup]:
     """Method to create file loader for ini files."""
 
-    def from_ini(*args, **kwargs):
+    def from_ini(*args, **kwargs) -> ConfigGroup:
         return create_group_loader(cls=cls, loader=ini_load)(*args, **kwargs)
 
     return from_ini

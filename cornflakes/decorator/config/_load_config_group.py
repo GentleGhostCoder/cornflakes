@@ -1,8 +1,10 @@
+from collections import OrderedDict
 import logging
 from typing import Any, Callable, Dict, List, Union
 
 from cornflakes import ini_load
-from cornflakes.decorator.config._protocols import ConfigGroup, ConfigGroupLoader
+from cornflakes.decorator.config._helper import is_config, is_config_list
+from cornflakes.decorator.config._protocols import Config, ConfigGroup, ConfigGroupLoader
 
 
 def create_group_loader(
@@ -20,6 +22,7 @@ def create_group_loader(
     def from_file(
         files: Union[str, List[str], Dict[str, Union[str, List[str]]]] = None,
         config_dict: Dict[str, Any] = None,
+        filter_function: Callable[[Config], bool] = None,
         *slot_args,
         **slot_kwargs,
     ) -> ConfigGroup:
@@ -29,6 +32,7 @@ def create_group_loader(
         :param config_dict: Config dictionary to pass already loaded configs
         :param slot_args: Default configs to overwrite passed class
         :param slot_kwargs: Default configs to overwrite passed class
+        :param filter_function: Optional filter method for config list
 
         :returns: Nested Lists of Config Classes
 
@@ -37,14 +41,15 @@ def create_group_loader(
             files = cls.__config_files__
 
         if not config_dict:
-            config_dict = loader({None: files})
+            config_dict = OrderedDict(loader({None: files}))
         logging.debug(f"Read config with sections: {config_dict.keys()}")
-        for slot_class in list(cls.__annotations__.values())[len(slot_args) :]:
-            is_list = hasattr(slot_class, "__args__")
-            if is_list:
+        for slot_name, slot_class in list(cls.__annotations__.items())[len(slot_args) :]:
+            if is_config_list(slot_class):
                 slot_class = slot_class.__args__[0]
-            if hasattr(slot_class, "__config_sections__"):
-                slot_kwargs.update(slot_class.from_dict(config_dict=config_dict))
+            if is_config(slot_class):
+                slot_kwargs.update(
+                    slot_class.from_dict(config_dict=config_dict, sections=slot_name, filter_function=filter_function)
+                )
         error_args = [key for key in slot_kwargs if key not in cls.__slots__]
         if error_args:
             logging.warning(f"The variables {error_args} in **{cls.__name__}** are not defined!")

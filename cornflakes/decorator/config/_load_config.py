@@ -1,13 +1,19 @@
+from collections import OrderedDict
 import logging
 import re
 from typing import Any, Callable, Dict, List, Union
 
 from cornflakes import ini_load
+from cornflakes.decorator.config._helper import allow_empty, is_config_list, pass_section_name
 from cornflakes.decorator.config._protocols import Config, ConfigLoader
 
 
-def create_file_loader(
-    cls=None,
+def _none_omit(obj: list):
+    return [v for v in obj if v is not None]
+
+
+def create_file_loader(  # noqa: C901
+    cls: Config = None,
     loader: ConfigLoader = ini_load,
 ) -> Callable[..., Dict[str, Union[Config, List[Config]]]]:
     """Config decorator to parse Ini Files and implements from_file method to config-classes.
@@ -18,7 +24,9 @@ def create_file_loader(
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
 
-    def _create_config(config: dict, *cls_args, **cls_kwargs):
+    def _create_config(config: dict, *cls_args, **cls_kwargs) -> Union[Config, None]:
+        if not config and allow_empty(cls):
+            return
         config.update(cls_kwargs)
         error_args = [key for key in config if key not in cls.__slots__]
         if error_args:
@@ -32,6 +40,7 @@ def create_file_loader(
         files: Union[str, List[str]] = None,
         sections: Union[str, List[str]] = None,
         config_dict: Dict[str, Any] = None,
+        filter_function: Callable[[Config], bool] = None,
         *slot_args,
         **slot_kwargs,
     ) -> Dict[str, Union[Config, List[Config]]]:
@@ -42,6 +51,7 @@ def create_file_loader(
         :param config_dict: Config dictionary to pass already loaded configs
         :param slot_args: Default configs to overwrite passed class
         :param slot_kwargs: Default configs to overwrite passed class
+        :param filter_function: Optional filter method for config list
 
         :returns: Nested Lists of Config Classes
 
@@ -50,45 +60,62 @@ def create_file_loader(
             sections = cls.__config_sections__ or re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
         if not files:
             files = cls.__config_files__
+        if not filter_function:
+            filter_function = cls.__config_filter_function__
+
+        pass_sections = pass_section_name(cls)
+
+        def get_section_kwargs(section):
+            return {**slot_kwargs, **({"section_name": section} if pass_sections else {})}
+
         if not cls.__multi_config__ and isinstance(sections, str):
             logging.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
+
             if not config_dict:
-                config_dict = loader({None: files}, sections, cls.__slots__[len(slot_args) :])
+                config_dict = OrderedDict(loader({None: files}, sections, cls.__slots__[len(slot_args) :]))
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
-            return {sections: _create_config(config_dict.get(sections, {}), *slot_args, **slot_kwargs)}
+
+            return {sections: _create_config(config_dict.get(sections, {}), *slot_args, **get_section_kwargs(sections))}
 
         if not config_dict:
-            config_dict = loader({None: files}, None, cls.__slots__[len(slot_args) :])
+            config_dict = OrderedDict(loader({None: files}, None, cls.__slots__[len(slot_args) :]))
             logging.debug(f"Read config with sections: {config_dict.keys()}")
+
         regex = f'({"|".join(sections) if isinstance(sections, list) else sections})'
         logging.debug(f"Load all configs that mach **{regex}**")
-        if not cls.__config_list__:
+
+        config_dict = {section: config for section, config in config_dict.items() if bool(re.match(regex, section))}
+
+        if not is_config_list(cls):
             return {
-                section: _create_config(config_dict, *slot_args, **slot_kwargs)
-                for section, config_dict in (
-                    config_dict.items()
-                    or isinstance(sections, str)
-                    and [(sections, {})]
-                    or [(section, {}) for section in sections]
-                )
-                if bool(re.match(regex, section))
+                section: _create_config(config_dict.get(section, {}), *slot_args, **slot_kwargs)
+                for section in config_dict
             } or {
                 re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): _create_config(
-                    config_dict, *slot_args, **slot_kwargs
+                    config_dict, *slot_args, **slot_kwargs  # no matches
                 )
             }
+
         return {
-            re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): [
-                _create_config(config_dict, *slot_args, **slot_kwargs)
-                for section, config_dict in (
-                    config_dict.items()
-                    or isinstance(sections, str)
-                    and [(sections, {})]
-                    or [(section, {}) for section in sections]
+            re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): (
+                list(
+                    filter(
+                        filter_function,
+                        _none_omit(
+                            [
+                                _create_config(config_dict.get(section, {}), *slot_args, **get_section_kwargs(section))
+                                for section in config_dict
+                            ]
+                        ),
+                    )
                 )
-                if bool(re.match(regex, section))
-            ]
-            or [_create_config(config_dict, *slot_args, **slot_kwargs)] * cls.__config_list__
+                or list(
+                    filter(
+                        filter_function,
+                        _none_omit([_create_config(config_dict, *slot_args, **slot_kwargs)]) * is_config_list(cls),
+                    )
+                )
+            )
         }
 
     return from_file

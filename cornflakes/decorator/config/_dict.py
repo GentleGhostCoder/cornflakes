@@ -1,4 +1,5 @@
 from dataclasses import asdict
+from typing import Callable
 
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
@@ -12,21 +13,21 @@ def to_dict(self) -> dict:
 
 def create_dict_file_loader(
     cls=None,
-) -> Config:
+) -> Callable[..., dict[str, Config | list[Config]]]:
     """Method to create file loader for ini files."""
 
-    def from_dict(config_dict):
-        return create_file_loader(cls=cls)(config_dict=config_dict)
+    def from_dict(*args, config_dict, **kwargs) -> dict[str, Config | list[Config]]:
+        return create_file_loader(cls=cls)(*args, config_dict=config_dict, **kwargs)
 
     return from_dict
 
 
 def create_dict_group_loader(
     cls=None,
-) -> ConfigGroup:
+) -> Callable[..., ConfigGroup]:
     """Method to create file loader for ini files."""
 
-    def from_dict(config_dict):
-        return create_group_loader(cls=cls)(config_dict=config_dict)
+    def from_dict(*args, config_dict, **kwargs) -> ConfigGroup:
+        return create_group_loader(cls=cls)(*args, config_dict=config_dict, **kwargs)
 
     return from_dict
