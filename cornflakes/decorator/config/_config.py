@@ -19,7 +19,7 @@ def config(  # noqa: C901
     is_list: Union[bool, int] = False,
     default_loader: Loader = Loader.INI_LOADER,
     allow_empty: bool = False,
-    filter_function=lambda x: x.string == "bla0",
+    filter_function: Callable[..., bool] = None,
     *args,
     **kwargs,
 ) -> Callable[..., Config]:
