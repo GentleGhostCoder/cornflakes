@@ -21,12 +21,12 @@ def to_yaml(self, out_cfg: str = None, *args, **kwargs) -> Union[None, bytearray
 
 def create_yaml_file_loader(
     cls=None,
-) -> Callable[..., Dict[str, Config, List[Config]]]:
+) -> Callable[..., Dict[str, Union[Config, List[Config]]]]:
     """Method to create file loader for yaml files."""
 
     def from_yaml(
         *args, loader: Union[yaml.SafeLoader, yaml.UnsafeLoader] = yaml.SafeLoader, **kwargs
-    ) -> Dict[str, Config, List[Config]]:
+    ) -> Dict[str, Union[Config, List[Config]]]:
         _from_yaml = create_file_loader(cls=cls, loader=specific_yaml_loader(loader=loader))
         return _from_yaml(*args, **kwargs)
 
