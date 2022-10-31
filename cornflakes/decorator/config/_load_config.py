@@ -61,7 +61,7 @@ def create_file_loader(  # noqa: C901
         if not files:
             files = cls.__config_files__
         if not filter_function:
-            filter_function = cls.__config_filter_function__
+            filter_function = cls.__config_filter_function__ or (lambda x: True)
 
         pass_sections = pass_section_name(cls)
 
