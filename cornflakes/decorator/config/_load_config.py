@@ -99,7 +99,7 @@ def create_file_loader(  # noqa: C901
                     section: _create_config(config_dict.get(section, {}), *slot_args, **slot_kwargs)
                     for section in config_dict
                 }.items()
-                if filter_function(config)
+                if config and filter_function(config)
             } or {
                 re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): _create_config(
                     {}, *slot_args, **slot_kwargs  # no matches
