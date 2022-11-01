@@ -54,12 +54,6 @@ def setup_logging(
         logging.root.setLevel(default_level or logging.root.level)
 
 
-class LoggerMetaClass(Protocol):
-    """LoggerMetaClass used for Type Annotation."""
-
-    logger: logging.Logger = None
-
-
 def __wrap_class(
     w_obj,
     log_level: int = None,
@@ -78,6 +72,27 @@ def __wrap_class(
                 )
                 setattr(w_obj, attribute_name, attribute)
     return w_obj
+
+
+class LoggerMetaClass(type):
+    """LoggerMetaClass used for  metaclass."""
+
+    def __new__(mcs, classname, bases, class_dict):  # noqa: N804
+        """Method __new__ for LoggerMetaClass."""
+        new_class_dict = {}
+        for attribute_name, attribute in class_dict.items():
+            if isinstance(attribute, FunctionType):
+                # replace it with a wrapped version
+                attribute = attach_log(attribute)
+            new_class_dict[attribute_name] = attribute
+        mcs.logger = logging.getLogger(classname)
+        return type.__new__(mcs, classname, bases, new_class_dict)
+
+
+class LoggerProtocol(Protocol):
+    """LoggerProtocol used for Type Annotation."""
+
+    logger: logging.Logger = None
 
 
 def __wrap_function(
@@ -109,7 +124,7 @@ def attach_log(
     default_level: int = None,
     default_path: str = "logging.yaml",
     env_key: str = "LOG_CFG",
-) -> Callable[[...], Union[Any, Callable[[...], Any]]]:
+):
     """Function decorator to attach Logger to functions.
 
     :param obj: Logger function or class to attach the logging to.
@@ -123,7 +138,7 @@ def attach_log(
     if default_level:
         setup_logging(default_path, default_level, env_key, force=True)
 
-    def obj_wrapper(w_obj):
+    def obj_wrapper(w_obj) -> Union[LoggerProtocol, Callable[..., Any]]:
         if isclass(w_obj):
             return cast(w_obj, __wrap_class(w_obj, log_level))
 

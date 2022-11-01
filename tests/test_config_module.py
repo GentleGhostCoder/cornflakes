@@ -10,8 +10,6 @@ from cornflakes.logging import setup_logging
 import tests
 from tests.configs import SubConfig
 
-setup_logging(default_level=logging.DEBUG)
-
 
 class TestConfigGeneration(unittest.TestCase):
     """Test-class config module generation"""
@@ -56,6 +54,7 @@ class TestConfigGeneration(unittest.TestCase):
                 MainConfig(
                     sub_config=[
                         SubConfig(
+                            section_name="sub_config_0",
                             string="bla0",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                             datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -67,6 +66,7 @@ class TestConfigGeneration(unittest.TestCase):
                             bool=True,
                         ),
                         SubConfig(
+                            section_name="sub_config_1",
                             string="bla1",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                             datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -78,6 +78,7 @@ class TestConfigGeneration(unittest.TestCase):
                             bool=True,
                         ),
                         SubConfig(
+                            section_name="sub_config_2",
                             string="bla2",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                             datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),

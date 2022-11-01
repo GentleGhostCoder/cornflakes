@@ -3,6 +3,7 @@ from typing import Callable, Dict, List, Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
+from cornflakes.decorator.config._helper import is_config
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.config._protocols import Config, ConfigGroup
@@ -12,12 +13,14 @@ from cornflakes.decorator.config._write_config import write_config
 def _parse_config_list(cfg, cfg_name: str, title: str):
     _ini_bytes = bytearray()
     has_list = isinstance(cfg, list)
-    is_config = hasattr(cfg, "__config_sections__")
-    if is_config and not has_list:
+    if is_config(cfg) and not has_list:
         return cfg.to_ini_bytes(cfg_name)
     elif has_list:
         for n, sub_cfg in enumerate(cfg):
-            _ini_bytes.extend(_parse_config_list(sub_cfg, f"{cfg_name}_{n}", title))
+            cfg_name = f"{cfg_name}_{n}"
+            if is_config(sub_cfg) and hasattr(sub_cfg, "section_name"):
+                cfg_name = sub_cfg.section_name
+            _ini_bytes.extend(_parse_config_list(sub_cfg, cfg_name, title))
         return _ini_bytes
     else:
         logging.warning(f"The Value {cfg_name} of {title} be in a child config class!")
@@ -32,7 +35,12 @@ def to_ini_bytes(self, title: str = None) -> bytearray:  # TODO: implement more 
     if is_config and not has_lists:
         _ini_bytes.extend(bytes(f"[{title}]\n", "utf-8"))
         _ini_bytes.extend(
-            bytes("\n".join([f'{cfg}="{type_to_str(getattr(self, cfg))}"' for cfg in self.__slots__]), "utf-8")
+            bytes(
+                "\n".join(
+                    [f'{cfg}="{type_to_str(getattr(self, cfg))}"' for cfg in self.__slots__ if cfg != "section_name"]
+                ),
+                "utf-8",
+            )
         )
         _ini_bytes.extend(b"\n\n")
         return _ini_bytes

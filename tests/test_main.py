@@ -1,13 +1,13 @@
 """Test cases for the __main__ module."""
 import logging
 
-from click import style, version_option
+from click import pass_context, style, version_option
 from click.testing import CliRunner
 import pkg_resources
 import pytest
 
 from cornflakes.__main__ import main
-from cornflakes.click import command, group, pass_context
+from cornflakes.click import command, group
 from cornflakes.logging import attach_log
 
 
