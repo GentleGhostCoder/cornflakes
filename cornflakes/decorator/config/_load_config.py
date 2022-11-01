@@ -25,6 +25,8 @@ def create_file_loader(  # noqa: C901
     """
 
     def _create_config(config: dict, *cls_args, **cls_kwargs) -> Union[Config, None]:
+        logging.debug(config)
+        logging.debug(allow_empty(cls))
         if not config and allow_empty(cls):
             return
         config.update(cls_kwargs)
@@ -76,11 +78,7 @@ def create_file_loader(  # noqa: C901
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
             config = _create_config(config_dict.get(sections, {}), *slot_args, **get_section_kwargs(sections))
             if not filter_function(config):
-                return (
-                    {sections: {}}
-                    if allow_empty(cls)
-                    else {sections: _create_config({}, *slot_args, **get_section_kwargs(sections))}
-                )
+                return {sections: _create_config({}, *slot_args, **get_section_kwargs(sections))}
             return {sections: config}
 
         if not config_dict:
@@ -99,7 +97,7 @@ def create_file_loader(  # noqa: C901
                     section: _create_config(config_dict.get(section, {}), *slot_args, **slot_kwargs)
                     for section in config_dict
                 }.items()
-                if config and filter_function(config)
+                if filter_function(config)
             } or {
                 re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): _create_config(
                     {}, *slot_args, **slot_kwargs  # no matches
@@ -119,7 +117,7 @@ def create_file_loader(  # noqa: C901
                         ),
                     )
                 )
-                or _none_omit([_create_config({}, *slot_args, **slot_kwargs)]) * is_config_list(cls)
+                or [_create_config({}, *slot_args, **slot_kwargs)] * is_config_list(cls)
             )
         }
 
