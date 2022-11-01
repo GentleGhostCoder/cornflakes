@@ -117,7 +117,7 @@ def create_file_loader(  # noqa: C901
                         ),
                     )
                 )
-                or [_create_config({}, *slot_args, **slot_kwargs)] * is_config_list(cls)
+                or _none_omit([_create_config({}, *slot_args, **slot_kwargs)] * is_config_list(cls))
             )
         }
 
