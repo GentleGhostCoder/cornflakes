@@ -4,7 +4,7 @@ project(_cornflakes LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../ext)
-set(DOCS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../docs)
+# set(DOCS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../docs)
 
 add_subdirectory(${EXT_DIR}/pybind11 [EXCLUDE_FROM_ALL])
 

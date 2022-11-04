@@ -11,6 +11,10 @@ repos:
             name: Check for added large files
             entry: check-added-large-files
             language: system
+            exclude: |
+                (?x)^(
+                inst/_cornflakes/strtk/strtk.hpp
+                )$
           - id: check-toml
             name: Check Toml
             entry: check-toml
@@ -83,6 +87,8 @@ repos:
                 [
                     --exclude=inst/ext/*,
                     --exclude=inst/_cornflakes/datetime_utils.h,
+                    --exclude=inst/_cornflakes/strtk/*,
+                    --exclude=inst/_cornflakes/hash-library/*,
                     --exclude=cmake-build-debug/*,
                     --filter=-build/c++11,
                 ]

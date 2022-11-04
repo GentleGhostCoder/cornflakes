@@ -2,8 +2,6 @@
 
 #include <bindings.h>
 
-#include <utility>
-
 //! pybind module declaration
 PYBIND11_MODULE(_cornflakes, module) {
   module.doc() = R"pbdoc(
@@ -162,6 +160,6 @@ PYBIND11_MODULE(_cornflakes, module) {
 #ifdef VERSION_INFO
   module.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
 #else
-  m.attr("__version__") = "dev";
+  module.attr("__version__") = "dev";
 #endif
 }

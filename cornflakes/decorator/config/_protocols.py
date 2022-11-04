@@ -121,7 +121,7 @@ class ConfigGroup(Protocol):
 
     __dataclass_fields__: dict = None
     __dataclass_params__: dict = None
-    __call__: Callable[[...], Any] = None
+    __call__: Callable[..., Any] = None
     __config_sections__: str = None
     __config_files__: str = None
     __multi_config__: str = None
