@@ -7,3 +7,9 @@
 [submodule "inst/ext/hash-library"]
 	path = inst/ext/hash-library
 	url = https://github.com/stbrumme/hash-library.git
+[submodule "inst/_cornflakes/hash_library"]
+	path = inst/_cornflakes/hash_library
+	url = https://github.com/stbrumme/hash-library.git
+[submodule "inst/_cornflakes/strtk"]
+	path = inst/_cornflakes/strtk
+	url = https://github.com/ArashPartow/strtk.git
