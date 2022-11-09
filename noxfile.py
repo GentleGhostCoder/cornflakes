@@ -23,7 +23,8 @@ python_versions = ["3.8", "3.9", "3.10"]
 nox.options.sessions = (
     "pre-commit",
     "safety",
-    "mypy",
+    "pytype",
+    # "mypy",
     "tests",
     "xdoctest",
     "docs-build",
@@ -130,21 +131,39 @@ def safety(session: Session) -> None:
     session.run("safety", "check", "--full-report", f"--file={requirements}")
 
 
+# @session(python=python_versions)
+# def mypy(session: Session) -> None:
+#     """Type-check using mypy."""
+#     args = session.posargs or ["cornflakes", "tests", "docs/conf.py"]
+#     session.run("pip", "install", "ninja")
+#     session.run("pip", "install", "poetry")
+#     session.run("poetry", "build")
+#     version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
+#     search = f"*cp{version}*.whl"
+#     file = list(Path("dist").glob(search))[0].name
+#     session.run("pip", "install", f"dist/{file}", "--force-reinstall")
+#     session.install("mypy", "pytest", "types-pkg-resources", "types-requests", "types-attrs")
+#     session.run("mypy", *args)
+
+
 @session(python=python_versions)
-def mypy(session: Session) -> None:
-    """Type-check using mypy."""
-    args = session.posargs or ["cornflakes", "tests", "docs/conf.py"]
+def pytype(session):
+    """Run the static type checker."""
+    args = session.posargs or [
+        "--disable=import-error",
+        "cornflakes",
+        "tests",
+        "docs/conf.py",
+    ]  # "--disable=import-error"
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("poetry", "build")
     version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
     search = f"*cp{version}*.whl"
-    print(search)
     file = list(Path("dist").glob(search))[0].name
-    print(file)
     session.run("pip", "install", f"dist/{file}", "--force-reinstall")
-    session.install("mypy", "pytest", "types-pkg-resources", "types-requests", "types-attrs")
-    session.run("mypy", *args)
+    session.install("pytype")
+    session.run("pytype", *args)
 
 
 @session(python=python_versions)

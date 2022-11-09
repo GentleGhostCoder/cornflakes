@@ -13,10 +13,10 @@ def to_dict(self) -> dict:
 
 def create_dict_file_loader(
     cls=None,
-) -> Callable[..., Dict[str, Union[Config, List[Config]]]]:
+) -> Callable[..., Dict[str, Union[Config, List[Config], None]]]:
     """Method to create file loader for ini files."""
 
-    def from_dict(*args, config_dict, **kwargs) -> Dict[str, Union[Config, List[Config]]]:
+    def from_dict(*args, config_dict, **kwargs) -> Dict[str, Union[Config, List[Config], None]]:
         return create_file_loader(cls=cls)(*args, config_dict=config_dict, **kwargs)
 
     return from_dict

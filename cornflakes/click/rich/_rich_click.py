@@ -42,8 +42,7 @@ class OptionHighlighter(RegexHighlighter):
 highlighter = OptionHighlighter()
 
 
-# type: ignore[arg-type]
-def get_rich_console(config: RichConfig = None) -> Console:
+def get_rich_console(config: RichConfig) -> Console:
     return Console(
         theme=Theme(
             {
@@ -63,7 +62,7 @@ def get_rich_console(config: RichConfig = None) -> Console:
 
 
 def _make_rich_rext(
-    text: str, style: str = "", config: RichConfig = None
+    text: str, config: RichConfig, style: str = ""
 ) -> Union[rich.markdown.Markdown, rich.text.Text, RestructuredText]:
     """Take a string, remove indentations, and return styled text.
 
@@ -96,7 +95,7 @@ def _make_rich_rext(
 
 
 @group()
-def _get_help_text(obj: Union[click.Command, click.Group], config: RichConfig = None) -> Generator:
+def _get_help_text(obj: Union[click.Command, click.Group], config: RichConfig) -> Generator:
     """Build primary help text for a click command or group.
 
     Returns the prose help text for a command or group, rendered either as a
@@ -124,7 +123,7 @@ def _get_help_text(obj: Union[click.Command, click.Group], config: RichConfig = 
     # Remove single linebreaks
     if not config.USE_MARKDOWN and not first_line.startswith("\b"):
         first_line = first_line.replace("\n", " ")
-    yield _make_rich_rext(first_line.strip(), config.STYLE_HELPTEXT_FIRST_LINE, config=config)
+    yield _make_rich_rext(first_line.strip(), config=config, style=config.STYLE_HELPTEXT_FIRST_LINE)
 
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
@@ -141,12 +140,12 @@ def _get_help_text(obj: Union[click.Command, click.Group], config: RichConfig = 
             # Join with double linebreaks if markdown
             remaining_lines = "\n\n".join(remaining_paragraphs)
 
-        yield _make_rich_rext(remaining_lines, config.STYLE_HELPTEXT, config=config)
+        yield _make_rich_rext(remaining_lines, config=config, style=config.STYLE_HELPTEXT)
 
 
 # flake8: noqa: C901
 def _get_parameter_help(
-    param: Union[click.Option, click.Argument, click.Parameter], ctx: click.Context, config: RichConfig = None
+    param: Union[click.Option, click.Argument, click.Parameter], ctx: click.Context, config: RichConfig
 ) -> rich.columns.Columns:
     """Build primary help text for a click option or argument.
 
@@ -189,7 +188,7 @@ def _get_parameter_help(
                 x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
                 for x in paragraphs
             ]
-        items.append(_make_rich_rext("\n".join(paragraphs).strip(), config.STYLE_OPTION_HELP, config=config))
+        items.append(_make_rich_rext("\n".join(paragraphs).strip(), config=config, style=config.STYLE_OPTION_HELP))
 
     # Append metavar if requested
     if config.APPEND_METAVARS_HELP:
@@ -243,7 +242,7 @@ def _get_parameter_help(
 
 
 # flake8: noqa: C901
-def _make_command_help(help_text: str = "", config: RichConfig = None) -> Union[rich.text.Text, rich.markdown.Markdown]:
+def _make_command_help(config: RichConfig, help_text: str = "") -> Union[rich.text.Text, rich.markdown.Markdown]:
     """Build click help text for a click group command.
 
     That is, when calling help on groups with multiple subcommands
@@ -265,14 +264,14 @@ def _make_command_help(help_text: str = "", config: RichConfig = None) -> Union[
         paragraphs[0] = paragraphs[0].replace("\n", " ")
     elif paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
-    return _make_rich_rext(paragraphs[0].strip(), config.STYLE_OPTION_HELP, config=config)
+    return _make_rich_rext(paragraphs[0].strip(), config=config, style=config.STYLE_OPTION_HELP)
 
 
 def rich_format_help(
     obj: Union[click.Command, click.Group],
     ctx: click.Context,
     formatter: click.HelpFormatter,
-    config: RichConfig = None,
+    config: RichConfig,
     console: Console = None,
 ) -> None:
     """Print nicely formatted help text using rich.
@@ -299,7 +298,7 @@ def rich_format_help(
     # Header text if we have it
     if config.HEADER_TEXT:
         console.print(
-            Padding(_make_rich_rext(config.HEADER_TEXT, config.STYLE_HEADER_TEXT, config=config), (1, 1, 0, 1))
+            Padding(_make_rich_rext(config.HEADER_TEXT, config=config, style=config.STYLE_HEADER_TEXT), (1, 1, 0, 1))
         )
 
     # Print usage
@@ -520,11 +519,11 @@ def rich_format_help(
                     continue
                 # Use the truncated short text as with vanilla text if requested
                 if config.USE_CLICK_SHORT_HELP:
-                    helptext = cmd.get_short_help_str()
+                    help_text = cmd.get_short_help_str()
                 else:
                     # Use short_help function argument if used, or the full help
-                    helptext = cmd.short_help or cmd.help or ""
-                commands_table.add_row(command, _make_command_help(helptext, config=config))
+                    help_text = cmd.short_help or cmd.help or ""
+                commands_table.add_row(command, _make_command_help(config=config, help_text=help_text))
             if commands_table.row_count > 0:
                 console.print(
                     Panel(
@@ -545,11 +544,11 @@ def rich_format_help(
     # Footer text if we have it
     if config.FOOTER_TEXT:
         console.print(
-            Padding(_make_rich_rext(config.FOOTER_TEXT, config.STYLE_FOOTER_TEXT, config=config), (1, 1, 0, 1))
+            Padding(_make_rich_rext(config.FOOTER_TEXT, config=config, style=config.STYLE_FOOTER_TEXT), (1, 1, 0, 1))
         )
 
 
-def rich_format_error(self: click.ClickException, config: RichConfig = None, console: Console = None):
+def rich_format_error(self: click.ClickException, config: RichConfig, console: Console = None):
     """Print richly formatted click errors.
 
     Called by custom exception handler to print richly formatted click errors.
@@ -588,7 +587,7 @@ def rich_format_error(self: click.ClickException, config: RichConfig = None, con
         console.print(config.ERRORS_EPILOGUE)
 
 
-def rich_abort_error(config: RichConfig = None, console: Console = None) -> None:
+def rich_abort_error(config: RichConfig, console: Console = None) -> None:
     """Print richly formatted abort error."""
     if not console:
         console = get_rich_console(config=config)

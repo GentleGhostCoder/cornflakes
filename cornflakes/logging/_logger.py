@@ -4,13 +4,13 @@ import logging
 import logging.config
 import os
 from types import FunctionType
-from typing import Any, Callable, Optional, Protocol, Union, cast
+from typing import Any, Callable, Optional, Protocol, Union
 
 from rich.logging import RichHandler
 import yaml
 
 
-def setup_logging(
+def setup_logging(  # noqa: C901
     default_path: str = "logging.yaml",
     default_level: Optional[int] = None,
     env_key: str = "LOG_CFG",
@@ -37,26 +37,28 @@ def setup_logging(
             logging.config.dictConfig(config)
     else:
         if not any([isinstance(handler, RichHandler) for handler in logging.root.handlers]):
-            rich_handler_args = {"log_time_format": "[%Y-%m-%d %H:%M:%S.%f]"}
-            rich_handler_args.update(
+            rich_handler_kargs: Any = {"log_time_format": "[%Y-%m-%d %H:%M:%S.%f]"}
+            rich_handler_kargs.update(
                 {key: value for key, value in kwargs.items() if key in RichHandler.__init__.__code__.co_varnames}
             )
-            rich_handler = RichHandler(rich_tracebacks=True, **rich_handler_args)
+            rich_handler = RichHandler(rich_tracebacks=True, **rich_handler_kargs)
             rich_handler.setFormatter(fmt=logging.Formatter("%(name)s - %(funcName)s() - %(message)s"))
             rich_handler.setLevel(default_level or logging.root.level)
             # logging.root.handlers.clear()
             logging.root.addHandler(rich_handler)
         for handler in logging.root.handlers:
-            handler.setLevel(default_level or logging.root.level)
+            if hasattr(handler, "setLevel"):
+                handler.setLevel(default_level or logging.root.level)
         for logger in logging.root.manager.loggerDict.values():
-            if getattr(logger, "__cornflakes__", False):
+            if isinstance(logger, logging.Logger) and hasattr(logger, "__cornflakes__"):
                 logger.setLevel(default_level or logging.root.level)
-        logging.root.setLevel(default_level or logging.root.level)
+        if isinstance(logging.root, logging.Logger):
+            logging.root.setLevel(default_level or logging.root.level)
 
 
 def __wrap_class(
     w_obj,
-    log_level: int = None,
+    log_level: Optional[int] = None,
 ):
     w_obj.logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__name__}")
     w_obj.logger.__cornflakes__ = True
@@ -92,16 +94,16 @@ class LoggerMetaClass(type):
 class LoggerProtocol(Protocol):
     """LoggerProtocol used for Type Annotation."""
 
-    logger: logging.Logger = None
+    logger: logging.Logger
 
 
 def __wrap_function(
     w_obj,
-    log_level: int = None,
+    log_level: Optional[int] = None,
 ):
     logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__qualname__}")
-    logger.__cornflakes__ = True
-    logger.setLevel(log_level or logging.root.level)
+    w_obj.logger.__cornflakes__ = True
+    w_obj.logger.setLevel(log_level or logging.root.level)
     if logger.level != logging.DEBUG:
         return w_obj
 
@@ -120,8 +122,8 @@ def __wrap_function(
 
 def attach_log(
     obj=None,
-    log_level: int = None,
-    default_level: int = None,
+    log_level: Optional[int] = None,
+    default_level: Optional[int] = None,
     default_path: str = "logging.yaml",
     env_key: str = "LOG_CFG",
 ):
@@ -140,10 +142,10 @@ def attach_log(
 
     def obj_wrapper(w_obj) -> Union[LoggerProtocol, Callable[..., Any]]:
         if isclass(w_obj):
-            return cast(w_obj, __wrap_class(w_obj, log_level))
+            return __wrap_class(w_obj, log_level)
 
         if callable(w_obj):
-            return cast(w_obj, __wrap_function(w_obj, log_level))
+            return __wrap_function(w_obj, log_level)
 
         return obj
 

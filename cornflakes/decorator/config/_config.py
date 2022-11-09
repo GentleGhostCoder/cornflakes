@@ -1,28 +1,28 @@
 from dataclasses import dataclass
 import logging
-from typing import Callable, List, Union
+from typing import Callable, List, Optional, Type, Union
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator.config._config_group import config_group
 from cornflakes.decorator.config._dict import create_dict_file_loader, to_dict
 from cornflakes.decorator.config._ini import create_ini_file_loader, to_ini, to_ini_bytes
 from cornflakes.decorator.config._loader import Loader
-from cornflakes.decorator.config._protocols import Config
+from cornflakes.decorator.config._protocols import Config, ConfigGroup
 from cornflakes.decorator.config._yaml import create_yaml_file_loader, to_yaml, to_yaml_bytes
 
 
 def config(  # noqa: C901
     config_cls=None,
-    files: Union[str, List[str]] = None,
-    sections: Union[str, List[str]] = None,
-    use_regex: bool = False,
-    is_list: Union[bool, int] = False,
+    files: Optional[Union[List[str], str]] = None,
+    sections: Optional[Union[List[str], str]] = None,
+    use_regex: Optional[bool] = False,
+    is_list: Optional[Union[bool, int]] = False,
     default_loader: Loader = Loader.INI_LOADER,
-    allow_empty: bool = False,
-    filter_function: Callable[..., bool] = None,
+    allow_empty: Optional[bool] = False,
+    filter_function: Optional[Callable[..., bool]] = None,
     *args,
     **kwargs,
-) -> Callable[..., Config]:
+) -> Union[Type[Union[Config, ConfigGroup]], Callable[..., Union[Type[Config], Type[ConfigGroup]]]]:
     """Config decorator to parse Ini Files and implements config loader methods to config-classes.
 
     :param config_cls: Config class
@@ -39,7 +39,7 @@ def config(  # noqa: C901
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
 
-    def wrapper(cls) -> Config:
+    def wrapper(cls) -> Union[Type[Config], Type[ConfigGroup]]:
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
@@ -57,11 +57,11 @@ def config(  # noqa: C901
                 config_cls=cls,
                 files=files,
                 **kwargs,
-            )
+            )(cls)
 
         cls = add_slots(dataclass(cls, *args, **kwargs))
-        cls.__config_sections__ = sections if isinstance(sections, list) else [sections]
-        cls.__config_files__ = files if isinstance(files, list) else [files]
+        cls.__config_sections__ = sections if isinstance(sections, list) else [sections] if sections else []
+        cls.__config_files__ = files if isinstance(files, list) else [files] if files else []
         cls.__multi_config__ = use_regex
         cls.__config_list__ = is_list
         cls.__allow_empty_config__ = allow_empty

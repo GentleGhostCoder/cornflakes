@@ -1,12 +1,12 @@
 from functools import wraps
 from inspect import signature
-from typing import Callable, TypeVar, Union
+from typing import Callable, Union
 
 from cornflakes.click.rich._rich_argument import RichArg
 from cornflakes.click.rich._rich_command import RichCommand
 from cornflakes.click.rich._rich_group import RichGroup
 
-F = TypeVar("F", bound=Callable[..., Union[RichCommand, RichGroup, RichArg]])
+F = Callable[..., Union[RichCommand, RichGroup, RichArg]]
 
 
 def rich_global_option_wrapper(click_func, *wrap_args, **wrap_kwargs) -> F:

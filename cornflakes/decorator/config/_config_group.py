@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, List, Union
+from typing import Callable, List, Optional, Type, Union
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator.config._dict import create_dict_group_loader, to_dict
@@ -11,13 +11,13 @@ from cornflakes.decorator.config._yaml import create_yaml_group_loader, to_yaml,
 
 def config_group(  # noqa: C901
     config_cls=None,
-    files: Union[str, List[str]] = None,
+    files: Optional[Union[str, List[str]]] = None,
     default_loader: Loader = Loader.INI_LOADER,
-    allow_empty: bool = False,
-    filter_function: Callable[..., bool] = None,
+    allow_empty: Optional[bool] = False,
+    filter_function: Optional[Callable[..., bool]] = None,
     *args,
     **kwargs,
-) -> Callable[..., ConfigGroup]:
+) -> Union[ConfigGroup, Callable[..., Type[ConfigGroup]]]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
     :param config_cls: Config class
@@ -32,10 +32,10 @@ def config_group(  # noqa: C901
 
     """
 
-    def wrapper(cls) -> ConfigGroup:
+    def wrapper(cls) -> Type[ConfigGroup]:
 
         cls = add_slots(dataclass(cls, *args, **kwargs))
-        cls.__config_files__ = files if isinstance(files, list) else [files]
+        cls.__config_files__ = files if isinstance(files, list) else [files] if files else []
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
 

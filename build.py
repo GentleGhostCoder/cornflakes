@@ -129,13 +129,23 @@
 #             # "package_dir": {"": "src"},
 #         }
 #     )
+import os
 
 from pybind11.setup_helpers import Pybind11Extension, build_ext
+
+path = "inst/_cornflakes"
+files = [
+    os.path.join(dp, f)
+    for dp, dn, filenames in os.walk(path)
+    if "test" not in dp and "strtk" not in dp
+    for f in filenames
+    if os.path.splitext(f)[1] == ".cpp"
+]
 
 
 def build(setup_kwargs):
     ext_modules = [
-        Pybind11Extension("pybind11_extension", ["inst/_cornflakes/bindings.cpp"], include_dirs=["inst/_cornflakes"]),
+        Pybind11Extension("_cornflakes", [*files], include_dirs=[path]),
     ]
     setup_kwargs.update(
         {

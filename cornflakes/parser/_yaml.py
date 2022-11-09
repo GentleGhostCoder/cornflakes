@@ -1,6 +1,6 @@
 import collections.abc
 from os.path import abspath, expanduser
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Type, Union, cast
 
 import yaml
 from yaml import SafeLoader, UnsafeLoader
@@ -36,20 +36,20 @@ def _get_values(config, value: Union[str, List[str]], defaults: Dict):
 
 
 def _get_section(
-    config: Dict,
-    keys: Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-    defaults: Optional[Union[str, List[str], Dict[str, Any]]],
-) -> Dict:
+    config: dict,
+    keys: dict,
+    defaults: dict,
+) -> dict:
     return {sub_key: _get_values(config, sub_value, defaults) for sub_key, sub_value in keys.items()}
 
 
 def _get_all_sections(
-    config: Dict,
-    sections: Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-    keys: Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-    defaults: Optional[Union[str, List[str], Dict[str, Any]]],
-) -> Dict:
-    new_config = {}
+    config: dict,
+    sections: dict,
+    keys: dict,
+    defaults: dict,
+) -> dict:
+    new_config: dict = {}
     for section_key, section_names in sections.items():
         if not section_key:
             if isinstance(section_names, str):
@@ -67,11 +67,11 @@ def _get_all_sections(
 
 def _yaml_read(
     file: str,
-    sections: Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-    keys: Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-    defaults: Optional[Union[str, List[str], Dict[str, Any]]],
-    loader: Optional[Union[UnsafeLoader, SafeLoader]],
-) -> Dict:
+    sections: dict,
+    keys: dict,
+    defaults: dict,
+    loader: Union[Type[UnsafeLoader], Type[SafeLoader], None],
+) -> dict:
     with open(abspath(expanduser(file)), "rb") as f:
         data = f.read()
         if not loader:
@@ -86,13 +86,13 @@ def _yaml_read(
         return _get_all_sections(config, sections, keys, defaults)
 
 
-def _to_map(obj: Union[str, List[str], Dict[str, Union[str, List[str]]], None]) -> Dict[str, Union[str, List[str]]]:
+def _to_map(obj: Union[dict, list, tuple, str]) -> dict:
     return (
         isinstance(obj, str)
         and {obj: obj}  # string
         or (isinstance(obj, list) or isinstance(obj, tuple))
         and {key: key for key in obj}  # list
-        or obj
+        or cast(dict, obj)
         or {}
     )  # dict
 
@@ -102,7 +102,7 @@ def yaml_load(
     sections: Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]] = None,
     keys: Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]] = None,
     defaults: Optional[Union[str, List[str], Dict[str, Any]]] = None,
-    loader: Optional[Union[UnsafeLoader, SafeLoader]] = None,
+    loader: Optional[Union[Type[SafeLoader], Type[UnsafeLoader]]] = None,
 ):
     """Yaml Wrapper for reading yaml files in a generic way."""
     files = _to_map(files)
@@ -110,10 +110,16 @@ def yaml_load(
     keys = _to_map(keys)
     defaults = _to_map(defaults)
 
-    config = {}
+    config: dict = {}
     for file_key, file_names in files.items():
         if not file_key:
-            _update(config, _yaml_read(file_names, sections, keys, defaults, loader))
+            if isinstance(file_names, str):
+                _update(config, _yaml_read(file_names, sections, keys, defaults, loader))
+                return config
+
+            for file in file_names:
+                _update(config, _yaml_read(file, sections, keys, defaults, loader))
+                return config
 
         if isinstance(file_names, str):
             _update(config, {file_key: _yaml_read(file_names, sections, keys, defaults, loader)})
@@ -125,7 +131,7 @@ def yaml_load(
     return config
 
 
-def specific_yaml_loader(loader: Union[yaml.SafeLoader, yaml.UnsafeLoader] = yaml.SafeLoader):
+def specific_yaml_loader(loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader):
     """Wrapper method to predefine yaml loader parameter."""
 
     def _yaml_loader(*args, **kwargs):

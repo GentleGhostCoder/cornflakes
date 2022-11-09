@@ -4,7 +4,7 @@ import logging
 import os
 import sysconfig
 from types import ModuleType
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import cornflakes.builder.config_template
 from cornflakes.common import import_component
@@ -13,9 +13,9 @@ from cornflakes.decorator.config import Loader, config_group, is_config
 
 def generate_group_module(
     source_module: Union[ModuleType, str],
-    source_config: Union[str, List[str], Dict[str, Union[str, List[str]]]] = None,
-    target_module_file: str = None,
-    class_name: str = None,
+    source_config: Optional[Union[Dict[str, Union[List[str], str]], List[str], str]] = None,
+    target_module_file: Optional[str] = None,
+    class_name: Optional[str] = None,
     loader: Loader = Loader.INI_LOADER,
     *args,
     **kwargs,

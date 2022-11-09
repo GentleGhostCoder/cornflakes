@@ -1,7 +1,7 @@
 import sys
-from typing import Any, Callable, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
-from click import ClickException, Command, Context, Group, HelpFormatter, exceptions
+from click import ClickException, Command, Context, Group, HelpFormatter, Parameter, exceptions
 
 from cornflakes.click.rich._rich_click import get_rich_console, rich_abort_error, rich_format_error, rich_format_help
 from cornflakes.click.rich._rich_command import RichCommand
@@ -17,26 +17,29 @@ class RichGroup(Group):
 
     command_class = RichCommand
     group_class = type
-    params = []
+    params: List[Parameter]
     name = ""
-    context_settings = {}
-    commands = []
+    context_settings: dict
+    commands: Dict[str, Union[Command, RichCommand]]
 
     def callback(self):
         """Callback method with is wrapped over the command group."""
         pass
 
-    def add_command(
-        self, cmd: Union[Command, RichCommand, Callable[..., Optional[Any]]], name: Optional[str] = None
-    ) -> None:
-        """Registers another :class:`Command` with this group. If the name is not provided, the name of the command is used."""
+    def add_command(self, cmd: Union[Command, RichCommand], name: Optional[str] = None) -> None:
+        """Registers another :class:`Command` with this group.
+
+        If the name is not provided, the name of the command is used.
+        """
         Group.add_command(self, cmd, name)
 
     def __init__(self, config: RichConfig = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""
+        if not config:
+            config = RichConfig()
         super().__init__(*args, **kwargs)
-        self.config = config or None
-        self.console = None
+        self.config = config
+        self.console = get_rich_console(config=self.config)
 
     def __pass_config(self, config=None, console=None):
         if config:
@@ -52,7 +55,6 @@ class RichGroup(Group):
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:  # noqa: C901
         """Main function of RichGroup."""
         try:
-            self.console = get_rich_console(config=self.config)
             self.__pass_config(self.config, self.console)
             rv = super().main(*args, standalone_mode=False, **kwargs)  # type: ignore
             if not standalone_mode:

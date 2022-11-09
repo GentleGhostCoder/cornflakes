@@ -1,4 +1,5 @@
 import datetime
+from typing import Optional, cast
 
 
 def _check_milliseconds_field(millisecond) -> None:
@@ -72,13 +73,13 @@ class DatetimeMS(datetime.datetime):
 
 def datetime_ms(
     year,
-    month: int = None,
-    day: int = None,
-    hour: int = 0,
-    minute: int = 0,
-    second: int = 0,
-    millisecond: int = 0,
-    tzinfo: datetime.tzinfo = None,
+    month: Optional[int] = None,
+    day: Optional[int] = None,
+    hour: Optional[int] = 0,
+    minute: Optional[int] = 0,
+    second: Optional[int] = 0,
+    millisecond: Optional[int] = 0,
+    tzinfo: Optional[datetime.tzinfo] = None,
 ) -> DatetimeMS:
     """Create Instance of :meth:`cornflakes._types.DatetimeMS`."""
-    return DatetimeMS(year, month, day, hour, minute, second, millisecond, tzinfo)  # camelcase
+    return cast(DatetimeMS, DatetimeMS(year, month, day, hour, minute, second, millisecond, tzinfo))  # camelcase

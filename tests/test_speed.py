@@ -10,6 +10,4 @@ class TestSpeed(unittest.TestCase):
     def test_ini_load_speed(self):
         s = perf_counter()
         cornflakes.ini_load("tests/configs/default.ini")
-        s -= perf_counter()
-
-        self.assertTrue(s > -0.001)
+        self.assertTrue(s > (perf_counter() - s))

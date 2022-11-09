@@ -1,15 +1,12 @@
-[submodule "inst/ext/strtk"]
-	path = inst/ext/strtk
-	url = https://github.com/ArashPartow/strtk.git
 [submodule "inst/ext/pybind11"]
 	path = inst/ext/pybind11
 	url = https://github.com/pybind/pybind11.git
-[submodule "inst/ext/hash-library"]
-	path = inst/ext/hash-library
-	url = https://github.com/stbrumme/hash-library.git
-[submodule "inst/_cornflakes/hash_library"]
-	path = inst/_cornflakes/hash_library
+[submodule "inst/_cornflakes/hash-library"]
+	path = inst/_cornflakes/hash-library
 	url = https://github.com/stbrumme/hash-library.git
 [submodule "inst/_cornflakes/strtk"]
 	path = inst/_cornflakes/strtk
 	url = https://github.com/ArashPartow/strtk.git
+[submodule "inst/_cornflakes/ext/pybind11"]
+	path = inst/_cornflakes/ext/pybind11
+	url = https://github.com/pybind/pybind11.git

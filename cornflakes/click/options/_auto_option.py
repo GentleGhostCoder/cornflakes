@@ -1,6 +1,6 @@
 from inspect import isclass
 import logging
-from typing import Any, Callable, Dict, List, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 
 from click import Command, Group, option
 
@@ -15,6 +15,7 @@ F = TypeVar(
 
 def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C901
     """Click Option Decorator to define a global option for cli decorator."""
+    print(config)
     if not isclass(config):
         raise TypeError("config should be a class!")
 
@@ -25,7 +26,7 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
         if not callable(callback):
             raise TypeError("Wrapped object should be a function!")
 
-        def wrapper(config_args: tuple = None, *args, **kwargs):
+        def wrapper(config_args: Optional[tuple] = None, *args, **kwargs):
             config_args = (
                 (None, None) if not config_args else (config_args[0], None) if len(config_args) == 1 else config_args
             )

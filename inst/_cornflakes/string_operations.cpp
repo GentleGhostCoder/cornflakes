@@ -18,7 +18,6 @@ py::object apply_match(const std::vector<std::string> &vec, std::string match) {
   for (auto value : vec) {
     std::string::const_iterator start_iter = value.begin();
     std::string::const_iterator end_iter = value.end();
-    std::string::const_iterator value_iter = start_iter;
 
     start_iter = std::search(start_iter, end_iter, match.begin(), match.end());
     // std::boyer_moore_horspool_searcher(...)
@@ -42,7 +41,7 @@ py::list extract_between(const std::string &data, std::string start, char end) {
 
   std::string::const_iterator start_iter = data.begin();
   std::string::const_iterator end_iter = data.end();
-  std::string::const_iterator value_iter = start_iter;
+  std::string::const_iterator value_iter;
 
   while (true) {
     start_iter = std::search(start_iter, end_iter, start.begin(), start.end());
@@ -618,7 +617,7 @@ py::object eval_csv(const std::string &value) {
   // detect column seperator (wich is used mostly for seperation and is not
   // quoted)
   int column_count = 0;
-  char col_sep;
+  char col_sep = COLUM_SEPERATORS[0];
   std::vector<py::object> header;
   bool has_header = false;
   std::vector<py::object> column_values;
@@ -626,14 +625,13 @@ py::object eval_csv(const std::string &value) {
   column_types.push_back(std::vector<pybind11::object>({}));
 
   std::string::const_iterator start_iter = value.begin();
-  std::string::const_iterator value_iter = start_iter;
+  std::string::const_iterator value_iter;
   std::string::const_iterator end_iter = start_iter + 2;
   std::advance(end_iter, row_positions[0] - 2);
   // std::cout << "end_idx: " << row_positions[0] << std::endl;
   for (auto sep : COLUM_SEPERATORS) {
     // std::cout << "sep: " << sep << std::endl;
     start_iter = value.begin();
-    value_iter = start_iter;
     column_values.clear();
     while (true) {
       // std::cout << "col_idx: " << start_iter-value.begin() << std::endl;
@@ -644,7 +642,7 @@ py::object eval_csv(const std::string &value) {
       if (value_iter == end_iter) break;
       start_iter = value_iter + 1;
     }
-    if (column_values.size() > column_count) {
+    if (static_cast<int>(column_values.size()) > column_count) {
       column_count = static_cast<int>(column_values.size());
       col_sep = sep;
       column_types[0].clear();
@@ -668,7 +666,7 @@ py::object eval_csv(const std::string &value) {
     }
   }
 
-  for (int i = 1; i < row_positions.size(); i++) {
+  for (int i = 1; i < static_cast<int>(row_positions.size()); i++) {
     start_iter = value.begin();
     end_iter = start_iter;
     std::advance(end_iter, row_positions[i]);
@@ -687,7 +685,7 @@ py::object eval_csv(const std::string &value) {
       if (value_iter == end_iter) break;
       start_iter = value_iter + 1;
     }
-    if (column_types[i].size() > column_count) {
+    if (static_cast<int>(column_types[i].size()) > column_count) {
       column_count = static_cast<int>(column_types[i].size());
     }
     start_iter += line_sep_len;

@@ -1,5 +1,5 @@
 import logging
-from typing import Callable, Dict, List, Union
+from typing import Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
@@ -27,7 +27,9 @@ def _parse_config_list(cfg, cfg_name: str, title: str):
         return b""
 
 
-def to_ini_bytes(self, title: str = None) -> bytearray:  # TODO: implement more type_to_str feature -> date format etc.
+def to_ini_bytes(
+    self, title: Optional[str] = None
+) -> bytearray:  # TODO: implement more type_to_str feature -> date format etc.
     """Method to write an instance of the main config class of the module into a ini bytearray."""
     _ini_bytes = bytearray()
     has_lists = isinstance(self, list)
@@ -54,17 +56,17 @@ def to_ini_bytes(self, title: str = None) -> bytearray:  # TODO: implement more 
     return _ini_bytes
 
 
-def to_ini(self, out_cfg: str = None) -> Union[None, bytearray]:
+def to_ini(self, out_cfg: Optional[str] = None) -> Union[None, bytearray]:
     """Method to write an instance of the main config class of the module into an ini file."""
     return write_config(self.to_ini_bytes(self.__class__.__name__.lower()), out_cfg)
 
 
 def create_ini_file_loader(
     cls=None,
-) -> Callable[..., Dict[str, Union[Config, List[Config]]]]:
+) -> Callable[..., Dict[str, Union[Config, List[Config], None]]]:
     """Method to create file loader for ini files."""
 
-    def from_ini(*args, **kwargs) -> Dict[str, Union[Config, List[Config]]]:
+    def from_ini(*args, **kwargs) -> Dict[str, Union[Config, List[Config], None]]:
         return create_file_loader(cls=cls, loader=ini_load)(*args, **kwargs)
 
     return from_ini

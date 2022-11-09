@@ -1,11 +1,11 @@
 from collections import OrderedDict
 import logging
 import re
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator.config._helper import allow_empty, is_config_list, pass_section_name
-from cornflakes.decorator.config._protocols import Config, ConfigLoader
+from cornflakes.decorator.config._protocols import Config
 
 
 def _none_omit(obj: list):
@@ -13,9 +13,9 @@ def _none_omit(obj: list):
 
 
 def create_file_loader(  # noqa: C901
-    cls: Config = None,
-    loader: ConfigLoader = ini_load,
-) -> Callable[..., Dict[str, Union[Config, List[Config]]]]:
+    cls: Config,
+    loader=ini_load,
+) -> Callable[..., Dict[str, Union[Config, List[Config], None]]]:
     """Config decorator to parse Ini Files and implements from_file method to config-classes.
 
     :param cls: Config class
@@ -30,22 +30,24 @@ def create_file_loader(  # noqa: C901
         if not config and allow_empty(cls):
             return
         config.update(cls_kwargs)
-        error_args = [key for key in config if key not in cls.__slots__]
+        error_args = [key for key in config if key not in getattr(cls, "__slots__", ())]
         if error_args:
             logging.warning(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
             logging.warning(f"Please check Args: {error_args}")
         #  config_instance
-        config_instance = cls(*cls_args, **{key: value for key, value in config.items() if key in cls.__slots__})
+        config_instance = cls(
+            *cls_args, **{key: value for key, value in config.items() if key in getattr(cls, "__slots__", ())}
+        )
         return config_instance
 
     def from_file(
-        files: Union[str, List[str]] = None,
-        sections: Union[str, List[str]] = None,
-        config_dict: Dict[str, Any] = None,
-        filter_function: Callable[[Config], bool] = None,
+        files: Optional[Union[List[str], str]] = None,
+        sections: Optional[Union[List[str], str]] = None,
+        config_dict: Optional[Dict[str, Any]] = None,
+        filter_function: Optional[Callable[[Config], bool]] = None,
         *slot_args,
         **slot_kwargs,
-    ) -> Dict[str, Union[Config, List[Config]]]:
+    ) -> Dict[str, Union[Config, List[Config], None]]:
         """Config parser from ini files.
 
         :param files: Default config files
@@ -74,7 +76,9 @@ def create_file_loader(  # noqa: C901
             logging.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
 
             if not config_dict:
-                config_dict = OrderedDict(loader({None: files}, sections, cls.__slots__[len(slot_args) :]))
+                config_dict = OrderedDict(
+                    loader({None: files}, sections, getattr(cls, "__slots__", ())[len(slot_args) :])
+                )
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
             config = _create_config(config_dict.get(sections, {}), *slot_args, **get_section_kwargs(sections))
             if not filter_function(config):
@@ -82,7 +86,7 @@ def create_file_loader(  # noqa: C901
             return {sections: config}
 
         if not config_dict:
-            config_dict = OrderedDict(loader({None: files}, None, cls.__slots__[len(slot_args) :]))
+            config_dict = OrderedDict(loader({None: files}, None, getattr(cls, "__slots__", ())[len(slot_args) :]))
             logging.debug(f"Read config with sections: {config_dict.keys()}")
 
         regex = f'({"|".join(sections) if isinstance(sections, list) else sections})'

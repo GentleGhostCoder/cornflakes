@@ -1,5 +1,5 @@
 from inspect import getfile
-from typing import Callable
+from typing import Callable, Optional
 
 from click import Group, style, version_option
 import pkg_resources
@@ -8,10 +8,10 @@ from cornflakes.click import RichConfig, group
 
 
 def click_cli(  # noqa: C901
-    callback: Callable = None,
-    config: RichConfig = None,
-    files: str = None,
-    loader: str = None,
+    callback: Optional[Callable] = None,
+    config: Optional[RichConfig] = None,
+    files: Optional[str] = None,
+    loader: Optional[str] = None,
     *args,
     **kwargs,
 ):

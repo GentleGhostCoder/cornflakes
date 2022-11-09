@@ -1,7 +1,7 @@
 import sys
-from typing import Any
+from typing import Any, List
 
-from click import ClickException, Command, Context, HelpFormatter, exceptions
+from click import ClickException, Command, Context, HelpFormatter, Parameter, exceptions
 
 from cornflakes.click.rich._rich_click import rich_abort_error, rich_format_error, rich_format_help
 from cornflakes.click.rich._rich_config import RichConfig as RichConfig
@@ -15,12 +15,12 @@ class RichCommand(Command):
     """
 
     standalone_mode = False
-    params = []
+    params: List[Parameter]
     allow_extra_args = True
     allow_interspersed_args = False
     ignore_unknown_options = False
     name = ""
-    context_settings = {}
+    context_settings: dict
 
     def callback(self):
         """Callback method with is wrapped over the command."""
@@ -28,8 +28,10 @@ class RichCommand(Command):
 
     def __init__(self, config: RichConfig = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""
+        if not config:
+            config = RichConfig()
         super().__init__(*args, **kwargs)
-        self.config = config or None
+        self.config = config
         self.console = None
 
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:  # noqa: C901

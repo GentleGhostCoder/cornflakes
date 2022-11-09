@@ -4,16 +4,16 @@ from typing import Dict, List, Literal, Optional, Protocol, Union
 
 from click import Option
 
-from cornflakes.decorator import config
+from cornflakes.decorator.config import config
 
 
 class GlobalOption(Protocol):
     """GlobalOption Protocol which requires params."""
 
-    params: List[Option] = None
+    params: List[Option]
 
 
-@config(files=".click_cli.yaml")
+@config()
 class RichConfig:
     """DataClass for click config-values."""
 
@@ -105,3 +105,6 @@ class RichConfig:
     OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
     # Add basic global options (verbose)
     GLOBAL_OPTIONS: List[GlobalOption] = field(default_factory=list)
+
+
+RichConfig.from_ini()

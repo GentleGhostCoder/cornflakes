@@ -6,11 +6,11 @@ from cornflakes.click.rich._rich_config import RichConfig
 from cornflakes.click.rich._rich_group import RichGroup
 from cornflakes.click.rich._rich_argument import RichArg
 from cornflakes.click.rich._rich_global_option_wrapper import rich_global_option_wrapper
-from typing import Callable, Union, TypeVar
+from typing import Callable, Union
 
 from cornflakes.click.rich._rich_command import RichCommand
 
-F = TypeVar("F", bound=Callable[..., Union[RichCommand, RichGroup, RichArg]])
+F = Callable[..., Union[RichCommand, RichGroup, RichArg]]
 
 
 def group(*args, cls=RichGroup, **kwargs) -> F:  # type: ignore

@@ -1,137 +1,179 @@
-from typing import Any, Callable, Dict, List, Optional, Protocol, TypeVar, Union
-
-
-class BaseConfig(Protocol):
-    """Config Protocol Type."""
-
-    __dataclass_fields__: dict = None
-    __dataclass_params__: dict = None
-    __call__: Callable[..., Any]
-    __config_sections__: str = None
-    __config_files__: str = None
-    __multi_config__: str = None
-    __config_list__: str = None
-    to_dict: Callable
-    to_ini: Callable
-    to_yaml: Callable
-    to_yaml_bytes: Callable
-    to_ini_bytes: Callable
-    from_yaml: Callable
-    from_ini: Callable  # class not dependent method
-    from_dict: Callable
-    from_file: Callable
-
-
-ConfigLoader = TypeVar(
-    "ConfigLoader",
-    bound=Callable[
-        [
-            Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[str, Any]]],
-            Optional[Any],
-        ],
-        BaseConfig,
-    ],
-)
-
-ToDict = TypeVar(
-    "ToDict",
-    bound=Callable[
-        [
-            Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[str, Any]]],
-            Optional[Any],
-        ],
-        dict,
-    ],
-)
-
-ToBytes = TypeVar(
-    "ToBytes",
-    bound=Callable[
-        [
-            Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[str, Any]]],
-            Optional[Any],
-        ],
-        bytearray,
-    ],
-)
-
-ConfigWriter = TypeVar(
-    "ConfigWriter",
-    bound=Callable[
-        [
-            Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[str, Any]]],
-            Optional[Any],
-        ],
-        dict,
-    ],
-)
+from typing import Any, Dict, List, Optional, Protocol, Tuple, Union
 
 
 class Config(Protocol):
     """Config Protocol Type."""
 
-    __dataclass_fields__: dict = None
-    __dataclass_params__: dict = None
-    __call__: Callable[..., Any]
-    __config_sections__: str = None
-    __config_files__: str = None
-    __multi_config__: str = None
-    __config_list__: str = None
-    __config_filter_function__: Callable[[BaseConfig], bool]
-    to_dict: ToDict
-    to_ini: ConfigWriter
-    to_yaml: ConfigWriter
-    to_yaml_bytes: ToBytes
-    to_ini_bytes: ToBytes
-    from_yaml: ConfigLoader
-    from_ini: ConfigLoader  # class not dependent method
-    from_dict: ConfigLoader
-    from_file: ConfigLoader
+    __dataclass_fields__: dict
+    __dataclass_params__: dict
+    __config_sections__: str
+    __config_files__: str
+    __multi_config__: str
+    __config_list__: str
+    __args__: List[Any]
+    __slots__: Tuple[str]
 
+    def __call__(self, *args, **kwargs) -> Any:
+        """Call Function."""
+        ...
 
-ConfigGroupLoader = TypeVar(
-    "ConfigGroupLoader",
-    bound=Callable[
-        [
-            Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]],
-            Optional[Union[str, List[str], Dict[str, Any]]],
-            Optional[Any],
-        ],
-        Config,
-    ],
-)
+    def __config_filter_function__(self) -> bool:
+        """Callback function to filter config."""
+        ...
+
+    def to_dict(self, *args, **kwargs) -> dict:
+        """Parse config to dict."""
+        ...
+
+    def to_ini(self, *args, **kwargs) -> Union[bytearray, None]:
+        """Parse config to ini file / bytes."""
+        ...
+
+    def to_yaml(self, *args, **kwargs) -> Union[bytearray, None]:
+        """Parse config to yaml file / bytes."""
+        ...
+
+    def to_yaml_bytes(self, *args, **kwargs) -> bytearray:
+        """Parse config to yaml bytes."""
+        ...
+
+    def to_ini_bytes(self, *args, **kwargs) -> bytearray:
+        """Parse config to ini bytes."""
+        ...
+
+    @staticmethod
+    def from_ini(
+        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Parse ini file to config."""
+        ...
+
+    @staticmethod
+    def from_yaml(
+        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Parse yaml file to config."""
+        ...
+
+    @staticmethod
+    def from_dict(
+        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Parse dict to config."""
+        ...
+
+    @staticmethod
+    def from_file(
+        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Parse file to config."""
+        ...
 
 
 class ConfigGroup(Protocol):
     """ConfigGroup Protocol Type."""
 
-    __dataclass_fields__: dict = None
-    __dataclass_params__: dict = None
-    __call__: Callable[..., Any] = None
-    __config_sections__: str = None
-    __config_files__: str = None
-    __multi_config__: str = None
-    __config_list__: str = None
-    to_dict: ToDict
-    to_ini: ConfigWriter
-    to_yaml: ConfigWriter
-    to_yaml_bytes: ToBytes
-    to_ini_bytes: ToBytes
-    from_yaml: ConfigGroupLoader
-    from_ini: ConfigGroupLoader  # class not dependent method
-    from_dict: ConfigGroupLoader
-    from_file: ConfigGroupLoader
+    __dataclass_fields__: dict
+    __dataclass_params__: dict
+    __config_sections__: str
+    __config_files__: str
+    __multi_config__: str
+    __config_list__: str
+    __args__: List[Any]
+    __slots__: Tuple[str]
+
+    def __call__(self, *args, **kwargs) -> Any:
+        """Call Function."""
+        ...
+
+    def __config_filter_function__(self) -> bool:
+        """Callback function to filter config."""
+        ...
+
+    def to_dict(self, *args, **kwargs) -> dict:
+        """Parse config to dict."""
+        ...
+
+    def to_ini(self, *args, **kwargs) -> Union[bytearray, None]:
+        """Parse config to ini file / bytes."""
+        ...
+
+    def to_yaml(self, *args, **kwargs) -> Union[bytearray, None]:
+        """Parse config to yaml file / bytes."""
+        ...
+
+    def to_yaml_bytes(self, *args, **kwargs) -> bytearray:
+        """Parse config to yaml bytes."""
+        ...
+
+    def to_ini_bytes(self, *args, **kwargs) -> bytearray:
+        """Parse config to ini bytes."""
+        ...
+
+    @staticmethod
+    def from_ini(
+        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Parse ini file to config."""
+        ...
+
+    @staticmethod
+    def from_yaml(
+        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Parse yaml file to config."""
+        ...
+
+    @staticmethod
+    def from_dict(
+        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Parse dict to config."""
+        ...
+
+    @staticmethod
+    def from_file(
+        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Parse file to config."""
+        ...

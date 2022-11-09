@@ -37,4 +37,4 @@ def bg_process_option(self: Callable[..., None], background_process: bool, *func
             stdout=stdout,
             stderr=stderr,
         )
-        quit(0)
+        sys.exit(0)
