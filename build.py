@@ -145,7 +145,7 @@ files = [
 
 def build(setup_kwargs):
     ext_modules = [
-        Pybind11Extension("_cornflakes", [*files], include_dirs=[path]),
+        Pybind11Extension("_cornflakes", [*files], include_dirs=[path], cxx_std=17),
     ]
     setup_kwargs.update(
         {
