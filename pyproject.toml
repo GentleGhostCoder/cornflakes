@@ -74,6 +74,12 @@ nox-poetry = "^1.0.1"
 [tool.poetry.scripts]
 cornflakes = "cornflakes.__main__:main"
 
+[[tool.poetry.source]]
+name = "cornflakes"
+url = "https://pypi.example.org/simple/"
+default = false
+secondary = false
+
 [tool.black]
 line-length = 120
 

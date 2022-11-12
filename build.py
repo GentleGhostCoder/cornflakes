@@ -131,7 +131,9 @@
 #     )
 import os
 
+import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
+from setuptools import setup
 
 path = "inst/_cornflakes"
 files = [
@@ -145,7 +147,7 @@ files = [
 
 def build(setup_kwargs):
     ext_modules = [
-        Pybind11Extension("_cornflakes", [*files], include_dirs=[path], cxx_std=17),
+        Pybind11Extension("_cornflakes", [*files], include_dirs=[pybind11.get_include(), path], cxx_std=17),
     ]
     setup_kwargs.update(
         {
