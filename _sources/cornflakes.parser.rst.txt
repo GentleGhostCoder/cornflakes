@@ -1,10 +1,10 @@
-cornflakes.config package
+cornflakes.parser package
 =========================
 
 Module contents
 ---------------
 
-.. automodule:: cornflakes.config
+.. automodule:: cornflakes.parser
    :members:
    :undoc-members:
    :show-inheritance:
