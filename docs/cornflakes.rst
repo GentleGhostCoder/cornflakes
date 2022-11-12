@@ -7,12 +7,13 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   cornflakes.builder
    cornflakes.cli
    cornflakes.click
    cornflakes.common
-   cornflakes.config
    cornflakes.decorator
    cornflakes.logging
+   cornflakes.parser
 
 Module contents
 ---------------

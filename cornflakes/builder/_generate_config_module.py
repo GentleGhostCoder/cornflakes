@@ -77,10 +77,8 @@ def generate_group_module(
         "from",
         (
             f"""{'''
-'''.join(extra_imports)}\n\nfrom {source_module.__name__} import ({
-    ''',
-    '''.join(imports)}
-    )\nfrom"""
+'''.join(extra_imports)}\n\nfrom {source_module.__name__} import {
+    ''', '''.join(imports)}\nfrom"""
         ),
     )
     template = template.replace(

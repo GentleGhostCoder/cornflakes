@@ -83,7 +83,7 @@ def config(  # noqa: C901
         cls.from_dict = staticmethod(create_dict_file_loader(cls=cls))
         cls.from_file = getattr(cls, str(default_loader.value), cls.from_ini)
 
-        return cast(cls, Type[Config])
+        return cast(Type[Config], cls)
 
     if config_cls:
         return wrapper(config_cls)

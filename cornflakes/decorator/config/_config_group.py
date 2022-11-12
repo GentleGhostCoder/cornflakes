@@ -59,7 +59,7 @@ def config_group(  # noqa: C901
         cls.from_dict = staticmethod(create_dict_group_loader(cls=cls))
         cls.from_file = getattr(cls, str(default_loader.value), cls.from_ini)
 
-        return cast(cls, ConfigGroup)
+        return cast(ConfigGroup, cls)
 
     if config_cls:
         return wrapper(config_cls)

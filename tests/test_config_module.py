@@ -59,8 +59,8 @@ class TestConfigGeneration(unittest.TestCase):
                             int_val=1,
                             float_val=0.005,
                             decimal=Decimal("1E-40"),
-                            ip4v=IPv4Address("127.0.0.1"),
-                            ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                            ipv4=IPv4Address("127.0.0.1"),
+                            ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
                         ),
                         configs.sub_config.SubConfig(
@@ -71,8 +71,8 @@ class TestConfigGeneration(unittest.TestCase):
                             int_val=1,
                             float_val=0.005,
                             decimal=Decimal("1E-40"),
-                            ip4v=IPv4Address("127.0.0.1"),
-                            ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                            ipv4=IPv4Address("127.0.0.1"),
+                            ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
                         ),
                         configs.sub_config.SubConfig(
@@ -83,8 +83,8 @@ class TestConfigGeneration(unittest.TestCase):
                             int_val=1,
                             float_val=0.005,
                             decimal=Decimal("1E-40"),
-                            ip4v=IPv4Address("127.0.0.1"),
-                            ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                            ipv4=IPv4Address("127.0.0.1"),
+                            ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
                         ),
                     ]
