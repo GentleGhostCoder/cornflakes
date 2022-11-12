@@ -1,16 +1,13 @@
 from inspect import isclass
 import logging
-from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from click import Command, Group, option
 
 from cornflakes.click.rich import RichCommand, RichGroup, argument
 from cornflakes.decorator.config import Config, ConfigGroup, is_config
 
-F = TypeVar(
-    "F",
-    bound=Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]],
-)
+F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
 
 
 def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C901
