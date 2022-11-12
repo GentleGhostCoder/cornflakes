@@ -206,6 +206,7 @@ def coverage(session: Session) -> None:
 @session(python=python_versions)
 def typeguard(session: Session) -> None:
     """Runtime type checking using Typeguard."""
+    session.run("pip", "install", "black")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("poetry", "build")
