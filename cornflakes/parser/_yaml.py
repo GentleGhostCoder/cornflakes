@@ -86,7 +86,7 @@ def _yaml_read(
         return _get_all_sections(config, sections, keys, defaults)
 
 
-def _to_map(obj: Union[dict, list, tuple, str]) -> dict:
+def _to_map(obj: Optional[Union[dict, list, tuple, str]]) -> dict:
     return (
         isinstance(obj, str)
         and {obj: obj}  # string
@@ -98,9 +98,9 @@ def _to_map(obj: Union[dict, list, tuple, str]) -> dict:
 
 
 def yaml_load(
-    files: Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]],
-    sections: Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]] = None,
-    keys: Optional[Union[str, List[str], Dict[Union[str, None], Union[str, List[str]]]]] = None,
+    files: Union[str, List[str], Dict[Optional[str], Union[str, List[str]]]],
+    sections: Optional[Union[str, List[str], Dict[Optional[str], Union[str, List[str]]]]] = None,
+    keys: Optional[Union[str, List[str], Dict[Optional[str], Union[str, List[str]]]]] = None,
     defaults: Optional[Union[str, List[str], Dict[str, Any]]] = None,
     loader: Optional[Union[Type[SafeLoader], Type[UnsafeLoader]]] = None,
 ):
