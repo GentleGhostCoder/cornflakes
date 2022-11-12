@@ -129,18 +129,17 @@
 #             # "package_dir": {"": "src"},
 #         }
 #     )
+from glob import glob
 import os
 
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
-from setuptools import setup
 
 path = "inst/_cornflakes"
 files = [
-    os.path.join(dp, f)
-    for dp, dn, filenames in os.walk(path)
-    if "test" not in dp and "strtk" not in dp
-    for f in filenames
+    f
+    for f in [*glob(f"{path}/*/**", recursive=True), *glob(f"{path}/*", recursive=True)]
+    if "test" not in f and "strtk" not in f
     if os.path.splitext(f)[1] == ".cpp"
 ]
 
