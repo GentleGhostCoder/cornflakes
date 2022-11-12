@@ -1,14 +1,11 @@
 import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
-import logging
 import time
 import unittest
 
 from cornflakes.builder import generate_group_module
-from cornflakes.logging import setup_logging
-import tests
-from tests.configs import SubConfig
+from tests import configs
 
 
 class TestConfigGeneration(unittest.TestCase):
@@ -24,7 +21,7 @@ class TestConfigGeneration(unittest.TestCase):
 
         generate_group_module(
             class_name="MainConfig",
-            source_module=tests.configs.sub_config,
+            source_module=configs.sub_config,
             source_config=source_config,
             target_module_file=target_module_file,
             **ini_group_args
@@ -37,7 +34,8 @@ class TestConfigGeneration(unittest.TestCase):
 
         self.assertEqual(generated_config_module, defined_config_module)
 
-        MainConfig = __import__("tests.configs.default").configs.default.MainConfig
+        from tests.configs.default import MainConfig
+
         list(MainConfig.from_ini(filter_function=lambda x: x.string == "bla0").sub_config)
         MainConfig.from_ini().to_ini("tests/configs/default_auto_created.ini")
 
@@ -53,7 +51,7 @@ class TestConfigGeneration(unittest.TestCase):
             repr(
                 MainConfig(
                     sub_config=[
-                        SubConfig(
+                        configs.sub_config.SubConfig(
                             section_name="sub_config_0",
                             string="bla0",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -65,7 +63,7 @@ class TestConfigGeneration(unittest.TestCase):
                             ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
                         ),
-                        SubConfig(
+                        configs.sub_config.SubConfig(
                             section_name="sub_config_1",
                             string="bla1",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -77,7 +75,7 @@ class TestConfigGeneration(unittest.TestCase):
                             ip6v=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
                         ),
-                        SubConfig(
+                        configs.sub_config.SubConfig(
                             section_name="sub_config_2",
                             string="bla2",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),

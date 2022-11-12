@@ -6,13 +6,12 @@ __________________________________
 .. autosummary::
    :toctree: _generate
 
-    create_new_config
 """  # noqa: RST303 D205
-from cornflakes import config
+from cornflakes import config as config_wrapper
 from cornflakes.click import command, auto_option
 
 
-@config
+@config_wrapper
 class Test:
     """Test CLI Config."""
 

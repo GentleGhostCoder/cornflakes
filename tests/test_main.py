@@ -37,13 +37,12 @@ def test_main_succeeds(runner: CliRunner) -> None:
             parent.console.print("[blue]I was invoked without subcommand")
             test(parent)
 
-    @attach_log
     class Test:
         @classmethod
         def test(cls):
-            cls.logger.info("test")
-            cls.logger.debug("test2")
-            cls.logger.error("test")
+            logging.info("test")
+            logging.debug("test2")
+            logging.error("test")
 
     @command("test")
     def test(parent):  # verbose, background_process, self, parent

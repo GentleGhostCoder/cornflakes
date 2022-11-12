@@ -262,7 +262,7 @@ inline void ParseAllSections(const FileData &t_FileData,
   section_cursor[1] =
       static_cast<int>(t_FileData.contents.find_first_of(SECTION_OPEN_CHAR, 0));
 
-  if (section_cursor[1] == std::string::npos) {
+  if (section_cursor[1] == static_cast<int>(std::string::npos)) {
     py::dict section_envir = t_FileData.file_envir;
     ParseSectionsDefault(t_FileData, t_ParserData, section_envir);
     return;

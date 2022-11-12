@@ -15,7 +15,6 @@ F = TypeVar(
 
 def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C901
     """Click Option Decorator to define a global option for cli decorator."""
-    print(config)
     if not isclass(config):
         raise TypeError("config should be a class!")
 

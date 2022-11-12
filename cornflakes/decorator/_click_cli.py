@@ -5,11 +5,12 @@ from click import Group, style, version_option
 import pkg_resources
 
 from cornflakes.click import RichConfig, group
+from cornflakes.decorator.config import Config
 
 
 def click_cli(  # noqa: C901
     callback: Optional[Callable] = None,
-    config: Optional[RichConfig] = None,
+    config: Optional[Config] = None,
     files: Optional[str] = None,
     loader: Optional[str] = None,
     *args,

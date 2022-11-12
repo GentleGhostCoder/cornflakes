@@ -13,7 +13,7 @@ class GlobalOption(Protocol):
     params: List[Option]
 
 
-@config()
+@config
 class RichConfig:
     """DataClass for click config-values."""
 
@@ -105,6 +105,3 @@ class RichConfig:
     OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
     # Add basic global options (verbose)
     GLOBAL_OPTIONS: List[GlobalOption] = field(default_factory=list)
-
-
-RichConfig.from_ini()

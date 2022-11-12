@@ -18,6 +18,6 @@ class SubConfig:
     int_val: int = 1
     float_val: float = 0.005
     decimal: Decimal = Decimal("0.0000000000000000000000000000000000000001")
-    ip4v: IPv4Address = IPv4Address("127.0.0.1")
-    ip6v: IPv6Address = IPv6Address("684D:1111:222:3333:4444:5555:6:77")
+    ipv4: IPv4Address = IPv4Address("127.0.0.1")
+    ipv6: IPv6Address = IPv6Address("684D:1111:222:3333:4444:5555:6:77")
     bool_val: bool = True

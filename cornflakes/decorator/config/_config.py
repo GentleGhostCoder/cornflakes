@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import logging
-from typing import Callable, List, Optional, Type, Union
+from typing import Callable, List, Optional, Type, Union, cast
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator.config._config_group import config_group
@@ -22,7 +22,7 @@ def config(  # noqa: C901
     filter_function: Optional[Callable[..., bool]] = None,
     *args,
     **kwargs,
-) -> Union[Type[Union[Config, ConfigGroup]], Callable[..., Union[Type[Config], Type[ConfigGroup]]]]:
+) -> Union[Union[Config, ConfigGroup], Callable[..., Union[Config, ConfigGroup]]]:
     """Config decorator to parse Ini Files and implements config loader methods to config-classes.
 
     :param config_cls: Config class
@@ -39,7 +39,7 @@ def config(  # noqa: C901
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
 
-    def wrapper(cls) -> Union[Type[Config], Type[ConfigGroup]]:
+    def wrapper(cls) -> Union[Config, ConfigGroup]:
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
@@ -83,7 +83,7 @@ def config(  # noqa: C901
         cls.from_dict = staticmethod(create_dict_file_loader(cls=cls))
         cls.from_file = getattr(cls, str(default_loader.value), cls.from_ini)
 
-        return cls
+        return cast(cls, Type[Config])
 
     if config_cls:
         return wrapper(config_cls)

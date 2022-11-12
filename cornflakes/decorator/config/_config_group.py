@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, List, Optional, Type, Union
+from typing import Callable, List, Optional, Union, cast
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator.config._dict import create_dict_group_loader, to_dict
@@ -17,7 +17,7 @@ def config_group(  # noqa: C901
     filter_function: Optional[Callable[..., bool]] = None,
     *args,
     **kwargs,
-) -> Union[ConfigGroup, Callable[..., Type[ConfigGroup]]]:
+) -> Union[ConfigGroup, Callable[..., ConfigGroup]]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
     :param config_cls: Config class
@@ -32,7 +32,7 @@ def config_group(  # noqa: C901
 
     """
 
-    def wrapper(cls) -> Type[ConfigGroup]:
+    def wrapper(cls) -> ConfigGroup:
 
         cls = add_slots(dataclass(cls, *args, **kwargs))
         cls.__config_files__ = files if isinstance(files, list) else [files] if files else []
@@ -59,7 +59,7 @@ def config_group(  # noqa: C901
         cls.from_dict = staticmethod(create_dict_group_loader(cls=cls))
         cls.from_file = getattr(cls, str(default_loader.value), cls.from_ini)
 
-        return cls
+        return cast(cls, ConfigGroup)
 
     if config_cls:
         return wrapper(config_cls)

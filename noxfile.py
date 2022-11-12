@@ -169,6 +169,7 @@ def pytype(session):
 @session(python=python_versions)
 def tests(session: Session) -> None:
     """Run the test suite."""
+    session.run("pip", "install", "black")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     if os.path.exists("build"):
