@@ -50,7 +50,10 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">cornflakes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#information">Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#information">Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#features">Features:</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#development">Development</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#commands">Commands</a></li>
@@ -99,45 +102,64 @@
 </div>
 <section id="information">
 <h2>Information<a class="headerlink" href="#information" title="Permalink to this heading"></a></h2>
-<p>This package was created by starting C ++ methods to incorporate into my
-python implementations.</p>
-<p>To make things easier for me, lightweight public libraries were included
+<p>This package was created by starting C ++ methods to incorporate into my python implementations.
+To make things easier for me, lightweight public libraries were included
 (especially to carry out string operations):</p>
 <ul class="simple">
 <li><p>hash-library</p></li>
 <li><p>strtk</p></li>
 </ul>
-<p>The following methods have currently been implemented:</p>
-<ul class="simple">
-<li><p>ini_load (flexible and ligthweigh ini to dict parser, Faster Than Configparser)</p></li>
-<li><p>eval_type (method to parse strings in python-types e.g. int | bool | timestamp</p></li>
-<li><p>simple_hmac (vectorized c++ hmac implementation)</p></li>
-<li><p>default_ca_path (python function to find a default ssl / ca certificate path)</p></li>
+<section id="features">
+<h3>Features:<a class="headerlink" href="#features" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>The following features have currently been implemented:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>config management system</dt><dd><ul>
+<li><p>based on dataclass</p></li>
+<li><p>alternative Implementation for pydantic (BaseSettings)</p></li>
+<li><p>ini support files by a lightweight and fast parser (-&gt; ini_load)</p></li>
+<li><p>yaml support (based on PyYAML)</p></li>
+<li><p>environment variables</p></li>
+<li><p>(future) support json (based on orjson)</p></li>
 </ul>
-<p>In the future the following will be implemented: - more hash methods -
-c++ optimized grep methods - c++ optimized url-tools methods</p>
-<p>Currently, the package was only tested for Linux ## Usage</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cornflakes</span> <span class="kn">import</span> <span class="n">ini_load</span><span class="p">,</span> <span class="n">default_ca_path</span><span class="p">,</span> <span class="n">eval_type</span>
-
-<span class="n">ini_load</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;s3_configs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;examples/config/aws_config&quot;</span><span class="p">,</span>
-                               <span class="s2">&quot;examples/config/aws_credentials&quot;</span><span class="p">,</span>
-                               <span class="s2">&quot;examples/config/.s3cfg&quot;</span><span class="p">]},</span>
-         <span class="n">sections</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;qa&quot;</span><span class="p">],</span>
-         <span class="n">keys</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;signurl_use_https&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;signurl_use_https&quot;</span><span class="p">],</span>
-               <span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;access_key&quot;</span><span class="p">],</span>
-               <span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;secret_key&quot;</span><span class="p">],</span>
-               <span class="s2">&quot;endpoint_url&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;endpoint-url&quot;</span><span class="p">,</span> <span class="s2">&quot;host_base&quot;</span><span class="p">],</span>
-               <span class="s2">&quot;region_name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;bucket_location&quot;</span><span class="p">,</span> <span class="s2">&quot;region&quot;</span><span class="p">,</span> <span class="s2">&quot;aws_default_region&quot;</span><span class="p">],</span>
-               <span class="s2">&quot;service_name&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;service_name&quot;</span><span class="p">],</span>
-               <span class="s2">&quot;verify&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ca_certs&quot;</span><span class="p">,</span> <span class="s2">&quot;aws_ca_bundle&quot;</span><span class="p">,</span> <span class="s2">&quot;ca_bundle&quot;</span><span class="p">],},</span>
-         <span class="n">defaults</span><span class="o">=</span><span class="p">{</span>
-             <span class="s2">&quot;region_name&quot;</span><span class="p">:</span> <span class="s2">&quot;us-east-1&quot;</span><span class="p">,</span>
-             <span class="s2">&quot;signurl_use_https&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-             <span class="s2">&quot;verify&quot;</span><span class="p">:</span> <span class="n">default_ca_path</span><span class="p">(),</span>
-             <span class="s2">&quot;service_name&quot;</span><span class="p">:</span> <span class="s2">&quot;s3&quot;</span><span class="p">,</span>
-         <span class="p">})</span>
-</pre></div>
-</div>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>command line interface management</dt><dd><ul>
+<li><p>method: click_cli (decorator)</p></li>
+<li><p>based on click and rich</p></li>
+<li><p>easy to use and start with</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>eval_type</dt><dd><ul>
+<li><p>method to parse strings in python-types e.g. int | bool | timestamp</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>simple_hmac</dt><dd><ul>
+<li><p>vectorized c++ hmac implementation</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>default_ca_path</dt><dd><ul>
+<li><p>python function to find a default ssl / ca certificate path</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>Currently, the package is tested for Linux, Mac and Windows</p>
+</section>
 </section>
 <section id="development">
 <h2>Development<a class="headerlink" href="#development" title="Permalink to this heading"></a></h2>
@@ -145,8 +167,7 @@ c++ optimized grep methods - c++ optimized url-tools methods</p>
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>A compiler with C++17 support</p></li>
-<li><p>Pip 10+ or CMake &gt;= 3.4 (or 3.8+ on Windows, which was the first
-version to support VS 2015)</p></li>
+<li><p>Pip 10+ or CMake &gt;= 3.4 (or 3.8+ on Windows, which was the first version to support VS 2015)</p></li>
 <li><p>Python 3.8+</p></li>
 </ul>
 </section>
