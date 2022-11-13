@@ -3,11 +3,11 @@ from typing import Callable, Dict, List, Optional, Type, Union
 import yaml
 from yaml import SafeLoader, UnsafeLoader
 
-from cornflakes import yaml_load
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.config._protocols import Config, ConfigGroup
 from cornflakes.decorator.config._write_config import write_config
+from cornflakes.parser import yaml_load
 
 
 def specific_yaml_loader(loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader):

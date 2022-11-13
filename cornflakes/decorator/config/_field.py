@@ -1,9 +1,22 @@
 from dataclasses import MISSING, Field
+from typing import cast
 
 
-# This function is used instead of exposing Field creation directly,
-# so that a type checker can be told (via overloads) that this is a
-# function whose type depends on its parameters.
+class ConfigField(Field):
+    """Instances of dataclasses Field wrapped for configs."""
+
+    __slots__ = (*getattr(Field, "__slots__", ()), "alias")
+
+    def __init__(self, default, default_factory, init, repr, hash, compare, metadata, kw_only, alias):
+        """Init Field method."""
+        self.alias = alias
+        super().__init__(default, default_factory, init, repr, hash, compare, metadata, kw_only)  # type: ignore
+
+    def __repr__(self):
+        """Repr Field method."""
+        return f"{Field.__repr__(self)[:-1]}," f"alias={self.alias})"
+
+
 def config_field(
     *,
     default=MISSING,
@@ -16,24 +29,19 @@ def config_field(
     kw_only=MISSING,
     alias=None,
 ):
-    """Return an object to identify dataclass fields.
+    """This function is used instead of exposing Field creation directly.
 
-    default is the default value of the field.  default_factory is a
-    0-argument function called to initialize a field's value.  If init
-    is true, the field will be a parameter to the class's __init__()
-    function.  If repr is true, the field will be included in the
-    object's repr().  If hash is true, the field will be included in the
-    object's hash().  If compare is true, the field will be used in
-    comparison functions.  metadata, if specified, must be a mapping
-    which is stored but not otherwise examined by dataclass.  If kw_only
-    is true, the field will become a keyword-only parameter to
-    __init__().
-
-    It is an error to specify both default and default_factory.
+    So that a type checker can be told (via overloads) that this is a function whose type depends on its parameters.
     """
-    if default is not MISSING and default_factory is not MISSING:
-        raise ValueError("cannot specify both default and default_factory")
-    field = Field(default, default_factory, init, repr, hash, compare, metadata, kw_only)
-    field.__slots__ = (*getattr(field, "__slots__", ()), "alias")
-    field.alias = alias
-    field.__repr__ = lambda _: f"{Field.__repr__(field)[:-1]}," f"alias={field.alias})"
+    new_field: Field = ConfigField(
+        alias=alias,
+        default=default,
+        default_factory=default_factory,
+        init=init,
+        repr=repr,
+        hash=hash,
+        compare=compare,
+        metadata=metadata,
+        kw_only=kw_only,
+    )
+    return cast(Field, new_field)

@@ -20,4 +20,5 @@ class SubConfig:
     decimal: Decimal = Decimal("0.0000000000000000000000000000000000000001")
     ipv4: IPv4Address = IPv4Address("127.0.0.1")
     ipv6: IPv6Address = IPv6Address("684D:1111:222:3333:4444:5555:6:77")
+    bool_val: bool = True
     some_env: str = config_field(default="default_value", alias=["some_env"])
