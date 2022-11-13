@@ -31,6 +31,9 @@ nox.options.sessions = (
 )
 
 
+# TODO: optimize build with session.install() instead of poetry build -> install dist
+
+
 def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
     """Activate virtualenv in hooks installed by pre-commit.
 

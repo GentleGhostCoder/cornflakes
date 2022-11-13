@@ -23,7 +23,8 @@ py::dict ini_load(
     const std::map<std::string, std::vector<std::string>> &files,
     const std::map<std::string, std::vector<std::string>> &sections,
     const std::map<std::string, std::vector<std::string>> &keys,
-    const std::map<std::string, std::vector<py::object>> &defaults);
+    const std::map<std::string, std::vector<py::object>> &defaults,
+    const bool &eval_env);
 }  // namespace ini
 
 #endif  // INST__CORNFLAKES_INI_H_

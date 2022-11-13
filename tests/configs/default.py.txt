@@ -11,7 +11,7 @@ from tests.configs.sub_config import SubConfig
 from cornflakes import config_group
 
 
-@config_group(files=["tests/configs/default.ini"])
+@config_group(files=["tests/configs/default.ini"], eval_env=True)
 class MainConfig:
     """Main config class of the module."""
 

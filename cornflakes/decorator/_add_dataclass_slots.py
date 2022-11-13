@@ -2,7 +2,10 @@ import dataclasses
 
 
 def add_slots(cls):
-    """Need to create a new class, since we can't set __slots__ after a class has been created."""
+    """Need to create a new class, since we can't set __slots__ after a class has been created.
+
+    This decorator is needed to support lower python versions (newer versions has slots function inside dataclasses itself).
+    """
     # Make sure __slots__ isn't already set.
     if "__slots__" in cls.__dict__:
         raise TypeError(f"{cls.__name__} already specifies __slots__")

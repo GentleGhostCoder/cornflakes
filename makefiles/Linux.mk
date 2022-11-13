@@ -33,6 +33,8 @@ clean-build: ## remove build artifacts
 	rm -fr setup.py
 	rm -fr dist/
 	rm -fr .eggs/
+	rm -fr cmake-build-debug
+	rm -fr inst/_cornflakes/cmake-build-debug
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 

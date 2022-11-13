@@ -4,12 +4,12 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator.config._helper import is_config, is_config_list
-from cornflakes.decorator.config._protocols import Config, ConfigGroup
+from cornflakes.decorator.config._protocols import Config, ConfigGroup, LoaderMethod
 
 
 def create_group_loader(
     cls: ConfigGroup,
-    loader=ini_load,
+    loader: LoaderMethod = ini_load,  # type: ignore
 ) -> Callable[..., ConfigGroup]:
     """Config decorator to parse Ini Files and implements from_file method to config-group-classes.
 
@@ -23,6 +23,7 @@ def create_group_loader(
         files: Optional[Union[Dict[str, Union[List[str], str]], List[str], str]] = None,
         config_dict: Optional[Dict[str, Any]] = None,
         filter_function: Optional[Callable[[Config], bool]] = None,
+        eval_env: bool = None,
         *slot_args,
         **slot_kwargs,
     ) -> ConfigGroup:
@@ -33,15 +34,19 @@ def create_group_loader(
         :param slot_args: Default configs to overwrite passed class
         :param slot_kwargs: Default configs to overwrite passed class
         :param filter_function: Optional filter method for config
+        :param eval_env: Flag to evaluate environment variables into default values.
 
         :returns: Nested Lists of Config Classes
 
         """
         if not files:
             files = cls.__config_files__
+        if not eval_env:
+            eval_env = cls.__eval_env__
 
         if not config_dict:
-            config_dict = OrderedDict(loader({None: files}))
+            config_dict = OrderedDict(loader({None: files}, eval_env=eval_env))
+            print(config_dict)
         logging.debug(f"Read config with sections: {config_dict.keys()}")
         for slot_name, slot_class in list(getattr(cls, "__annotations__", {}).items())[len(slot_args) :]:
             if is_config_list(slot_class):

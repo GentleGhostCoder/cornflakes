@@ -1,7 +1,7 @@
-from dataclasses import dataclass
 from typing import Callable, List, Optional, Union, cast
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
+from cornflakes.decorator.config._dataclass import dataclass
 from cornflakes.decorator.config._dict import create_dict_group_loader, to_dict
 from cornflakes.decorator.config._ini import create_ini_group_loader, to_ini, to_ini_bytes
 from cornflakes.decorator.config._loader import Loader
@@ -15,6 +15,7 @@ def config_group(  # noqa: C901
     default_loader: Loader = Loader.INI_LOADER,
     allow_empty: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
+    eval_env: bool = False,
     *args,
     **kwargs,
 ) -> Union[ConfigGroup, Callable[..., ConfigGroup]]:
@@ -27,6 +28,7 @@ def config_group(  # noqa: C901
     :param kwargs: Default configs to overwrite dataclass args
     :param allow_empty: Flag that allows empty config result
     :param filter_function: Optional filter method for config
+    :param eval_env: Flag to evaluate environment variables into default values.
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
 
@@ -38,6 +40,7 @@ def config_group(  # noqa: C901
         cls.__config_files__ = files if isinstance(files, list) else [files] if files else []
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
+        cls.__eval_env__ = eval_env
 
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):

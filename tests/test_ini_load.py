@@ -38,6 +38,7 @@ class TestIniLoad(unittest.TestCase):
                     "signurl_use_https": True,
                     "service_name": "s3",
                 },
+                eval_env=True,
             ),
             {
                 "s3_configs": {
@@ -86,6 +87,7 @@ class TestIniLoad(unittest.TestCase):
                     "signurl_use_https": True,
                     "service_name": "s3",
                 },
+                eval_env=True,
             ),
             {
                 "s3_configs": {
@@ -122,6 +124,7 @@ class TestIniLoad(unittest.TestCase):
                     "signurl_use_https": True,
                     "service_name": "s3",
                 },
+                eval_env=True,
             ),
             {
                 "default": {
@@ -157,12 +160,12 @@ class TestIniLoad(unittest.TestCase):
                     "signurl_use_https": True,
                     "service_name": "s3",
                 },
+                eval_env=False,  # no env_var1
             ),
             {
                 "aws_access_key_id": "XXXXXXXXXXXXXXXXXXXXXXXXXX",
                 "aws_secret_access_key": "XXXXXXXXXXXXXXXXXXXXXXXXXX",
                 "endpoint_url": "some-s3-endpoint.example",
-                "env_var1": "blabla",
                 "service_name": "s3",
                 "signurl_use_https": True,
             },

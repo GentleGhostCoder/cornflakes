@@ -32,48 +32,36 @@ cornflakes
 Information
 -----------
 
-This package was created by starting C ++ methods to incorporate into my
-python implementations.
-
+This package was created by starting C ++ methods to incorporate into my python implementations.
 To make things easier for me, lightweight public libraries were included
 (especially to carry out string operations):
 
 * hash-library
 * strtk
 
-The following methods have currently been implemented:
+Features:
+~~~~~~~~~
 
-* ini_load (flexible and ligthweigh ini to dict parser, Faster Than Configparser)
-* eval_type (method to parse strings in python-types e.g. int \| bool \| timestamp
-* simple_hmac (vectorized c++ hmac implementation)
-* default_ca_path (python function to find a default ssl / ca certificate path)
+The following features have currently been implemented:
+    * config management system
+        - based on dataclass
+        - alternative Implementation for pydantic (BaseSettings)
+        - ini support files by a lightweight and fast parser (-> ini_load)
+        - yaml support (based on PyYAML)
+        - environment variables
+        - (future) support json (based on orjson)
+    * command line interface management
+        - method: click_cli (decorator)
+        - based on click and rich
+        - easy to use and start with
+    * eval_type
+        - method to parse strings in python-types e.g. int | bool | timestamp
+    * simple_hmac
+        - vectorized c++ hmac implementation
+    * default_ca_path
+        - python function to find a default ssl / ca certificate path
 
-In the future the following will be implemented: - more hash methods -
-c++ optimized grep methods - c++ optimized url-tools methods
-
-Currently, the package was only tested for Linux ## Usage
-
-.. code:: python
-
-   from cornflakes import ini_load, default_ca_path, eval_type
-
-   ini_load(files={"s3_configs": ["examples/config/aws_config",
-                                  "examples/config/aws_credentials",
-                                  "examples/config/.s3cfg"]},
-            sections=["default", "qa"],
-            keys={"signurl_use_https": ["signurl_use_https"],
-                  "aws_access_key_id": ["access_key"],
-                  "aws_secret_access_key": ["secret_key"],
-                  "endpoint_url": ["endpoint-url", "host_base"],
-                  "region_name": ["bucket_location", "region", "aws_default_region"],
-                  "service_name": ["service_name"],
-                  "verify": ["ca_certs", "aws_ca_bundle", "ca_bundle"],},
-            defaults={
-                "region_name": "us-east-1",
-                "signurl_use_https": True,
-                "verify": default_ca_path(),
-                "service_name": "s3",
-            })
+Currently, the package is tested for Linux, Mac and Windows
 
 Development
 -----------
@@ -82,8 +70,7 @@ Prerequisites
 ~~~~~~~~~~~~~
 
 -  A compiler with C++17 support
--  Pip 10+ or CMake >= 3.4 (or 3.8+ on Windows, which was the first
-   version to support VS 2015)
+-  Pip 10+ or CMake >= 3.4 (or 3.8+ on Windows, which was the first version to support VS 2015)
 -  Python 3.8+
 
 Commands

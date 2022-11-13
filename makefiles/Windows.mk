@@ -32,6 +32,8 @@ clean-build: ## remove build artifacts
 	if exist build rd /s /q build
 	if exist build rd /s /q dist
 	if exist build rd /s /q .eggs
+	if exist build rd /s /q cmake-build-debug
+	if exist build rd /s /q inst/_cornflakes/cmake-build-debug
 	for /d /r . %%d in (*.egg-info) do @if exist "%%d" echo "%%d" && rd /s/q "%%d"
 	del /q /s /f .\*.egg
 

@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator.config._helper import allow_empty, is_config_list, pass_section_name
-from cornflakes.decorator.config._protocols import Config
+from cornflakes.decorator.config._protocols import Config, LoaderMethod
 
 
 def _none_omit(obj: list):
@@ -14,8 +14,8 @@ def _none_omit(obj: list):
 
 def create_file_loader(  # noqa: C901
     cls: Config,
-    loader=ini_load,
-) -> Callable[..., Dict[str, Union[Config, List[Config], None]]]:
+    loader: LoaderMethod = ini_load,  # type: ignore
+) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
     """Config decorator to parse Ini Files and implements from_file method to config-classes.
 
     :param cls: Config class
@@ -24,7 +24,7 @@ def create_file_loader(  # noqa: C901
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
 
-    def _create_config(config: dict, *cls_args, **cls_kwargs) -> Union[Config, None]:
+    def _create_config(config: dict, *cls_args, **cls_kwargs) -> Optional[Config]:
         logging.debug(config)
         logging.debug(allow_empty(cls))
         if not config and allow_empty(cls):
@@ -45,9 +45,10 @@ def create_file_loader(  # noqa: C901
         sections: Optional[Union[List[str], str]] = None,
         config_dict: Optional[Dict[str, Any]] = None,
         filter_function: Optional[Callable[[Config], bool]] = None,
+        eval_env: bool = None,
         *slot_args,
         **slot_kwargs,
-    ) -> Dict[str, Union[Config, List[Config], None]]:
+    ) -> Dict[str, Optional[Union[Config, List[Config]]]]:
         """Config parser from ini files.
 
         :param files: Default config files
@@ -56,6 +57,7 @@ def create_file_loader(  # noqa: C901
         :param slot_args: Default configs to overwrite passed class
         :param slot_kwargs: Default configs to overwrite passed class
         :param filter_function: Optional filter method for config
+        :param eval_env: Flag to evaluate environment variables into default values.
 
         :returns: Nested Lists of Config Classes
 
@@ -66,18 +68,26 @@ def create_file_loader(  # noqa: C901
             files = cls.__config_files__
         if not filter_function:
             filter_function = cls.__config_filter_function__ or (lambda x: True)
+        if not eval_env:
+            eval_env = cls.__eval_env__
 
         pass_sections = pass_section_name(cls)
 
         def get_section_kwargs(section):
             return {**slot_kwargs, **({"section_name": section} if pass_sections else {})}
 
+        # get alias from custom dataclass fields
+        keys = {
+            key: getattr(cls.__dataclass_fields__[key], "alias", key)
+            for key in getattr(cls, "__slots__", ())[len(slot_args) :]
+        }
+
         if not cls.__multi_config__ and isinstance(sections, str):
             logging.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
 
             if not config_dict:
                 config_dict = OrderedDict(
-                    loader({None: files}, sections, getattr(cls, "__slots__", ())[len(slot_args) :])
+                    loader(files={None: files}, sections=sections, keys=keys, defaults=None, eval_env=eval_env)
                 )
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
             config = _create_config(config_dict.get(sections, {}), *slot_args, **get_section_kwargs(sections))
@@ -86,7 +96,7 @@ def create_file_loader(  # noqa: C901
             return {sections: config}
 
         if not config_dict:
-            config_dict = OrderedDict(loader({None: files}, None, getattr(cls, "__slots__", ())[len(slot_args) :]))
+            config_dict = OrderedDict(loader(files={None: files}, sections=None, keys=keys, eval_env=eval_env))
             logging.debug(f"Read config with sections: {config_dict.keys()}")
 
         regex = f'({"|".join(sections) if isinstance(sections, list) else sections})'

@@ -1,4 +1,5 @@
 import collections.abc
+from os import environ
 from os.path import abspath, expanduser
 from typing import Any, Dict, List, Optional, Type, Union, cast
 
@@ -17,7 +18,6 @@ def _update(d, u):
 
 def _get_updated_key(config: Dict, values: List[str], defaults: Dict):
     result = None
-    key = None
     for value in values:
         key = config.get(value, defaults.get(value, None))
         if key:
@@ -70,7 +70,7 @@ def _yaml_read(
     sections: dict,
     keys: dict,
     defaults: dict,
-    loader: Union[Type[UnsafeLoader], Type[SafeLoader], None],
+    loader: Optional[Union[Type[UnsafeLoader], Type[SafeLoader]]],
 ) -> dict:
     with open(abspath(expanduser(file)), "rb") as f:
         data = f.read()
@@ -102,6 +102,7 @@ def yaml_load(
     sections: Optional[Union[str, List[str], Dict[Optional[str], Union[str, List[str]]]]] = None,
     keys: Optional[Union[str, List[str], Dict[Optional[str], Union[str, List[str]]]]] = None,
     defaults: Optional[Union[str, List[str], Dict[str, Any]]] = None,
+    eval_env: bool = False,
     loader: Optional[Union[Type[SafeLoader], Type[UnsafeLoader]]] = None,
 ):
     """Yaml Wrapper for reading yaml files in a generic way."""
@@ -109,6 +110,29 @@ def yaml_load(
     sections = _to_map(sections)
     keys = _to_map(keys)
     defaults = _to_map(defaults)
+
+    if eval_env:
+        defaults.update(
+            {
+                key: var
+                for key, value in keys.items()
+                if (
+                    var := (
+                        env_var
+                        if isinstance(value, str) and (env_var := environ.get(value))
+                        else env_vars[-1]
+                        if (
+                            env_vars := [
+                                env_var
+                                for sub_value in value
+                                if isinstance(value, list) and (env_var := environ.get(sub_value))
+                            ]
+                        )
+                        else None
+                    )
+                )
+            }
+        )
 
     config: dict = {}
     for file_key, file_names in files.items():
@@ -129,12 +153,3 @@ def yaml_load(
             _update(config, {file_key: _yaml_read(file, sections, keys, defaults, loader)})
 
     return config
-
-
-def specific_yaml_loader(loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader):
-    """Wrapper method to predefine yaml loader parameter."""
-
-    def _yaml_loader(*args, **kwargs):
-        return yaml_load(*args, loader=loader, **kwargs)
-
-    return _yaml_loader

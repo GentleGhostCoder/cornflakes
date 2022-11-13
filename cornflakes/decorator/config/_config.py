@@ -1,9 +1,9 @@
-from dataclasses import dataclass
 import logging
 from typing import Callable, List, Optional, Type, Union, cast
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator.config._config_group import config_group
+from cornflakes.decorator.config._dataclass import dataclass
 from cornflakes.decorator.config._dict import create_dict_file_loader, to_dict
 from cornflakes.decorator.config._ini import create_ini_file_loader, to_ini, to_ini_bytes
 from cornflakes.decorator.config._loader import Loader
@@ -20,6 +20,7 @@ def config(  # noqa: C901
     default_loader: Loader = Loader.INI_LOADER,
     allow_empty: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
+    eval_env: bool = False,
     *args,
     **kwargs,
 ) -> Union[Union[Config, ConfigGroup], Callable[..., Union[Config, ConfigGroup]]]:
@@ -35,6 +36,7 @@ def config(  # noqa: C901
     :param kwargs: Default configs to overwrite dataclass args
     :param allow_empty: Flag that allows empty config result
     :param filter_function: Optional filter method for config
+    :param eval_env: Flag to evaluate environment variables into default values.
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
@@ -66,6 +68,7 @@ def config(  # noqa: C901
         cls.__config_list__ = is_list
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
+        cls.__eval_env__ = eval_env
 
         def new(self, *new_args, **new_kwargs):
             # two chars missing in original of next line ...

@@ -51,14 +51,16 @@ struct ParserData {
   std::function<void(FileData data, ParserData m_ParserData)> ParseSections;
   std::function<void(SectionData data, ParserData m_ParserData)> ParseKeys;
   ParserConfig m_ParserConfig;
+  const bool eval_env;
   ParserData(std::function<void(FileData data, ParserData m_ParserData)>
                  t_ParseSections,
              std::function<void(SectionData data, ParserData m_ParserData)>
                  t_ParseKeys,
-             ParserConfig t_ParserConfig)
+             ParserConfig t_ParserConfig, const bool &t_eval_env)
       : ParseSections(std::move(t_ParseSections)),
         ParseKeys(std::move(t_ParseKeys)),
-        m_ParserConfig(std::move(t_ParserConfig)) {}
+        m_ParserConfig(std::move(t_ParserConfig)),
+        eval_env(t_eval_env) {}
 };
 
 inline void ParseAllKeys(SectionData t_SectionData,
@@ -140,18 +142,20 @@ inline void ParseDefinedKeys(SectionData t_SectionData,
                    .is_none()) {
             break;
           }
-          char *env_value = std::getenv(item_value.c_str());
-          if (env_value == nullptr) {
-            std::transform(item_value.begin(), item_value.end(),
-                           item_value.begin(), ::toupper);
-            env_value = std::getenv(item_value.c_str());
-          }
-          if (env_value != nullptr) {
-            t_SectionData.section_envir[py::cast(item.first)] =
-                t_SectionData.section_envir.attr("get")(
-                    py::cast(item.first),
-                    string_operations::eval_type(env_value));
-            break;
+          if (t_ParserData.eval_env) {
+            char *env_value = std::getenv(item_value.c_str());
+            if (env_value == nullptr) {
+              std::transform(item_value.begin(), item_value.end(),
+                             item_value.begin(), ::toupper);
+              env_value = std::getenv(item_value.c_str());
+            }
+            if (env_value != nullptr) {
+              t_SectionData.section_envir[py::cast(item.first)] =
+                  t_SectionData.section_envir.attr("get")(
+                      py::cast(item.first),
+                      string_operations::eval_type(env_value));
+              break;
+            }
           }
           if (!t_ParserData.m_ParserConfig.defaults.empty()) {
             auto default_value =
@@ -420,7 +424,8 @@ py::dict ini_load(
     const std::map<std::string, std::vector<std::string>> &files,
     const std::map<std::string, std::vector<std::string>> &sections,
     const std::map<std::string, std::vector<std::string>> &keys,
-    const std::map<std::string, std::vector<py::object>> &defaults) {
+    const std::map<std::string, std::vector<py::object>> &defaults,
+    const bool &eval_env = false) {
   py::dict envir;
 
   // Controller
@@ -431,7 +436,8 @@ py::dict ini_load(
                                             // vector of strings (keys + names)
                                             {},  // sections && section_names
                                             {},  // keys && key_names
-                                            defaults, envir)));
+                                            defaults, envir),
+                               eval_env));
     } break;
     case 1: {
       ParseAllFiles(ParserData(ParseDefinedSections, ParseAllKeys,
@@ -439,21 +445,24 @@ py::dict ini_load(
                                             // vector of strings (keys + names)
                                             sections,  // sections
                                             {},        // keys && key_names
-                                            defaults, envir)));
+                                            defaults, envir),
+                               eval_env));
     } break;
     case 2: {
       ParseAllFiles(ParserData(ParseAllSections, ParseDefinedKeys,
                                ParserConfig(files,
                                             // vector of strings (keys + names)
                                             {},  // sections && section_names
-                                            keys, defaults, envir)));
+                                            keys, defaults, envir),
+                               eval_env));
     } break;
     case 3: {
       ParseAllFiles(ParserData(ParseDefinedSections, ParseDefinedKeys,
                                ParserConfig(files,
                                             // vector of strings (keys + names)
                                             sections,  // sections
-                                            keys, defaults, envir)));
+                                            keys, defaults, envir),
+                               eval_env));
     } break;
   }
 

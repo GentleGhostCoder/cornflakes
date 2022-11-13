@@ -8,8 +8,8 @@ set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../ext)
 
 add_subdirectory(${EXT_DIR}/pybind11 [EXCLUDE_FROM_ALL])
 
-install(DIRECTORY ${EXT_DIR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-include_directories(${EXT_DIR})
+# install(DIRECTORY ${EXT_DIR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+# include_directories(${EXT_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
 
 get_property(

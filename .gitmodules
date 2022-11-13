@@ -4,3 +4,6 @@
 [submodule "inst/_cornflakes/strtk"]
 	path = inst/_cornflakes/strtk
 	url = https://github.com/ArashPartow/strtk.git
+[submodule "inst/ext/pybind11"]
+	path = inst/ext/pybind11
+	url = https://github.com/pybind/pybind11.git

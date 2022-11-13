@@ -1,6 +1,23 @@
 from typing import Any, Dict, List, Optional, Protocol, Tuple, Union
 
 
+class LoaderMethod(Protocol):
+    """Config loader method protocol."""
+
+    @staticmethod
+    def __call__(
+        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        eval_env: bool = False,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Config loader method protocol."""
+        ...
+
+
 class Config(Protocol):
     """Config Protocol Type."""
 
@@ -12,6 +29,7 @@ class Config(Protocol):
     __config_list__: str
     __args__: List[Any]
     __slots__: Tuple[str]
+    __eval_env__: bool = None
 
     def __call__(self, *args, **kwargs) -> Any:
         """Call Function."""
@@ -25,11 +43,11 @@ class Config(Protocol):
         """Parse config to dict."""
         ...
 
-    def to_ini(self, *args, **kwargs) -> Union[bytearray, None]:
+    def to_ini(self, *args, **kwargs) -> Optional[bytearray]:
         """Parse config to ini file / bytes."""
         ...
 
-    def to_yaml(self, *args, **kwargs) -> Union[bytearray, None]:
+    def to_yaml(self, *args, **kwargs) -> Optional[bytearray]:
         """Parse config to yaml file / bytes."""
         ...
 
@@ -41,53 +59,10 @@ class Config(Protocol):
         """Parse config to ini bytes."""
         ...
 
-    @staticmethod
-    def from_ini(
-        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        *args,
-        **kwargs
-    ) -> Any:
-        """Parse ini file to config."""
-        ...
-
-    @staticmethod
-    def from_yaml(
-        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        *args,
-        **kwargs
-    ) -> Any:
-        """Parse yaml file to config."""
-        ...
-
-    @staticmethod
-    def from_dict(
-        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        *args,
-        **kwargs
-    ) -> Any:
-        """Parse dict to config."""
-        ...
-
-    @staticmethod
-    def from_file(
-        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        *args,
-        **kwargs
-    ) -> Any:
-        """Parse file to config."""
-        ...
+    from_ini: LoaderMethod
+    from_yaml: LoaderMethod
+    from_dict: LoaderMethod
+    from_file: LoaderMethod
 
 
 class ConfigGroup(Protocol):
@@ -101,6 +76,7 @@ class ConfigGroup(Protocol):
     __config_list__: str
     __args__: List[Any]
     __slots__: Tuple[str]
+    __eval_env__: bool = None
 
     def __call__(self, *args, **kwargs) -> Any:
         """Call Function."""
@@ -114,11 +90,11 @@ class ConfigGroup(Protocol):
         """Parse config to dict."""
         ...
 
-    def to_ini(self, *args, **kwargs) -> Union[bytearray, None]:
+    def to_ini(self, *args, **kwargs) -> Optional[bytearray]:
         """Parse config to ini file / bytes."""
         ...
 
-    def to_yaml(self, *args, **kwargs) -> Union[bytearray, None]:
+    def to_yaml(self, *args, **kwargs) -> Optional[bytearray]:
         """Parse config to yaml file / bytes."""
         ...
 
@@ -130,50 +106,7 @@ class ConfigGroup(Protocol):
         """Parse config to ini bytes."""
         ...
 
-    @staticmethod
-    def from_ini(
-        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        *args,
-        **kwargs
-    ) -> Any:
-        """Parse ini file to config."""
-        ...
-
-    @staticmethod
-    def from_yaml(
-        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        *args,
-        **kwargs
-    ) -> Any:
-        """Parse yaml file to config."""
-        ...
-
-    @staticmethod
-    def from_dict(
-        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        *args,
-        **kwargs
-    ) -> Any:
-        """Parse dict to config."""
-        ...
-
-    @staticmethod
-    def from_file(
-        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        *args,
-        **kwargs
-    ) -> Any:
-        """Parse file to config."""
-        ...
+    from_ini: LoaderMethod
+    from_yaml: LoaderMethod
+    from_dict: LoaderMethod
+    from_file: LoaderMethod

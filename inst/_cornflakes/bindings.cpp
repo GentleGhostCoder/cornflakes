@@ -53,7 +53,8 @@ PYBIND11_MODULE(_cornflakes, module) {
   module.def(
       "ini_load",
       [](const py::object &files, const py::object &sections,
-         const py::object &keys, const py::object &defaults) -> py::dict {
+         const py::object &keys, const py::object &defaults,
+         const bool &eval_env) -> py::dict {
         const auto m_files = string_operations::convert_to_map_str(files);
         const auto m_sections = string_operations::convert_to_map_str(sections);
         const auto m_keys =
@@ -62,12 +63,13 @@ PYBIND11_MODULE(_cornflakes, module) {
                       defaults.is_none() ? defaults : defaults.attr("keys"))
                 : string_operations::convert_to_map_str(keys);
         const auto m_defaults = string_operations::convert_to_map_py(defaults);
-        return ini::ini_load(m_files, m_sections, m_keys, m_defaults);
+        return ini::ini_load(m_files, m_sections, m_keys, m_defaults, eval_env);
       },
       py::arg("files").none(true) = py::cast(NULL),
       py::arg("sections").none(true) = py::cast(NULL),
       py::arg("keys").none(true) = py::cast(NULL),
       py::arg("defaults").none(true) = py::cast(NULL),
+      py::arg("eval_env").none(true) = py::cast(false),
       R"pbdoc(
         .. doxygenfunction:: ini::ini_load
             :project: _cornflakes

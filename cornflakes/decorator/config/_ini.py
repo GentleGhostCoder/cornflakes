@@ -56,18 +56,18 @@ def to_ini_bytes(
     return _ini_bytes
 
 
-def to_ini(self, out_cfg: Optional[str] = None) -> Union[None, bytearray]:
+def to_ini(self, out_cfg: Optional[str] = None) -> Optional[bytearray]:
     """Method to write an instance of the main config class of the module into an ini file."""
     return write_config(self.to_ini_bytes(self.__class__.__name__.lower()), out_cfg)
 
 
 def create_ini_file_loader(
     cls=None,
-) -> Callable[..., Dict[str, Union[Config, List[Config], None]]]:
+) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
     """Method to create file loader for ini files."""
 
-    def from_ini(*args, **kwargs) -> Dict[str, Union[Config, List[Config], None]]:
-        return create_file_loader(cls=cls, loader=ini_load)(*args, **kwargs)
+    def from_ini(*args, **kwargs) -> Dict[str, Optional[Union[Config, List[Config]]]]:
+        return create_file_loader(cls=cls, loader=ini_load)(*args, **kwargs)  # type: ignore
 
     return from_ini
 
@@ -78,6 +78,6 @@ def create_ini_group_loader(
     """Method to create file loader for ini files."""
 
     def from_ini(*args, **kwargs) -> ConfigGroup:
-        return create_group_loader(cls=cls, loader=ini_load)(*args, **kwargs)
+        return create_group_loader(cls=cls, loader=ini_load)(*args, **kwargs)  # type: ignore
 
     return from_ini
