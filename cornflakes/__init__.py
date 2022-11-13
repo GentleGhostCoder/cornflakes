@@ -27,7 +27,7 @@ from cornflakes.logging import attach_log, setup_logging
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "2.9.8"
+__version__ = "2.9.9"
 
 __all__ = [
     "click_cli",
