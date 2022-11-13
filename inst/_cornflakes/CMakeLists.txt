@@ -4,7 +4,7 @@ project(_cornflakes LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../ext)
-set(DOCS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../docs)
+# set(DOCS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../docs)
 
 add_subdirectory(${EXT_DIR}/pybind11 [EXCLUDE_FROM_ALL])
 
@@ -20,15 +20,15 @@ foreach(dir ${dirs})
   message(STATUS "dir='${dir}'")
 endforeach()
 
-# file(GLOB_RECURSE HASH_LIB_SOURCE_FILES ${EXT_DIR}/hash-library/*.cpp)
-# list(FILTER HASH_LIB_SOURCE_FILES EXCLUDE REGEX ".*test.*")
+file(GLOB_RECURSE HASH_LIB_SOURCE_FILES ${EXT_DIR}/hash-library/*.cpp)
+list(FILTER HASH_LIB_SOURCE_FILES EXCLUDE REGEX ".*test.*")
 
 file(GLOB_RECURSE SOURCE_FILES *.cpp)
 list(FILTER SOURCE_FILES EXCLUDE REGEX ".*ext.*")
 list(FILTER SOURCE_FILES EXCLUDE REGEX ".*cmake-build-debug.*")
 
 pybind11_add_module(${PROJECT_NAME} MODULE NO_EXTRAS ${SOURCE_FILES}
-)# ${HASH_LIB_SOURCE_FILES}
+                    ${HASH_LIB_SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${EXT_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})

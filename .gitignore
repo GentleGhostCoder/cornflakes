@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# fleet
+.fleet
+
 # C extensions
 *.so
 
@@ -56,6 +59,10 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+
+# Logging
+
+logging.yaml
 
 # Translations
 *.mo

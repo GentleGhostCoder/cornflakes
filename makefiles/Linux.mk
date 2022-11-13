@@ -66,11 +66,14 @@ coverage: ## check code coverage quickly with the default Python
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/cornflakes.rst
 	rm -f docs/modules.rst
+	rm -rf docs/_generated
+	rm -rf docs/_build
+	rm -f docs/cornflakes*.rst
 	sphinx-apidoc -o docs cornflakes
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 
-docs-preview: docs
+preview: docs
 	$(BROWSER) docs/_build/html/index.html
 
 servedocs: docs ## compile the docs watching for changes

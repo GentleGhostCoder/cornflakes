@@ -2,8 +2,6 @@
 
 #include <bindings.h>
 
-#include <utility>
-
 //! pybind module declaration
 PYBIND11_MODULE(_cornflakes, module) {
   module.doc() = R"pbdoc(
@@ -20,7 +18,37 @@ PYBIND11_MODULE(_cornflakes, module) {
             eval_csv
             extract_between
             apply_match
+            simple_hmac
+            simple_sha256
     )pbdoc";
+
+  //    py::object decimal = py::module::import("decimal").attr("Decimal");
+  //    auto custom_decimal = py::reinterpret_borrow<py::object>((PyObject *)
+  //    &PyType_Type); py::dict attributes;
+  //
+  //    py::class_<std::int64_t> custom_decimal_class =
+  //    custom_decimal("Decimal", py::make_tuple(decimal), attributes);
+  //
+  //    custom_decimal_class.def("__str__", [](const py::object &self) ->
+  //    std::string {
+  //        auto str = self.attr("__repr__")().cast<std::string>();
+  //        str = str.substr(9, str.size() - 11);
+  //        std::string::const_iterator start_iter(str.begin());
+  //        std::string::const_iterator end_iter(str.end());
+  //        std::string::const_iterator e_idx = std::find(start_iter, end_iter,
+  //        'E'); if (e_idx == end_iter) return str; if (str[0] == '-') {
+  //            return "-0." + std::string((std::stoi(std::string(e_idx + 2,
+  //            end_iter)) - 1), '0') +
+  //                   str[1] + (start_iter + 3 < e_idx ? std::string(start_iter
+  //                   + 3, e_idx) : "");
+  //        }
+  //        return "0." + std::string((std::stoi(std::string(e_idx + 2,
+  //        end_iter)) - 1), '0') +
+  //               str[0] + (start_iter + 2 < e_idx ? std::string(start_iter +
+  //               2, e_idx) : "");
+  //    }, R"pbdoc(Wrapper of decimal.Decimal class.)pbdoc");
+  //
+  //    module.attr("Decimal") = custom_decimal_class;
 
   module.def(
       "ini_load",
@@ -105,34 +133,33 @@ PYBIND11_MODULE(_cornflakes, module) {
             :project: _cornflakes
         )pbdoc");
 
-  //  module.def(
-  //      "simple_hmac",
-  //      [](const py::list &data, const std::string &algo) -> py::object {
-  //        return py::cast(
-  //            digest::simple_hmac(data.cast<std::vector<std::string>>(),
-  //            algo));
-  //      },
-  //      py::arg("data").none(false), py::arg("algo").none(true) = "SHA256",
-  //      R"pbdoc(
-  //        .. doxygenfunction:: digest::simple_hmac
-  //            :project: _cornflakes
-  //        )pbdoc");
-  //
-  //  module.def(
-  //      "simple_sha256",
-  //      [](const py::object &data) -> py::object {
-  //        return py::cast(digest::simple_sha256(data.cast<std::string>()));
-  //      },
-  //      py::arg("data").none(false),
-  //      R"pbdoc(
-  //        .. doxygenfunction:: digest::simple_sha256
-  //            :project: _cornflakes
-  //        )pbdoc");
+  module.def(
+      "simple_hmac",
+      [](const py::list &data, const std::string &algo) -> py::object {
+        return py::cast(
+            digest::simple_hmac(data.cast<std::vector<std::string>>(), algo));
+      },
+      py::arg("data").none(false), py::arg("algo").none(true) = "SHA256",
+      R"pbdoc(
+          .. doxygenfunction:: digest::simple_hmac
+              :project: _cornflakes
+          )pbdoc");
+
+  module.def(
+      "simple_sha256",
+      [](const py::object &data) -> py::object {
+        return py::cast(digest::simple_sha256(data.cast<std::string>()));
+      },
+      py::arg("data").none(false),
+      R"pbdoc(
+          .. doxygenfunction:: digest::simple_sha256
+              :project: _cornflakes
+          )pbdoc");
 
   module.attr("__name__") = "_cornflakes";
 #ifdef VERSION_INFO
   module.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
 #else
-  m.attr("__version__") = "dev";
+  module.attr("__version__") = "dev";
 #endif
 }

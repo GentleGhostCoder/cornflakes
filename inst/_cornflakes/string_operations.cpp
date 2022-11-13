@@ -18,7 +18,6 @@ py::object apply_match(const std::vector<std::string> &vec, std::string match) {
   for (auto value : vec) {
     std::string::const_iterator start_iter = value.begin();
     std::string::const_iterator end_iter = value.end();
-    std::string::const_iterator value_iter = start_iter;
 
     start_iter = std::search(start_iter, end_iter, match.begin(), match.end());
     // std::boyer_moore_horspool_searcher(...)
@@ -42,7 +41,7 @@ py::list extract_between(const std::string &data, std::string start, char end) {
 
   std::string::const_iterator start_iter = data.begin();
   std::string::const_iterator end_iter = data.end();
-  std::string::const_iterator value_iter = start_iter;
+  std::string::const_iterator value_iter;
 
   while (true) {
     start_iter = std::search(start_iter, end_iter, start.begin(), start.end());
@@ -269,38 +268,38 @@ dt_utils::time_format5 time_format5(global_dt);
 dt_utils::time_format6 time_format6(global_dt);
 dt_utils::time_format7 time_format7(global_dt);
 dt_utils::time_format8 time_format8(global_dt);
+dt_utils::time_format9 time_format9(global_dt);
+dt_utils::time_format10 time_format10(global_dt);
+dt_utils::time_format11 time_format11(global_dt);
+dt_utils::time_format12 time_format12(global_dt);
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-py::object to_datetime = py::module::import("datetime").attr("datetime");
-py::object to_date = py::module::import("datetime").attr("date");
-py::object to_time = py::module::import("datetime").attr("time");
-py::object to_timedelta = py::module::import("datetime").attr("timedelta");
-py::object to_timezone = py::module::import("datetime").attr("timezone");
-py::object to_datetime_ms =
-    py::module::import("cornflakes.common._types").attr("DatetimeMS");
-py::object to_ip_address = py::module::import("ipaddress").attr("ip_address");
-
 py::object get_global_datetime() {
-  return global_dt.millisecond
-             ? to_datetime_ms(global_dt.year, global_dt.month, global_dt.day,
-                              global_dt.hour, global_dt.minute,
-                              global_dt.second, global_dt.millisecond,
-                              to_timezone(to_timedelta(0, global_dt.tzd * 60)))
-             : to_datetime(global_dt.year, global_dt.month, global_dt.day,
-                           global_dt.hour, global_dt.minute, global_dt.second,
-                           global_dt.microsecond,
-                           to_timezone(to_timedelta(0, global_dt.tzd * 60)));
+  return py::module::import("datetime")
+      .attr("datetime")(
+          global_dt.year, global_dt.month, global_dt.day, global_dt.hour,
+          global_dt.minute, global_dt.second,
+          global_dt.microsecond ? global_dt.microsecond
+                                : global_dt.millisecond * 1000,
+          py::module::import("datetime")
+              .attr("timezone")(py::module::import("datetime")
+                                    .attr("timedelta")(0, global_dt.tzd * 60)));
 }
 
 py::object get_global_date() {
-  return to_date(global_dt.year, global_dt.month, global_dt.day);
+  return py::module::import("datetime")
+      .attr("date")(global_dt.year, global_dt.month, global_dt.day);
 }
 
 py::object get_global_time() {
-  return to_time(global_dt.hour, global_dt.minute, global_dt.second,
-                 global_dt.millisecond ? global_dt.millisecond * 1000
-                                       : global_dt.microsecond,
-                 to_timezone(to_timedelta(0, global_dt.tzd * 60)));
+  return py::module::import("datetime")
+      .attr("time")(
+          global_dt.hour, global_dt.minute, global_dt.second,
+          global_dt.microsecond ? global_dt.microsecond
+                                : global_dt.millisecond * 1000,
+          py::module::import("datetime")
+              .attr("timezone")(py::module::import("datetime")
+                                    .attr("timedelta")(0, global_dt.tzd * 60)));
 }
 
 py::object to_generic_datetime(const std::string &value) {
@@ -424,16 +423,20 @@ py::object to_generic_datetime(const std::string &value) {
       return get_global_time();
     if (strtk::string_to_type_converter(value, time_format8))
       return get_global_time();
+    if (strtk::string_to_type_converter(value, time_format9))
+      return get_global_time();
+    if (strtk::string_to_type_converter(value, time_format10))
+      return get_global_time();
+    if (strtk::string_to_type_converter(value, time_format11))
+      return get_global_time();
+    if (strtk::string_to_type_converter(value, time_format12))
+      return get_global_time();
   } catch (...) {
     return py::cast(value);
   }
 
   return py::cast(value);
 }
-
-py::object to_uuid = py::module::import("uuid").attr("UUID");
-py::object to_integer = py::module::import("builtins").attr("int");
-py::object to_decimal = py::module::import("decimal").attr("Decimal");
 
 /// This is a simple C++ function to cast strings into python objects with
 /// specific type
@@ -453,23 +456,18 @@ py::object eval_type(std::string value) {
     return (py::cast(value));
   }
 
-  char first_char = value[0];
-
-  const char last_char = value.back();
-
   // remove quote
-  if (is_quoted(first_char, last_char)) {
+  if (is_quoted(value[0], value.back())) {
     value = value.erase(0, 1).erase(char_size - 2);
     char_size = char_size - 2;
-    first_char = value[0];
 
     if (value.empty()) {
       return py::none();
     }
 
     if (char_size == 1) {
-      if (std::isdigit(first_char)) return (py::cast(std::stoi(&first_char)));
-      return (py::cast(first_char));
+      if (std::isdigit(value[0])) return (py::cast(std::stoi(&value[0])));
+      return (py::cast(value[0]));
     }
   }
 
@@ -477,7 +475,7 @@ py::object eval_type(std::string value) {
   if (std::regex_match(value, numeric_regex)) {
     if (value.find_first_of('.') != std::string::npos || value.back() == '.') {
       if (char_size > 18) {
-        return (to_decimal(value));
+        return (py::module::import("decimal").attr("Decimal")(value));
       }
 
       // parse double
@@ -485,33 +483,33 @@ py::object eval_type(std::string value) {
     }
 
     // parse numeric
-    if (first_char == MINUS_CHAR) {
+    if (value[0] == MINUS_CHAR) {
       value = value.erase(0, 1);
       uint64_t integer = parse64(value.c_str());
       if (integer < UINT_MAX) {
         return (py::cast(-integer));
       }
-      return (-to_integer(value));
+      return (-py::module::import("builtins").attr("int")(value));
     }
 
     uint64_t integer = parse64(value.c_str());
     if (integer < UINT_MAX) {
       return (py::cast(integer));
     }
-    return (to_integer(value));
+    return (py::module::import("builtins").attr("int")(value));
   }
 
-  char_size = static_cast<int>(value.size());
-  first_char = value[0];
-
-  if (char_size == 1) {
-    if (std::isdigit(first_char)) return (py::cast(std::stoi(&first_char)));
-    return (py::cast(first_char));
+  // is hex char
+  if (value[0] == HEX_CHAR[0] && std::toupper(value[1]) == HEX_CHAR[1] &&
+      std::regex_match(value, hex_regex)) {
+    return (py::cast(std::stoul(value, nullptr, 16)));
   }
+
+  const char upper_first_char = static_cast<char>(std::toupper(value[0]));
 
   // boolean true or boolan false
-  if (char_size < 6 && (std::toupper(first_char) == TRUE_CHAR ||
-                        std::toupper(first_char) == FALSE_CHAR)) {
+  if (char_size < 6 &&
+      (upper_first_char == TRUE_CHAR || upper_first_char == FALSE_CHAR)) {
     if (std::regex_match(value, boolen_true_regex)) {
       return (py::cast(true));
     }
@@ -526,7 +524,7 @@ py::object eval_type(std::string value) {
   }
 
   if (char_size == 36 && std::regex_match(value, uuid_regex)) {
-    return (to_uuid(value));
+    return (py::module::import("uuid").attr("UUID")(value));
   }
 
   if (char_size < 6) {
@@ -539,12 +537,14 @@ py::object eval_type(std::string value) {
     // ipv4
     if (std::count(value.begin(), value.end(), '.') == 3 &&
         std::regex_match(value, ipv4_regex)) {
-      return (to_ip_address(value));
+      return (py::module::import("ipaddress").attr("IPv4Address")(value));
     }
     // ipv6
-    if (std::count(value.begin(), value.end(), ':') == 7 &&
-        std::regex_match(value, ipv6_regex)) {
-      return (to_ip_address(value));
+    if (std::count(value.begin(), value.end(), ':') > 5) {
+      try {
+        return (py::module::import("ipaddress").attr("IPv6Address")(value));
+      } catch (...) {
+      }
     }
     if (char_size > 7) {
       return (to_generic_datetime(value));
@@ -612,7 +612,7 @@ py::object eval_csv(const std::string &value) {
   // detect column seperator (wich is used mostly for seperation and is not
   // quoted)
   int column_count = 0;
-  char col_sep;
+  char col_sep = COLUM_SEPERATORS[0];
   std::vector<py::object> header;
   bool has_header = false;
   std::vector<py::object> column_values;
@@ -620,14 +620,13 @@ py::object eval_csv(const std::string &value) {
   column_types.push_back(std::vector<pybind11::object>({}));
 
   std::string::const_iterator start_iter = value.begin();
-  std::string::const_iterator value_iter = start_iter;
+  std::string::const_iterator value_iter;
   std::string::const_iterator end_iter = start_iter + 2;
   std::advance(end_iter, row_positions[0] - 2);
   // std::cout << "end_idx: " << row_positions[0] << std::endl;
   for (auto sep : COLUM_SEPERATORS) {
     // std::cout << "sep: " << sep << std::endl;
     start_iter = value.begin();
-    value_iter = start_iter;
     column_values.clear();
     while (true) {
       // std::cout << "col_idx: " << start_iter-value.begin() << std::endl;
@@ -638,7 +637,7 @@ py::object eval_csv(const std::string &value) {
       if (value_iter == end_iter) break;
       start_iter = value_iter + 1;
     }
-    if (column_values.size() > column_count) {
+    if (static_cast<int>(column_values.size()) > column_count) {
       column_count = static_cast<int>(column_values.size());
       col_sep = sep;
       column_types[0].clear();
@@ -662,7 +661,7 @@ py::object eval_csv(const std::string &value) {
     }
   }
 
-  for (int i = 1; i < row_positions.size(); i++) {
+  for (int i = 1; i < static_cast<int>(row_positions.size()); i++) {
     start_iter = value.begin();
     end_iter = start_iter;
     std::advance(end_iter, row_positions[i]);
@@ -681,7 +680,7 @@ py::object eval_csv(const std::string &value) {
       if (value_iter == end_iter) break;
       start_iter = value_iter + 1;
     }
-    if (column_types[i].size() > column_count) {
+    if (static_cast<int>(column_types[i].size()) > column_count) {
       column_count = static_cast<int>(column_types[i].size());
     }
     start_iter += line_sep_len;

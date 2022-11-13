@@ -7,7 +7,12 @@ on:
 jobs:
     release:
         name: Release
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
+        if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
+        strategy:
+            matrix:
+                os: [macos-latest, ubuntu-latest, windows-latest]
+                python: ["3.8", "3.9", "3.10"]
         steps:
             - name: Check out the repository
               uses: actions/checkout@v3.1.0
@@ -19,7 +24,7 @@ jobs:
             - name: Set up Python
               uses: actions/setup-python@v4
               with:
-                  python-version: "3.9"
+                  python-version: ${{ matrix.python }}
 
             - name: Install Ninja
               run: |
@@ -31,14 +36,26 @@ jobs:
                   pip install poetry
                   poetry --version
 
+            - name: Install Twine
+              run: |
+                  pip install twine
+
             - name: Build package
               run: |
                   poetry build --ansi
 
-            - name: Publish package on PyPI
-              uses: pypa/gh-action-pypi-publish@v1.5.1
-              with:
-                  # TODO COOKIETEMPLE: Configure your PyPI Token to enable automatic deployment to PyPi on releases
-                  # https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
-                  user: __token__
-                  password: ${{ secrets.PYPI_TOKEN }}
+            # Build and upload to PyPI
+            - name: "Builds and uploads to PyPI"
+              run: |
+                  python -m twine upload dist/* --skip-existing
+              env:
+                  TWINE_USERNAME: __token__
+                  TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+#            - name: Publish package on PyPI
+#              uses: pypa/gh-action-pypi-publish@v1.5.1
+#              with:
+#                  skip_existing: true
+#                  # TODO COOKIETEMPLE: Configure your PyPI Token to enable automatic deployment to PyPi on releases
+#                  # https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
+#                  user: __token__
+#                  password: ${{ secrets.PYPI_TOKEN }}

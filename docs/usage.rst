@@ -1,6 +1,6 @@
 Usage
 =====
 
-.. .. click:: cornflakes.__main__:main
+.. click:: cornflakes.__main__:cornflakes_cli
    :prog: cornflakes
    :nested: full

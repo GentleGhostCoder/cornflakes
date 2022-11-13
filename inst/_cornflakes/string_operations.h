@@ -28,6 +28,7 @@ namespace string_operations {
 inline const char *QUOTE_CHARS = "\"\'";
 inline const char MINUS_CHAR = '-';
 //    inline const char PLUS_CHAR = '+';
+inline const char *HEX_CHAR = "0X";
 inline const char TRUE_CHAR = 'T';
 inline const char FALSE_CHAR = 'F';
 inline const char *NUMBER_CHARS = "+-.0123456789";
@@ -37,6 +38,7 @@ inline const std::string SPECIAL_CHARS =
     COLUM_SEPERATORS + "!@#$%^&*()+?=,<>/\\ ";
 inline const std::vector<std::string> NAN_STRINGS = {"NA", "NONE", "NULL",
                                                      "UNDEFINED"};
+inline const std::regex hex_regex = std::regex("0[xX][0-9a-fA-F]+");
 inline const std::regex boolen_true_regex =
     std::regex("(true|t)", std::regex::icase);
 inline const std::regex boolen_false_regex =
@@ -49,8 +51,10 @@ static const std::regex uuid_regex(
     std::regex_constants::icase);
 static const std::regex ipv4_regex(
     R"(^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.){3}(25[0-5]|(2[0-4]|1\d|[1-9]|)\d)$)");
-static const std::regex ipv6_regex(
-    "^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$");  // non-compressed only
+// static const std::regex ipv6_regex(
+//     "(?!^(?:(?:.*(?:::.*::|:::).*)|::|[0:]+[01]|.*[^:]:|[0-9a-fA-F](?:.*:.*){8}"
+//     "[0-9a-fA-F]|(?:[0-9a-fA-F]:){1,6}[0-9a-fA-F])$)^(?:(::|[0-9a-fA-F]{1,4}:{"
+//     "1,2})([0-9a-fA-F]{1,4}:{1,2}){0,6}([0-9a-fA-F]{1,4}|::)?)$");
 
 inline const std::array<int, 2> empty_idx{};
 //    inline const std::regex datetime_regex =
