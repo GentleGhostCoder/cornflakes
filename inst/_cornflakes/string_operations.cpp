@@ -274,33 +274,32 @@ dt_utils::time_format11 time_format11(global_dt);
 dt_utils::time_format12 time_format12(global_dt);
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-py::object to_datetime = py::module::import("datetime").attr("datetime");
-py::object to_date = py::module::import("datetime").attr("date");
-py::object to_time = py::module::import("datetime").attr("time");
-py::object to_timedelta = py::module::import("datetime").attr("timedelta");
-py::object to_timezone = py::module::import("datetime").attr("timezone");
-py::object to_ipv4_address =
-    py::module::import("ipaddress").attr("IPv4Address");
-py::object to_ipv6_address =
-    py::module::import("ipaddress").attr("IPv6Address");
-
 py::object get_global_datetime() {
-  return to_datetime(global_dt.year, global_dt.month, global_dt.day,
-                     global_dt.hour, global_dt.minute, global_dt.second,
-                     global_dt.microsecond ? global_dt.microsecond
-                                           : global_dt.millisecond * 1000,
-                     to_timezone(to_timedelta(0, global_dt.tzd * 60)));
+  return py::module::import("datetime")
+      .attr("datetime")(
+          global_dt.year, global_dt.month, global_dt.day, global_dt.hour,
+          global_dt.minute, global_dt.second,
+          global_dt.microsecond ? global_dt.microsecond
+                                : global_dt.millisecond * 1000,
+          py::module::import("datetime")
+              .attr("timezone")(py::module::import("datetime")
+                                    .attr("timedelta")(0, global_dt.tzd * 60)));
 }
 
 py::object get_global_date() {
-  return to_date(global_dt.year, global_dt.month, global_dt.day);
+  return py::module::import("datetime")
+      .attr("date")(global_dt.year, global_dt.month, global_dt.day);
 }
 
 py::object get_global_time() {
-  return to_time(global_dt.hour, global_dt.minute, global_dt.second,
-                 global_dt.microsecond ? global_dt.microsecond
-                                       : global_dt.millisecond * 1000,
-                 to_timezone(to_timedelta(0, global_dt.tzd * 60)));
+  return py::module::import("datetime")
+      .attr("time")(
+          global_dt.hour, global_dt.minute, global_dt.second,
+          global_dt.microsecond ? global_dt.microsecond
+                                : global_dt.millisecond * 1000,
+          py::module::import("datetime")
+              .attr("timezone")(py::module::import("datetime")
+                                    .attr("timedelta")(0, global_dt.tzd * 60)));
 }
 
 py::object to_generic_datetime(const std::string &value) {
@@ -439,10 +438,6 @@ py::object to_generic_datetime(const std::string &value) {
   return py::cast(value);
 }
 
-py::object to_uuid = py::module::import("uuid").attr("UUID");
-py::object to_integer = py::module::import("builtins").attr("int");
-py::object to_decimal = py::module::import("decimal").attr("Decimal");
-
 /// This is a simple C++ function to cast strings into python objects with
 /// specific type
 ///
@@ -480,7 +475,7 @@ py::object eval_type(std::string value) {
   if (std::regex_match(value, numeric_regex)) {
     if (value.find_first_of('.') != std::string::npos || value.back() == '.') {
       if (char_size > 18) {
-        return (to_decimal(value));
+        return (py::module::import("decimal").attr("Decimal")(value));
       }
 
       // parse double
@@ -494,14 +489,14 @@ py::object eval_type(std::string value) {
       if (integer < UINT_MAX) {
         return (py::cast(-integer));
       }
-      return (-to_integer(value));
+      return (-py::module::import("builtins").attr("int")(value));
     }
 
     uint64_t integer = parse64(value.c_str());
     if (integer < UINT_MAX) {
       return (py::cast(integer));
     }
-    return (to_integer(value));
+    return (py::module::import("builtins").attr("int")(value));
   }
 
   // is hex char
@@ -529,7 +524,7 @@ py::object eval_type(std::string value) {
   }
 
   if (char_size == 36 && std::regex_match(value, uuid_regex)) {
-    return (to_uuid(value));
+    return (py::module::import("uuid").attr("UUID")(value));
   }
 
   if (char_size < 6) {
@@ -542,12 +537,12 @@ py::object eval_type(std::string value) {
     // ipv4
     if (std::count(value.begin(), value.end(), '.') == 3 &&
         std::regex_match(value, ipv4_regex)) {
-      return (to_ipv4_address(value));
+      return (py::module::import("ipaddress").attr("IPv4Address")(value));
     }
     // ipv6
     if (std::count(value.begin(), value.end(), ':') > 5) {
       try {
-        return (to_ipv6_address(value));
+        return (py::module::import("ipaddress").attr("IPv6Address")(value));
       } catch (...) {
       }
     }
