@@ -17,6 +17,7 @@ namespace system_operations {
 // Constants
 // System-Line-Seperator
 #ifdef _WIN32
+#include <direct.h>  // make_directory
 inline const char *LINE_SEPERATOR = "\r\n";
 #elif defined macintosh  // OS 9
 inline const char *LINE_SEPERATOR = "\r";
