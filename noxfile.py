@@ -173,6 +173,7 @@ def pytype(session):
 def tests(session: Session) -> None:
     """Run the test suite."""
     session.run("pip", "install", "black")
+    session.run("pip", "install", "isort")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     if os.path.exists("build"):
@@ -210,6 +211,7 @@ def coverage(session: Session) -> None:
 def typeguard(session: Session) -> None:
     """Runtime type checking using Typeguard."""
     session.run("pip", "install", "black")
+    session.run("pip", "install", "isort")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("poetry", "build")

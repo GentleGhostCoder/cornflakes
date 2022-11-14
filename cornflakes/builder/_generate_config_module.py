@@ -65,11 +65,12 @@ def generate_group_module(
     kwargs.update({"files": files})
 
     if args or kwargs:
+        kwargs.update({key: repr(value).replace("'", '"') for key, value in kwargs.items()})
         template = template.replace(
             f"@{config_group.__name__}",
             (
                 f"@{config_group.__name__}("
-                f"{', '.join([*args, *[f'{key}={repr(value)}' for key, value in kwargs.items()]])})"
+                f"{', '.join([*args, *[f'{key}={value}' for key, value in kwargs.items()]])})"
             ),
         )
 
@@ -94,3 +95,5 @@ def generate_group_module(
     if "black" in os.listdir(sysconfig.get_paths()["purelib"]):
         # fix format
         os.system(f"black {source_config} {target_module_file}")  # noqa: S605
+    if "isort" in os.listdir(sysconfig.get_paths()["purelib"]):
+        os.system(f"isort {source_config} {target_module_file}")  # noqa: S605

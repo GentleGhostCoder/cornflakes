@@ -1,5 +1,5 @@
 from dataclasses import MISSING, Field
-from typing import cast
+import logging
 
 
 class ConfigField(Field):
@@ -7,16 +7,29 @@ class ConfigField(Field):
 
     __slots__ = (*getattr(Field, "__slots__", ()), "alias")
 
-    def __init__(self, default, default_factory, init, repr, hash, compare, metadata, kw_only, alias):
+    def __init__(
+        self,
+        default,
+        default_factory,
+        init: bool,
+        repr: bool,
+        hash: bool,
+        compare: bool,
+        metadata,
+        kw_only,
+    ):
         """Init Field method."""
-        self.alias = alias
-        super().__init__(default, default_factory, init, repr, hash, compare, metadata, kw_only)  # type: ignore
+        super().__init__(default, default_factory, init, repr, hash, compare, metadata, kw_only)
+        self.alias = None
 
     def __repr__(self):
         """Repr Field method."""
         return f"{Field.__repr__(self)[:-1]}," f"alias={self.alias})"
 
 
+# This function is used instead of exposing Field creation directly,
+# so that a type checker can be told (via overloads) that this is a
+# function whose type depends on its parameters.
 def config_field(
     *,
     default=MISSING,
@@ -33,15 +46,12 @@ def config_field(
 
     So that a type checker can be told (via overloads) that this is a function whose type depends on its parameters.
     """
-    new_field: Field = ConfigField(
-        alias=alias,
-        default=default,
-        default_factory=default_factory,
-        init=init,
-        repr=repr,
-        hash=hash,
-        compare=compare,
-        metadata=metadata,
-        kw_only=kw_only,
-    )
-    return cast(Field, new_field)
+    if default is not MISSING and default_factory is not MISSING:
+        raise ValueError("cannot specify both default and default_factory")
+    try:
+        new_field = ConfigField(default, default_factory, init, repr, hash, compare, metadata, kw_only, alias)
+        new_field.alias = alias
+        return new_field
+    except TypeError as e:
+        logging.error(e)
+        return Field(default, default_factory, init, repr, hash, compare, metadata, kw_only)
