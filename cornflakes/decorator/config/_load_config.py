@@ -99,7 +99,7 @@ def create_file_loader(  # noqa: C901
             config_dict = OrderedDict(loader(files={None: files}, sections=None, keys=keys, eval_env=eval_env))
             logging.debug(f"Read config with sections: {config_dict.keys()}")
 
-        regex = f'({"|".join(sections) if isinstance(sections, list) else sections})'
+        regex = f'({"|".join(sections) if isinstance(sections, list) else sections or ""})'
         logging.debug(f"Load all configs that mach **{regex}**")
 
         config_dict = {section: config for section, config in config_dict.items() if bool(re.match(regex, section))}
