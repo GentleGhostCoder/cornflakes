@@ -1,5 +1,4 @@
-from dataclasses import MISSING, Field, field
-import logging
+from dataclasses import MISSING, Field
 
 
 class ConfigField(Field):
@@ -21,7 +20,22 @@ class ConfigField(Field):
         ignore,
     ):
         """Init Field method."""
-        super().__init__(default, default_factory, init, repr, hash, compare, metadata, kw_only)
+        super().__init__(
+            **{
+                key: value
+                for key, value in (
+                    ("default", default),  # type: ignore
+                    ("default_factory", default_factory),
+                    ("init", init),
+                    ("repr", repr),
+                    ("hash", hash),
+                    ("compare", compare),
+                    ("metadata", metadata),
+                    ("kw_only", kw_only),
+                )
+                if key in Field.__init__.__code__.co_varnames
+            }
+        )
         self.alias = alias
         self.ignore = ignore
 
@@ -52,19 +66,6 @@ def config_field(
     """
     if default is not MISSING and default_factory is not MISSING:
         raise ValueError("cannot specify both default and default_factory")
-    try:
-        new_field = ConfigField(default, default_factory, init, repr, hash, compare, metadata, kw_only, alias, ignore)
-        new_field.alias = alias
-        return new_field
-    except TypeError as e:
-        logging.error(e)
-        return field(  # type: ignore
-            default=default,
-            default_factory=default_factory,
-            init=init,
-            repr=repr,
-            hash=hash,
-            compare=compare,
-            metadata=metadata,
-            kw_only=kw_only,
-        )
+    new_field = ConfigField(default, default_factory, init, repr, hash, compare, metadata, kw_only, alias, ignore)
+    new_field.alias = alias
+    return new_field

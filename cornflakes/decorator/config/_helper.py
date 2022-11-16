@@ -22,7 +22,7 @@ def is_config_list(cls: Config):
 
 def get_config_slots(cls: Config):
     """Method to return slots that are not ignored fields."""
-    return [slot for slot in cls.__slots__ if slot not in cls.__ignored_slots__]
+    return [slot for slot in getattr(cls, "__slots__", ()) if slot not in cls.__ignored_slots__]
 
 
 def is_multi_config(cls: Union[Config, ConfigGroup]):

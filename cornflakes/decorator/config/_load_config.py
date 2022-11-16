@@ -90,8 +90,8 @@ def create_file_loader(  # noqa: C901
                     loader(files={None: files}, sections=sections, keys=keys, defaults=None, eval_env=eval_env)
                 )
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
-            if not sections:
-                sections = config_dict.keys() or re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
+            if not sections and config_dict.keys():
+                sections = config_dict.popitem()[0] or re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
             config = _create_config(config_dict.get(sections, {}), *slot_args, **get_section_kwargs(sections))
             if not filter_function(config):
                 return {sections: _create_config({}, *slot_args, **get_section_kwargs(sections))}
