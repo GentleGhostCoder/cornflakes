@@ -3,7 +3,7 @@ from typing import Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
-from cornflakes.decorator.config._helper import is_config
+from cornflakes.decorator.config._helper import get_config_slots, is_config
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.config._protocols import Config, ConfigGroup
@@ -39,7 +39,11 @@ def to_ini_bytes(
         _ini_bytes.extend(
             bytes(
                 "\n".join(
-                    [f'{cfg}="{type_to_str(getattr(self, cfg))}"' for cfg in self.__slots__ if cfg != "section_name"]
+                    [
+                        f'{cfg}="{type_to_str(getattr(self, cfg))}"'
+                        for cfg in get_config_slots(self)
+                        if cfg != "section_name"
+                    ]
                 ),
                 "utf-8",
             )
@@ -47,7 +51,7 @@ def to_ini_bytes(
         _ini_bytes.extend(b"\n\n")
         return _ini_bytes
 
-    for cfg_name in self.__slots__:
+    for cfg_name in get_config_slots(self):
         cfg = getattr(self, cfg_name)
         _ini_bytes.extend(_parse_config_list(cfg, cfg_name, title))
 

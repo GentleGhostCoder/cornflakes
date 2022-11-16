@@ -65,10 +65,10 @@ PYBIND11_MODULE(_cornflakes, module) {
         const auto m_defaults = string_operations::convert_to_map_py(defaults);
         return ini::ini_load(m_files, m_sections, m_keys, m_defaults, eval_env);
       },
-      py::arg("files").none(true) = py::cast(NULL),
-      py::arg("sections").none(true) = py::cast(NULL),
-      py::arg("keys").none(true) = py::cast(NULL),
-      py::arg("defaults").none(true) = py::cast(NULL),
+      py::arg("files").none(true) = py::none(),
+      py::arg("sections").none(true) = py::none(),
+      py::arg("keys").none(true) = py::none(),
+      py::arg("defaults").none(true) = py::none(),
       py::arg("eval_env").none(true) = py::cast(false),
       R"pbdoc(
         .. doxygenfunction:: ini::ini_load

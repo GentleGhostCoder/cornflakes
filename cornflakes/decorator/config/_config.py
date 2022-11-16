@@ -66,6 +66,9 @@ def config(  # noqa: C901
         cls.__config_files__ = files if isinstance(files, list) else [files] if files else []
         cls.__multi_config__ = use_regex
         cls.__config_list__ = is_list
+        cls.__ignored_slots__ = [
+            key for key in getattr(cls, "__slots__", ()) if getattr(cls.__dataclass_fields__[key], "ignore", False)
+        ]
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
         cls.__eval_env__ = eval_env

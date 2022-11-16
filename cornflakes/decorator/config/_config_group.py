@@ -41,6 +41,9 @@ def config_group(  # noqa: C901
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
         cls.__eval_env__ = eval_env
+        cls.__ignored_slots__ = [
+            key for key in getattr(cls, "__slots__", ()) if getattr(cls.__dataclass_fields__[key], "ignore", False)
+        ]
 
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):

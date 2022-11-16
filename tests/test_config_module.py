@@ -37,8 +37,6 @@ class TestConfigGeneration(unittest.TestCase):
 
         from tests.configs.default import MainConfig
 
-        MainConfig.from_ini()
-
         # list(MainConfig.from_ini(filter_function=lambda x: x.string == "bla0").sub_config)
         MainConfig.from_ini().to_ini("tests/configs/default_auto_created.ini")
 
@@ -116,7 +114,7 @@ class TestConfigGeneration(unittest.TestCase):
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
-                            some_env="default_value",
+                            some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
                             section_name="sub_config_1",
@@ -129,7 +127,7 @@ class TestConfigGeneration(unittest.TestCase):
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
-                            some_env="default_value",
+                            some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
                             section_name="sub_config_2",
@@ -142,7 +140,7 @@ class TestConfigGeneration(unittest.TestCase):
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
-                            some_env="default_value",
+                            some_env="test123",
                         ),
                     ]
                 )

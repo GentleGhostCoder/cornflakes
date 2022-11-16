@@ -2,11 +2,12 @@ from dataclasses import InitVar
 import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
+import logging
 
 from cornflakes import config, config_field
 
 
-@config(sections="sub_config", use_regex=True, is_list=True, frozen=True, eval_env=True)
+@config(sections=None, use_regex=True, is_list=True, frozen=True, eval_env=True)
 class SubConfig:
     """Test Config Class."""
 
@@ -21,4 +22,4 @@ class SubConfig:
     ipv4: IPv4Address = IPv4Address("127.0.0.1")
     ipv6: IPv6Address = IPv6Address("684D:1111:222:3333:4444:5555:6:77")
     bool_val: bool = True
-    some_env: str = config_field(default="default_value", alias=["some_env"])
+    some_env: str = config_field(default="default_value", alias=["some_env"], ignore=True)

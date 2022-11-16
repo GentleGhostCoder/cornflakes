@@ -4,7 +4,7 @@ import re
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
-from cornflakes.decorator.config._helper import allow_empty, is_config_list, pass_section_name
+from cornflakes.decorator.config._helper import allow_empty, is_config_list, is_multi_config, pass_section_name
 from cornflakes.decorator.config._protocols import Config, LoaderMethod
 
 
@@ -63,7 +63,7 @@ def create_file_loader(  # noqa: C901
 
         """
         if not sections:
-            sections = cls.__config_sections__ or re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
+            sections = cls.__config_sections__
         if not files:
             files = cls.__config_files__
         if not filter_function:
@@ -82,7 +82,7 @@ def create_file_loader(  # noqa: C901
             for key in getattr(cls, "__slots__", ())[len(slot_args) :]
         }
 
-        if not cls.__multi_config__ and isinstance(sections, str):
+        if not is_multi_config(cls) and isinstance(sections, str):
             logging.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
 
             if not config_dict:
@@ -90,6 +90,8 @@ def create_file_loader(  # noqa: C901
                     loader(files={None: files}, sections=sections, keys=keys, defaults=None, eval_env=eval_env)
                 )
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
+            if not sections:
+                sections = config_dict.keys() or re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
             config = _create_config(config_dict.get(sections, {}), *slot_args, **get_section_kwargs(sections))
             if not filter_function(config):
                 return {sections: _create_config({}, *slot_args, **get_section_kwargs(sections))}

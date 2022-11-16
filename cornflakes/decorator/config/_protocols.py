@@ -23,10 +23,11 @@ class Config(Protocol):
 
     __dataclass_fields__: dict
     __dataclass_params__: dict
-    __config_sections__: str
-    __config_files__: str
-    __multi_config__: str
-    __config_list__: str
+    __config_sections__: Union[Dict[Optional[str], Union[List[str], str]], List[str], str]
+    __config_files__: Union[Dict[Optional[str], Union[List[str], str]], List[str], str]
+    __ignored_slots__: List[str]
+    __multi_config__: bool
+    __config_list__: bool
     __args__: List[Any]
     __slots__: Tuple[str]
     __eval_env__: bool = None
@@ -70,10 +71,9 @@ class ConfigGroup(Protocol):
 
     __dataclass_fields__: dict
     __dataclass_params__: dict
-    __config_sections__: str
-    __config_files__: str
-    __multi_config__: str
-    __config_list__: str
+    __config_files__: Union[Dict[Optional[str], Union[List[str], str]], List[str], str]
+    __multi_config__: bool
+    __config_list__: bool
     __args__: List[Any]
     __slots__: Tuple[str]
     __eval_env__: bool = None

@@ -20,6 +20,16 @@ def is_config_list(cls: Config):
     )
 
 
+def get_config_slots(cls: Config):
+    """Method to return slots that are not ignored fields."""
+    return [slot for slot in cls.__slots__ if slot not in cls.__ignored_slots__]
+
+
+def is_multi_config(cls: Union[Config, ConfigGroup]):
+    """Method to return flag that the config class can be empty."""
+    return getattr(cls, "__multi_config__", False)
+
+
 def allow_empty(cls: Union[Config, ConfigGroup]):
     """Method to return flag that the config class can be empty."""
     return getattr(cls, "__allow_empty_config__", False)

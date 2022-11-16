@@ -5,18 +5,29 @@ import logging
 class ConfigField(Field):
     """Instances of dataclasses Field wrapped for configs."""
 
-    __slots__ = (*getattr(Field, "__slots__", ()), "alias")
+    __slots__ = (*getattr(Field, "__slots__", ()), "alias", "ignore")
 
     def __init__(
-        self, default, default_factory, init: bool, repr: bool, hash: bool, compare: bool, metadata, kw_only, alias
+        self,
+        default,
+        default_factory,
+        init: bool,
+        repr: bool,
+        hash: bool,
+        compare: bool,
+        metadata,
+        kw_only,
+        alias,
+        ignore,
     ):
         """Init Field method."""
         super().__init__(default, default_factory, init, repr, hash, compare, metadata, kw_only)
         self.alias = alias
+        self.ignore = ignore
 
     def __repr__(self):
         """Repr Field method."""
-        return f"{Field.__repr__(self)[:-1]}," f"alias={self.alias})"
+        return f"{Field.__repr__(self)[:-1]}," f"alias={self.alias}, ignore={self.ignore})"
 
 
 # This function is used instead of exposing Field creation directly,
@@ -33,6 +44,7 @@ def config_field(
     metadata=None,
     kw_only=MISSING,
     alias=None,
+    ignore=False,
 ):
     """This function is used instead of exposing Field creation directly.
 
@@ -41,12 +53,12 @@ def config_field(
     if default is not MISSING and default_factory is not MISSING:
         raise ValueError("cannot specify both default and default_factory")
     try:
-        new_field = ConfigField(default, default_factory, init, repr, hash, compare, metadata, kw_only, alias)
+        new_field = ConfigField(default, default_factory, init, repr, hash, compare, metadata, kw_only, alias, ignore)
         new_field.alias = alias
         return new_field
     except TypeError as e:
         logging.error(e)
-        return field(
+        return field(  # type: ignore
             default=default,
             default_factory=default_factory,
             init=init,
@@ -54,4 +66,5 @@ def config_field(
             hash=hash,
             compare=compare,
             metadata=metadata,
+            kw_only=kw_only,
         )
