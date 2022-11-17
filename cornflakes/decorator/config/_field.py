@@ -1,5 +1,5 @@
 from dataclasses import MISSING, Field
-from typing import Optional
+from typing import List, Optional, Union
 
 
 class ConfigField(Field):
@@ -17,7 +17,7 @@ class ConfigField(Field):
         compare: Optional[bool] = True,
         metadata: Optional[bool] = None,
         kw_only=MISSING,
-        alias: Optional[bool] = None,
+        alias: Optional[Union[List[str], str]] = None,
         ignore: Optional[bool] = False,
     ):
         """Init Field method."""
@@ -58,7 +58,7 @@ def config_field(
     compare: Optional[bool] = True,
     metadata: Optional[bool] = None,
     kw_only=MISSING,
-    alias: Optional[bool] = None,
+    alias: Optional[Union[List[str], str]] = None,
     ignore: Optional[bool] = False,
 ):
     """This function is used instead of exposing Field creation directly.
