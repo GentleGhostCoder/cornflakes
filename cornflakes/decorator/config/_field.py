@@ -1,4 +1,5 @@
 from dataclasses import MISSING, Field
+from typing import Optional
 
 
 class ConfigField(Field):
@@ -8,16 +9,16 @@ class ConfigField(Field):
 
     def __init__(
         self,
-        default,
-        default_factory,
-        init: bool,
-        repr: bool,
-        hash: bool,
-        compare: bool,
-        metadata,
-        kw_only,
-        alias,
-        ignore,
+        default=MISSING,
+        default_factory=MISSING,
+        init: Optional[bool] = True,
+        repr: Optional[bool] = True,
+        hash: Optional[bool] = None,
+        compare: Optional[bool] = True,
+        metadata: Optional[bool] = None,
+        kw_only=MISSING,
+        alias: Optional[bool] = None,
+        ignore: Optional[bool] = False,
     ):
         """Init Field method."""
         super().__init__(
@@ -51,14 +52,14 @@ def config_field(
     *,
     default=MISSING,
     default_factory=MISSING,
-    init=True,
-    repr=True,
-    hash=None,
-    compare=True,
-    metadata=None,
+    init: Optional[bool] = True,
+    repr: Optional[bool] = True,
+    hash: Optional[bool] = None,
+    compare: Optional[bool] = True,
+    metadata: Optional[bool] = None,
     kw_only=MISSING,
-    alias=None,
-    ignore=False,
+    alias: Optional[bool] = None,
+    ignore: Optional[bool] = False,
 ):
     """This function is used instead of exposing Field creation directly.
 
