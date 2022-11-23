@@ -1,4 +1,5 @@
-# this cmakelist is optional and not required for build but helps for ide dependencies evaluation.
+# this cmakelist is optional and not required for build but helps for ide
+# dependencies evaluation.
 cmake_minimum_required(VERSION 3.4...3.22)
 project(_cornflakes LANGUAGES CXX)
 

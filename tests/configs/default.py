@@ -7,8 +7,8 @@
 from dataclasses import field
 from typing import List
 
-from tests.configs.sub_config import SubConfig
 from cornflakes import config_group
+from tests.configs.sub_config import SubConfig
 
 
 @config_group(files=["tests/configs/default.ini"], eval_env=True)

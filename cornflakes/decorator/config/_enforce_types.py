@@ -1,7 +1,7 @@
-import typing
-import inspect
 from contextlib import suppress
 from functools import wraps
+import inspect
+import typing
 
 
 def enforce_types(wrapped):

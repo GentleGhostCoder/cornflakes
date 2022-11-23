@@ -506,11 +506,11 @@ py::object eval_type(std::string value) {
   }
 
   const char last_char = value.back();
-    if (((value[0] == JSON_CHARS[0] && last_char == JSON_CHARS[1]) ||
-        (value[0] == ARRAY_CHARS[0] && last_char == ARRAY_CHARS[1])) &&
-        !json_doc.Parse(const_cast<char *>(value.c_str())).HasParseError()){
-        return py::eval(value);
-    }
+  if (((value[0] == JSON_CHARS[0] && last_char == JSON_CHARS[1]) ||
+       (value[0] == ARRAY_CHARS[0] && last_char == ARRAY_CHARS[1])) &&
+      !json_doc.Parse(const_cast<char *>(value.c_str())).HasParseError()) {
+    return py::eval(value);
+  }
 
   const char upper_first_char = static_cast<char>(std::toupper(value[0]));
 
