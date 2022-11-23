@@ -1,7 +1,9 @@
 from contextlib import suppress
 from functools import wraps
 import inspect
-import typing
+from typing import Optional
+
+SpecialForm = type(Optional)
 
 
 def enforce_types(wrapped):
@@ -18,10 +20,10 @@ def enforce_types(wrapped):
         for name, value in params.items():
             with suppress(KeyError):
                 type_hint = spec.annotations[name]
-                if isinstance(type_hint, typing._SpecialForm):
+                if isinstance(type_hint, SpecialForm):
                     continue
                 actual_type = getattr(type_hint, "__origin__", type_hint)
-                actual_type = type_hint.__args__ if isinstance(actual_type, typing._SpecialForm) else actual_type
+                actual_type = type_hint.__args__ if isinstance(actual_type, SpecialForm) else actual_type
                 if not isinstance(value, actual_type):
                     raise TypeError(
                         f"Expected type '{type_hint}' for attribute '{name}' but received type '{type(value)}')"
