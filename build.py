@@ -143,10 +143,12 @@ files = [
     if os.path.splitext(f)[1] == ".cpp"
 ]
 
+ext_paths = ["inst/ext", "inst/ext/pybind11/include", "inst/ext/rapidjson/include/rapidjson"]
+
 
 def build(setup_kwargs):
     ext_modules = [
-        Pybind11Extension("_cornflakes", [*files], include_dirs=[pybind11.get_include(), path], cxx_std=17),
+        Pybind11Extension("_cornflakes", [*files], include_dirs=[pybind11.get_include(), path, *ext_paths], cxx_std=17),
     ]
     setup_kwargs.update(
         {

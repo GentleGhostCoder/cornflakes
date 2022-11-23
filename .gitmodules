@@ -7,3 +7,6 @@
 [submodule "inst/ext/pybind11"]
 	path = inst/ext/pybind11
 	url = https://github.com/pybind/pybind11.git
+[submodule "inst/ext/rapidjson"]
+	path = inst/ext/rapidjson
+	url = https://github.com/Tencent/rapidjson.git

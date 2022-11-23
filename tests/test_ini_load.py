@@ -255,7 +255,7 @@ class TestIniLoad(unittest.TestCase):
             {
                 "default": {
                     "test3": 12345,
-                    "test": '{"bla": "blub"}',
+                    "test": eval('{"bla": "blub"}'),
                     "test2[BLA]": "[bla]=bla",
                     "test4": 12345,
                     "username": "testuser",
@@ -263,7 +263,7 @@ class TestIniLoad(unittest.TestCase):
                 },
                 "not_default": {
                     "test3": 12345,
-                    "test": '{"bla": "blub"}',
+                    "test": eval('{"bla": "blub"}'),
                     "test2[BLA]": "[bla]=bla",
                     "test4": 12345,
                     "username": "testuser",
@@ -298,10 +298,10 @@ class TestIniLoad(unittest.TestCase):
             cornflakes.ini_load({None: "tests/configs/some_config"}, keys={"test": "**"}),
             {
                 "default": {
-                    "test": {"test3": 12345, "test": '{"bla": "blub"}', "test2[BLA]": "[bla]=bla", "test4": 12345}
+                    "test": {"test3": 12345, "test": eval('{"bla": "blub"}'), "test2[BLA]": "[bla]=bla", "test4": 12345}
                 },
                 "not_default": {
-                    "test": {"test3": 12345, "test": '{"bla": "blub"}', "test2[BLA]": "[bla]=bla", "test4": 12345}
+                    "test": {"test3": 12345, "test": eval('{"bla": "blub"}'), "test2[BLA]": "[bla]=bla", "test4": 12345}
                 },
                 "EU": {},
                 "US": {},
