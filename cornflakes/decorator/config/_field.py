@@ -5,7 +5,7 @@ from typing import Any, Callable, List, Optional, Union
 class ConfigField(Field):
     """Instances of dataclasses Field wrapped for configs."""
 
-    __slots__ = (*getattr(Field, "__slots__", ()), "parser", "alias", "ignore")
+    __slots__ = (*getattr(Field, "__slots__", ()), "validator", "alias", "ignore")
 
     def __init__(
         self,
@@ -13,12 +13,12 @@ class ConfigField(Field):
         default_factory=MISSING,
         init: Optional[bool] = True,
         repr: Optional[bool] = True,
-        hash: Optional[bool] = None,
+        hash: Optional[Union[bool, MISSING]] = MISSING,
         compare: Optional[bool] = True,
-        metadata: Optional[bool] = None,
+        metadata: Optional[Union[bool, MISSING]] = MISSING,
         kw_only=MISSING,
-        parser: Optional[Callable[[str], Any]] = None,
-        alias: Optional[Union[List[str], str]] = None,
+        validator: Optional[Union[Callable[[str], Any], MISSING]] = MISSING,
+        alias: Optional[Union[Union[List[str], str], MISSING]] = MISSING,
         ignore: Optional[bool] = False,
     ):
         """Init Field method."""
@@ -40,12 +40,15 @@ class ConfigField(Field):
         )
         self.alias = alias
         self.ignore = ignore
-        self.parser = parser
+        self.parser = validator
 
     def __repr__(self):
         """Repr Field method."""
         return (
-            f"{Field.__repr__(self)[:-1]}," f"parser={self.parser}, " f"alias={self.alias}, " f"ignore={self.ignore})"
+            f"{Field.__repr__(self)[:-1]},"
+            f"validator={self.parser}, "
+            f"alias={self.alias}, "
+            f"ignore={self.ignore})"
         )
 
 
@@ -58,12 +61,12 @@ def config_field(
     default_factory=MISSING,
     init: Optional[bool] = True,
     repr: Optional[bool] = True,
-    hash: Optional[bool] = None,
+    hash: Optional[Union[bool, MISSING]] = MISSING,
     compare: Optional[bool] = True,
-    metadata: Optional[bool] = None,
+    metadata: Optional[Union[bool, MISSING]] = MISSING,
     kw_only=MISSING,
-    parser: Optional[Callable[[str], Any]] = None,
-    alias: Optional[Union[List[str], str]] = None,
+    validator: Optional[Union[Callable[[str], Any], MISSING]] = MISSING,
+    alias: Optional[Union[Union[List[str], str], MISSING]] = MISSING,
     ignore: Optional[bool] = False,
 ):
     """This function is used instead of exposing Field creation directly.
@@ -71,9 +74,12 @@ def config_field(
     So that a type checker can be told (via overloads) that this is a function whose type depends on its parameters.
     """
     if default is not MISSING and default_factory is not MISSING:
-        raise ValueError("cannot specify both default and default_factory")
+        if validator is MISSING:
+            raise ValueError("cannot specify both default and default_factory")
+        default_factory = validator
+
     new_field = ConfigField(
-        default, default_factory, init, repr, hash, compare, metadata, kw_only, parser, alias, ignore
+        default, default_factory, init, repr, hash, compare, metadata, kw_only, validator, alias, ignore
     )
     new_field.alias = alias
     return new_field

@@ -24,16 +24,16 @@ def create_file_loader(  # noqa: C901
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
 
-    def _process_parser(config: dict, parser: dict):
-        return {key: parse(config.get(key)) for key, parse in parser.items() if key in config.keys()}
+    def _process_validator(config: dict, validator: dict):
+        return {key: parse(config.get(key)) for key, parse in validator.items() if key in config.keys()}
 
-    def _create_config(config: dict, parser: dict, *cls_args, **cls_kwargs) -> Optional[Config]:
+    def _create_config(config: dict, validator: dict, *cls_args, **cls_kwargs) -> Optional[Config]:
         logging.debug(config)
         logging.debug(allow_empty(cls))
         if not config and allow_empty(cls):
             return
         config.update(cls_kwargs)
-        config.update(_process_parser(config, parser))
+        config.update(_process_validator(config, validator))
         error_args = [key for key in config if key not in getattr(cls, "__slots__", ())]
         if error_args:
             logging.warning(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
@@ -86,10 +86,10 @@ def create_file_loader(  # noqa: C901
             for key in getattr(cls, "__slots__", ())[len(slot_args) :]
         }
 
-        parser = {
-            key: parser
+        validator = {
+            key: validator
             for key in getattr(cls, "__slots__", ())[len(slot_args) :]
-            if callable(parser := getattr(cls.__dataclass_fields__[key], "parser", key))
+            if callable(validator := getattr(cls.__dataclass_fields__[key], "validator", key))
         }
 
         if not is_multi_config(cls) and isinstance(sections, str):
@@ -102,9 +102,11 @@ def create_file_loader(  # noqa: C901
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
             if not sections and config_dict.keys():
                 sections = config_dict.popitem()[0] or re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
-            config = _create_config(config_dict.get(sections, {}), parser, *slot_args, **get_section_kwargs(sections))
+            config = _create_config(
+                config_dict.get(sections, {}), validator, *slot_args, **get_section_kwargs(sections)
+            )
             if not filter_function(config):
-                return {sections: _create_config({}, parser, *slot_args, **get_section_kwargs(sections))}
+                return {sections: _create_config({}, validator, *slot_args, **get_section_kwargs(sections))}
             return {sections: config}
 
         if not config_dict:
@@ -120,13 +122,13 @@ def create_file_loader(  # noqa: C901
             return {
                 section: config
                 for section, config in {
-                    section: _create_config(config_dict.get(section, {}), parser, *slot_args, **slot_kwargs)
+                    section: _create_config(config_dict.get(section, {}), validator, *slot_args, **slot_kwargs)
                     for section in config_dict
                 }.items()
                 if filter_function(config)
             } or {
                 re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): _create_config(
-                    {}, parser, *slot_args, **slot_kwargs  # no matches
+                    {}, validator, *slot_args, **slot_kwargs  # no matches
                 )
             }
 
@@ -138,14 +140,14 @@ def create_file_loader(  # noqa: C901
                         _none_omit(
                             [
                                 _create_config(
-                                    config_dict.get(section, {}), parser, *slot_args, **get_section_kwargs(section)
+                                    config_dict.get(section, {}), validator, *slot_args, **get_section_kwargs(section)
                                 )
                                 for section in config_dict
                             ]
                         ),
                     )
                 )
-                or _none_omit([_create_config({}, parser, *slot_args, **slot_kwargs)] * is_config_list(cls))
+                or _none_omit([_create_config({}, validator, *slot_args, **slot_kwargs)] * is_config_list(cls))
             )
         }
 
