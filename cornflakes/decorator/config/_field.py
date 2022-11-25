@@ -17,7 +17,7 @@ class ConfigField(Field):
         compare: Optional[bool] = True,
         metadata: Optional[bool] = None,
         kw_only=MISSING,
-        parser: Optional[Callable[[str], Any]] = MISSING,
+        parser: Optional[Callable[[str], Any]] = None,
         alias: Optional[Union[List[str], str]] = None,
         ignore: Optional[bool] = False,
     ):
@@ -62,7 +62,7 @@ def config_field(
     compare: Optional[bool] = True,
     metadata: Optional[bool] = None,
     kw_only=MISSING,
-    parser: Optional[Callable[[str], Any]] = MISSING,
+    parser: Optional[Callable[[str], Any]] = None,
     alias: Optional[Union[List[str], str]] = None,
     ignore: Optional[bool] = False,
 ):
