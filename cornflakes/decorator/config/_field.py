@@ -1,11 +1,11 @@
 from dataclasses import MISSING, Field
-from typing import List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 
 class ConfigField(Field):
     """Instances of dataclasses Field wrapped for configs."""
 
-    __slots__ = (*getattr(Field, "__slots__", ()), "alias", "ignore")
+    __slots__ = (*getattr(Field, "__slots__", ()), "parser", "alias", "ignore")
 
     def __init__(
         self,
@@ -17,6 +17,7 @@ class ConfigField(Field):
         compare: Optional[bool] = True,
         metadata: Optional[bool] = None,
         kw_only=MISSING,
+        parser: Optional[Callable[[str], Any]] = MISSING,
         alias: Optional[Union[List[str], str]] = None,
         ignore: Optional[bool] = False,
     ):
@@ -39,10 +40,13 @@ class ConfigField(Field):
         )
         self.alias = alias
         self.ignore = ignore
+        self.parser = parser
 
     def __repr__(self):
         """Repr Field method."""
-        return f"{Field.__repr__(self)[:-1]}," f"alias={self.alias}, ignore={self.ignore})"
+        return (
+            f"{Field.__repr__(self)[:-1]}," f"parser={self.parser}, " f"alias={self.alias}, " f"ignore={self.ignore})"
+        )
 
 
 # This function is used instead of exposing Field creation directly,
@@ -58,6 +62,7 @@ def config_field(
     compare: Optional[bool] = True,
     metadata: Optional[bool] = None,
     kw_only=MISSING,
+    parser: Optional[Callable[[str], Any]] = MISSING,
     alias: Optional[Union[List[str], str]] = None,
     ignore: Optional[bool] = False,
 ):
@@ -67,6 +72,8 @@ def config_field(
     """
     if default is not MISSING and default_factory is not MISSING:
         raise ValueError("cannot specify both default and default_factory")
-    new_field = ConfigField(default, default_factory, init, repr, hash, compare, metadata, kw_only, alias, ignore)
+    new_field = ConfigField(
+        default, default_factory, init, repr, hash, compare, metadata, kw_only, parser, alias, ignore
+    )
     new_field.alias = alias
     return new_field

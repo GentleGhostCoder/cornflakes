@@ -402,8 +402,7 @@ inline void ParseAllFiles(const ParserData &t_ParserData) {
   }
 
   // load defaults if no file exists / providing
-  if (t_ParserData.m_ParserConfig.envir.empty() &&
-      !t_ParserData.m_ParserConfig.defaults.empty()) {
+  if (t_ParserData.m_ParserConfig.envir.empty()) {
     py::object logger = py::module::import("logging");
     logger.attr("debug")(
         "no sections or files to load, loading default values only.");
