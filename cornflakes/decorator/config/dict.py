@@ -11,9 +11,22 @@ def to_dict(self) -> Any:
     if not is_dataclass(self):
         return self
     new_dict = asdict(self, dict_factory=getattr(self, "__dict_factory__", dict))
+    if not any(
+        [
+            is_dataclass(value.type) or value.default_factory == list or isinstance(value.default, list)
+            for value in getattr(self, "__dataclass_fields__", {}).values()
+        ]
+    ):
+        return new_dict
     for key in getattr(self, "__slots__", getattr(self, "__dict__", {}).keys()):
         if is_dataclass(value := getattr(self, key)):
-            new_dict.update({key: to_dict(value)})
+            new_dict.update({key: value.to_dict()})
+        if isinstance(value, list) or isinstance(value, tuple):
+            value = list(value)  # if tuple cast  to list
+            for idx, sub_value in enumerate(value):
+                if is_dataclass(sub_value):
+                    value[idx] = sub_value.to_dict()
+            new_dict.update({key: value})
     return new_dict
 
 
