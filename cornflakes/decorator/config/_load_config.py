@@ -1,15 +1,20 @@
 from collections import OrderedDict
+from functools import partial
 import logging
 import re
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, LoaderMethod
-from cornflakes.decorator.config._helper import allow_empty, is_config_list, is_multi_config, pass_section_name
+from cornflakes.decorator.config._helper import is_config_list, is_multi_config, pass_section_name
 
 
 def _none_omit(obj: list):
     return [v for v in obj if v is not None]
+
+
+def _default_filter_method(x: Any):
+    return True
 
 
 def create_file_loader(  # noqa: C901
@@ -31,8 +36,10 @@ def create_file_loader(  # noqa: C901
 
     keys = {key: getattr(value, "alias", key) or key for key, value in list(cls.__dataclass_fields__.items())}
 
-    def _create_config(config: dict, **cls_kwargs) -> Optional[Config]:
-        if not config and allow_empty(cls):
+    def create_config(
+        config: dict, allow_empty=None, filter_function=_default_filter_method, **cls_kwargs
+    ) -> Optional[Config]:
+        if not config and allow_empty:
             return
         config.update(cls_kwargs)
         error_args = [key for key in config if key not in cls.__dataclass_fields__]
@@ -42,7 +49,8 @@ def create_file_loader(  # noqa: C901
 
         #  config_instance
         config_instance = cls(**{key: value for key, value in config.items() if key in cls.__dataclass_fields__})
-        return config_instance
+        if filter_function(config_instance):
+            return config_instance
 
     def _check_required_fields(config_dict):
         return {
@@ -63,6 +71,7 @@ def create_file_loader(  # noqa: C901
         config_dict: Optional[Dict[str, Any]] = None,
         filter_function: Optional[Callable[[Config], bool]] = None,
         eval_env: bool = None,
+        allow_empty: bool = None,
         **slot_kwargs,
     ) -> Dict[str, Optional[Union[Config, List[Config]]]]:
         """Config parser from ini files.
@@ -73,6 +82,7 @@ def create_file_loader(  # noqa: C901
         :param slot_kwargs: Default configs to overwrite passed class
         :param filter_function: Optional filter method for config
         :param eval_env: Flag to evaluate environment variables into default values.
+        :param allow_empty: Flag that allows empty config result -> e.g. emtpy list
 
         :returns: Nested Lists of Config Classes
         """
@@ -81,9 +91,13 @@ def create_file_loader(  # noqa: C901
         if not files:
             files = cls.__config_files__
         if not filter_function:
-            filter_function = cls.__config_filter_function__ or (lambda x: True)
+            filter_function = cls.__config_filter_function__ or _default_filter_method
         if not eval_env:
             eval_env = cls.__eval_env__
+        if not allow_empty:
+            allow_empty = cls.__allow_empty_config__
+
+        _create_config = partial(create_config, allow_empty=allow_empty, filter_function=filter_function)
 
         pass_sections = pass_section_name(cls)
 
@@ -105,7 +119,7 @@ def create_file_loader(  # noqa: C901
                 sections = config_dict.popitem()[0] or re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
 
             config = _create_config(config_dict.get(sections, {}), **get_section_kwargs(sections))
-            if not filter_function(config):
+            if not config:
                 return {sections: _create_config({}, **get_section_kwargs(sections))}
             return {sections: config}
 
@@ -128,7 +142,7 @@ def create_file_loader(  # noqa: C901
                 for section, config in {
                     section: _create_config(config_dict.get(section, {}), **slot_kwargs) for section in config_dict
                 }.items()
-                if filter_function(config)
+                if config
             } or {
                 re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): _create_config(
                     {}, **slot_kwargs  # no matches
@@ -138,15 +152,12 @@ def create_file_loader(  # noqa: C901
         return {
             re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): (
                 list(
-                    filter(
-                        filter_function,
-                        _none_omit(
-                            [
-                                _create_config(config_dict.get(section, {}), **get_section_kwargs(section))
-                                for section in config_dict
-                            ]
-                        ),
-                    )
+                    _none_omit(
+                        [
+                            _create_config(config_dict.get(section, {}), **get_section_kwargs(section))
+                            for section in config_dict
+                        ]
+                    ),
                 )
                 or _none_omit([_create_config({}, **slot_kwargs)] * is_config_list(cls))
             )

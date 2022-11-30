@@ -31,7 +31,7 @@ def is_multi_config(cls: Union[Config, ConfigGroup]):
     return getattr(cls, "__multi_config__", False)
 
 
-def allow_empty(cls: Union[Config, ConfigGroup]):
+def is_allow_empty(cls: Union[Config, ConfigGroup]):
     """Method to return flag that the config class can be empty."""
     return getattr(cls, "__allow_empty_config__", False)
 
