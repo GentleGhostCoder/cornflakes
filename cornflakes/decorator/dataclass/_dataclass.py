@@ -1,5 +1,5 @@
 from dataclasses import dataclass as new_dataclass
-from typing import Any, Callable, Type, Union
+from typing import Any, Callable, Optional, Type, Union
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator._types import DataclassProtocol
@@ -13,8 +13,8 @@ from cornflakes.decorator.dataclass._field import Field
 
 def dataclass(
     dc_cls=None,
-    dict_factory: Callable = None,
-    tuple_factory: Callable = None,
+    dict_factory: Optional[Callable] = None,
+    tuple_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
     **kwargs

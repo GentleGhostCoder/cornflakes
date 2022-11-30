@@ -1,7 +1,7 @@
 import logging
-from typing import Callable, List, Optional, Type, Union, cast
+from typing import Any, Callable, List, Optional, Type, Union, cast
 
-from cornflakes.decorator._types import _T, Config, ConfigGroup, DataclassProtocol
+from cornflakes.decorator._types import Config, ConfigGroup, DataclassProtocol
 from cornflakes.decorator.config._config_group import config_group
 from cornflakes.decorator.config._helper import get_default_loader
 from cornflakes.decorator.config._loader import Loader
@@ -42,7 +42,7 @@ def config(  # noqa: C901
     if not default_loader:
         default_loader = get_default_loader(files)
 
-    def wrapper(cls: Type[_T]) -> Union[Config, ConfigGroup, DataclassProtocol]:
+    def wrapper(cls: Type[Any]) -> Union[Config, ConfigGroup, DataclassProtocol]:
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):

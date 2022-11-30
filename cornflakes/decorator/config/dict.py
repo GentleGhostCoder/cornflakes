@@ -1,12 +1,12 @@
 from dataclasses import asdict, is_dataclass
 import os
-from typing import Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes.decorator._types import Config
 from cornflakes.decorator.config._load_config import create_file_loader
 
 
-def to_dict(self) -> Optional[dict]:
+def to_dict(self) -> Any:
     """Method to convert Dataclass with slots to dict."""
     if not is_dataclass(self):
         return self

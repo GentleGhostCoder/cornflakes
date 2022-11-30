@@ -56,26 +56,6 @@ def setup_logging(  # noqa: C901
             logging.root.setLevel(default_level or logging.root.level)
 
 
-def __wrap_class(
-    w_obj,
-    log_level: Optional[int] = None,
-):
-    w_obj.logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__name__}")
-    w_obj.logger.__cornflakes__ = True
-    w_obj.logger.setLevel(log_level or logging.root.level)
-
-    if w_obj.logger.level == logging.DEBUG:
-        for attribute_name, attribute in w_obj.__dict__.items():
-            if isinstance(attribute, FunctionType):
-                # replace it with a wrapped version
-                attribute = attach_log(
-                    obj=attribute,
-                    log_level=log_level,
-                )
-                setattr(w_obj, attribute_name, attribute)
-    return w_obj
-
-
 class LoggerMetaClass(type):
     """LoggerMetaClass used for  metaclass."""
 
@@ -97,13 +77,33 @@ class LoggerProtocol(Protocol):
     logger: logging.Logger
 
 
+def __wrap_class(
+    w_obj,
+    log_level: Optional[int] = None,
+):
+    w_obj.logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__name__}")
+    w_obj.logger.__cornflakes__ = True
+    w_obj.logger.setLevel(log_level or logging.root.level)
+
+    if w_obj.logger.level == logging.DEBUG:
+        for attribute_name, attribute in w_obj.__dict__.items():
+            if isinstance(attribute, FunctionType):
+                # replace it with a wrapped version
+                attribute = attach_log(
+                    obj=attribute,
+                    log_level=log_level,
+                )
+                setattr(w_obj, attribute_name, attribute)
+    return w_obj
+
+
 def __wrap_function(
     w_obj,
     log_level: Optional[int] = None,
 ):
     logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__qualname__}")
-    w_obj.logger.__cornflakes__ = True
-    w_obj.logger.setLevel(log_level or logging.root.level)
+    logger.__cornflakes__ = True
+    logger.setLevel(log_level or logging.root.level)
     if logger.level != logging.DEBUG:
         return w_obj
 

@@ -1,8 +1,8 @@
 from dataclasses import astuple, is_dataclass
-from typing import Optional
+from typing import Any
 
 
-def to_tuple(self) -> Optional[tuple]:
+def to_tuple(self) -> Any:
     """Method to convert Dataclass with slots to dict."""
     if not is_dataclass(self):
         return self

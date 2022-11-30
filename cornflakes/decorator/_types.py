@@ -61,11 +61,11 @@ class Config(DataclassProtocol):
         """Callback function to filter config."""
         ...
 
-    def to_dict(self, *args, **kwargs) -> dict:
+    def to_dict(self, *args, **kwargs) -> Any:
         """Parse config to dict."""
         ...
 
-    def to_tuple(self, *args, **kwargs) -> tuple:
+    def to_tuple(self, *args, **kwargs) -> Any:
         """Parse config to tuple."""
         ...
 
@@ -77,11 +77,11 @@ class Config(DataclassProtocol):
         """Parse config to yaml file / bytes."""
         ...
 
-    def to_yaml_bytes(self, *args, **kwargs) -> bytearray:
+    def to_yaml_bytes(self, *args, **kwargs) -> Optional[bytearray]:
         """Parse config to yaml bytes."""
         ...
 
-    def to_ini_bytes(self, *args, **kwargs) -> bytearray:
+    def to_ini_bytes(self, *args, **kwargs) -> Optional[bytearray]:
         """Parse config to ini bytes."""
         ...
 
@@ -106,11 +106,11 @@ class ConfigGroup(DataclassProtocol):
         """Callback function to filter config."""
         ...
 
-    def to_dict(self, *args, **kwargs) -> dict:
+    def to_dict(self, *args, **kwargs) -> Any:
         """Parse config to dict."""
         ...
 
-    def to_tuple(self, *args, **kwargs) -> tuple:
+    def to_tuple(self, *args, **kwargs) -> Any:
         """Parse config to tuple."""
         ...
 
@@ -122,13 +122,14 @@ class ConfigGroup(DataclassProtocol):
         """Parse config to yaml file / bytes."""
         ...
 
-    def to_yaml_bytes(self, *args, **kwargs) -> bytearray:
+    def to_yaml_bytes(self, *args, **kwargs) -> Optional[bytearray]:
         """Parse config to yaml bytes."""
         ...
 
-    def to_ini_bytes(self, *args, **kwargs) -> bytearray:
+    def to_ini_bytes(self, *args, **kwargs) -> Optional[bytearray]:
         """Parse config to ini bytes."""
-        ...
+
+    ...
 
     from_ini: LoaderMethod
     from_yaml: LoaderMethod

@@ -149,7 +149,7 @@ def safety(session: Session) -> None:
 #     session.run("mypy", *args)
 
 
-@session(python=python_versions)
+@session(python=python_versions[:-1])  # current py3.11 not supported -> https://github.com/google/pytype/issues/1308
 def pytype(session):
     """Run the static type checker."""
     args = session.posargs or [

@@ -28,12 +28,11 @@ def _parse_config_list(cfg, cfg_name: str, title: str):
 
 def to_ini_bytes(
     self, title: Optional[str] = None
-) -> bytearray:  # TODO: implement more type_to_str feature -> date format etc.
+) -> Optional[bytearray]:  # TODO: implement more type_to_str feature -> date format etc.
     """Method to write an instance of the main config class of the module into a ini bytearray."""
     _ini_bytes = bytearray()
     has_lists = isinstance(self, list)
-    is_config = hasattr(self, "__config_sections__")
-    if is_config and not has_lists:
+    if is_config(self) and not has_lists:
         _ini_bytes.extend(bytes(f"[{title}]\n", "utf-8"))
         _ini_bytes.extend(
             bytes(

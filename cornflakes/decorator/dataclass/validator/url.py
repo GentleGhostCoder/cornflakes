@@ -2,6 +2,7 @@ from dataclasses import InitVar, field
 from typing import Optional
 from urllib.parse import ParseResult, urlparse, urlunparse
 
+from cornflakes.decorator.config.tuple import to_tuple
 from cornflakes.decorator.dataclass._dataclass import dataclass as data
 
 
@@ -40,7 +41,7 @@ class AnyUrl:
     password: Optional[str] = field(default=None, init=True, repr=False)
 
     def __init_parsed(self, parsed: ParseResult):
-        for slot in self.__dataclass_fields__.values():
+        for slot in getattr(self, "__dataclass_fields__", {}).values():
             if not getattr(self, slot.name, None) and not isinstance(slot.type, InitVar):
                 setattr(self, slot.name, getattr(parsed, slot.name, None))
 
@@ -56,9 +57,9 @@ class AnyUrl:
                 port = f":{self.port or parsed.port}" if self.port or parsed.port else ""
                 hostname = self.hostname if self.hostname else parsed.hostname
                 self.netloc = f"{login}{hostname}{port}"
-            parsed = urlparse(self.to_tuple())
+            parsed = urlparse(to_tuple(self))
             self.__init_parsed(parsed)
 
     def __str__(self) -> str:
         """Any url string."""
-        return self.to_tuple()
+        return to_tuple(self)

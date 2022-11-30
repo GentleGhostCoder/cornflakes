@@ -29,6 +29,10 @@ cornflakes
 
    pip install cornflakes
 
+.. code::
+
+    pip install git+https://github.com/semmjon/cornflakes
+
 Information
 -----------
 

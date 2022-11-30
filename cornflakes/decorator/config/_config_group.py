@@ -1,6 +1,6 @@
-from typing import Callable, List, Optional, Type, Union, cast
+from typing import Any, Callable, List, Optional, Type, Union, cast
 
-from cornflakes.decorator._types import _T, ConfigGroup, DataclassProtocol
+from cornflakes.decorator._types import ConfigGroup, DataclassProtocol
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.dataclass import dataclass
 
@@ -27,7 +27,7 @@ def config_group(  # noqa: C901
 
     kwargs.pop("validate", None)  # no validation for group
 
-    def wrapper(cls: Type[_T]) -> Union[DataclassProtocol, ConfigGroup]:
+    def wrapper(cls: Type[Any]) -> Union[DataclassProtocol, ConfigGroup]:
         cls = dataclass(cls, **kwargs)
         cls.__config_files__ = files
         cls.__allow_empty_config__ = allow_empty
