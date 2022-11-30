@@ -91,6 +91,9 @@ std::string read_file(const std::string &file) {
     in.seekg(0, std::ios::beg);
     in.read(&contents[0], contents.size());
     in.close();
+    if (contents.empty()) {
+      return contents;
+    }
     if (contents.back() != NEWLINE) {  // unexpected eof
       contents.append(LINE_SEPERATOR);
     }

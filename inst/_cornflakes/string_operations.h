@@ -55,6 +55,8 @@ static const std::regex ipv4_regex(
     R"(^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.){3}(25[0-5]|(2[0-4]|1\d|[1-9]|)\d)$)");
 
 inline rapidjson::Document json_doc;
+inline std::string ESCAPE_CHAR = "\\";
+inline std::string PYTHON_ESCAPE_CHAR = "\\\\";
 inline const char *JSON_CHARS = "{}";
 inline const char *ARRAY_CHARS = "[]";
 // static const std::regex ipv6_regex(

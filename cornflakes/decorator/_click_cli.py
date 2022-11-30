@@ -1,10 +1,10 @@
 from inspect import getfile
-from typing import Callable, Optional
+from typing import Any, Callable, Optional, Union
 
-from click import Group, style, version_option
+from click import BaseCommand, Group, style, version_option
 import pkg_resources
 
-from cornflakes.click import RichConfig, group
+from cornflakes.click import RichConfig, RichGroup, group
 from cornflakes.decorator.config import Config
 
 
@@ -15,7 +15,9 @@ def click_cli(  # noqa: C901
     loader: Optional[str] = None,
     *args,
     **kwargs,
-):
+) -> Union[
+    Callable[[Any], Callable[..., Union[BaseCommand, RichGroup]]], Callable[..., Union[BaseCommand, Group, RichGroup]]
+]:
     """Function that creates generic click CLI Object."""
     if not config:
         if not files:
@@ -29,12 +31,12 @@ def click_cli(  # noqa: C901
         else:
             config = RichConfig(*args, **kwargs)
 
-    def cli_wrapper(w_callback: Callable) -> Callable[..., Group]:
+    def cli_wrapper(w_callback: Callable) -> Callable[..., Union[BaseCommand, Group, RichGroup]]:
         if not callable(w_callback):
             return w_callback
 
         module = getfile(w_callback)
-        cli_group = group(module.split(".", 1)[0], config=config)(w_callback)
+        cli_group: Union[BaseCommand, Group, RichGroup] = group(module.split(".", 1)[0], config=config)(w_callback)
         if config.VERSION_INFO:
             name = w_callback.__qualname__
             __version = "0.0.1"

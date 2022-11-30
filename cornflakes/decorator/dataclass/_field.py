@@ -1,16 +1,16 @@
+from dataclasses import Field as DataclassField
 from dataclasses import MISSING
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 from cornflakes.decorator._types import WITHOUT_DEFAULT
-from cornflakes.decorator.dataclass import Field
 
 _MISSING_TYPE = type(MISSING)
 
 
-class ConfigField(Field):
+class Field(DataclassField):
     """Instances of dataclasses Field wrapped for configs."""
 
-    __slots__ = (*getattr(Field, "__slots__", ()), "alias")
+    __slots__ = (*getattr(DataclassField, "__slots__", ()), "validator", "ignore")
 
     def __init__(
         self,
@@ -23,7 +23,6 @@ class ConfigField(Field):
         metadata: Optional[bool] = None,
         kw_only: Union[_MISSING_TYPE, bool] = MISSING,
         validator: Optional[Union[Callable[[str], Any], _MISSING_TYPE]] = MISSING,
-        alias: Optional[Union[List[str], str]] = None,
         ignore: Optional[bool] = False,
     ):
         """Init Field method."""
@@ -40,19 +39,18 @@ class ConfigField(Field):
                     ("metadata", metadata),
                     ("kw_only", kw_only),
                 )
-                if key in Field.__init__.__code__.co_varnames
+                if key in DataclassField.__init__.__code__.co_varnames
             }
         )
-        self.alias = alias
         self.ignore = ignore
         self.validator = validator
 
     def __repr__(self):
         """Repr Field method."""
-        return f"{Field.__repr__(self)[:-1]}," f"alias={self.alias})"
+        return f"{DataclassField.__repr__(self)[:-1]}," f"validator={self.validator}, " f"ignore={self.ignore})"
 
 
-def config_field(
+def field(
     *,
     default: Union[_MISSING_TYPE, Any] = MISSING,
     default_factory: Union[_MISSING_TYPE, Callable] = MISSING,
@@ -63,7 +61,6 @@ def config_field(
     metadata: Optional[bool] = None,
     kw_only: Union[_MISSING_TYPE, bool] = MISSING,
     validator: Optional[Union[Callable[[str], Any], _MISSING_TYPE]] = MISSING,
-    alias: Optional[Union[List[str], str]] = None,
     ignore: Optional[bool] = False,
     no_default: Optional[bool] = None,
 ):
@@ -80,7 +77,5 @@ def config_field(
     if default is MISSING and default_factory is MISSING and no_default:
         default_factory = WITHOUT_DEFAULT
 
-    new_field = ConfigField(
-        default, default_factory, init, repr, hash, compare, metadata, kw_only, validator, alias, ignore
-    )
+    new_field = Field(default, default_factory, init, repr, hash, compare, metadata, kw_only, validator, ignore)
     return new_field

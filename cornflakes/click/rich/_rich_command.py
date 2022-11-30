@@ -24,7 +24,6 @@ class RichCommand(Command):
 
     def callback(self):
         """Callback method with is wrapped over the command."""
-        pass
 
     def __init__(self, config: RichConfig = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""

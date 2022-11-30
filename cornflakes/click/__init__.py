@@ -11,8 +11,10 @@ See referenced Code at https://github.com/ewels/rich-click.git
     RichCommand
     RichGroup
     RichConfig
+    global_option
     verbose_option
     bg_process_option
+    auto_option
 """  # noqa: RST303 D205
 
 # from click import *  # noqa: F401, F403

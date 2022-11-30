@@ -169,6 +169,19 @@ std::array<int, 2> idx_between(std::string::const_iterator start_iter,
   return (idx);
 }
 
+std::string replace_all(const std::string &data, const std::string &to_search,
+                        const std::string &replace_str) {
+  std::string replacement = data;
+  size_t pos = data.find(to_search);
+
+  while (pos != std::string::npos) {
+    replacement.replace(pos, to_search.size(), replace_str);
+    pos = replacement.find(to_search, pos + replace_str.size());
+  }
+
+  return replacement;
+}
+
 std::string trim(const std::string &str, const std::string &whitespace) {
   const auto strBegin = str.find_first_not_of(whitespace);
   if (strBegin == std::string::npos) return "";  // no content
@@ -505,13 +518,6 @@ py::object eval_type(std::string value) {
     return (py::cast(std::stoul(value, nullptr, 16)));
   }
 
-  const char last_char = value.back();
-  if (((value[0] == JSON_CHARS[0] && last_char == JSON_CHARS[1]) ||
-       (value[0] == ARRAY_CHARS[0] && last_char == ARRAY_CHARS[1])) &&
-      !json_doc.Parse(const_cast<char *>(value.c_str())).HasParseError()) {
-    return py::eval(value);
-  }
-
   const char upper_first_char = static_cast<char>(std::toupper(value[0]));
 
   // boolean true or boolan false
@@ -534,9 +540,21 @@ py::object eval_type(std::string value) {
     return (py::module::import("uuid").attr("UUID")(value));
   }
 
+  const char last_char = value.back();
+
+  if ((value[0] == JSON_CHARS[0] && last_char == JSON_CHARS[1]) ||
+      (value[0] == ARRAY_CHARS[0] && last_char == ARRAY_CHARS[1])) {
+    std::string json_value =
+        replace_all(value, ESCAPE_CHAR, PYTHON_ESCAPE_CHAR);
+    if (!json_doc.Parse(const_cast<char *>(json_value.c_str()))
+             .HasParseError()) {
+      return py::eval(json_value);
+    }
+  }
+
   if (char_size < 6) {
     // normal string
-    return (py::cast(value));
+    return py::cast(value);
   }
 
   // ipv4
@@ -559,7 +577,7 @@ py::object eval_type(std::string value) {
   }
 
   // normal string
-  return (py::cast(value));
+  return py::cast(value);
 }
 
 /// This is a simple C++ function to cast strings into python datetime object

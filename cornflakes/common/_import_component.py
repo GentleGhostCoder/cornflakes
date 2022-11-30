@@ -1,5 +1,6 @@
 from functools import reduce
-from typing import Any, List
+import inspect
+from typing import Any, Callable, Union
 
 
 def __get_or_call(module: Any, value: str) -> Any:
@@ -14,15 +15,6 @@ def import_component(key: str) -> Any:
     return reduce(__get_or_call, [module, *key.split(".")[1:]])
 
 
-def __extract_code_varnames(module: Any) -> List[str]:
-    if hasattr(module, "__code__"):
-        return [k for k in module.__code__.co_varnames if k not in ["self", "kwargs", "args", "e"]]
-    elif hasattr(module, "__init__"):
-        return __extract_code_varnames(module.__init__)
-    return []
-
-
-def extract_var_names(key: str) -> List[str]:
+def extract_var_names(obj: Union[str, Callable]) -> dict:
     """Extract variables from class or function."""
-    module = __import__(key.split(".", 1)[0])
-    return __extract_code_varnames(reduce(__get_or_call, [module, *key.split(".")[1:]]))
+    return {key: value.default for key, value in inspect.signature(obj).parameters.items()}

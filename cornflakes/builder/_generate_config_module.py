@@ -11,16 +11,23 @@ from cornflakes.common import import_component
 from cornflakes.decorator.config import Loader, config_group, is_config
 
 
-def generate_group_module(
+def generate_group_module(  # noqa: C901
     source_module: Union[ModuleType, str],
     source_config: Optional[Union[Dict[str, Union[List[str], str]], List[str], str]] = None,
     target_module_file: Optional[str] = None,
     class_name: Optional[str] = None,
-    loader: Loader = Loader.INI_LOADER,
+    loader: Loader = Loader.DICT_LOADER,
+    loader_args: Optional[dict] = None,
     *args,
     **kwargs,
 ):
     """Module with function to generate automatically config group module."""
+    if not loader_args:
+        loader_args = {}
+
+    if "files" not in loader_args and loader != Loader.DICT_LOADER:
+        loader_args.update({"files": source_config})
+
     if not target_module_file:
         target_module_file = f'{source_module.__name__.replace(".", "/")}/default.py'
 
@@ -44,7 +51,7 @@ def generate_group_module(
     files = files if isinstance(files, list) else [files]
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if inspect.isclass(cfg_class) and is_config(cfg_class):
-            cfg = getattr(cfg_class, str(loader.value))(source_config)
+            cfg = getattr(cfg_class, str(loader.value))(**loader_args)
             ini_config_objects.update(cfg)
             imports.append(cfg_name)
             files.extend([file for file in getattr(cfg_class, "__config_files__", []) if file and file not in files])
@@ -94,6 +101,7 @@ def generate_group_module(
 
     if "black" in os.listdir(sysconfig.get_paths()["purelib"]):
         # fix format
-        os.system(f"black {source_config} {target_module_file}")  # noqa: S605
+        # source_config = " ".join(source_config) if isinstance(source_config, list) else source_config
+        os.system(f"black {target_module_file}")  # noqa: S605
     if "isort" in os.listdir(sysconfig.get_paths()["purelib"]):
-        os.system(f"isort {source_config} {target_module_file}")  # noqa: S605
+        os.system(f"isort {target_module_file}")  # noqa: S605

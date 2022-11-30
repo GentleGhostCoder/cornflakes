@@ -227,8 +227,7 @@ inline void ParseDefinedKeys(SectionData t_SectionData,
 inline int GetNextSectionIdx(FileData t_FileData, int idx) {
   idx = static_cast<int>(
       t_FileData.contents.find_first_of(SECTION_OPEN_CHAR, idx) + 1);
-  while (idx && t_FileData.contents.at(idx - 2) != system_operations::NEWLINE &&
-         t_FileData.contents.at(idx - 2) != WHITESPACE) {
+  while (idx && t_FileData.contents.at(idx - 2) != system_operations::NEWLINE) {
     idx = static_cast<int>(
         t_FileData.contents.find_first_of(SECTION_OPEN_CHAR, idx) + 1);
   }
@@ -263,17 +262,17 @@ inline void ParseSectionsDefault(FileData t_FileData,
 inline void ParseAllSections(const FileData &t_FileData,
                              const ParserData &t_ParserData) {
   std::array<int, 2> section_cursor{};
-  section_cursor[1] =
-      static_cast<int>(t_FileData.contents.find_first_of(SECTION_OPEN_CHAR, 0));
-
-  if (section_cursor[1] == static_cast<int>(std::string::npos)) {
-    py::dict section_envir = t_FileData.file_envir;
-    ParseSectionsDefault(t_FileData, t_ParserData, section_envir);
-    return;
-  }
-
+  section_cursor[1] = t_FileData.contents.at(0) == SECTION_OPEN_CHAR[0]
+                          ? 0
+                          : GetNextSectionIdx(t_FileData, 0);
   section_cursor[1] += 1;
 
+  if (section_cursor[1] == t_FileData.contents.size()) {
+    t_FileData.file_envir[py::none()] = py::dict();
+    ParseSectionsDefault(t_FileData, t_ParserData,
+                         t_FileData.file_envir[py::none()]);
+    return;
+  }
   // split name and value for each line if not empty or comment
   while (true) {
     section_cursor[0] = static_cast<int>(t_FileData.contents.find_first_of(
@@ -395,7 +394,6 @@ inline void ParseAllFiles(const ParserData &t_ParserData) {
                              "', because not exists!");
         continue;
       }
-
       FileData m_FileData(file_envir, system_operations::read_file(item_value));
       t_ParserData.ParseSections(m_FileData, t_ParserData);
     }
@@ -408,7 +406,7 @@ inline void ParseAllFiles(const ParserData &t_ParserData) {
         "no sections or files to load, loading default values only.");
     py::dict file_envir = t_ParserData.m_ParserConfig.envir;
     FileData m_FileData(file_envir, "");
-    t_ParserData.ParseSections(m_FileData, t_ParserData);
+    ParseSectionsDefault(m_FileData, t_ParserData, file_envir, true);
   }
 }
 

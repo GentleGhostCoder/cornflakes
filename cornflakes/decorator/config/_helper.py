@@ -1,6 +1,7 @@
-from typing import Union
+from typing import Optional, Union
 
-from cornflakes.decorator.config._protocols import Config, ConfigGroup
+from cornflakes.decorator._types import Config, ConfigGroup
+from cornflakes.decorator.config._loader import Loader
 
 
 def is_config(cls: Config):
@@ -22,7 +23,7 @@ def is_config_list(cls: Config):
 
 def get_config_slots(cls: Config):
     """Method to return slots that are not ignored fields."""
-    return [slot for slot in getattr(cls, "__slots__", ()) if slot not in cls.__ignored_slots__]
+    return [slot for slot in getattr(cls, "__dataclass_fields__", {}).keys() if slot not in cls.__ignored_slots__]
 
 
 def is_multi_config(cls: Union[Config, ConfigGroup]):
@@ -38,3 +39,16 @@ def allow_empty(cls: Union[Config, ConfigGroup]):
 def pass_section_name(cls: Config):
     """Method to return flag that the config has section_name in slots, so that the section title is passed in."""
     return "section_name" in cls.__dataclass_fields__.keys()
+
+
+def get_default_loader(files: Optional[list] = None):
+    """Method to get the default loader from filenames."""
+    return (
+        Loader.DICT_LOADER
+        if not files
+        else Loader.INI_LOADER
+        if files[0][-3:] == "ini"
+        else Loader.YAML_LOADER
+        if files[0][-3:] == "yaml"
+        else Loader.DICT_LOADER
+    )

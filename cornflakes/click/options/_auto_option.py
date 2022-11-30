@@ -56,7 +56,7 @@ def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C9
                 line = line[6:].split(":")
                 configs.update({line[0]: line[1].strip()})
         configs.update(options)
-        for slot_name in config.__slots__:
+        for slot_name in config.__dataclass_fields__.keys():
             wrapper = option(f"--{slot_name.replace('_', '-')}", help=configs.get(slot_name, ""))(wrapper)
 
         wrapper = argument("config_args", required=False, nargs=-1, help="Passed Config to Method")(wrapper)

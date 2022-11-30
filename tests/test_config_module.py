@@ -5,12 +5,18 @@ from os import environ
 import time
 import unittest
 
+from cornflakes import AnyUrl
 from cornflakes.builder import generate_group_module
+from cornflakes.decorator.config import Loader
 from tests import configs
 
 
 class TestConfigGeneration(unittest.TestCase):
     """Test-class config module generation"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.maxDiff = None
 
     def test_auto_config_generation(self):
         """Test-function config module generation."""
@@ -25,6 +31,7 @@ class TestConfigGeneration(unittest.TestCase):
             source_module=configs.sub_config,
             source_config=source_config,
             target_module_file=target_module_file,
+            loader=Loader.INI_LOADER,
             **ini_group_args
         )
 
@@ -37,14 +44,147 @@ class TestConfigGeneration(unittest.TestCase):
 
         from tests.configs.default import MainConfig
 
+        self.assertEqual(
+            MainConfig.from_file().to_dict(),
+            {
+                "sub_config": [
+                    {
+                        "section_name": "sub_config_0",
+                        "string": "bla0",
+                        "datetime_datetime": datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
+                        "datetime_time": datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
+                        "int_val": 1,
+                        "float_val": 0.005,
+                        "decimal": Decimal("1E-40"),
+                        "ipv4": IPv4Address("127.0.0.1"),
+                        "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                        "bool_val": True,
+                        "url": {
+                            "scheme": "https",
+                            "netloc": "localhost:8080",
+                            "path": "",
+                            "params": "",
+                            "query": "",
+                            "fragment": "",
+                            "hostname": "localhost",
+                            "port": 8080,
+                            "username": None,
+                            "password": None,
+                        },
+                        "some_env": "default_value",
+                    },
+                    {
+                        "section_name": "sub_config_1",
+                        "string": "bla1",
+                        "datetime_datetime": datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
+                        "datetime_time": datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
+                        "int_val": 1,
+                        "float_val": 0.005,
+                        "decimal": Decimal("1E-40"),
+                        "ipv4": IPv4Address("127.0.0.1"),
+                        "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                        "bool_val": True,
+                        "url": {
+                            "scheme": "https",
+                            "netloc": "localhost:8080",
+                            "path": "",
+                            "params": "",
+                            "query": "",
+                            "fragment": "",
+                            "hostname": "localhost",
+                            "port": 8080,
+                            "username": None,
+                            "password": None,
+                        },
+                        "some_env": "default_value",
+                    },
+                    {
+                        "section_name": "sub_config_2",
+                        "string": "bla2",
+                        "datetime_datetime": datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
+                        "datetime_time": datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
+                        "int_val": 1,
+                        "float_val": 0.005,
+                        "decimal": Decimal("1E-40"),
+                        "ipv4": IPv4Address("127.0.0.1"),
+                        "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                        "bool_val": True,
+                        "url": {
+                            "scheme": "https",
+                            "netloc": "localhost:8080",
+                            "path": "",
+                            "params": "",
+                            "query": "",
+                            "fragment": "",
+                            "hostname": "localhost",
+                            "port": 8080,
+                            "username": None,
+                            "password": None,
+                        },
+                        "some_env": "default_value",
+                    },
+                ]
+            },
+        )
+
+        self.assertEqual(
+            MainConfig.from_file().to_tuple(),
+            (
+                [
+                    (
+                        "sub_config_0",
+                        "bla0",
+                        datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
+                        datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
+                        1,
+                        0.005,
+                        Decimal("1E-40"),
+                        IPv4Address("127.0.0.1"),
+                        IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                        True,
+                        ("https", "localhost:8080", "", "", "", "", "localhost", 8080, None, None),
+                        "default_value",
+                    ),
+                    (
+                        "sub_config_1",
+                        "bla1",
+                        datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
+                        datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
+                        1,
+                        0.005,
+                        Decimal("1E-40"),
+                        IPv4Address("127.0.0.1"),
+                        IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                        True,
+                        ("https", "localhost:8080", "", "", "", "", "localhost", 8080, None, None),
+                        "default_value",
+                    ),
+                    (
+                        "sub_config_2",
+                        "bla2",
+                        datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
+                        datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
+                        1,
+                        0.005,
+                        Decimal("1E-40"),
+                        IPv4Address("127.0.0.1"),
+                        IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
+                        True,
+                        ("https", "localhost:8080", "", "", "", "", "localhost", 8080, None, None),
+                        "default_value",
+                    ),
+                ],
+            ),
+        )
+
         # list(MainConfig.from_ini(filter_function=lambda x: x.string == "bla0").sub_config)
-        MainConfig.from_ini().to_ini("tests/configs/default_auto_created.ini")
+        MainConfig.from_file().to_ini("tests/configs/default_auto_created.ini")
 
         time.sleep(1)
 
         self.assertEqual(
-            repr(MainConfig.from_ini("tests/configs/default_auto_created.ini")),
-            repr(MainConfig.from_ini("tests/configs/default.ini")),
+            repr(MainConfig.from_file("tests/configs/default_auto_created.ini")),
+            repr(MainConfig.from_file("tests/configs/default.ini")),
         )
 
         environ["some_env"] = "test123"
@@ -65,6 +205,9 @@ class TestConfigGeneration(unittest.TestCase):
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
+                            url=AnyUrl(
+                                scheme="https", netloc="localhost:8080", path="", params="", query="", fragment=""
+                            ),
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
@@ -78,6 +221,9 @@ class TestConfigGeneration(unittest.TestCase):
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
+                            url=AnyUrl(
+                                scheme="https", netloc="localhost:8080", path="", params="", query="", fragment=""
+                            ),
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
@@ -91,6 +237,9 @@ class TestConfigGeneration(unittest.TestCase):
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
+                            url=AnyUrl(
+                                scheme="https", netloc="localhost:8080", path="", params="", query="", fragment=""
+                            ),
                             some_env="test123",
                         ),
                     ]
@@ -99,7 +248,7 @@ class TestConfigGeneration(unittest.TestCase):
         )
 
         self.assertEqual(
-            repr(MainConfig.from_ini()),
+            repr(MainConfig.from_file()),
             repr(
                 MainConfig(
                     sub_config=[
@@ -114,6 +263,9 @@ class TestConfigGeneration(unittest.TestCase):
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
+                            url=AnyUrl(
+                                scheme="https", netloc="localhost:8080", path="", params="", query="", fragment=""
+                            ),
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
@@ -127,6 +279,9 @@ class TestConfigGeneration(unittest.TestCase):
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
+                            url=AnyUrl(
+                                scheme="https", netloc="localhost:8080", path="", params="", query="", fragment=""
+                            ),
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
@@ -140,6 +295,9 @@ class TestConfigGeneration(unittest.TestCase):
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                             bool_val=True,
+                            url=AnyUrl(
+                                scheme="https", netloc="localhost:8080", path="", params="", query="", fragment=""
+                            ),
                             some_env="test123",
                         ),
                     ]

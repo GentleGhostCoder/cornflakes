@@ -3,10 +3,9 @@ from typing import Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
+from cornflakes.decorator._types import Config
 from cornflakes.decorator.config._helper import get_config_slots, is_config
 from cornflakes.decorator.config._load_config import create_file_loader
-from cornflakes.decorator.config._load_config_group import create_group_loader
-from cornflakes.decorator.config._protocols import Config, ConfigGroup
 from cornflakes.decorator.config._write_config import write_config
 
 
@@ -76,12 +75,12 @@ def create_ini_file_loader(
     return from_ini
 
 
-def create_ini_group_loader(
-    cls=None,
-) -> Callable[..., ConfigGroup]:
-    """Method to create file loader for ini files."""
-
-    def from_ini(*args, **kwargs) -> ConfigGroup:
-        return create_group_loader(cls=cls, loader=ini_load)(*args, **kwargs)  # type: ignore
-
-    return from_ini
+# def create_ini_group_loader(
+#     cls=None,
+# ) -> Callable[..., ConfigGroup]:
+#     """Method to create file loader for ini files."""
+#
+#     def from_ini(*args, **kwargs) -> ConfigGroup:
+#         return create_group_loader(cls=cls)(*args, **kwargs)  # type: ignore
+#
+#     return from_ini

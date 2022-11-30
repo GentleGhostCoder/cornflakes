@@ -3,9 +3,8 @@ from typing import Callable, Dict, List, Optional, Type, Union
 import yaml
 from yaml import SafeLoader, UnsafeLoader
 
+from cornflakes.decorator._types import Config
 from cornflakes.decorator.config._load_config import create_file_loader
-from cornflakes.decorator.config._load_config_group import create_group_loader
-from cornflakes.decorator.config._protocols import Config, ConfigGroup
 from cornflakes.decorator.config._write_config import write_config
 from cornflakes.parser import yaml_load
 
@@ -43,13 +42,13 @@ def create_yaml_file_loader(
     return from_yaml
 
 
-def create_yaml_group_loader(
-    cls=None,
-) -> Callable[..., ConfigGroup]:
-    """Method to create file loader for yaml files."""
-
-    def from_yaml(*args, loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader, **kwargs) -> ConfigGroup:
-        _from_yaml = create_group_loader(cls=cls, loader=specific_yaml_loader(loader=loader))  # type: ignore
-        return _from_yaml(*args, **kwargs)
-
-    return from_yaml
+# def create_yaml_group_loader(
+#     cls=None,
+# ) -> Callable[..., ConfigGroup]:
+#     """Method to create file loader for yaml files."""
+#
+#     def from_yaml(*args, loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader, **kwargs) -> ConfigGroup:
+#         _from_yaml = create_group_loader(cls=cls, loader=specific_yaml_loader(loader=loader))  # type: ignore
+#         return _from_yaml(*args, **kwargs)
+#
+#     return from_yaml

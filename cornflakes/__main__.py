@@ -50,7 +50,6 @@ from cornflakes.decorator import click_cli
 )
 def main():
     """Main CLI Entrypoint Method."""
-    pass
 
 
 if isinstance(main, RichGroup):

@@ -4,8 +4,8 @@ import re
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
+from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, LoaderMethod
 from cornflakes.decorator.config._helper import allow_empty, is_config_list, is_multi_config, pass_section_name
-from cornflakes.decorator.config._protocols import Config, LoaderMethod
 
 
 def _none_omit(obj: list):
@@ -23,26 +23,39 @@ def create_file_loader(  # noqa: C901
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
+    required_keys = [
+        key
+        for key, value in cls.__dataclass_fields__.items()
+        if getattr(value, "default_factory", None) == WITHOUT_DEFAULT
+    ]
 
-    def _process_validator(config: dict, validator: dict):
-        return {key: parse(config.get(key)) for key, parse in validator.items() if key in config.keys()}
+    keys = {key: getattr(value, "alias", key) or key for key, value in list(cls.__dataclass_fields__.items())}
 
-    def _create_config(config: dict, validator: dict, *cls_args, **cls_kwargs) -> Optional[Config]:
-        logging.debug(config)
-        logging.debug(allow_empty(cls))
+    def _create_config(config: dict, **cls_kwargs) -> Optional[Config]:
         if not config and allow_empty(cls):
             return
         config.update(cls_kwargs)
-        config.update(_process_validator(config, validator))
-        error_args = [key for key in config if key not in getattr(cls, "__slots__", ())]
+        error_args = [key for key in config if key not in cls.__dataclass_fields__]
         if error_args:
             logging.warning(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
             logging.warning(f"Please check Args: {error_args}")
+
         #  config_instance
-        config_instance = cls(
-            *cls_args, **{key: value for key, value in config.items() if key in getattr(cls, "__slots__", ())}
-        )
+        config_instance = cls(**{key: value for key, value in config.items() if key in cls.__dataclass_fields__})
         return config_instance
+
+    def _check_required_fields(config_dict):
+        return {
+            section: config
+            for section, config in config_dict.items()
+            if not any([True for key in required_keys if key not in config.keys()])
+        }
+
+    def _rename_default_section(config_dict):
+        if None not in config_dict:
+            return config_dict
+        config_dict["default"] = config_dict.pop(None)
+        return config_dict
 
     def from_file(
         files: Optional[Union[List[str], str]] = None,
@@ -50,7 +63,6 @@ def create_file_loader(  # noqa: C901
         config_dict: Optional[Dict[str, Any]] = None,
         filter_function: Optional[Callable[[Config], bool]] = None,
         eval_env: bool = None,
-        *slot_args,
         **slot_kwargs,
     ) -> Dict[str, Optional[Union[Config, List[Config]]]]:
         """Config parser from ini files.
@@ -58,13 +70,11 @@ def create_file_loader(  # noqa: C901
         :param files: Default config files
         :param sections: Default config sections
         :param config_dict: Config dictionary to pass already loaded configs
-        :param slot_args: Default configs to overwrite passed class
         :param slot_kwargs: Default configs to overwrite passed class
         :param filter_function: Optional filter method for config
         :param eval_env: Flag to evaluate environment variables into default values.
 
         :returns: Nested Lists of Config Classes
-
         """
         if not sections:
             sections = cls.__config_sections__
@@ -80,18 +90,6 @@ def create_file_loader(  # noqa: C901
         def get_section_kwargs(section):
             return {**slot_kwargs, **({"section_name": section} if pass_sections else {})}
 
-        # get alias from custom dataclass fields
-        keys = {
-            key: getattr(cls.__dataclass_fields__[key], "alias", key)
-            for key in getattr(cls, "__slots__", ())[len(slot_args) :]
-        }
-
-        validator = {
-            key: validator
-            for key in getattr(cls, "__slots__", ())[len(slot_args) :]
-            if callable(validator := getattr(cls.__dataclass_fields__[key], "validator", key))
-        }
-
         if not is_multi_config(cls) and isinstance(sections, str):
             logging.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
 
@@ -99,36 +97,41 @@ def create_file_loader(  # noqa: C901
                 config_dict = OrderedDict(
                     loader(files={None: files}, sections=sections, keys=keys, defaults=None, eval_env=eval_env)
                 )
+                config_dict = _check_required_fields(config_dict)
+                config_dict = _rename_default_section(config_dict)
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
+
             if not sections and config_dict.keys():
                 sections = config_dict.popitem()[0] or re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
-            config = _create_config(
-                config_dict.get(sections, {}), validator, *slot_args, **get_section_kwargs(sections)
-            )
+
+            config = _create_config(config_dict.get(sections, {}), **get_section_kwargs(sections))
             if not filter_function(config):
-                return {sections: _create_config({}, validator, *slot_args, **get_section_kwargs(sections))}
+                return {sections: _create_config({}, **get_section_kwargs(sections))}
             return {sections: config}
 
         if not config_dict:
             config_dict = OrderedDict(loader(files={None: files}, sections=None, keys=keys, eval_env=eval_env))
+            config_dict = _check_required_fields(config_dict)
+            config_dict = _rename_default_section(config_dict)
+
             logging.debug(f"Read config with sections: {config_dict.keys()}")
 
         regex = f'({"|".join(sections) if isinstance(sections, list) else sections or ""})'
         logging.debug(f"Load all configs that mach **{regex}**")
 
-        config_dict = {section: config for section, config in config_dict.items() if bool(re.match(regex, section))}
-
+        config_dict = {
+            section: config for section, config in config_dict.items() if bool(re.match(regex, section or ""))
+        }
         if not is_config_list(cls):
             return {
                 section: config
                 for section, config in {
-                    section: _create_config(config_dict.get(section, {}), validator, *slot_args, **slot_kwargs)
-                    for section in config_dict
+                    section: _create_config(config_dict.get(section, {}), **slot_kwargs) for section in config_dict
                 }.items()
                 if filter_function(config)
             } or {
                 re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): _create_config(
-                    {}, validator, *slot_args, **slot_kwargs  # no matches
+                    {}, **slot_kwargs  # no matches
                 )
             }
 
@@ -139,15 +142,13 @@ def create_file_loader(  # noqa: C901
                         filter_function,
                         _none_omit(
                             [
-                                _create_config(
-                                    config_dict.get(section, {}), validator, *slot_args, **get_section_kwargs(section)
-                                )
+                                _create_config(config_dict.get(section, {}), **get_section_kwargs(section))
                                 for section in config_dict
                             ]
                         ),
                     )
                 )
-                or _none_omit([_create_config({}, validator, *slot_args, **slot_kwargs)] * is_config_list(cls))
+                or _none_omit([_create_config({}, **slot_kwargs)] * is_config_list(cls))
             )
         }
 
