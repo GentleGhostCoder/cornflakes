@@ -11,5 +11,7 @@ from cornflakes import config_group
 class Config:
     """Main config class of the module."""
 
+    # modules
+
 
 __all__ = ["Config"]

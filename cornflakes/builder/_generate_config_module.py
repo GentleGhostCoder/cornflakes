@@ -90,7 +90,7 @@ def generate_group_module(  # noqa: C901
         ),
     )
     template = template.replace(
-        "pass",
+        "# modules",
         f"""{'''
     '''.join(declaration)}""",
         1,
