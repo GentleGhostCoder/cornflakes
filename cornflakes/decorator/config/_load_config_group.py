@@ -2,8 +2,7 @@
 import logging
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from cornflakes.builder.config_template import Config
-from cornflakes.decorator._types import ConfigGroup
+from cornflakes.decorator._types import Config, ConfigGroup
 from cornflakes.decorator.config._helper import is_config, is_config_list
 
 
