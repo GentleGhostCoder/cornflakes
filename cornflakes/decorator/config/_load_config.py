@@ -70,8 +70,8 @@ def create_file_loader(  # noqa: C901
         sections: Optional[Union[List[str], str]] = None,
         config_dict: Optional[Dict[str, Any]] = None,
         filter_function: Optional[Callable[[Config], bool]] = None,
-        eval_env: bool = None,
-        allow_empty: bool = None,
+        eval_env: Optional[bool] = None,
+        allow_empty: Optional[bool] = None,
         **slot_kwargs,
     ) -> Dict[str, Optional[Union[Config, List[Config]]]]:
         """Config parser from ini files.

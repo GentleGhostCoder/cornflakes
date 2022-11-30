@@ -1,7 +1,8 @@
 # from collections import OrderedDict
 import logging
-from typing import Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
+from cornflakes.builder.config_template import Config
 from cornflakes.decorator._types import ConfigGroup
 from cornflakes.decorator.config._helper import is_config, is_config_list
 
@@ -16,12 +17,23 @@ def create_group_loader(cls: ConfigGroup) -> Callable[..., ConfigGroup]:
 
     def from_file(
         files: Optional[Union[Dict[str, Union[List[str], str]], List[str], str]] = None,
+        sections: Optional[Union[List[str], str]] = None,
+        config_dict: Optional[Dict[str, Any]] = None,
+        filter_function: Optional[Callable[[Config], bool]] = None,
+        eval_env: Optional[bool] = None,
+        allow_empty: Optional[bool] = None,
         *slot_args,
         **slot_kwargs,
     ) -> ConfigGroup:
         """Config parser from config files.
 
         :param files: Default config files
+        :param sections: Default config sections
+        :param config_dict: Config dictionary to pass already loaded configs
+        :param slot_kwargs: Default configs to overwrite passed class
+        :param filter_function: Optional filter method for config
+        :param eval_env: Flag to evaluate environment variables into default values.
+        :param allow_empty: Flag that allows empty config result -> e.g. emtpy list
         :param slot_args: Default configs to overwrite passed class
         :param slot_kwargs: Default configs to overwrite passed class
 
@@ -42,8 +54,11 @@ def create_group_loader(cls: ConfigGroup) -> Callable[..., ConfigGroup]:
                 slot_kwargs.update(
                     slot_class.from_file(
                         files=files,
-                        filter_function=cls.__config_filter_function__,
-                        allow_empty=cls.__allow_empty_config__,
+                        sections=sections,
+                        config_dict=config_dict,
+                        filter_function=filter_function or cls.__config_filter_function__,
+                        eval_env=eval_env,
+                        allow_empty=allow_empty or cls.__allow_empty_config__,
                     )
                 )
         error_args = [key for key in slot_kwargs if key not in cls.__dataclass_fields__]
