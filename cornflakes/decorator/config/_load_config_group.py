@@ -39,7 +39,13 @@ def create_group_loader(cls: ConfigGroup) -> Callable[..., ConfigGroup]:
             if is_config_list(slot_class):
                 slot_class = slot_class.__args__[0]
             if is_config(slot_class):
-                slot_kwargs.update(slot_class.from_file(files=files))
+                slot_kwargs.update(
+                    slot_class.from_file(
+                        files=files,
+                        filter_function=cls.__config_filter_function__,
+                        allow_empty=cls.__allow_empty_config__,
+                    )
+                )
         error_args = [key for key in slot_kwargs if key not in cls.__dataclass_fields__]
         if error_args:
             logging.warning(f"The variables {error_args} in **{cls.__name__}** are not defined!")

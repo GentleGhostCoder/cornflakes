@@ -8,7 +8,7 @@ from cornflakes.decorator.dataclass import dataclass
 def config_group(  # noqa: C901
     config_cls=None,
     files: Optional[Union[str, List[str]]] = None,
-    allow_empty: Optional[bool] = False,
+    allow_empty: Optional[bool] = None,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
 ) -> Union[Union[ConfigGroup, DataclassProtocol], Callable[..., Union[ConfigGroup, DataclassProtocol]]]:

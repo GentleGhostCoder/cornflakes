@@ -52,6 +52,7 @@ class Config(DataclassProtocol):
     __ignored_slots__: ClassVar[List[str]]
     __multi_config__: ClassVar[bool]
     __config_list__: ClassVar[bool]
+    __allow_empty_config__: ClassVar[bool]
 
     def __call__(self, *args, **kwargs) -> Any:
         """Call Function."""
@@ -97,6 +98,7 @@ class ConfigGroup(DataclassProtocol):
     __config_files__: ClassVar[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]
     __multi_config__: ClassVar[bool]
     __config_list__: ClassVar[bool]
+    __allow_empty_config__: ClassVar[bool]
 
     def __call__(self, *args, **kwargs) -> Any:
         """Call Function."""
