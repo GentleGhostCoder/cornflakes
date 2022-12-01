@@ -17,6 +17,7 @@ class Loader(Enum):
     INI_LOADER = "from_ini"
     YAML_LOADER = "from_yaml"
     DICT_LOADER = "from_dict"
+    FILE_LOADER = "from_file"
 
 
 class ConfigArguments(Enum):

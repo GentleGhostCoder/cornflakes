@@ -17,7 +17,7 @@ def generate_group_module(  # noqa: C901
     source_config: Optional[Union[Dict[str, Union[List[str], str]], List[str], str]] = None,
     target_module_file: Optional[str] = None,
     class_name: Optional[str] = None,
-    loader: Loader = Loader.DICT_LOADER,
+    loader: Loader = Loader.FILE_LOADER,
     *args,
     **kwargs,
 ):
