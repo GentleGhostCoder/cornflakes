@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Any, Callable, ClassVar, Dict, List, Optional, Protocol, TypeVar, Union
 
 _T = TypeVar("_T")
@@ -10,15 +11,38 @@ class _WithoutDefault:
 WITHOUT_DEFAULT = _WithoutDefault()
 
 
+class Loader(Enum):
+    """Config Loader Enums."""
+
+    INI_LOADER = "from_ini"
+    YAML_LOADER = "from_yaml"
+    DICT_LOADER = "from_dict"
+
+
+class ConfigArguments(Enum):
+    """Config Arguments Enums."""
+
+    files = "files"
+    sections = "sections"
+    use_regex = "use_regex"
+    is_list = "is_list"
+    default_loader = "default_loader"
+    allow_empty = "allow_empty"
+    filter_function = "filter_function"
+
+
+ConfigArgument = ClassVar[Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]]
+
+
 class LoaderMethod(Protocol):
     """Config loader method protocol."""
 
     @staticmethod
     def __call__(
-        files: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        sections: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        keys: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
-        defaults: Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]] = None,
+        files: ConfigArgument = None,
+        sections: ConfigArgument = None,
+        keys: ConfigArgument = None,
+        defaults: ConfigArgument = None,
         eval_env: bool = False,
         *args,
         **kwargs
@@ -47,8 +71,8 @@ class DataclassProtocol(Protocol):
 class Config(DataclassProtocol):
     """Config Protocol Type."""
 
-    __config_sections__: ClassVar[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]
-    __config_files__: ClassVar[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]
+    __config_sections__: ConfigArgument
+    __config_files__: ConfigArgument
     __ignored_slots__: ClassVar[List[str]]
     __multi_config__: ClassVar[bool]
     __config_list__: ClassVar[bool]
@@ -95,7 +119,7 @@ class Config(DataclassProtocol):
 class ConfigGroup(DataclassProtocol):
     """ConfigGroup Protocol Type."""
 
-    __config_files__: ClassVar[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]
+    __config_files__: ConfigArgument
     __multi_config__: ClassVar[bool]
     __config_list__: ClassVar[bool]
     __allow_empty_config__: ClassVar[bool]

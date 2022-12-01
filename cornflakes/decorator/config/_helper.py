@@ -1,7 +1,6 @@
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
-from cornflakes.decorator._types import Config, ConfigGroup
-from cornflakes.decorator.config._loader import Loader
+from cornflakes.decorator._types import Config, ConfigArgument, ConfigGroup, Loader
 
 
 def is_config(cls: Config):
@@ -12,6 +11,21 @@ def is_config(cls: Config):
 def is_group(cls):
     """Method to return flag that class is a config group class."""
     return not is_config(cls) and hasattr(cls, "__config_files__")
+
+
+def config_files(cls: Config) -> ConfigArgument:
+    """Method to return class __config_files__."""
+    return getattr(cls, "__config_files__", [])
+
+
+def dict_factory(cls: Config) -> Any:
+    """Method to return class __dict_factory__."""
+    return getattr(cls, "__dict_factory__", dict)
+
+
+def tuple_factory(cls: Config) -> Any:
+    """Method to return class __tuple_factory__."""
+    return getattr(cls, "__tuple_factory__", tuple)
 
 
 def is_config_list(cls: Config):

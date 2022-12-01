@@ -3,6 +3,7 @@ import os
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes.decorator._types import Config
+from cornflakes.decorator.config._helper import dict_factory
 from cornflakes.decorator.config._load_config import create_file_loader
 
 
@@ -10,7 +11,7 @@ def to_dict(self) -> Any:
     """Method to convert Dataclass with slots to dict."""
     if not is_dataclass(self):
         return self
-    new_dict = asdict(self, dict_factory=getattr(self, "__dict_factory__", dict))
+    new_dict = asdict(self, dict_factory=dict_factory(self))
     dc_fields = fields(self)
     if not any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields]):
         return new_dict

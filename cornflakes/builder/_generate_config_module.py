@@ -8,7 +8,8 @@ from typing import Dict, List, Optional, Union
 
 import cornflakes.builder.config_template
 from cornflakes.common import import_component
-from cornflakes.decorator.config import Loader, config_group, is_config
+from cornflakes.decorator import ConfigArguments
+from cornflakes.decorator.config import Loader, config_files, config_group, is_config
 
 
 def generate_group_module(  # noqa: C901
@@ -17,16 +18,21 @@ def generate_group_module(  # noqa: C901
     target_module_file: Optional[str] = None,
     class_name: Optional[str] = None,
     loader: Loader = Loader.DICT_LOADER,
-    loader_args: Optional[dict] = None,
     *args,
     **kwargs,
 ):
     """Module with function to generate automatically config group module."""
-    if not loader_args:
-        loader_args = {}
+    declaration = []
+    ini_config_objects = {}
+    imports = []
+    extra_imports = []
+    files = kwargs.get("files", [])
+    files = files if isinstance(files, list) else [files]
 
-    if "files" not in loader_args and loader != Loader.DICT_LOADER:
-        loader_args.update({"files": source_config})
+    if ConfigArguments.filter_function.name in kwargs:
+        filter_function = kwargs.pop(ConfigArguments.filter_function.name)
+        kwargs[ConfigArguments.filter_function.name] = filter_function.__name__
+        extra_imports.append(f"from {filter_function.__module__} import {filter_function.__name__}")
 
     if not target_module_file:
         target_module_file = f'{source_module.__name__.replace(".", "/")}/default.py'
@@ -45,29 +51,29 @@ def generate_group_module(  # noqa: C901
     if isinstance(source_module, str):
         source_module = import_component(source_module)
 
-    ini_config_objects = {}
-    imports = []
-    files = kwargs.get("files", [])
-    files = files if isinstance(files, list) else [files]
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if inspect.isclass(cfg_class) and is_config(cfg_class):
-            cfg = getattr(cfg_class, str(loader.value))(**loader_args)
+            cfg = getattr(cfg_class, str(loader.value))(*args, **kwargs)
             ini_config_objects.update(cfg)
             imports.append(cfg_name)
-            files.extend([file for file in getattr(cfg_class, "__config_files__", []) if file and file not in files])
+            files.extend([file for file in config_files(cfg_class) if file and file not in files])
 
     logging.debug(f"Found configs: {imports}")
 
-    declaration = [
-        (
-            f"{cfg_name}: List[{cfg[0].__class__.__name__}] = field(default_factory={cfg.__class__.__name__})"
-            if isinstance(cfg, list)
-            else f"{cfg_name}: {cfg.__class__.__name__} = {cfg.__class__.__name__}()"
-        )
-        for cfg_name, cfg in ini_config_objects.items()
-    ]
+    declaration = declaration.extend(
+        [
+            (
+                f"{cfg_name}: List[{cfg[0].__class__.__name__}] = field(default_factory={cfg.__class__.__name__})"
+                if isinstance(cfg, list)
+                else f"{cfg_name}: {cfg.__class__.__name__} = {cfg.__class__.__name__}()"
+            )
+            for cfg_name, cfg in ini_config_objects.items()
+        ]
+    )
 
-    extra_imports = ["from dataclasses import field", "from typing import List"] if declaration else []
+    extra_imports = extra_imports.extend(
+        ["from cornflakes import field", "from typing import List"] if declaration else []
+    )
 
     kwargs.update({"files": files})
 

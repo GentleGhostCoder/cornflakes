@@ -1,10 +1,9 @@
 import logging
 from typing import Any, Callable, List, Optional, Type, Union, cast
 
-from cornflakes.decorator._types import Config, ConfigGroup, DataclassProtocol
+from cornflakes.decorator._types import Config, ConfigGroup, DataclassProtocol, Loader
 from cornflakes.decorator.config._config_group import config_group
 from cornflakes.decorator.config._helper import get_default_loader
-from cornflakes.decorator.config._loader import Loader
 from cornflakes.decorator.config.dict import create_dict_file_loader
 from cornflakes.decorator.config.ini import create_ini_file_loader
 from cornflakes.decorator.config.yaml import create_yaml_file_loader

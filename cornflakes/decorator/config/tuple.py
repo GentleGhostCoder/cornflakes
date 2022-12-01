@@ -1,12 +1,14 @@
 from dataclasses import astuple, fields, is_dataclass
 from typing import Any
 
+from cornflakes.decorator.config._helper import tuple_factory
+
 
 def to_tuple(self) -> Any:
     """Method to convert Dataclass with slots to dict."""
     if not is_dataclass(self):
         return self
-    new_tuple = astuple(self, tuple_factory=getattr(self, "__tuple_factory__", tuple))
+    new_tuple = astuple(self, tuple_factory=tuple_factory(self))
     dc_fields = fields(self)
     if not any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields]):
         return new_tuple
