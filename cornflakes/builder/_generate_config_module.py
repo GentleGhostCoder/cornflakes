@@ -7,7 +7,7 @@ from types import ModuleType
 from typing import Dict, List, Optional, Union
 
 import cornflakes.builder.config_template
-from cornflakes.common import import_component
+from cornflakes.common import import_component, unquoted_string
 from cornflakes.decorator import ConfigArguments, Loader
 from cornflakes.decorator.config import config_files, config_group, is_config
 
@@ -58,7 +58,7 @@ def generate_group_module(  # noqa: C901
 
     if ConfigArguments.filter_function.name in kwargs:
         filter_function = kwargs.pop(ConfigArguments.filter_function.name)
-        kwargs[ConfigArguments.filter_function.name] = filter_function.__name__
+        kwargs[ConfigArguments.filter_function.name] = unquoted_string(filter_function.__name__)
         extra_imports.append(f"from {filter_function.__module__} import {filter_function.__name__}")
 
     logging.debug(f"Found configs: {imports}")
