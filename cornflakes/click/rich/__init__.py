@@ -3,7 +3,6 @@ from click import group as click_group
 from click import command as click_command
 from click import argument as click_argument
 
-from cornflakes.click.rich._pass_context import pass_context
 from cornflakes.common import patch_module
 from cornflakes.click.rich._rich_config import RichConfig
 from cornflakes.click.rich._rich_group import RichGroup
@@ -40,6 +39,6 @@ def argument(*args, cls=RichArg, **kwargs) -> F:  # type: ignore
     return click_argument(*args, cls=cls, **kwargs)
 
 
-__all__ = ["RichConfig", "RichGroup", "RichCommand", "RichArg", "command", "group", "argument", "pass_context"]
+__all__ = ["RichConfig", "RichGroup", "RichCommand", "RichArg", "command", "group", "argument"]
 
 patch_module(globals())
