@@ -51,7 +51,7 @@ def generate_group_module(  # noqa: C901
 
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if inspect.isclass(cfg_class) and is_config(cfg_class):
-            cfg = getattr(cfg_class, str(loader.value))(*args, **kwargs)
+            cfg = getattr(cfg_class, str(loader.value))(files=source_config)
             ini_config_objects.update(cfg)
             imports.append(cfg_name)
             files.extend([file for file in config_files(cfg_class) if file and file not in files])
@@ -74,7 +74,7 @@ def generate_group_module(  # noqa: C901
         ]
     )
 
-    extra_imports.extend(["from cornflakes import field", "from typing import List"] if declaration else [])
+    extra_imports.extend(["from cornflakes.decorator import field", "from typing import List"] if declaration else [])
 
     if args or kwargs:
         kwargs.update({key: repr(value).replace("'", '"') for key, value in kwargs.items()})

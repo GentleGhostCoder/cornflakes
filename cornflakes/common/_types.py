@@ -83,3 +83,16 @@ def datetime_ms(
 ) -> DatetimeMS:
     """Create Instance of :meth:`cornflakes._types.DatetimeMS`."""
     return cast(DatetimeMS, DatetimeMS(year, month, day, hour, minute, second, millisecond, tzinfo))  # camelcase
+
+
+class UnquotedString(str):
+    """String Wrapper with overwritten repr Function to not quote."""
+
+    def __repr__(self):
+        """String Wrapper with overwritten repr Function to not quote."""
+        return self
+
+
+def unquoted_string(x: str):
+    """Create Instance of :meth:`cornflakes._types.UnquotedString`."""
+    return UnquotedString(x)
