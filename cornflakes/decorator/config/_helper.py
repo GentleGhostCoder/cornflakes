@@ -1,3 +1,4 @@
+import re
 from typing import Any, Optional, Union
 
 from cornflakes.decorator._types import Config, ConfigArgument, ConfigGroup, Loader
@@ -21,6 +22,11 @@ def config_files(cls: Config) -> ConfigArgument:
 def dict_factory(cls: Config) -> Any:
     """Method to return class __dict_factory__."""
     return getattr(cls, "__dict_factory__", dict)
+
+
+def normalized_class_name(cls):
+    """Method to return class name normalized."""
+    return re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
 
 
 def tuple_factory(cls: Config) -> Any:

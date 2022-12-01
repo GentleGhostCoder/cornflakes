@@ -6,7 +6,12 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, LoaderMethod
-from cornflakes.decorator.config._helper import is_config_list, is_multi_config, pass_section_name
+from cornflakes.decorator.config._helper import (
+    is_config_list,
+    is_multi_config,
+    normalized_class_name,
+    pass_section_name,
+)
 
 
 def _none_omit(obj: list):
@@ -116,7 +121,7 @@ def create_file_loader(  # noqa: C901
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
 
             if not sections and config_dict.keys():
-                sections = config_dict.popitem()[0] or re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
+                sections = config_dict.popitem()[0] or normalized_class_name(cls)
 
             config = _create_config(config_dict.get(sections, {}), **get_section_kwargs(sections))
             if not config:
@@ -144,13 +149,11 @@ def create_file_loader(  # noqa: C901
                 }.items()
                 if config
             } or {
-                re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): _create_config(
-                    {}, **slot_kwargs  # no matches
-                )
+                normalized_class_name(cls): _create_config({}, **slot_kwargs)  # no matches
             }
 
         return {
-            re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower(): (
+            normalized_class_name(cls): (
                 list(
                     _none_omit(
                         [

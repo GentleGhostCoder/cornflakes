@@ -24,15 +24,20 @@ def bg_process_option(self: Callable[..., None], background_process: bool, *func
         )
         stdout = open(stdout_file, "w")
         stderr = open(stderr_file, "w")
+
+        command = (
+            f"import sys; exec(open('"
+            f"{abspath(getfile(self))}').read());"
+            f"{self.__name__}(*{func_args},**{func_kwargs});"
+        )
+
+        logging.debug(f"Python Command: {command}")
+
         subprocess.Popen(  # noqa: S603
             [
                 sys.executable,
                 "-c",
-                (
-                    f"import sys; exec(open('"
-                    f"{abspath(getfile(self))}').read());"
-                    f"{self.__name__}(*{func_args},**{func_kwargs});"
-                ),
+                command,
             ],
             stdout=stdout,
             stderr=stderr,
