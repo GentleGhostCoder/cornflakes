@@ -11,7 +11,7 @@ def __get_or_call(module: Any, value: str) -> Any:
 
 def import_component(key: str) -> Any:
     """Import object by key from inside ob module / submodule."""
-    module = __import__(key.split(".", 1)[0])
+    module = __import__(".".join(key.split(".", 2)[:-1]))
     return reduce(__get_or_call, [module, *key.split(".")[1:]])
 
 
