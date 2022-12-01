@@ -27,7 +27,7 @@ def generate_group_module(  # noqa: C901
     ini_config_objects = {}
     imports = []
     extra_imports = []
-    files = kwargs.get("files", [])
+    files = kwargs.get(ConfigArguments.files.name, [])
     files = files if isinstance(files, list) else [files]
 
     if ConfigArguments.files.name not in kwargs:
@@ -77,9 +77,7 @@ def generate_group_module(  # noqa: C901
     )
 
     extra_imports.extend(
-        [f"from {field.__module__} import {field.__name__}", f"from {List.__module__} import {List.__name__}"]
-        if declaration
-        else []
+        [f"from {field.__module__} import {field.__name__}", "from typing import List"] if declaration else []
     )
 
     if args or kwargs:
