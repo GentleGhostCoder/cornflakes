@@ -7,7 +7,7 @@ from types import ModuleType
 from typing import Dict, List, Optional, Union
 
 import cornflakes.builder.config_template
-from cornflakes.common import import_component, unquoted_string
+from cornflakes.common import unquoted_string
 from cornflakes.decorator import ConfigArguments, Loader
 from cornflakes.decorator.config import config_files, config_group, is_config
 
@@ -47,7 +47,7 @@ def generate_group_module(  # noqa: C901
         file.write(template)
 
     if isinstance(source_module, str):
-        source_module = import_component(source_module)
+        source_module = __import__(source_module)
 
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if inspect.isclass(cfg_class) and is_config(cfg_class):
