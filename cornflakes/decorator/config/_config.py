@@ -61,14 +61,11 @@ def config(  # noqa: C901
                 **kwargs,
             )(cls)
 
-        cls = dataclass(cls, **kwargs)
+        cls: Union[DataclassProtocol, Any] = dataclass(cls, **kwargs)
         cls.__config_sections__ = sections
         cls.__config_files__ = files
         cls.__multi_config__ = use_regex
         cls.__config_list__ = is_list
-        cls.__ignored_slots__ = [
-            key for key, value in cls.__dataclass_fields__.items() if getattr(value, "ignore", False)
-        ]
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
         cls.from_yaml = staticmethod(create_yaml_file_loader(cls=cls))

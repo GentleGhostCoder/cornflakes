@@ -28,13 +28,10 @@ def config_group(  # noqa: C901
     kwargs.pop("validate", None)  # no validation for group
 
     def wrapper(cls: Type[Any]) -> Union[DataclassProtocol, ConfigGroup]:
-        cls = dataclass(cls, **kwargs)
+        cls: Union[DataclassProtocol, Any] = dataclass(cls, **kwargs)
         cls.__config_files__ = files
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
-        cls.__ignored_slots__ = [
-            key for key, value in cls.__dataclass_fields__.items() if getattr(value, "ignore", False)
-        ]
 
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
