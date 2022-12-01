@@ -32,7 +32,7 @@ class ConfigArguments(Enum):
     filter_function = "filter_function"
 
 
-ConfigArgument = ClassVar[Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]]
+ConfigArgument = Optional[Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]]
 
 
 class LoaderMethod(Protocol):
@@ -72,8 +72,8 @@ class DataclassProtocol(Protocol):
 class Config(DataclassProtocol):
     """Config Protocol Type."""
 
-    __config_sections__: ConfigArgument
-    __config_files__: ConfigArgument
+    __config_sections__: ClassVar[ConfigArgument]
+    __config_files__: ClassVar[ConfigArgument]
     __ignored_slots__: ClassVar[List[str]]
     __multi_config__: ClassVar[bool]
     __config_list__: ClassVar[bool]
@@ -120,7 +120,7 @@ class Config(DataclassProtocol):
 class ConfigGroup(DataclassProtocol):
     """ConfigGroup Protocol Type."""
 
-    __config_files__: ConfigArgument
+    __config_files__: ClassVar[ConfigArgument]
     __multi_config__: ClassVar[bool]
     __config_list__: ClassVar[bool]
     __allow_empty_config__: ClassVar[bool]

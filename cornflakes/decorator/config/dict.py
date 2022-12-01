@@ -12,11 +12,11 @@ def to_dict(self) -> Any:
     if not is_dataclass(self):
         return self
     new_dict = asdict(self, dict_factory=dict_factory(self))
-    if (
-        not isinstance(new_dict, dict)
+    if not (
+        isinstance(new_dict, dict)
         or any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields])
         if (dc_fields := fields(self))
-        else False
+        else True
     ):
         return new_dict
     for f in dc_fields:

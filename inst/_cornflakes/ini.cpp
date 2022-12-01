@@ -262,11 +262,11 @@ inline void ParseSectionsDefault(FileData t_FileData,
 inline void ParseAllSections(const FileData &t_FileData,
                              const ParserData &t_ParserData) {
   std::array<int, 2> section_cursor{};
-  section_cursor[1] = t_FileData.contents.at(0) == SECTION_OPEN_CHAR[0]
-                          ? 0
+  section_cursor[1] = t_FileData.contents.at(0) == SECTION_OPEN_CHAR.at(0)
+                          ? 1
                           : GetNextSectionIdx(t_FileData, 0);
 
-  if (section_cursor[1] == t_FileData.contents.size() - 1) {
+  if (section_cursor[1] + 1 == t_FileData.contents.size()) {
     t_FileData.file_envir[py::none()] = py::dict();
     ParseSectionsDefault(t_FileData, t_ParserData,
                          t_FileData.file_envir[py::none()]);

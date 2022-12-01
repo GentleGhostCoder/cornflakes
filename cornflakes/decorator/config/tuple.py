@@ -9,11 +9,11 @@ def to_tuple(self) -> Any:
     if not is_dataclass(self):
         return self
     new_tuple = astuple(self, tuple_factory=tuple_factory(self))
-    if (
-        not isinstance(new_tuple, (list, tuple))
+    if not (
+        isinstance(new_tuple, (list, tuple))
         or any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields])
         if (dc_fields := fields(self))
-        else False
+        else True
     ):
         return new_tuple
     if isinstance(new_tuple, tuple):

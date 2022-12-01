@@ -13,7 +13,7 @@ def click_cli(  # noqa: C901
     callback: Optional[Callable] = None,
     config: Optional[Config] = None,
     files: Optional[str] = None,
-    loader: Loader = None,
+    loader: Loader = Loader.DICT_LOADER,
     *args,
     **kwargs,
 ) -> Union[

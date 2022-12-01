@@ -7,7 +7,7 @@ import unittest
 
 from cornflakes import AnyUrl
 from cornflakes.builder import generate_group_module
-from cornflakes.decorator.config import Loader
+from cornflakes.decorator import Loader
 from tests import configs
 
 
