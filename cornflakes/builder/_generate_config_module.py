@@ -1,4 +1,5 @@
 """cornflakes config generation."""
+import importlib
 import inspect
 import logging
 import os
@@ -47,7 +48,7 @@ def generate_group_module(  # noqa: C901
         file.write(template)
 
     if isinstance(source_module, str):
-        source_module = __import__(source_module)
+        source_module = importlib.import_module(source_module)
 
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if inspect.isclass(cfg_class) and is_config(cfg_class):
