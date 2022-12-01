@@ -81,7 +81,7 @@ def datetime_ms(
     millisecond: Optional[int] = 0,
     tzinfo: Optional[datetime.tzinfo] = None,
 ) -> DatetimeMS:
-    """Create Instance of :meth:`cornflakes._types.DatetimeMS`."""
+    """Create Instance of :meth:`cornflakes.common.DatetimeMS`."""
     return cast(DatetimeMS, DatetimeMS(year, month, day, hour, minute, second, millisecond, tzinfo))  # camelcase
 
 
@@ -94,5 +94,5 @@ class UnquotedString(str):
 
 
 def unquoted_string(x: str):
-    """Create Instance of :meth:`cornflakes._types.UnquotedString`."""
+    """Create Instance of :meth:`cornflakes.common.UnquotedString`."""
     return UnquotedString(x)

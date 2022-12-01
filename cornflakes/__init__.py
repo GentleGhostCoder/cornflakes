@@ -1,13 +1,9 @@
 """cornflakes (Top-level package).
 ____________________________________
-
-.. currentmodule:: cornflakes
-
-.. autosummary::
-   :toctree: _generate
-
 """  # noqa: RST303 D205
 from _cornflakes import apply_match, eval_csv, eval_datetime, eval_type, extract_between, ini_load
+
+from cornflakes.common import patch_module
 from cornflakes.decorator import config, config_group, config_field, add_slots, click_cli, Loader
 from cornflakes.decorator.dataclass.validator import AnyUrl
 from cornflakes.builder import generate_group_module
@@ -36,12 +32,7 @@ __all__ = [
     "attach_log",
     "setup_logging",
     "Loader",
+    "patch_module",
 ]
 
-__doc__ = f"""{__doc__}
-.. autosummary::
-   :toctree: _generate
-
-    {'''
-    '''.join(__all__)}
-"""
+patch_module(globals())

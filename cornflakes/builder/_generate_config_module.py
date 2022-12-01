@@ -9,7 +9,7 @@ from typing import Dict, List, Optional, Union
 
 import cornflakes.builder.config_template
 from cornflakes.common import unquoted_string
-from cornflakes.decorator import ConfigArguments, Loader
+from cornflakes.decorator import ConfigArguments, Loader, field
 from cornflakes.decorator.config import config_files, config_group, is_config
 
 
@@ -75,7 +75,9 @@ def generate_group_module(  # noqa: C901
         ]
     )
 
-    extra_imports.extend(["from cornflakes.decorator import field", "from typing import List"] if declaration else [])
+    extra_imports.extend(
+        [f"from {field.__module__} import {field.__name__}", "from typing import List"] if declaration else []
+    )
 
     if args or kwargs:
         kwargs.update({key: repr(value).replace("'", '"') for key, value in kwargs.items()})
