@@ -5,6 +5,8 @@ See referenced Code at https://github.com/ewels/rich-click.git
 
 # from click import *  # noqa: F401, F403
 import click
+from click import pass_context
+
 from cornflakes.common import patch_module
 from cornflakes.click.rich import RichArg, argument, RichCommand, command, RichGroup, group, RichConfig
 from cornflakes.click.options import bg_process_option, verbose_option, global_option, auto_option
@@ -22,6 +24,7 @@ __all__ = [
     "verbose_option",
     "bg_process_option",
     "auto_option",
+    "pass_context",
     "group",
     "command",
     "argument",
