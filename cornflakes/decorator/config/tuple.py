@@ -1,4 +1,4 @@
-from dataclasses import astuple, is_dataclass
+from dataclasses import astuple, fields, is_dataclass
 from typing import Any
 
 
@@ -7,17 +7,13 @@ def to_tuple(self) -> Any:
     if not is_dataclass(self):
         return self
     new_tuple = astuple(self, tuple_factory=getattr(self, "__tuple_factory__", tuple))
-    if not any(
-        [
-            is_dataclass(value.type) or value.default_factory == list or isinstance(value.default, list)
-            for value in getattr(self, "__dataclass_fields__", {}).values()
-        ]
-    ):
+    dc_fields = fields(self)
+    if not any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields]):
         return new_tuple
     if isinstance(new_tuple, tuple):
         new_tuple = list(new_tuple)
-    for idx, key in enumerate(getattr(self, "__slots__", getattr(self, "__dict__", {}).keys())):
-        if is_dataclass(value := getattr(self, key)):
+    for idx, f in enumerate(dc_fields):
+        if is_dataclass(value := getattr(self, f.name)):
             new_tuple[idx] = value.to_tuple()
         if isinstance(value, list):
             for sub_idx, sub_value in enumerate(value):

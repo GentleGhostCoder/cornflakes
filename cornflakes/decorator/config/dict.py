@@ -1,4 +1,4 @@
-from dataclasses import asdict, is_dataclass
+from dataclasses import asdict, fields, is_dataclass
 import os
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -11,22 +11,18 @@ def to_dict(self) -> Any:
     if not is_dataclass(self):
         return self
     new_dict = asdict(self, dict_factory=getattr(self, "__dict_factory__", dict))
-    if not any(
-        [
-            is_dataclass(value.type) or value.default_factory == list or isinstance(value.default, list)
-            for value in getattr(self, "__dataclass_fields__", {}).values()
-        ]
-    ):
+    dc_fields = fields(self)
+    if not any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields]):
         return new_dict
-    for key in getattr(self, "__slots__", getattr(self, "__dict__", {}).keys()):
-        if is_dataclass(value := getattr(self, key)):
-            new_dict.update({key: value.to_dict()})
+    for f in dc_fields:
+        if is_dataclass(value := getattr(self, f.name)):
+            new_dict.update({f.name: value.to_dict()})
         if isinstance(value, list) or isinstance(value, tuple):
             value = list(value)  # if tuple cast  to list
             for idx, sub_value in enumerate(value):
                 if is_dataclass(sub_value):
                     value[idx] = sub_value.to_dict()
-            new_dict.update({key: value})
+            new_dict.update({f.name: value})
     return new_dict
 
 
