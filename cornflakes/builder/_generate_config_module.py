@@ -8,8 +8,8 @@ from typing import Dict, List, Optional, Union
 
 import cornflakes.builder.config_template
 from cornflakes.common import import_component
-from cornflakes.decorator import ConfigArguments
-from cornflakes.decorator.config import Loader, config_files, config_group, is_config
+from cornflakes.decorator import ConfigArguments, Loader
+from cornflakes.decorator.config import config_files, config_group, is_config
 
 
 def generate_group_module(  # noqa: C901
