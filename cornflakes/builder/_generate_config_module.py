@@ -29,10 +29,8 @@ def generate_group_module(  # noqa: C901
     files = kwargs.get("files", [])
     files = files if isinstance(files, list) else [files]
 
-    if ConfigArguments.filter_function.name in kwargs:
-        filter_function = kwargs.pop(ConfigArguments.filter_function.name)
-        kwargs[ConfigArguments.filter_function.name] = filter_function.__name__
-        extra_imports.append(f"from {filter_function.__module__} import {filter_function.__name__}")
+    if ConfigArguments.files.name not in kwargs:
+        kwargs.update({ConfigArguments.files.name: source_config})
 
     if not target_module_file:
         target_module_file = f'{source_module.__name__.replace(".", "/")}/default.py'
@@ -58,9 +56,14 @@ def generate_group_module(  # noqa: C901
             imports.append(cfg_name)
             files.extend([file for file in config_files(cfg_class) if file and file not in files])
 
+    if ConfigArguments.filter_function.name in kwargs:
+        filter_function = kwargs.pop(ConfigArguments.filter_function.name)
+        kwargs[ConfigArguments.filter_function.name] = filter_function.__name__
+        extra_imports.append(f"from {filter_function.__module__} import {filter_function.__name__}")
+
     logging.debug(f"Found configs: {imports}")
 
-    declaration = declaration.extend(
+    declaration.extend(
         [
             (
                 f"{cfg_name}: List[{cfg[0].__class__.__name__}] = field(default_factory={cfg.__class__.__name__})"
@@ -71,11 +74,7 @@ def generate_group_module(  # noqa: C901
         ]
     )
 
-    extra_imports = extra_imports.extend(
-        ["from cornflakes import field", "from typing import List"] if declaration else []
-    )
-
-    kwargs.update({"files": files})
+    extra_imports.extend(["from cornflakes import field", "from typing import List"] if declaration else [])
 
     if args or kwargs:
         kwargs.update({key: repr(value).replace("'", '"') for key, value in kwargs.items()})
@@ -92,7 +91,7 @@ def generate_group_module(  # noqa: C901
         (
             f"""{'''
 '''.join(extra_imports)}\n\nfrom {source_module.__name__} import {
-    ''', '''.join(imports)}\nfrom"""
+            ''', '''.join(imports)}\nfrom"""
         ),
     )
     template = template.replace(
