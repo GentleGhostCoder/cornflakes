@@ -67,7 +67,8 @@ def generate_group_module(  # noqa: C901
     declaration.extend(
         [
             (
-                f"{cfg_name}: List[{cfg[0].__class__.__name__}] = field(default_factory={cfg.__class__.__name__})"
+                f"{cfg_name}: List[{cfg[0].__class__.__name__}] = "
+                f"{field.__name__}(default_factory={cfg.__class__.__name__})"
                 if isinstance(cfg, list)
                 else f"{cfg_name}: {cfg.__class__.__name__} = {cfg.__class__.__name__}()"
             )
@@ -76,7 +77,9 @@ def generate_group_module(  # noqa: C901
     )
 
     extra_imports.extend(
-        [f"from {field.__module__} import {field.__name__}", "from typing import List"] if declaration else []
+        [f"from {field.__module__} import {field.__name__}", f"from {List.__module__} import {List.__name__}"]
+        if declaration
+        else []
     )
 
     if args or kwargs:

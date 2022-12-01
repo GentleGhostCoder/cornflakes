@@ -9,8 +9,12 @@ def to_tuple(self) -> Any:
     if not is_dataclass(self):
         return self
     new_tuple = astuple(self, tuple_factory=tuple_factory(self))
-    dc_fields = fields(self)
-    if not any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields]):
+    if (
+        not isinstance(new_tuple, (list, tuple))
+        or any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields])
+        if (dc_fields := fields(self))
+        else False
+    ):
         return new_tuple
     if isinstance(new_tuple, tuple):
         new_tuple = list(new_tuple)
