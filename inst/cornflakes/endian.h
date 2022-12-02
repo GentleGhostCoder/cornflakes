@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#ifndef INST_CORNFLAKES_ENDIAN_HPP_
-#define INST_CORNFLAKES_ENDIAN_HPP_
+#ifndef INST_CORNFLAKES_ENDIAN_H_
+#define INST_CORNFLAKES_ENDIAN_H_
 
 #if (defined(_WIN16) || defined(_WIN32) || defined(_WIN64)) && \
     !defined(__WINDOWS__)
@@ -12,7 +12,7 @@
 
 #if defined(__linux__) || defined(__CYGWIN__)
 
-#include <endian.hpp>
+#include <endian.h>
 
 #elif defined(__APPLE__)
 
@@ -113,4 +113,4 @@
 
 #endif
 
-#endif  //  INST_CORNFLAKES_ENDIAN_HPP_
+#endif  //  INST_CORNFLAKES_ENDIAN_H_
