@@ -1,12 +1,11 @@
 from contextlib import suppress
-from functools import wraps
 import inspect
 from itertools import chain
 from os import environ
 from typing import Any, Callable, Optional, Union, get_args
 
 from _cornflakes import eval_type
-from cornflakes.common import extract_var_names
+from cornflakes.common import extract_var_names, wrap_kwargs
 from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, ConfigGroup, DataclassProtocol
 
 SpecialForm = type(Optional)
@@ -104,9 +103,8 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
         }
 
     def decorate(func):
-        @wraps(func)
+        @wrap_kwargs(func)
         def wrapper(self, *args, **kwargs):
-
             kwargs.update(dict(zip(func.__code__.co_varnames[1:], args)))
             default_kwargs = {}
             default_kwargs.update(kwargs)
@@ -117,9 +115,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
             default_kwargs.update(_process_validator(self, default_kwargs, validators, **default_kwargs))
 
             default_kwargs.update(_process_type_checking(**default_kwargs))
-
             default_kwargs.pop("self", None)
-
             if missing_keys := [key for key in required_keys if key not in default_kwargs.keys()]:
                 raise ValueError(f"Missing required values for keys {missing_keys}")
 

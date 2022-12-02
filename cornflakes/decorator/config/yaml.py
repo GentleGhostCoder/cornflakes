@@ -29,7 +29,7 @@ def to_yaml(self, out_cfg: Optional[str] = None, *args, **kwargs) -> Optional[by
 
 
 def create_yaml_file_loader(
-    cls=None,
+    cls: Config,
 ) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
     """Method to create file loader for yaml files."""
 

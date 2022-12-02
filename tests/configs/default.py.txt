@@ -6,8 +6,7 @@
 """
 from typing import List
 
-from cornflakes import config_group
-from cornflakes.decorator import field
+from cornflakes import config_group, field
 from tests.configs.sub_config import SubConfig
 
 

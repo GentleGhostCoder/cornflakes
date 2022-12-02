@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#ifndef INST__CORNFLAKES_STRING_OPERATIONS_H_
-#define INST__CORNFLAKES_STRING_OPERATIONS_H_
+#ifndef INST_CORNFLAKES_STRING_OPERATIONS_HPP_
+#define INST_CORNFLAKES_STRING_OPERATIONS_HPP_
 
 #include <document.h>
 #include <pybind11/eval.h>
@@ -23,7 +23,7 @@ using std::chrono::high_resolution_clock;
 using std::chrono::milliseconds;
 namespace py = pybind11;
 
-namespace string_operations {
+namespace string_operations {  // cppcheck-suppress syntaxError
 
 // Constants
 //    inline const char NULL_CHAR = '0';
@@ -94,4 +94,4 @@ py::list extract_between(const std::string &data, std::string start, char end);
 py::object apply_match(const std::vector<std::string> &vec, std::string match);
 }  // namespace string_operations
 
-#endif  // INST__CORNFLAKES_STRING_OPERATIONS_H_
+#endif  // INST_CORNFLAKES_STRING_OPERATIONS_HPP_

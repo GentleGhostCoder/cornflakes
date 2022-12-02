@@ -10,7 +10,7 @@ from cornflakes.decorator.config import Config, ConfigGroup, is_config
 F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
 
 
-def auto_option(config: Union[Config, ConfigGroup], **options) -> F:  # noqa: C901
+def auto_option(config, **options) -> F:  # noqa: C901
     """Click Option Decorator to define a global option for cli decorator."""
     if not isclass(config):
         raise TypeError("config should be a class!")

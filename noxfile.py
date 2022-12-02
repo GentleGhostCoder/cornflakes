@@ -110,6 +110,7 @@ def precommit(session: Session) -> None:
     args = session.posargs or ["run", "--all-files", "--verbose"]
     session.install(
         "black",
+        "autoflake",
         "flake8",
         "flake8-bandit",
         "flake8-bugbear",
@@ -119,6 +120,7 @@ def precommit(session: Session) -> None:
         "pep8-naming",
         "pre-commit",
         "pre-commit-hooks",
+        "compiledb",
         "pyupgrade",
     )
     session.run("pre-commit", *args)
@@ -178,6 +180,7 @@ def tests(session: Session) -> None:
     session.run("pip", "install", "poetry")
     if os.path.exists("build"):
         shutil.rmtree("build")
+    # session.install(".")  # not working with so builds
     session.run("poetry", "build")
     version = session.name.replace("tests-", "").replace(".", "")
     search = f"*cp{version}*.whl"

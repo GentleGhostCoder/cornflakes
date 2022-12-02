@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#include <digest.h>
+#include <digest.hpp>
 
 //! collection of hash functions
 namespace digest {

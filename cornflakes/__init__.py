@@ -4,7 +4,7 @@ ____________________________________
 from _cornflakes import apply_match, eval_csv, eval_datetime, eval_type, extract_between, ini_load
 
 from cornflakes.common import patch_module
-from cornflakes.decorator import config, config_group, config_field, add_slots, click_cli, Loader
+from cornflakes.decorator import config, config_group, add_slots, click_cli, Loader, dataclass, field, config_field
 from cornflakes.decorator.dataclass.validator import AnyUrl
 from cornflakes.builder import generate_group_module
 from cornflakes.parser import yaml_load
@@ -24,7 +24,6 @@ __all__ = [
     "apply_match",
     "config",
     "config_group",
-    "config_field",
     "AnyUrl",
     "add_slots",
     "generate_group_module",
@@ -33,6 +32,9 @@ __all__ = [
     "setup_logging",
     "Loader",
     "patch_module",
+    "dataclass",
+    "field",
+    "config_field",
 ]
 
 patch_module(globals())

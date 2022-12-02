@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#include <bindings.h>
+#include <bindings.hpp>
 
 //! pybind module declaration
 PYBIND11_MODULE(_cornflakes, module) {

@@ -88,6 +88,14 @@ jobs:
                   fi
               shell: bash
 
+            - name: Install clang-tidy
+              run: |
+                  sudo  apt-get install -y clang-tools-extra
+
+            - name: install cppcheck
+              run: |
+                  sudo apt-get install -y cppcheck
+
             - name: Install Ninja
               run: |
                   pip install ninja

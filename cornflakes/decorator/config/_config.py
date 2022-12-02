@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, List, Optional, Type, Union, cast
+from typing import Any, Callable, List, Optional, Union, cast
 
 from cornflakes.decorator._types import Config, ConfigGroup, DataclassProtocol, Loader
 from cornflakes.decorator.config._config_group import config_group
@@ -10,7 +10,7 @@ from cornflakes.decorator.config.yaml import create_yaml_file_loader
 from cornflakes.decorator.dataclass import dataclass
 
 
-def config(  # noqa: C901
+def config(
     config_cls=None,
     files: Optional[Union[List[str], str]] = None,
     sections: Optional[Union[List[str], str]] = None,
@@ -20,7 +20,7 @@ def config(  # noqa: C901
     allow_empty: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
-) -> Union[Union[Config, ConfigGroup, DataclassProtocol], Callable[..., Union[Config, ConfigGroup, DataclassProtocol]]]:
+) -> Union[Union[Config, ConfigGroup], Callable[..., Union[Config, ConfigGroup]]]:
     """Config decorator to parse Ini Files and implements config loader methods to config-classes.
 
     :param config_cls: Config class
@@ -41,7 +41,7 @@ def config(  # noqa: C901
     if not default_loader:
         default_loader = get_default_loader(files)
 
-    def wrapper(cls: Type[Any]) -> Union[Config, ConfigGroup, DataclassProtocol]:
+    def wrapper(cls):
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
@@ -75,5 +75,5 @@ def config(  # noqa: C901
         return cast(Config, cls)
 
     if config_cls:
-        return wrapper(config_cls)
+        return wrapper(config_cls)  # type: ignore
     return wrapper

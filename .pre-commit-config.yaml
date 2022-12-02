@@ -85,21 +85,38 @@ repos:
             additional_dependencies: [pyyaml]
             types: [file]
             files: (\.cmake|CMakeLists.txt)(.in)?$
-    - repo: https://github.com/pre-commit/mirrors-clang-format
-      rev: v14.0.6
-      hooks:
-          - id: clang-format
-            args: [--style=Google]
     - repo: https://github.com/bmorcos/pre-commit-hooks-cpp
       rev: 9a5aa38207bf557961110d6a4f7e3a9d352911f9
       hooks:
+          - id: clang-format
+            args: [--style=Google]
           - id: cpplint
             args:
                 [
                     --exclude=inst/ext/*,
-                    --exclude=inst/_cornflakes/datetime_utils.h,
-                    --exclude=inst/_cornflakes/strtk/*,
-                    --exclude=inst/_cornflakes/hash-library/*,
+                    --exclude=inst/cornflakes/datetime_utils.h,
                     --exclude=cmake-build-debug/*,
                     --filter=-build/c++11,
                 ]
+          - id: cppcheck
+            name: cppcheck
+            entry: cppcheck
+            language: system
+            args:
+                [
+                    --suppress=*:*datetime_utils.h,
+                    --enable=all,
+                    --suppress=unusedFunction,
+                    --suppress=unmatchedSuppression,
+                    --suppress=missingIncludeSystem,
+                    --suppress=toomanyconfigs,
+                    --error-exitcode=1,
+                    -DVERSION_INFO=$VERSION_INFO,
+                    --std=c++17,
+                ]
+            files: \.(c|h|cpp)$
+    - repo: https://github.com/sirosen/check-jsonschema
+      rev: 0.19.2
+      hooks:
+          - id: check-github-actions
+          - id: check-github-workflows

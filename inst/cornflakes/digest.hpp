@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#ifndef INST__CORNFLAKES_DIGEST_H_
-#define INST__CORNFLAKES_DIGEST_H_
+#ifndef INST_CORNFLAKES_DIGEST_HPP_
+#define INST_CORNFLAKES_DIGEST_HPP_
 
 #include <hash-library/crc32.h>
 #include <hash-library/hmac.h>
@@ -15,7 +15,8 @@
 #include <string>
 #include <vector>
 
-namespace digest {
+namespace digest {  // cppcheck-suppress syntaxError
+
 std::string hex_to_string(const std::string& hex);
 template <typename HashMethod>
 std::string apply_hmac(const std::vector<std::string>& data, std::string key);
@@ -24,4 +25,4 @@ std::string simple_sha256(const std::string& data);
 
 }  // namespace digest
 
-#endif  // INST__CORNFLAKES_DIGEST_H_
+#endif  // INST_CORNFLAKES_DIGEST_HPP_

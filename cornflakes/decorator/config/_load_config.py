@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from dataclasses import fields
 from functools import partial
 import logging
 import re
@@ -25,7 +26,7 @@ def _default_filter_method(x: Any):
 def create_file_loader(  # noqa: C901
     cls: Config,
     loader: LoaderMethod = ini_load,  # type: ignore
-) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
+):
     """Config decorator to parse Ini Files and implements from_file method to config-classes.
 
     :param cls: Config class
@@ -33,17 +34,11 @@ def create_file_loader(  # noqa: C901
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
-    required_keys = [
-        key
-        for key, value in cls.__dataclass_fields__.items()
-        if getattr(value, "default_factory", None) == WITHOUT_DEFAULT
-    ]
+    required_keys = [f.name for f in fields(cls) if f.default_factory == WITHOUT_DEFAULT]  # type: ignore
 
     keys = {key: getattr(value, "alias", key) or key for key, value in list(cls.__dataclass_fields__.items())}
 
-    def create_config(
-        config: dict, allow_empty=None, filter_function=_default_filter_method, **cls_kwargs
-    ) -> Optional[Config]:
+    def create_config(config: dict, allow_empty=None, filter_function=_default_filter_method, **cls_kwargs):
         if not config and allow_empty:
             return
         config.update(cls_kwargs)
@@ -78,7 +73,7 @@ def create_file_loader(  # noqa: C901
         eval_env: Optional[bool] = None,
         allow_empty: Optional[bool] = None,
         **slot_kwargs,
-    ) -> Dict[str, Optional[Union[Config, List[Config]]]]:
+    ):
         """Config parser from ini files.
 
         :param files: Default config files

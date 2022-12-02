@@ -72,6 +72,7 @@ ninja = ">=1.10.2.4"
 pybind11 = ">=2.10.1"
 nox = "^2022.8.7"
 nox-poetry = "^1.0.1"
+compiledb = "^0.10.1"
 
 [tool.poetry.scripts]
 cornflakes = "cornflakes.__main__:main"

@@ -1,8 +1,5 @@
 // Copyright (c) 2022 Semjon Geist.
-
-#include <ini.h>
-
-#include <utility>
+#include <ini.hpp>
 
 //! Collection of structs and functions to parse ini files
 namespace ini {
@@ -184,7 +181,7 @@ inline void ParseDefinedKeys(SectionData t_SectionData,
           if (type || std::string(start_iter - 1, start_iter) ==
                           &system_operations::NEWLINE)
             break;
-          start_iter--;
+          --start_iter;
         }
 
         std::string value = string_operations::trim(
@@ -262,14 +259,14 @@ inline void ParseSectionsDefault(FileData t_FileData,
 inline void ParseAllSections(const FileData &t_FileData,
                              const ParserData &t_ParserData) {
   std::array<int, 2> section_cursor{};
-  section_cursor[1] = t_FileData.contents.at(0) == SECTION_OPEN_CHAR.at(0)
+  section_cursor[1] = (t_FileData.contents.empty() ||
+                       t_FileData.contents.at(0) == SECTION_OPEN_CHAR.at(0))
                           ? 1
                           : GetNextSectionIdx(t_FileData, 0);
 
-  if (section_cursor[1] + 1 == t_FileData.contents.size()) {
-    t_FileData.file_envir[py::none()] = py::dict();
-    ParseSectionsDefault(t_FileData, t_ParserData,
-                         t_FileData.file_envir[py::none()]);
+  if (section_cursor[1] >= static_cast<int>(t_FileData.contents.size())) {
+    ParseSectionsDefault(t_FileData, t_ParserData, t_FileData.file_envir,
+                         t_FileData.contents.empty(), true);
     return;
   }
   // split name and value for each line if not empty or comment

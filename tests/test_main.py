@@ -8,7 +8,6 @@ import pytest
 
 from cornflakes.__main__ import main
 from cornflakes.click import command, group
-from cornflakes.logging import attach_log
 
 
 @pytest.fixture

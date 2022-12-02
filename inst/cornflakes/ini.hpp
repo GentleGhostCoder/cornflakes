@@ -1,17 +1,19 @@
 // Copyright (c) 2022 Semjon Geist.
+#ifndef INST_CORNFLAKES_INI_HPP_
+#define INST_CORNFLAKES_INI_HPP_
 
-#ifndef INST__CORNFLAKES_INI_H_
-#define INST__CORNFLAKES_INI_H_
-
-#include <string_operations.h>
-#include <system_operations.h>
-
+// clang-format off
 #include <algorithm>
+#include <complex>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
+#include <string_operations.hpp>
+#include <system_operations.hpp>
+// clang-format on
 
-namespace ini {
+namespace ini {  // cppcheck-suppress syntaxError
 // constants
 inline const char COMMENT_CHAR = '#';
 inline const char NEWVALUE = '=';
@@ -27,4 +29,4 @@ py::dict ini_load(
     const bool &eval_env);
 }  // namespace ini
 
-#endif  // INST__CORNFLAKES_INI_H_
+#endif  // INST_CORNFLAKES_INI_HPP_

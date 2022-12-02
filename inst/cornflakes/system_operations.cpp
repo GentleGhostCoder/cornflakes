@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#include <system_operations.h>
+#include <system_operations.hpp>
 
 //! implementations for system operations
 namespace system_operations {
@@ -89,11 +89,11 @@ std::string read_file(const std::string &file) {
     in.seekg(0, std::ios::end);
     contents.resize(in.tellg());
     in.seekg(0, std::ios::beg);
-    in.read(&contents[0], contents.size());
-    in.close();
     if (contents.empty()) {
       return contents;
     }
+    in.read(&contents[0], contents.size());
+    in.close();
     if (contents.back() != NEWLINE) {  // unexpected eof
       contents.append(LINE_SEPERATOR);
     }

@@ -1,18 +1,19 @@
 // Copyright (c) 2022 Semjon Geist.
-#ifndef INST__CORNFLAKES_BINDINGS_H_
-#define INST__CORNFLAKES_BINDINGS_H_
+#ifndef INST_CORNFLAKES_BINDINGS_HPP_
+#define INST_CORNFLAKES_BINDINGS_HPP_
 
-#include <digest.h>
-#include <ini.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include <complex>
+// clang-format off
 #include <string>
 #include <vector>
+#include <digest.hpp>
+#include <ini.hpp>
+// clang-format on
 
 namespace py = pybind11;
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
-#endif  // INST__CORNFLAKES_BINDINGS_H_
+#endif  // INST_CORNFLAKES_BINDINGS_HPP_

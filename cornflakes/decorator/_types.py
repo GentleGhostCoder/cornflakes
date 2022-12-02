@@ -58,6 +58,7 @@ class DataclassProtocol(Protocol):
     # stdlib attributes
     __dataclass_fields__: ClassVar[Dict[str, Any]]
     __dataclass_params__: ClassVar[Dict]  # in reality `dataclasses._DataclassParams`
+    __annotations__: ClassVar[Dict]
     __post_init__: ClassVar[Optional[Callable[..., None]]]
     # _FIELDS: ClassVar[]
     __args__: ClassVar[List[Any]]
@@ -69,8 +70,18 @@ class DataclassProtocol(Protocol):
         ...
 
 
-class Config(DataclassProtocol):
+class Config(Protocol):
     """Config Protocol Type."""
+
+    # stdlib attributes
+    __dataclass_fields__: ClassVar[Dict[str, Any]]
+    __dataclass_params__: ClassVar[Dict]  # in reality `dataclasses._DataclassParams`
+    __annotations__: ClassVar[Dict]
+    __post_init__: ClassVar[Optional[Callable[..., None]]]
+    # _FIELDS: ClassVar[]
+    __args__: ClassVar[List[Any]]
+    # custom
+    __eval_env__: bool = None
 
     __config_sections__: ClassVar[ConfigArgument]
     __config_files__: ClassVar[ConfigArgument]
@@ -117,8 +128,18 @@ class Config(DataclassProtocol):
     from_file: LoaderMethod
 
 
-class ConfigGroup(DataclassProtocol):
+class ConfigGroup(Protocol):
     """ConfigGroup Protocol Type."""
+
+    # stdlib attributes
+    __dataclass_fields__: ClassVar[Dict[str, Any]]
+    __dataclass_params__: ClassVar[Dict]  # in reality `dataclasses._DataclassParams`
+    __annotations__: ClassVar[Dict]
+    __post_init__: ClassVar[Optional[Callable[..., None]]]
+    # _FIELDS: ClassVar[]
+    __args__: ClassVar[List[Any]]
+    # custom
+    __eval_env__: bool = None
 
     __config_files__: ClassVar[ConfigArgument]
     __multi_config__: ClassVar[bool]

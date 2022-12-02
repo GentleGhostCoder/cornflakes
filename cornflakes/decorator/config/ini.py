@@ -1,10 +1,10 @@
 import logging
-from typing import Callable, Dict, List, Optional, Union
+from typing import Optional
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
 from cornflakes.decorator._types import Config
-from cornflakes.decorator.config._helper import get_config_slots, is_config
+from cornflakes.decorator.config._helper import get_not_ignored_slots, is_config
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._write_config import write_config
 
@@ -39,7 +39,7 @@ def to_ini_bytes(
                 "\n".join(
                     [
                         f'{cfg}="{type_to_str(getattr(self, cfg))}"'
-                        for cfg in get_config_slots(self)
+                        for cfg in get_not_ignored_slots(self)
                         if cfg != "section_name"
                     ]
                 ),
@@ -49,7 +49,7 @@ def to_ini_bytes(
         _ini_bytes.extend(b"\n\n")
         return _ini_bytes
 
-    for cfg_name in get_config_slots(self):
+    for cfg_name in get_not_ignored_slots(self):
         cfg = getattr(self, cfg_name)
         _ini_bytes.extend(_parse_config_list(cfg, cfg_name, title))
 
@@ -64,11 +64,11 @@ def to_ini(self, out_cfg: Optional[str] = None) -> Optional[bytearray]:
 
 
 def create_ini_file_loader(
-    cls=None,
-) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
+    cls: Config,
+):
     """Method to create file loader for ini files."""
 
-    def from_ini(*args, **kwargs) -> Dict[str, Optional[Union[Config, List[Config]]]]:
+    def from_ini(*args, **kwargs):
         return create_file_loader(cls=cls, loader=ini_load)(*args, **kwargs)  # type: ignore
 
     return from_ini

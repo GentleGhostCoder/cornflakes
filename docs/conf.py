@@ -42,7 +42,7 @@ breathe_projects = {
 breathe_default_project = "_cornflakes"
 
 excluded_files_pattern = r"(.*datetime_utils.h.*|.*strtk.*|.*pybind11.*)"
-breathe_projects_source_path_cornflakes = os.path.abspath("../inst/_cornflakes")
+breathe_projects_source_path_cornflakes = os.path.abspath("../inst/cornflakes")
 
 breathe_projects_source = {
     "_cornflakes": (

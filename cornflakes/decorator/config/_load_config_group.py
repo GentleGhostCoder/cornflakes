@@ -6,7 +6,7 @@ from cornflakes.decorator._types import Config, ConfigGroup
 from cornflakes.decorator.config._helper import is_config, is_config_list
 
 
-def create_group_loader(cls: ConfigGroup) -> Callable[..., ConfigGroup]:
+def create_group_loader(cls) -> Callable[..., ConfigGroup]:
     """Config decorator to parse Ini Files and implements from_file method to config-group-classes.
 
     :param cls: Config class

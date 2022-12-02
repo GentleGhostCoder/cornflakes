@@ -32,7 +32,7 @@ def to_dict(self) -> Any:
 
 
 def create_dict_file_loader(
-    cls=None,
+    cls: Config,
 ) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
     """Method to create file loader for ini files."""
 

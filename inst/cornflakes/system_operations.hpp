@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#ifndef INST__CORNFLAKES_SYSTEM_OPERATIONS_H_
-#define INST__CORNFLAKES_SYSTEM_OPERATIONS_H_
+#ifndef INST_CORNFLAKES_SYSTEM_OPERATIONS_HPP_
+#define INST_CORNFLAKES_SYSTEM_OPERATIONS_HPP_
 
 #include <sys/stat.h>
 
@@ -12,7 +12,7 @@
 #include <sstream>
 #include <string>
 
-namespace system_operations {
+namespace system_operations {  // cppcheck-suppress syntaxError
 
 // Constants
 // System-Line-Seperator
@@ -42,4 +42,4 @@ std::string read_file(const std::string &file);
 
 }  // namespace system_operations
 
-#endif  // INST__CORNFLAKES_SYSTEM_OPERATIONS_H_
+#endif  // INST_CORNFLAKES_SYSTEM_OPERATIONS_HPP_

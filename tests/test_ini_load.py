@@ -333,3 +333,12 @@ class TestIniLoad(unittest.TestCase):
                 "date_formats": ["%Y-%m-%d", "%Y-%m-%d_%H:%M:%S", "%Y%m%d", "%Y%m%d_%H%M%S"],
             },
         )
+
+    def test_ini_load_examples8(self):
+        os.environ["bla"] = "123"
+        # some error cases fixing
+        self.assertEqual(
+            cornflakes.ini_load({None: None}, {None: None}, keys={"blub": "bla"}, eval_env=True), {"blub": 123}
+        )
+
+        self.assertEqual(cornflakes.ini_load({None: None}, None, keys={"blub": "bla"}, eval_env=True), {"blub": 123})

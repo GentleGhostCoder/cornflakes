@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#include <string_operations.h>
+#include <string_operations.hpp>
 #define strtk_no_tr1_or_boost
 #include <datetime_utils.h>
 

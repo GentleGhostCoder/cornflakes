@@ -135,15 +135,29 @@ import os
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
-path = "inst/_cornflakes"
+__version__ = "3.0.4"
+with open("cornflakes/__init__.py") as f:
+    while line := f.readline():
+        if "__version__" in line:
+            __version__ = eval(line.split("=").pop().strip())
+
+os.environ["VERSION_INFO"] = __version__
+
+inst_path = "inst"
+external_path = f"{inst_path}/ext"
+path = f"{inst_path}/cornflakes"
 files = [
     f
-    for f in [*glob(f"{path}/*/**", recursive=True), *glob(f"{path}/*", recursive=True)]
-    if "test" not in f and "strtk" not in f
+    for f in [
+        *glob(f"{path}/*/**", recursive=True),
+        *glob(f"{path}/*", recursive=True),
+        *glob(f"{external_path}/hash-library/*", recursive=True),
+    ]
+    if "test" not in f
     if os.path.splitext(f)[1] == ".cpp"
 ]
 
-ext_paths = ["inst/ext", "inst/ext/pybind11/include", "inst/ext/rapidjson/include/rapidjson"]
+ext_paths = [external_path, f"{external_path}/pybind11/include", f"{external_path}/rapidjson/include/rapidjson"]
 
 
 def build(setup_kwargs):
@@ -153,7 +167,7 @@ def build(setup_kwargs):
     setup_kwargs.update(
         {
             "ext_modules": ext_modules,
-            "cmd_class": {"build_ext": build_ext},
+            "cmdclass": {"build_ext": build_ext},
             "zip_safe": False,
         }
     )
