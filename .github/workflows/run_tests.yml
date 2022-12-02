@@ -73,11 +73,11 @@ jobs:
               with:
                   python-version: ${{ matrix.python-version }}
 
-            - name: Install doxygen
+            - name: Install dependencies
               run: |
                   echo $RUNNER_OS &&
                   if [ "$RUNNER_OS" == "Linux" ]; then
-                    sudo apt-get install -y doxygen;
+                    sudo apt-get install -y doxygen cppcheck clang-tidy;
                   elif [ "$RUNNER_OS" == "macOS" ]; then
                     brew install doxygen;
                   elif [ "$RUNNER_OS" == "Windows" ]; then
@@ -87,14 +87,6 @@ jobs:
                     exit 1
                   fi
               shell: bash
-
-            - name: Install clang-tidy
-              run: |
-                  sudo  apt-get install -y clang-tools-extra
-
-            - name: install cppcheck
-              run: |
-                  sudo apt-get install -y cppcheck
 
             - name: Install Ninja
               run: |

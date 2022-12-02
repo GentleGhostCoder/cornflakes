@@ -79,7 +79,7 @@ Prerequisites
 -  Python 3.8+
 -  doxygen
 -  cppcheck
--  clang-tools-extra
+-  clang-tools-extra or clang-tidy
 -  ..
 
 Commands
