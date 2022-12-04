@@ -1354,7 +1354,8 @@ dt_format* create_datetime(const std::string& format, datetime& dt)
 }
 
 strtk_string_to_type_begin(dt_utils::dt_format*)
-  return t->process(begin,end);  // cppcheck-suppress syntaxError
+  // cppcheck-suppress syntaxError
+  return t->process(begin,end);
 strtk_string_to_type_end()
 
 strtk_string_to_type_begin(dt_utils::date_format00)

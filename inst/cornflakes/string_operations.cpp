@@ -2,7 +2,7 @@
 
 #include <string_operations.hpp>
 #define strtk_no_tr1_or_boost
-#include <datetime_utils.h>
+#include <datetime_utils.hpp>
 
 //! implementations for string operations
 namespace string_operations {

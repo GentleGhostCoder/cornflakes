@@ -266,7 +266,7 @@ inline void ParseAllSections(const FileData &t_FileData,
 
   if (section_cursor[1] >= static_cast<int>(t_FileData.contents.size())) {
     ParseSectionsDefault(t_FileData, t_ParserData, t_FileData.file_envir,
-                         t_FileData.contents.empty(), true);
+                         t_FileData.contents.empty());
     return;
   }
   // split name and value for each line if not empty or comment

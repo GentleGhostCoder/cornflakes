@@ -1,3 +1,10 @@
+.. image:: assets/cornflakes.png
+   :height: 300 px
+   :width: 300 px
+   :scale: 50 %
+   :alt: cornflakes logo
+   :align: center
+
 cornflakes
 ==========
 

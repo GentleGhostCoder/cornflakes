@@ -11,7 +11,7 @@ set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inst/ext)
 add_subdirectory(${EXT_DIR}/pybind11 [EXCLUDE_FROM_ALL])
 
 # install(DIRECTORY ${EXT_DIR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-# include_directories(${EXT_DIR})
+include_directories(${EXT_DIR})
 include_directories(${EXT_DIR}/rapidjson/include/rapidjson)
 include_directories(${CMAKE_SOURCE_DIR}/inst/_cornflakes)
 
