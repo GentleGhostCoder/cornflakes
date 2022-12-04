@@ -135,7 +135,7 @@ import os
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
-__version__ = "3.0.4"
+__version__ = "3.0.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
 with open("cornflakes/__init__.py") as f:
     while line := f.readline():
         if "__version__" in line:
