@@ -1,4 +1,4 @@
-.. image:: assets/cornflakes.png
+.. image:: https://github.com/semmjon/cornflakes/blob/main/assets/cornflakes.png?raw=true
    :height: 400 px
    :width: 400 px
    :alt: cornflakes logo
