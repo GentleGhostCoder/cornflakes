@@ -25,7 +25,7 @@ py::object apply_match(const std::vector<std::string> &vec, std::string match) {
     result.append(py::cast(start_iter != end_iter));
   }
 
-  return result;
+  return std::move(result);
 }
 
 /// This is a simple C++ function to extract values from data between two fixed
