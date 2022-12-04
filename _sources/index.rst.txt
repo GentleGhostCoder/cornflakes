@@ -9,6 +9,7 @@ Welcome to cornflakes's documentation!
 
    readme
    installation
+   examples
    usage
    reference
    contributing
