@@ -1,7 +1,6 @@
 .. image:: assets/cornflakes.png
    :height: 100 px
    :width: 100 px
-   :scale: 50 %
    :alt: cornflakes logo
    :align: center
 
