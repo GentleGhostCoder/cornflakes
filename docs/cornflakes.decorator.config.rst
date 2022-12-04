@@ -1,13 +1,40 @@
 cornflakes.decorator.config package
 ===================================
 
-Subpackages
------------
+Submodules
+----------
 
-.. toctree::
-   :maxdepth: 4
+cornflakes.decorator.config.dict module
+---------------------------------------
 
-   cornflakes.decorator.config.validator
+.. automodule:: cornflakes.decorator.config.dict
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cornflakes.decorator.config.ini module
+--------------------------------------
+
+.. automodule:: cornflakes.decorator.config.ini
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cornflakes.decorator.config.tuple module
+----------------------------------------
+
+.. automodule:: cornflakes.decorator.config.tuple
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cornflakes.decorator.config.yaml module
+---------------------------------------
+
+.. automodule:: cornflakes.decorator.config.yaml
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
