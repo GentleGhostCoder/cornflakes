@@ -252,7 +252,15 @@ def docs_build(session: Session) -> None:
     search = f"*cp{version}*.whl"
     file = list(Path("dist").glob(search))[0].name
     session.run("pip", "install", f"dist/{file}", "--force-reinstall")
-    session.install("sphinx", "sphinx-click", "sphinx-rtd-theme", "sphinx-rtd-dark-mode", "myst-parser", "breathe")
+    session.install(
+        "sphinx",
+        "sphinx-click",
+        "sphinx-rtd-theme",
+        "sphinx-rtd-dark-mode",
+        "sphinxcontrib-inlinesyntaxhighlight",
+        "myst-parser",
+        "breathe",
+    )
 
     build_dir = Path("docs", "_build")
     if build_dir.exists():
@@ -278,6 +286,7 @@ def docs(session: Session) -> None:
         "sphinx-click",
         "sphinx-rtd-theme",
         "sphinx-rtd-dark-mode",
+        "sphinxcontrib-inlinesyntaxhighlight",
         "myst-parser",
         "breathe",
     )
