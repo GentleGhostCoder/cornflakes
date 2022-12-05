@@ -15,7 +15,7 @@ class Settings:
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 7 * 24 * 60  # 7 days
 
-    BACKEND_CORS_ORIGINS: List[AnyUrl] = None
+    BACKEND_CORS_ORIGINS: Optional[List[AnyUrl]] = None
 
     # The following variables need to be defined in environment
     TEST_DATABASE_URL: Optional[AnyUrl] = None

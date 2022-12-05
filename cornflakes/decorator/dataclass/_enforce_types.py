@@ -31,7 +31,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
         if getattr(value, "default_factory", None) == WITHOUT_DEFAULT
     ]
 
-    def _check_type(type_hint: Any, key, value):
+    def _check_type(type_hint: Any, key, value, skip=False):
         if isinstance(type_hint, type(None)):
             return
 
@@ -47,12 +47,17 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
 
             if isinstance(actual_type, list) or isinstance(actual_type, tuple):
                 actual_types = [t for t in actual_type if t is not None]
-                return next(item for item in [_check_type(t, key, value) for t in actual_types] if item is not None)
+                values = [_check_type(t, key, value, skip=True) for t in actual_types]
+                if not any(values) and type(None) in actual_types:
+                    return None
+                return next(item for item in values if item is not None)
 
             if actual_type in [list, tuple]:
                 if not isinstance(value, list) and not isinstance(value, tuple):
+                    if skip:
+                        return
                     raise TypeError(
-                        f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')"
+                        f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
                     )
                 actual_types = [t for t in get_args(type_hint) if t is not None] or [str]
                 return actual_type(chain([_check_type(t, key, val) for val in value for t in actual_types]))
@@ -60,13 +65,18 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
             if not isinstance(value, actual_type):
                 try:
                     if not validate:
+                        if skip:
+                            return
                         raise TypeError(
-                            f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')"
+                            f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
                         )
                     return actual_type(value)  # type: ignore
                 except Exception as exc:
+                    if skip:
+                        return
                     raise Exception(
-                        f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')"
+                        f"\n{exc}"
+                        f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
                     ) from exc
 
             return value
