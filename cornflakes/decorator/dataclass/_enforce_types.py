@@ -47,6 +47,12 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
 
             if isinstance(actual_type, list) or isinstance(actual_type, tuple):
                 actual_types = [t for t in actual_type if t is not None]
+                if not any(inspect.isclass(t) for t in actual_types):
+                    if value not in actual_types:
+                        raise TypeError(
+                            f"Expected any of '{actual_types}' for attribute '{key}' but received type '{type(value)}')."
+                        )
+                    actual_types = [type(t) for t in actual_types]
                 values = [_check_type(t, key, value, skip=True) for t in actual_types]
                 if not any(values) and type(None) in actual_types:
                     return None
@@ -61,6 +67,9 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                     )
                 actual_types = [t for t in get_args(type_hint) if t is not None] or [str]
                 return actual_type(chain([_check_type(t, key, val) for val in value for t in actual_types]))
+
+            if not inspect.isclass(actual_type):
+                actual_type = type(actual_type)
 
             if not isinstance(value, actual_type):
                 try:

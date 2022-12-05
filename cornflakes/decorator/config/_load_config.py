@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from dataclasses import fields
+from dataclasses import MISSING
 from functools import partial
 import logging
 import re
@@ -8,6 +8,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from cornflakes import ini_load
 from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, LoaderMethod
 from cornflakes.decorator.config._helper import (
+    dataclass_fields,
     is_config_list,
     is_multi_config,
     normalized_class_name,
@@ -34,7 +35,11 @@ def create_file_loader(  # noqa: C901
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
-    required_keys = [f.name for f in fields(cls) if f.default_factory == WITHOUT_DEFAULT]  # type: ignore
+    required_keys = [
+        f.name
+        for f in dataclass_fields(cls).values()
+        if (f.default_factory == WITHOUT_DEFAULT) or (f.default_factory == MISSING and f.default == MISSING)
+    ]  # type: ignore
 
     keys = {key: getattr(value, "alias", key) or key for key, value in list(cls.__dataclass_fields__.items())}
 

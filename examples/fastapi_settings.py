@@ -24,3 +24,7 @@ class Settings:
 
     SECRET_KEY: str = ""
     #  END: required environment variables
+
+
+# TODO: wrong sections name -> new-line
+settings = Settings.from_file("examples/.env")

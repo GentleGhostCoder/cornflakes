@@ -19,6 +19,11 @@ def config_files(cls) -> ConfigArgument:
     return getattr(cls, "__config_files__", [])
 
 
+def dataclass_fields(cls: Union[Config, ConfigGroup, DataclassProtocol]) -> dict:
+    """Method to return dataclass fields."""
+    return getattr(cls, "__dataclass_fields__", {})
+
+
 def dict_factory(cls: Union[Config, ConfigGroup, DataclassProtocol]) -> Any:
     """Method to return class __dict_factory__."""
     return getattr(cls, "__dict_factory__", dict)
