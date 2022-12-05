@@ -3,7 +3,6 @@ __________________________________
 """  # noqa: RST303 D205
 from cornflakes.common._extract_var_names import extract_var_names
 from cornflakes.common._default_ca_path import default_ca_path
-from cornflakes.common._import_component import import_component
 from cornflakes.common._type_to_str import type_to_str
 from cornflakes.common._types import datetime_ms, unquoted_string
 from cornflakes.common._patch_module import patch_module
@@ -17,7 +16,6 @@ __all__ = [
     "unquoted_string",
     "patch_module",
     "wrap_kwargs",
-    "import_component",
 ]
 
 patch_module(globals())
