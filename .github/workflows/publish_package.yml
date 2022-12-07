@@ -11,29 +11,7 @@ jobs:
         if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
         strategy:
             matrix:
-                os:
-                    - name: freebsd
-                      architecture: x86-64
-                      version: "13.0"
-                      host: macos-12
-
-                    - name: openbsd
-                      architecture: x86-64
-                      version: "7.1"
-                      host: macos-12
-
-                    - name: openbsd
-                      architecture: arm64
-                      version: "7.1"
-                      host: ubuntu-latest
-
-                    - name: netbsd
-                      architecture: x86-64
-                      version: "9.2"
-                      host: ubuntu-latest
-                      python: ["3.8", "3.9", "3.10", "3.11"]
-
-                    - [windows-latest, macos-latest]
+                os: [macos-latest, ubuntu-latest, windows-latest]
                 python: ["3.8", "3.9", "3.10", "3.11"]
         steps:
             - name: Check out the repository
