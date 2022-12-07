@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "cornflakes"
 version = "3.0.8"  # <<COOKIETEMPLE_FORCE_BUMP>>
-description = "Create generic any easy to manage Configs for your Project"
+description = "Create generic any easy way to manage Configs for your project"
 authors = ["Semjon Geist <semjon.geist@ionos.com>"]
 license = "Apache2.0"
 readme = "README.rst"
