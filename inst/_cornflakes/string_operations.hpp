@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#ifndef INST_CORNFLAKES_STRING_OPERATIONS_HPP_
-#define INST_CORNFLAKES_STRING_OPERATIONS_HPP_
+#ifndef INST__CORNFLAKES_STRING_OPERATIONS_HPP_
+#define INST__CORNFLAKES_STRING_OPERATIONS_HPP_
 
 #include <document.h>
 #include <pybind11/eval.h>
@@ -94,4 +94,4 @@ py::list extract_between(const std::string &data, std::string start, char end);
 py::object apply_match(const std::vector<std::string> &vec, std::string match);
 }  // namespace string_operations
 
-#endif  // INST_CORNFLAKES_STRING_OPERATIONS_HPP_
+#endif  // INST__CORNFLAKES_STRING_OPERATIONS_HPP_

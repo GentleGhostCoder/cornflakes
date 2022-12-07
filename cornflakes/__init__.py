@@ -12,7 +12,7 @@ from cornflakes.logging import attach_log, setup_logging
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "3.0.8"  # <<COOKIETEMPLE_FORCE_BUMP>>
+__version__ = "3.0.9"  # <<COOKIETEMPLE_FORCE_BUMP>>
 
 __all__ = [
     "click_cli",

@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#ifndef INST_CORNFLAKES_SYSTEM_OPERATIONS_HPP_
-#define INST_CORNFLAKES_SYSTEM_OPERATIONS_HPP_
+#ifndef INST__CORNFLAKES_SYSTEM_OPERATIONS_HPP_
+#define INST__CORNFLAKES_SYSTEM_OPERATIONS_HPP_
 
 #include <sys/stat.h>
 
@@ -42,4 +42,4 @@ std::string read_file(const std::string &file);
 
 }  // namespace system_operations
 
-#endif  // INST_CORNFLAKES_SYSTEM_OPERATIONS_HPP_
+#endif  // INST__CORNFLAKES_SYSTEM_OPERATIONS_HPP_

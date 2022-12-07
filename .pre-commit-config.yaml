@@ -94,7 +94,7 @@ repos:
             args:
                 [
                     --exclude=inst/ext/*,
-                    --exclude=inst/cornflakes/datetime_utils.hpp,
+                    --exclude=inst/_cornflakes/datetime_utils.hpp,
                     --exclude=cmake-build-debug/*,
                     --filter=-build/c++11,
                 ]
@@ -105,7 +105,7 @@ repos:
             args:
                 [
                     inst/cornflakes,
-                    "--suppress=syntaxError:inst/cornflakes/datetime_utils.hpp",
+                    "--suppress=syntaxError:inst/_cornflakes/datetime_utils.hpp",
                     -DVERSION_INFO=$VERSION_INFO,
                     --std=c++17,
                 ]

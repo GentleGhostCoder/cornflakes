@@ -19,8 +19,8 @@
  *****************************************************************
  */
 
-#ifndef INST_CORNFLAKES_DATETIME_UTILS_HPP_
-#define INST_CORNFLAKES_DATETIME_UTILS_HPP_
+#ifndef INST__CORNFLAKES_DATETIME_UTILS_HPP_
+#define INST__CORNFLAKES_DATETIME_UTILS_HPP_
 
 #include <iostream>
 #include <string>

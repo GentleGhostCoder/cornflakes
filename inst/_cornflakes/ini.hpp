@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Semjon Geist.
-#ifndef INST_CORNFLAKES_INI_HPP_
-#define INST_CORNFLAKES_INI_HPP_
+#ifndef INST__CORNFLAKES_INI_HPP_
+#define INST__CORNFLAKES_INI_HPP_
 
 // clang-format off
 #include <algorithm>
@@ -29,4 +29,4 @@ py::dict ini_load(
     const bool &eval_env);
 }  // namespace ini
 
-#endif  // INST_CORNFLAKES_INI_HPP_
+#endif  // INST__CORNFLAKES_INI_HPP_

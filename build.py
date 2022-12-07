@@ -145,7 +145,7 @@ os.environ["VERSION_INFO"] = __version__
 
 inst_path = "inst"
 external_path = f"{inst_path}/ext"
-path = f"{inst_path}/cornflakes"
+path = f"{inst_path}/_cornflakes"
 files = [
     f
     for f in [

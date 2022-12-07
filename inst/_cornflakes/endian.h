@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#ifndef INST_CORNFLAKES_ENDIAN_H_
-#define INST_CORNFLAKES_ENDIAN_H_
+#ifndef INST__CORNFLAKES_ENDIAN_H_
+#define INST__CORNFLAKES_ENDIAN_H_
 
 #if (defined(_WIN16) || defined(_WIN32) || defined(_WIN64)) && \
     !defined(__WINDOWS__)
@@ -113,4 +113,4 @@
 
 #endif
 
-#endif  //  INST_CORNFLAKES_ENDIAN_H_
+#endif  //  INST__CORNFLAKES_ENDIAN_H_

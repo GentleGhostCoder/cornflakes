@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#ifndef INST_CORNFLAKES_DIGEST_HPP_
-#define INST_CORNFLAKES_DIGEST_HPP_
+#ifndef INST__CORNFLAKES_DIGEST_HPP_
+#define INST__CORNFLAKES_DIGEST_HPP_
 
 #include <hash-library/crc32.h>
 #include <hash-library/hmac.h>
@@ -25,4 +25,4 @@ std::string simple_sha256(const std::string& data);
 
 }  // namespace digest
 
-#endif  // INST_CORNFLAKES_DIGEST_HPP_
+#endif  // INST__CORNFLAKES_DIGEST_HPP_
