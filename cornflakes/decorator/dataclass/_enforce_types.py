@@ -70,7 +70,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                 return actual_type(chain([_check_type(t, key, val) for val in value for t in actual_types]))
 
             if not inspect.isclass(actual_type):
-                actual_type = type(actual_type)
+                return _check_type(actual_type, key, value)
 
             if not isinstance(value, actual_type):
                 try:
