@@ -333,6 +333,18 @@ class TestIniLoad(unittest.TestCase):
                 "date_formats": ["%Y-%m-%d", "%Y-%m-%d_%H:%M:%S", "%Y%m%d", "%Y%m%d_%H%M%S"],
             },
         )
+        self.assertEqual(
+            cornflakes.ini_load({None: "tests/configs/ini_json_config"}),
+            {
+                "date_regex_pattern": [
+                    "\\d{4}-\\d{2}-\\d{2}",
+                    "\\d{4}-\\d{2}-\\d{2}_\\d{2}:\\d{2}:\\d{2}",
+                    "\\d{8}",
+                    "\\d{8}_\\d{6}",
+                ],
+                "date_formats": ["%Y-%m-%d", "%Y-%m-%d_%H:%M:%S", "%Y%m%d", "%Y%m%d_%H%M%S"],
+            },
+        )
 
     def test_ini_load_examples8(self):
         os.environ["bla"] = "123"
