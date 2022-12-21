@@ -49,6 +49,7 @@ class TestConfigGeneration(unittest.TestCase):
             {
                 "sub_config": [
                     {
+                        "test": None,
                         "section_name": "sub_config_0",
                         "string": "bla0",
                         "datetime_datetime": datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -63,6 +64,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "some_env": "default_value",
                     },
                     {
+                        "test": None,
                         "section_name": "sub_config_1",
                         "string": "bla1",
                         "datetime_datetime": datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -77,6 +79,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "some_env": "default_value",
                     },
                     {
+                        "test": None,
                         "section_name": "sub_config_2",
                         "string": "bla2",
                         "datetime_datetime": datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -99,6 +102,7 @@ class TestConfigGeneration(unittest.TestCase):
             (
                 [
                     (
+                        None,
                         "sub_config_0",
                         "bla0",
                         datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -113,6 +117,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "default_value",
                     ),
                     (
+                        None,
                         "sub_config_1",
                         "bla1",
                         datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -127,6 +132,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "default_value",
                     ),
                     (
+                        None,
                         "sub_config_2",
                         "bla2",
                         datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -162,6 +168,7 @@ class TestConfigGeneration(unittest.TestCase):
                 {
                     "sub_config": [
                         configs.sub_config.SubConfig(
+                            test=None,
                             section_name="sub_config_0",
                             string="bla0",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -185,6 +192,7 @@ class TestConfigGeneration(unittest.TestCase):
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
+                            test=None,
                             section_name="sub_config_1",
                             string="bla1",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -208,6 +216,7 @@ class TestConfigGeneration(unittest.TestCase):
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
+                            test=None,
                             section_name="sub_config_2",
                             string="bla2",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -241,6 +250,7 @@ class TestConfigGeneration(unittest.TestCase):
                 MainConfig(
                     sub_config=[
                         configs.sub_config.SubConfig(
+                            test=None,
                             section_name="sub_config_0",
                             string="bla0",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -264,6 +274,7 @@ class TestConfigGeneration(unittest.TestCase):
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
+                            test=None,
                             section_name="sub_config_1",
                             string="bla1",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
@@ -287,6 +298,7 @@ class TestConfigGeneration(unittest.TestCase):
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
+                            test=None,
                             section_name="sub_config_2",
                             string="bla2",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
