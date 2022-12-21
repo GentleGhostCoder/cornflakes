@@ -47,7 +47,13 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                 actual_type = getattr(type_hint, "__args__", type_hint)
 
             if isinstance(actual_type, list) or isinstance(actual_type, tuple):
-                actual_types = [t for t in actual_type if t is not None]
+                actual_types = (
+                    [t for t in actual_type if t is not None]
+                    if value
+                    else [type(None)]
+                    if type(None) in actual_type
+                    else actual_type
+                )
                 if not any(inspect.isclass(t) for t in actual_types):
                     if value not in actual_types:
                         raise TypeError(
