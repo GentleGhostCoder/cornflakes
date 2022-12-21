@@ -9,9 +9,6 @@ _HAS_DEFAULT_FACTORY = getattr(dataclasses, "_HAS_DEFAULT_FACTORY", None)
 Empty = getattr(inspect, "_empty", None)
 
 
-# from cornflakes.decorator.dataclass._dataclass import dataclass as data
-
-
 def _not_excluded(default):
     return default != _HAS_DEFAULT_FACTORY
 
@@ -140,14 +137,10 @@ class KwargsWrapper:
         wrapper_sig: Signature = signature(wrapper)
         self._update_params(wrapper_sig.parameters)
         ldict: Dict[str, Any] = {**self._defaults_dict, **self._annotations_dict}
-        # print(ldict)
-        # print(self.params_declaration)
-        # print(self.passed_names)
         wrapper_str = f"""
 def wrap_kwargs({self._params_declaration}):
     return wrapper({self._passed_names})
 """
-        # print(wrapper_str)
         exec(  # noqa: S102
             wrapper_str,
             locals(),

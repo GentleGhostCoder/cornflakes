@@ -1,6 +1,6 @@
 from dataclasses import InitVar, fields
 from typing import Optional
-from urllib.parse import ParseResult, urlparse, urlunparse
+from urllib.parse import ParseResult, parse_qs, urlparse, urlunparse
 
 from cornflakes.decorator.config.tuple import to_tuple
 from cornflakes.decorator.dataclass._dataclass import dataclass as data
@@ -20,8 +20,9 @@ class AnyUrl:
     :cvar scheme: The scheme of the url
     :cvar netloc: user / pw / host and port of the url
     :cvar path: path of the url
-    :cvar params: url parameters
     :cvar query: url query
+    :cvar params: url params
+    :cvar query_args: url query_args -> parsed query
     :cvar fragment: url fragment
     :cvar hostname: url hostname (overwrites the netloc)
     :cvar port: url port (overwrites the netloc)
@@ -34,27 +35,33 @@ class AnyUrl:
     scheme: str = field(default="", init=True)
     netloc: str = field(default="", init=True)
     path: str = field(default="", init=True)
-    params: str = field(default="", init=True)
     query: str = field(default="", init=True)
+    params: str = field(default="", init=True)
+    query_args: dict = field(default_factory=dict, init=True)
     fragment: str = field(default="", init=True)
-    hostname: Optional[str] = field(default=None, init=True, repr=False)
+    hostname: Optional[str] = field(default="", init=True, repr=False)
     port: Optional[int] = field(default=None, init=True, repr=False)
     username: Optional[str] = field(default=None, init=True, repr=False)
     password: Optional[str] = field(default=None, init=True, repr=False)
     tld: Optional[str] = field(default=None, init=True, repr=False)
     token: Optional[str] = field(default=None, init=True)
 
-    def __init_parsed(self, parsed: ParseResult):
+    def __init_parsed(self, parsed: ParseResult, overwrite=True):
         for f in fields(self):
-            setattr(self, f.name, getattr(parsed, f.name, None))
+            if (overwrite or not f.default) and hasattr(parsed, f.name):
+                setattr(self, f.name, getattr(parsed, f.name, None))
 
     def __post_init__(self, url: Optional[str] = None) -> None:
         """Post init."""
-        parsed = urlparse(url)
-        self.netloc = self.netloc or parsed.netloc or parsed.path
-        self.scheme = self.scheme or parsed.scheme
+        if url:
+            parsed = urlparse(url)
+            if not parsed.netloc:
+                parsed = urlparse(f"//{url}")
+            self.query_args.update(parse_qs(parsed.query))
+            self.__init_parsed(parsed, overwrite=False)
         if self.username or self.password or self.port:
             # overwrite netloc with custom user / pass
+            parsed = urlparse(to_tuple(self))
             login = (
                 f"{self.username or parsed.username}:{self.password or parsed.password}@"
                 if (self.username or parsed.username) and (self.password or parsed.password)
@@ -66,7 +73,8 @@ class AnyUrl:
             hostname = self.hostname if self.hostname else parsed.hostname
             self.netloc = f"{login}{hostname}{port}"
         parsed = urlparse(to_tuple(self))
-        self.__init_parsed(parsed)
+        self.query_args.update(parse_qs(parsed.query))
+        self.__init_parsed(parsed, overwrite=True)
         tld = self.hostname[::-1].split(".", 1)[0][::-1]
         if tld in VALID_ZONES:
             self.tld = tld
