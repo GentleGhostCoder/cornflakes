@@ -3,7 +3,7 @@ import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
 
-from cornflakes import AnyUrl, config, config_field
+from cornflakes import AnyUrl, config
 from cornflakes.decorator import field
 
 

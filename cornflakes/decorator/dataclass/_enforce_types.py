@@ -5,7 +5,8 @@ from os import environ
 from typing import Any, Callable, Optional, Union, get_args
 
 from _cornflakes import eval_type
-from cornflakes.common import extract_var_names, wrap_kwargs
+from cornflakes.common import extract_var_names
+from cornflakes.decorator._wrap_kwargs import wrap_kwargs
 from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, ConfigGroup, DataclassProtocol
 
 SpecialForm = type(Optional)
@@ -127,7 +128,6 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
             kwargs.update(dict(zip(func.__code__.co_varnames[1:], args)))
             default_kwargs = {}
             default_kwargs.update(kwargs)
-
             if self.__eval_env__:
                 default_kwargs.update(_get_env_vars())
 
@@ -137,7 +137,6 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
             default_kwargs.pop("self", None)
             if missing_keys := [key for key in required_keys if key not in default_kwargs.keys()]:
                 raise ValueError(f"Missing required values for keys {missing_keys}")
-
             return func(self, **default_kwargs)  # type: ignore
 
         return wrapper
