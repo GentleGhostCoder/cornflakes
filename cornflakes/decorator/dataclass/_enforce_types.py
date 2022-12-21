@@ -66,7 +66,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                     raise TypeError(
                         f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
                     )
-                actual_types = [t for t in get_args(type_hint) if t is not None] or [str]
+                actual_types = [t for t in get_args(type_hint) if t is not None] or [str] if value else [type(None)]
                 return actual_type(chain([_check_type(t, key, val) for val in value for t in actual_types]))
 
             if not inspect.isclass(actual_type):
