@@ -336,13 +336,15 @@ class TestIniLoad(unittest.TestCase):
         self.assertEqual(
             cornflakes.ini_load({None: "tests/configs/ini_json_config"}),
             {
-                "date_regex_pattern": [
-                    "\\d{4}-\\d{2}-\\d{2}",
-                    "\\d{4}-\\d{2}-\\d{2}_\\d{2}:\\d{2}:\\d{2}",
-                    "\\d{8}",
-                    "\\d{8}_\\d{6}",
-                ],
-                "date_formats": ["%Y-%m-%d", "%Y-%m-%d_%H:%M:%S", "%Y%m%d", "%Y%m%d_%H%M%S"],
+                None: {
+                    "date_regex_pattern": [
+                        "\\d{4}-\\d{2}-\\d{2}",
+                        "\\d{4}-\\d{2}-\\d{2}_\\d{2}:\\d{2}:\\d{2}",
+                        "\\d{8}",
+                        "\\d{8}_\\d{6}",
+                    ],
+                    "date_formats": ["%Y-%m-%d", "%Y-%m-%d_%H:%M:%S", "%Y%m%d", "%Y%m%d_%H%M%S"],
+                }
             },
         )
 
@@ -352,5 +354,6 @@ class TestIniLoad(unittest.TestCase):
         self.assertEqual(
             cornflakes.ini_load({None: None}, {None: None}, keys={"blub": "bla"}, eval_env=True), {"blub": 123}
         )
-
-        self.assertEqual(cornflakes.ini_load({None: None}, None, keys={"blub": "bla"}, eval_env=True), {"blub": 123})
+        self.assertEqual(
+            cornflakes.ini_load({None: None}, None, keys={"blub": "bla"}, eval_env=True), {None: {"blub": 123}}
+        )

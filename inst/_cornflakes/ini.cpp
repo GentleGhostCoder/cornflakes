@@ -265,7 +265,9 @@ inline void ParseAllSections(const FileData &t_FileData,
                           : GetNextSectionIdx(t_FileData, 0);
 
   if (section_cursor[1] >= static_cast<int>(t_FileData.contents.size() - 1)) {
-    ParseSectionsDefault(t_FileData, t_ParserData, t_FileData.file_envir,
+    t_FileData.file_envir[py::none()] = py::dict();
+    ParseSectionsDefault(t_FileData, t_ParserData,
+                         t_FileData.file_envir[py::none()],
                          t_FileData.contents.empty());
     return;
   }
