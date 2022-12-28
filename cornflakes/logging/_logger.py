@@ -36,16 +36,16 @@ def setup_logging(  # noqa: C901
                     config["handlers"][handler]["level"] = default_level or logging.root.level
             logging.config.dictConfig(config)
     else:
-        if not any([isinstance(handler, RichHandler) for handler in logging.root.handlers]):
-            rich_handler_kargs: Any = {"log_time_format": "[%Y-%m-%d %H:%M:%S.%f]"}
-            rich_handler_kargs.update(
-                {key: value for key, value in kwargs.items() if key in RichHandler.__init__.__code__.co_varnames}
-            )
-            rich_handler = RichHandler(rich_tracebacks=True, **rich_handler_kargs)
-            rich_handler.setFormatter(fmt=logging.Formatter("%(name)s - %(funcName)s() - %(message)s"))
-            rich_handler.setLevel(default_level or logging.root.level)
-            # logging.root.handlers.clear()
-            logging.root.handlers = [rich_handler]
+        # if not any([isinstance(handler, RichHandler) for handler in logging.root.handlers]):
+        rich_handler_kargs: Any = {"log_time_format": "[%Y-%m-%d %H:%M:%S.%f]"}
+        rich_handler_kargs.update(
+            {key: value for key, value in kwargs.items() if key in RichHandler.__init__.__code__.co_varnames}
+        )
+        rich_handler = RichHandler(rich_tracebacks=True, **rich_handler_kargs)
+        rich_handler.setFormatter(fmt=logging.Formatter("%(name)s - %(funcName)s() - %(message)s"))
+        rich_handler.setLevel(default_level or logging.root.level)
+        # logging.root.handlers.clear()
+        logging.root.handlers = [rich_handler]
         for handler in logging.root.handlers:
             if hasattr(handler, "setLevel"):
                 handler.setLevel(default_level or logging.root.level)
