@@ -6,7 +6,6 @@ import os
 from types import FunctionType
 from typing import Any, Callable, Optional, Protocol, Union
 
-from rich.logging import RichHandler
 import yaml
 
 
@@ -34,18 +33,31 @@ def setup_logging(  # noqa: C901
             if default_level and force:
                 for handler in config["root"]["handlers"]:
                     config["handlers"][handler]["level"] = default_level or logging.root.level
+                config["root"]["level"] = default_level or logging.root.level
             logging.config.dictConfig(config)
     else:
-        # if not any([isinstance(handler, RichHandler) for handler in logging.root.handlers]):
-        rich_handler_kargs: Any = {"log_time_format": "[%Y-%m-%d %H:%M:%S.%f]"}
-        rich_handler_kargs.update(
-            {key: value for key, value in kwargs.items() if key in RichHandler.__init__.__code__.co_varnames}
+        logging.config.dictConfig(
+            {
+                "version": 1,
+                "formatters": {
+                    "default": {
+                        "format": "[%(name)s] - %(funcName)s() - %(message)s",
+                        "datefmt": "[%Y-%m-%d %H:%M:%S.%f]",
+                    },
+                },
+                "handlers": {
+                    "default": {
+                        "class": "rich.logging.RichHandler",
+                        "level": "INFO",
+                        "formatter": "default",
+                    },
+                },
+                "root": {
+                    "level": "INFO",
+                    "handlers": ["default"],
+                },
+            }
         )
-        rich_handler = RichHandler(rich_tracebacks=True, **rich_handler_kargs)
-        rich_handler.setFormatter(fmt=logging.Formatter("%(name)s - %(funcName)s() - %(message)s"))
-        rich_handler.setLevel(default_level or logging.root.level)
-        # logging.root.handlers.clear()
-        logging.root.handlers = [rich_handler]
         for handler in logging.root.handlers:
             if hasattr(handler, "setLevel"):
                 handler.setLevel(default_level or logging.root.level)
