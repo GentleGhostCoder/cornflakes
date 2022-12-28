@@ -56,6 +56,7 @@ def setup_logging(  # noqa: C901
                     "level": "INFO",
                     "handlers": ["default"],
                 },
+                "disable_existing_loggers": True,
             }
         )
         for handler in logging.root.handlers:
