@@ -38,3 +38,4 @@ __all__ = [
 ]
 
 patch_module(globals())
+setup_logging()
