@@ -23,12 +23,7 @@ def auto_option(config, **options) -> F:  # noqa: C901
             raise TypeError("Wrapped object should be a function!")
 
         def wrapper(config_args: Optional[tuple] = None, *args, **kwargs):
-            config_args = (
-                (None, None) if not config_args else (config_args[0], None) if len(config_args) == 1 else config_args
-            )
-            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(
-                files=config_args[0], sections=config_args[1]
-            )
+            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file()
             if not __config:
                 logging.error(f"Config is empty {__config} for file {config_args[0]} and section {config_args[1]}")
                 raise ValueError

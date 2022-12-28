@@ -45,7 +45,7 @@ def setup_logging(  # noqa: C901
             rich_handler.setFormatter(fmt=logging.Formatter("%(name)s - %(funcName)s() - %(message)s"))
             rich_handler.setLevel(default_level or logging.root.level)
             # logging.root.handlers.clear()
-            logging.root.addHandler(rich_handler)
+            logging.root.handlers = [rich_handler]
         for handler in logging.root.handlers:
             if hasattr(handler, "setLevel"):
                 handler.setLevel(default_level or logging.root.level)
