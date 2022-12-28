@@ -56,6 +56,7 @@ def auto_option(config, **options) -> F:  # noqa: C901
                 line = line[6:].split(":")
                 configs.update({line[0]: line[1].strip()})
         configs.update(options)
+        print(configs)
         for slot_name in config.__dataclass_fields__.keys():
             wrapper = option(
                 f"--{slot_name.replace('_', '-')}", **configs.get(slot_name, {"help": f"value for {slot_name}"})
