@@ -1,7 +1,13 @@
 // Copyright (c) 2022 Semjon Geist.
+// "License": Public Domain
+// Use it at your own risk for whatever you like. In case there are
+// jurisdictions that don't support putting things in the public domain you can
+// also consider it to be "dual licensed" under the BSD, MIT and Apache
+// licenses, if you want to. This code is trivial anyway. Consider it an example
+// on how to get the endian conversion functions on different platforms.
 
-#ifndef INST__CORNFLAKES_ENDIAN_H_
-#define INST__CORNFLAKES_ENDIAN_H_
+#ifndef INST__CORNFLAKES_ENDIAN_H__
+#define INST__CORNFLAKES_ENDIAN_H__
 
 #if (defined(_WIN16) || defined(_WIN32) || defined(_WIN64)) && \
     !defined(__WINDOWS__)
@@ -12,7 +18,7 @@
 
 #if defined(__linux__) || defined(__CYGWIN__)
 
-#include "/usr/include/endian.h"
+#include <endian.h>
 
 #elif defined(__APPLE__)
 
@@ -40,7 +46,12 @@
 
 #elif defined(__OpenBSD__)
 
-#include <sys/endian.h>
+#include <endian.h>
+
+#define __BYTE_ORDER BYTE_ORDER
+#define __BIG_ENDIAN BIG_ENDIAN
+#define __LITTLE_ENDIAN LITTLE_ENDIAN
+#define __PDP_ENDIAN PDP_ENDIAN
 
 #elif defined(__NetBSD__) || defined(__FreeBSD__) || defined(__DragonFly__)
 
@@ -57,46 +68,45 @@
 
 #elif defined(__WINDOWS__)
 
-#include <windows.h>
+#include <winsock2.h>
+#ifdef __GNUC__
+#include <sys/param.h>
+#endif
 
 #if BYTE_ORDER == LITTLE_ENDIAN
 
-#if defined(_MSC_VER)
-#include <stdlib.h>
-#define htobe16(x) _byteswap_ushort(x)
+#define htobe16(x) htons(x)
 #define htole16(x) (x)
-#define be16toh(x) _byteswap_ushort(x)
+#define be16toh(x) ntohs(x)
 #define le16toh(x) (x)
 
-#define htobe32(x) _byteswap_ulong(x)
+#define htobe32(x) htonl(x)
 #define htole32(x) (x)
-#define be32toh(x) _byteswap_ulong(x)
+#define be32toh(x) ntohl(x)
 #define le32toh(x) (x)
 
-#define htobe64(x) _byteswap_uint64(x)
+#define htobe64(x) htonll(x)
 #define htole64(x) (x)
-#define be64toh(x) _byteswap_uint64(x)
+#define be64toh(x) ntohll(x)
 #define le64toh(x) (x)
 
-#elif defined(__GNUC__) || defined(__clang__)
+#elif BYTE_ORDER == BIG_ENDIAN
 
-#define htobe16(x) __builtin_bswap16(x)
-#define htole16(x) (x)
-#define be16toh(x) __builtin_bswap16(x)
-#define le16toh(x) (x)
+/* that would be xbox 360 */
+#define htobe16(x) (x)
+#define htole16(x) __builtin_bswap16(x)
+#define be16toh(x) (x)
+#define le16toh(x) __builtin_bswap16(x)
 
-#define htobe32(x) __builtin_bswap32(x)
-#define htole32(x) (x)
-#define be32toh(x) __builtin_bswap32(x)
-#define le32toh(x) (x)
+#define htobe32(x) (x)
+#define htole32(x) __builtin_bswap32(x)
+#define be32toh(x) (x)
+#define le32toh(x) __builtin_bswap32(x)
 
-#define htobe64(x) __builtin_bswap64(x)
-#define htole64(x) (x)
-#define be64toh(x) __builtin_bswap64(x)
-#define le64toh(x) (x)
-#else
-#error platform not supported
-#endif
+#define htobe64(x) (x)
+#define htole64(x) __builtin_bswap64(x)
+#define be64toh(x) (x)
+#define le64toh(x) __builtin_bswap64(x)
 
 #else
 
@@ -109,8 +119,55 @@
 #define __LITTLE_ENDIAN LITTLE_ENDIAN
 #define __PDP_ENDIAN PDP_ENDIAN
 
+#elif defined(__QNXNTO__)
+
+#include <gulliver.h>
+
+#define __LITTLE_ENDIAN 1234
+#define __BIG_ENDIAN 4321
+#define __PDP_ENDIAN 3412
+
+#if defined(__BIGENDIAN__)
+
+#define __BYTE_ORDER __BIG_ENDIAN
+
+#define htobe16(x) (x)
+#define htobe32(x) (x)
+#define htobe64(x) (x)
+
+#define htole16(x) ENDIAN_SWAP16(x)
+#define htole32(x) ENDIAN_SWAP32(x)
+#define htole64(x) ENDIAN_SWAP64(x)
+
+#elif defined(__LITTLEENDIAN__)
+
+#define __BYTE_ORDER __LITTLE_ENDIAN
+
+#define htole16(x) (x)
+#define htole32(x) (x)
+#define htole64(x) (x)
+
+#define htobe16(x) ENDIAN_SWAP16(x)
+#define htobe32(x) ENDIAN_SWAP32(x)
+#define htobe64(x) ENDIAN_SWAP64(x)
+
 #else
+
+#error byte order not supported
 
 #endif
 
-#endif  //  INST__CORNFLAKES_ENDIAN_H_
+#define be16toh(x) ENDIAN_BE16(x)
+#define be32toh(x) ENDIAN_BE32(x)
+#define be64toh(x) ENDIAN_BE64(x)
+#define le16toh(x) ENDIAN_LE16(x)
+#define le32toh(x) ENDIAN_LE32(x)
+#define le64toh(x) ENDIAN_LE64(x)
+
+#else
+
+#error platform not supported
+
+#endif
+
+#endif  // INST__CORNFLAKES_ENDIAN_H__
