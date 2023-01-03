@@ -55,7 +55,7 @@ py::list extract_between(const std::string &data, std::string start, char end) {
     result.append(py::cast(std::string(start_iter, value_iter)));
   }
 
-  return result;
+  return std::move(result);
 }
 
 template <class T_0, class T_1>
@@ -69,7 +69,7 @@ std::map<std::string, std::vector<T_out>> convert_to_map(
   std::map<std::string, std::vector<T_out>> result;
 
   if (dictionary.is_none()) {
-    return result;
+    return std::move(result);
   }
   if (py::isinstance<py::dict>(dictionary)) {
     for (std::pair<py::handle, py::handle> item : dictionary.cast<py::dict>()) {
@@ -114,7 +114,7 @@ std::map<std::string, std::vector<T_out>> convert_to_map(
   if (py::isinstance<T_in>(dictionary)) {
     result[dictionary.cast<py::str>()] = {dictionary.cast<T_out>()};
   }
-  return result;
+  return std::move(result);
 }
 
 std::map<std::string, std::vector<std::string>> convert_to_map_str(
@@ -750,6 +750,6 @@ py::object eval_csv(const std::string &value) {
   });
   result["schema"] = schema;
 
-  return result;
+  return std::move(result);
 }
 }  // namespace string_operations
