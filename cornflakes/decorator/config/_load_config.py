@@ -51,10 +51,9 @@ def create_file_loader(  # noqa: C901
         if error_args:
             logging.debug(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
             logging.debug(f"Please check Args: {error_args}")
-            config.update({f.name: f.default or f.default_factory() for f in fields(cls) if f.name in error_args})
 
         #  config_instance
-        config_instance = cls(**{key: value for key, value in config.items() if key in fields(cls)})
+        config_instance = cls(**{key: value for key, value in config.items() if key in dataclass_fields(cls)})
         if filter_function(config_instance):
             return config_instance
 
