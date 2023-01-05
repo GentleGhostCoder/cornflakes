@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from dataclasses import MISSING
+from dataclasses import MISSING, fields
 from functools import partial
 import logging
 import re
@@ -25,7 +25,7 @@ def _default_filter_method(x: Any):
 
 
 def create_file_loader(  # noqa: C901
-    cls: Config,
+    cls: Union[Config, Any],
     loader: LoaderMethod = ini_load,  # type: ignore
 ):
     """Config decorator to parse Ini Files and implements from_file method to config-classes.
@@ -37,23 +37,24 @@ def create_file_loader(  # noqa: C901
     """
     required_keys = [
         f.name
-        for f in dataclass_fields(cls).values()
+        for f in fields(cls).values()
         if (f.default_factory == WITHOUT_DEFAULT) or (f.default_factory == MISSING and f.default == MISSING)
     ]  # type: ignore
 
-    keys = {key: getattr(value, "alias", key) or key for key, value in list(cls.__dataclass_fields__.items())}
+    keys = {f.name: getattr(f, "alias", f.name) or f.name for f in fields(cls)}
 
     def create_config(config: dict, allow_empty=None, filter_function=_default_filter_method, **cls_kwargs):
         if not config and allow_empty:
             return
         config.update(cls_kwargs)
-        error_args = [key for key in config if key not in cls.__dataclass_fields__]
+        error_args = [key for key in config if key not in dataclass_fields(cls)]
         if error_args:
             logging.warning(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
             logging.warning(f"Please check Args: {error_args}")
+            config.update({f.name: f.default or f.default_factory() for f in fields(cls) if f.name in error_args})
 
         #  config_instance
-        config_instance = cls(**{key: value for key, value in config.items() if key in cls.__dataclass_fields__})
+        config_instance = cls(**{key: value for key, value in config.items() if key in fields(cls)})
         if filter_function(config_instance):
             return config_instance
 
