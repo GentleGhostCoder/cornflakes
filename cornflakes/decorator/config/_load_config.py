@@ -37,7 +37,7 @@ def create_file_loader(  # noqa: C901
     """
     required_keys = [
         f.name
-        for f in fields(cls).values()
+        for f in fields(cls)
         if (f.default_factory == WITHOUT_DEFAULT) or (f.default_factory == MISSING and f.default == MISSING)
     ]  # type: ignore
 
