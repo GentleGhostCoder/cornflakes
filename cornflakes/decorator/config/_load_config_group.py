@@ -62,8 +62,8 @@ def create_group_loader(cls) -> Callable[..., ConfigGroup]:
                 )
         error_args = [key for key in slot_kwargs if key not in cls.__dataclass_fields__]
         if error_args:
-            logging.warning(f"The variables {error_args} in **{cls.__name__}** are not defined!")
-            logging.warning("Use generate_group in build script to auto generate the config group!")
+            logging.debug(f"The variables {error_args} in **{cls.__name__}** are not defined!")
+            logging.debug("Use generate_group in build script to auto generate the config group!")
 
         return cls(*slot_args, **{key: value for key, value in slot_kwargs.items() if key not in error_args})
 
