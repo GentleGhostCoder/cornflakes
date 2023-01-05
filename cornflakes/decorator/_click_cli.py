@@ -1,4 +1,5 @@
 from inspect import getfile
+import logging
 from typing import Any, Callable, Optional, Union
 
 from click import BaseCommand, Group, style, version_option
@@ -7,6 +8,7 @@ import pkg_resources
 from cornflakes.click import RichConfig, RichGroup, group
 from cornflakes.decorator._types import Loader
 from cornflakes.decorator.config import Config
+from cornflakes.logging.logger import setup_logging
 
 
 def click_cli(  # noqa: C901
@@ -14,12 +16,14 @@ def click_cli(  # noqa: C901
     config: Optional[Config] = None,
     files: Optional[str] = None,
     loader: Loader = Loader.DICT_LOADER,
+    default_log_level: int = logging.INFO,
     *args,
     **kwargs,
 ) -> Union[
     Callable[[Any], Callable[..., Union[BaseCommand, RichGroup]]], Callable[..., Union[BaseCommand, Group, RichGroup]]
 ]:
     """Function that creates generic click CLI Object."""
+    setup_logging(default_level=default_log_level)
     if not config:
         if not files:
             config = RichConfig(*args, **kwargs)
