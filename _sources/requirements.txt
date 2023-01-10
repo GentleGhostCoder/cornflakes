@@ -6,5 +6,5 @@ sphinx_click>=3.0.0
 sphinxcontrib-inlinesyntaxhighlight>=0.2
 click>=8.0.1
 myst-parser>=0.18.0
-breathe>=4.34.0
 PyYAML>=5.4.1
+breathe>=4.34.0
