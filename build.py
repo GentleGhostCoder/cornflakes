@@ -110,11 +110,6 @@
 # # if os.path.exists("build"):
 # #     shutil.rmtree("build")
 #
-# docutils.core.publish_file(source_path="README.rst", destination_path="README.html", writer_name="html")
-#
-# with open("README.html") as fh:
-#     long_description = fh.read()
-#
 #
 # def build(setup_kwargs):
 #     ext_modules = [CMakeExtension("_cornflakes", "inst/_cornflakes")]
@@ -132,6 +127,7 @@
 from glob import glob
 import os
 
+import docutils.core
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
@@ -159,6 +155,11 @@ files = [
 
 ext_paths = [external_path, f"{external_path}/pybind11/include", f"{external_path}/rapidjson/include/rapidjson"]
 
+docutils.core.publish_file(source_path="README.rst", destination_path="README.html", writer_name="html")
+
+with open("README.html") as fh:
+    long_description = fh.read()
+
 
 def build(setup_kwargs):
     ext_modules = [
@@ -166,6 +167,8 @@ def build(setup_kwargs):
     ]
     setup_kwargs.update(
         {
+            "long_description": long_description,
+            "long_description_content_type": "text/html",
             "ext_modules": ext_modules,
             "cmdclass": {"build_ext": build_ext},
             "zip_safe": False,

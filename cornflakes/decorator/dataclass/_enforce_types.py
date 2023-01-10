@@ -1,5 +1,6 @@
 from contextlib import suppress
 import inspect
+from dataclasses import MISSING
 from itertools import chain
 from os import environ
 from typing import Any, Callable, Optional, Union, get_args
@@ -8,6 +9,31 @@ from _cornflakes import eval_type
 from cornflakes.common import extract_var_names
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
 from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, ConfigGroup, DataclassProtocol
+from cornflakes.decorator.config._helper import dataclass_fields
+
+# from types import GenericAlias
+# import typing
+#
+# t_UnionGenericAlias = getattr(typing, "_UnionGenericAlias", None)
+# t_GenericAlias = getattr(typing, "_GenericAlias", None)
+#
+#
+# def get_types_from_typing(t) -> Union[List, Any]:
+#     result = []
+#
+#     def recursive(t):
+#         if type(t) in (t_UnionGenericAlias, t_GenericAlias):
+#             for arg in t.__args__:
+#                 recursive(arg)
+#         elif type(t) is GenericAlias:
+#             result.append(t.__subclasshook__.__self__)
+#         else:
+#             result.append(t)
+#
+#     recursive(t)
+#     if len(result) == 1:
+#         return result[0]
+#     return result
 
 SpecialForm = type(Optional)
 
@@ -28,8 +54,8 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
 
     required_keys = [
         key
-        for key, value in config.__dataclass_fields__.items()
-        if getattr(value, "default_factory", None) == WITHOUT_DEFAULT
+        for key, f in dataclass_fields(config).items()
+        if (f.default_factory == WITHOUT_DEFAULT) or (f.default_factory == MISSING and f.default == MISSING)
     ]
 
     def _check_type(type_hint: Any, key, value, skip=False):

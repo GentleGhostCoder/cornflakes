@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from dataclasses import MISSING, fields
+from dataclasses import MISSING
 from functools import partial
 import logging
 import re
@@ -36,14 +36,16 @@ def create_file_loader(  # noqa: C901
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
     required_keys = [
-        f.name
-        for f in fields(cls)
+        key
+        for key, f in dataclass_fields(cls).items()
         if (f.default_factory == WITHOUT_DEFAULT) or (f.default_factory == MISSING and f.default == MISSING)
     ]  # type: ignore
 
-    keys = {f.name: getattr(f, "alias", f.name) or f.name for f in fields(cls)}
+    keys = {key: getattr(f, "alias", key) or key for key, f in dataclass_fields(cls).items()}
 
-    def create_config(config: dict, allow_empty=None, filter_function=_default_filter_method, **cls_kwargs):
+    def create_config(config: dict, allow_empty=None, filter_function=None, **cls_kwargs):
+        if not filter_function:
+            filter_function = _default_filter_method
         if not config and allow_empty:
             return
         config.update(cls_kwargs)
