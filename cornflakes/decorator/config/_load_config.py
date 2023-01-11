@@ -66,6 +66,19 @@ def create_file_loader(  # noqa: C901
             if not any([True for key in required_keys if key not in config.keys()])
         }
 
+    def _check_any_key_in_fields(config_dict):
+        return {
+            section: config_dict
+            for section, config in config_dict
+            if any([key in dataclass_fields(cls) for key in config.keys()])
+        }
+
+    def _check_config_dict(config_dict):
+        config_dict = _check_required_fields(config_dict)
+        config_dict = _check_any_key_in_fields(config_dict)
+        config_dict = _rename_default_section(config_dict)
+        return config_dict
+
     def _rename_default_section(config_dict):
         if None not in config_dict:
             return config_dict
@@ -118,8 +131,7 @@ def create_file_loader(  # noqa: C901
                 config_dict = OrderedDict(
                     loader(files={None: files}, sections=sections, keys=keys, defaults=None, eval_env=eval_env)
                 )
-                config_dict = _check_required_fields(config_dict)
-                config_dict = _rename_default_section(config_dict)
+                config_dict = _check_config_dict(config_dict)
                 logging.debug(f"Read config with sections: {config_dict.keys()}")
 
             if not sections and config_dict.keys():
@@ -136,8 +148,7 @@ def create_file_loader(  # noqa: C901
             for file_name, section_config in raw_config_dict.items():
                 for section_name, config in section_config.items():
                     config_dict[f"{file_name}:{section_name}"] = config
-            config_dict = _check_required_fields(config_dict)
-            config_dict = _rename_default_section(config_dict)
+            config_dict = _check_config_dict(config_dict)
 
             logging.debug(f"Read config with sections: {config_dict.keys()}")
 
