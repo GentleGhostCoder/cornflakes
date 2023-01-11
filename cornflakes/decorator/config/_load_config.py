@@ -151,7 +151,10 @@ def create_file_loader(  # noqa: C901
             return {
                 section.split(":", 1).pop(): config
                 for section, config in {
-                    section: _create_config(config_dict.get(section, {}), **slot_kwargs) for section in config_dict
+                    section: _create_config(
+                        config_dict.get(section, {}), **get_section_kwargs(section.split(":", 1).pop())
+                    )
+                    for section in config_dict
                 }.items()
                 if config
             } or {
@@ -163,7 +166,9 @@ def create_file_loader(  # noqa: C901
                 list(
                     _none_omit(
                         [
-                            _create_config(config_dict.get(section, {}), **get_section_kwargs(section))
+                            _create_config(
+                                config_dict.get(section, {}), **get_section_kwargs(section.split(":", 1).pop())
+                            )
                             for section in config_dict
                         ]
                     ),
