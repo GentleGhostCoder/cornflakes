@@ -82,6 +82,8 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                 )
                 if not any(inspect.isclass(t) for t in actual_types):
                     if value not in actual_types:
+                        if skip:
+                            return
                         raise TypeError(
                             f"Expected any of '{actual_types}' for attribute '{key}' but received type '{type(value)}')."
                         )
