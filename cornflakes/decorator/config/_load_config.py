@@ -131,7 +131,11 @@ def create_file_loader(  # noqa: C901
             return {sections: config}
 
         if not config_dict:
-            config_dict = OrderedDict(loader(files={None: files}, sections=None, keys=keys, eval_env=eval_env))
+            raw_config_dict = OrderedDict(loader(files=files, sections=None, keys=keys, eval_env=eval_env))
+            config_dict = {}
+            for file_name, section_config in raw_config_dict.items():
+                for section_name, config in section_config.items():
+                    config_dict[f"{file_name}:{section_name}"] = config
             config_dict = _check_required_fields(config_dict)
             config_dict = _rename_default_section(config_dict)
 
@@ -145,7 +149,7 @@ def create_file_loader(  # noqa: C901
         }
         if not is_config_list(cls):
             return {
-                section: config
+                section.split(":", 1).pop(): config
                 for section, config in {
                     section: _create_config(config_dict.get(section, {}), **slot_kwargs) for section in config_dict
                 }.items()
