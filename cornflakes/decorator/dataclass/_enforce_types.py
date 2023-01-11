@@ -91,6 +91,12 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                 values = [_check_type(t, key, value, skip=True) for t in actual_types]
                 if not any(values) and type(None) in actual_types:
                     return None
+                if not any(values):
+                    if skip:
+                        return
+                    raise TypeError(
+                        f"Expected any of '{actual_types}' for attribute '{key}' but received type '{type(value)}')."
+                    )
                 return next(item for item in values if item is not None)
 
             if actual_type in [list, tuple]:
