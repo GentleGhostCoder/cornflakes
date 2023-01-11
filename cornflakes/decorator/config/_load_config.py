@@ -69,7 +69,7 @@ def create_file_loader(  # noqa: C901
     def _check_any_key_in_fields(config_dict):
         return {
             section: config_dict
-            for section, config in config_dict
+            for section, config in config_dict.items()
             if any([key in dataclass_fields(cls).keys() for key in config.keys()])
         }
 
