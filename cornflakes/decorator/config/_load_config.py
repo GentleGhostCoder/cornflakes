@@ -143,12 +143,15 @@ def create_file_loader(  # noqa: C901
             return {sections: config}
 
         if not config_dict:
-            raw_config_dict = OrderedDict(loader(files=files, sections=None, keys=keys, eval_env=eval_env))
-            config_dict = {}
-            for file_name, section_config in raw_config_dict.items():
-                for section_name, config in section_config.items():
-                    config_dict[f"{file_name}:{section_name}"] = config
-            config_dict = _check_config_dict(config_dict)
+            if cls.__chain_files__:
+                config_dict = OrderedDict(loader(files={None: files}, sections=None, keys=keys, eval_env=eval_env))
+            else:
+                raw_config_dict = OrderedDict(loader(files=files, sections=None, keys=keys, eval_env=eval_env))
+                config_dict = {}
+                for file_name, section_config in raw_config_dict.items():
+                    for section_name, config in section_config.items():
+                        config_dict[f"{file_name}:{section_name}"] = config
+                config_dict = _check_config_dict(config_dict)
 
             logging.debug(f"Read config with sections: {config_dict.keys()}")
 

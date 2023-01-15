@@ -88,6 +88,7 @@ class Config(Protocol):
     __ignored_slots__: ClassVar[List[str]]
     __multi_config__: ClassVar[bool]
     __config_list__: ClassVar[bool]
+    __chain_files__: ClassVar[bool]
     __allow_empty_config__: ClassVar[bool]
 
     def __call__(self, *args, **kwargs) -> Any:
@@ -144,6 +145,7 @@ class ConfigGroup(Protocol):
     __config_files__: ClassVar[ConfigArgument]
     __multi_config__: ClassVar[bool]
     __config_list__: ClassVar[bool]
+    __chain_files__: ClassVar[bool]
     __allow_empty_config__: ClassVar[bool]
 
     def __call__(self, *args, **kwargs) -> Any:

@@ -9,6 +9,7 @@ def config_group(
     config_cls=None,
     files: Optional[Union[str, List[str]]] = None,
     allow_empty: Optional[bool] = None,
+    chain_files: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
 ) -> Union[ConfigGroup, Callable[..., ConfigGroup]]:
@@ -17,6 +18,7 @@ def config_group(
     :param config_cls: Config class
     :param files: Default config files
     :param allow_empty: Flag that allows empty config result
+    :param chain_files: flag indicating whether to chain files in to single config.
     :param filter_function: Optional filter method for config
     :param kwargs: Additional args for custom dataclass. (dict_factory, eval_env. ...).
 
@@ -30,6 +32,7 @@ def config_group(
     def wrapper(cls) -> ConfigGroup:
         cls: Union[DataclassProtocol, Any] = dataclass(cls, **kwargs)
         cls.__config_files__ = files
+        cls.__chain_files__ = chain_files
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
 

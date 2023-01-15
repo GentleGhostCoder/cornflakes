@@ -18,6 +18,7 @@ def config(
     is_list: Optional[Union[bool, int]] = False,
     default_loader: Optional[Loader] = None,
     allow_empty: Optional[bool] = False,
+    chain_files: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
 ) -> Union[Union[Config, ConfigGroup], Callable[..., Union[Config, ConfigGroup]]]:
@@ -31,6 +32,7 @@ def config(
     :param default_loader: Default config parser method (enum)
     :param kwargs: Default configs to overwrite dataclass args
     :param allow_empty: Flag that allows empty config result
+    :param chain_files: flag indicating whether to chain files in to single config.
     :param filter_function: Optional filter method for config
     :param kwargs: Additional args for custom dataclass. (dict_factory, eval_env, validate. ...).
 
@@ -65,6 +67,7 @@ def config(
         cls.__config_files__ = files
         cls.__multi_config__ = use_regex
         cls.__config_list__ = is_list
+        cls.__chain_files__ = chain_files
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
         cls.from_yaml = staticmethod(create_yaml_file_loader(cls=cls))
