@@ -156,7 +156,9 @@ def create_file_loader(  # noqa: C901
         logging.debug(f"Load all configs that mach **{regex}**")
 
         config_dict = {
-            section: config for section, config in config_dict.items() if bool(re.match(regex, section or ""))
+            section: config
+            for section, config in config_dict.items()
+            if bool(re.match(regex, section.split(":", 1).pop() or ""))
         }
         if not is_config_list(cls):
             return {
