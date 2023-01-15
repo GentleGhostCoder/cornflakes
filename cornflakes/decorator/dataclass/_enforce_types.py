@@ -1,6 +1,6 @@
 from contextlib import suppress
 import inspect
-from dataclasses import MISSING
+from dataclasses import MISSING, is_dataclass
 from itertools import chain
 from os import environ
 from typing import Any, Callable, Optional, Union, get_args
@@ -100,7 +100,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                 return next(item for item in values if item is not None)
 
             if actual_type in [list, tuple]:
-                if not isinstance(value, list) and not isinstance(value, tuple):
+                if not isinstance(value, (list, tuple)):
                     if skip:
                         return
                     raise TypeError(
@@ -120,6 +120,8 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                         raise TypeError(
                             f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
                         )
+                    if is_dataclass(actual_type) and isinstance(value, dict):
+                        return actual_type(**value)
                     return actual_type(value)  # type: ignore
                 except Exception as exc:
                     if skip:
