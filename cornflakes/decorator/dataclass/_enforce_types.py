@@ -65,6 +65,9 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
         if isinstance(type_hint, SpecialForm):
             return value
 
+        if inspect.isclass(type_hint) and isinstance(value, type_hint):
+            return value
+
         if is_dataclass(type_hint) and isinstance(value, dict):
             return type_hint(**value)
 
@@ -117,9 +120,9 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
 
             if not isinstance(value, actual_type):
                 try:
+                    if skip:
+                        return
                     if not validate:
-                        if skip:
-                            return
                         raise TypeError(
                             f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
                         )
