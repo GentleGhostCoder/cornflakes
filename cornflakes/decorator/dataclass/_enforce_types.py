@@ -120,9 +120,9 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
 
             if not isinstance(value, actual_type):
                 try:
-                    if skip:
-                        return
                     if not validate:
+                        if skip:
+                            return
                         raise TypeError(
                             f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
                         )
