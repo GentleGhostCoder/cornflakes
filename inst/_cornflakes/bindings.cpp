@@ -99,10 +99,10 @@ PYBIND11_MODULE(_cornflakes, module) {
 
   module.def(
       "eval_csv",
-      [](const std::string &value, bool unique_types = true) -> py::object {
+      [](const std::string &value, bool unique_types) -> py::object {
         return string_operations::eval_csv(value, unique_types);
       },
-      py::arg("value").none(false), py::arg("unique_types").none(true),
+      py::arg("value").none(false), py::arg("unique_types") = true,
       R"pbdoc(
         .. doxygenfunction:: string_operations::eval_csv
             :project: _cornflakes
