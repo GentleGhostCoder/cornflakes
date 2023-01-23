@@ -69,7 +69,7 @@ std::map<std::string, std::vector<T_out>> convert_to_map(
   std::map<std::string, std::vector<T_out>> result;
 
   if (dictionary.is_none()) {
-    return std::move(result);
+    return result;
   }
   if (py::isinstance<py::dict>(dictionary)) {
     for (std::pair<py::handle, py::handle> item : dictionary.cast<py::dict>()) {
@@ -114,7 +114,7 @@ std::map<std::string, std::vector<T_out>> convert_to_map(
   if (py::isinstance<T_in>(dictionary)) {
     result[dictionary.cast<py::str>()] = {dictionary.cast<T_out>()};
   }
-  return std::move(result);
+  return result;
 }
 
 std::map<std::string, std::vector<std::string>> convert_to_map_str(
@@ -641,8 +641,9 @@ py::object eval_csv(const std::string &value, bool unique_types = true) {
   std::vector<py::object> header;
   bool has_header = false;
   std::vector<py::object> column_values;
-  std::vector<std::vector<py::object>> column_types;
-  column_types.push_back(std::vector<pybind11::object>({}));
+  std::vector<std::vector<std::string>> column_types;
+
+  column_types.push_back(std::vector<std::string>({}));
 
   std::string::const_iterator start_iter = value.begin();
   std::string::const_iterator value_iter;
@@ -668,18 +669,16 @@ py::object eval_csv(const std::string &value, bool unique_types = true) {
       column_types[0].clear();
       if (std::all_of(column_values.begin(), column_values.end(),
                       [&](const py::object &value) {
-                        //                                    std::cout <<
-                        //                                    py::str(value.attr("__class__"))<<
-                        //                                    std::endl;
                         py::object parsed =
                             eval_type(value.cast<std::string>());
-                        column_types[0].push_back(parsed.attr("__class__"));
+                        column_types[0].push_back(parsed.attr("__class__")
+                                                      .attr("__name__")
+                                                      .cast<std::string>());
                         return (py::isinstance<py::str>(parsed) &&
                                 value.cast<std::string>().find_first_of(
                                     SPECIAL_CHARS) == std::string::npos) ||
                                is_nan(value.cast<std::string>());
                       })) {
-        // std::cout << "is a correct header!" << std::endl;
         header = column_values;
         has_header = true;
       }
@@ -691,24 +690,14 @@ py::object eval_csv(const std::string &value, bool unique_types = true) {
     end_iter = start_iter;
     std::advance(end_iter, row_positions[i]);
     std::advance(start_iter, row_positions[i - 1] + line_sep_len);
-    column_types.push_back(std::vector<pybind11::object>({}));
-    // std::cout << "row_positions: " << row_positions[i] << std::endl;
+    column_types.push_back(std::vector<std::string>({}));
     while (true) {
       value_iter = find_next_col_iter(start_iter, end_iter, col_sep);
-      // std::cout << "start_iter: " << start_iter-value.begin() << std::endl;
-      // std::cout << "value_iter: " << value_iter-value.begin() << std::endl;
-      // std::cout << "end_idx: " << end_iter-value.begin() << std::endl;
-      // std::cout << "string: " << std::string(start_iter, value_iter) <<
-      // std::endl;
-      pybind11::object some_type =
-          eval_type(std::string(start_iter, value_iter))
-              .attr("__class__")
-              .attr("__name__");
-      if (!unique_types ||
-          std::find(column_types[i].begin(), column_types[i].end(),
-                    some_type) == column_types[i].end()) {
-        column_types[i].push_back(some_type);
-      }
+      auto some_type = eval_type(std::string(start_iter, value_iter))
+                           .attr("__class__")
+                           .attr("__name__")
+                           .cast<std::string>();
+      column_types[i].push_back(some_type);
       if (value_iter == end_iter) break;
       start_iter = value_iter + 1;
     }
@@ -718,19 +707,6 @@ py::object eval_csv(const std::string &value, bool unique_types = true) {
     start_iter += line_sep_len;
   }
   header.resize(column_count);
-  //        // std::cout << "column_count: " << column_count << std::endl;
-  //        // std::cout << "col_sep: " << col_sep << std::endl;
-  //        for(auto & i : header){
-  //            if(!len(i)) i = py::cast("None");
-  //            // std::cout << i << std::endl;
-  //        }
-  //        // std::cout << "column_types_count: " << column_types.size() <<
-  //        std::endl; for(const auto& col : column_types) {
-  //            // std::cout << col.size() << std::endl;
-  //            for(auto & i : col) {
-  //                // std::cout << i << std::endl;
-  //            }
-  //        }
 
   py::dict result;
   result["content_length"] = content_length;
@@ -741,17 +717,26 @@ py::object eval_csv(const std::string &value, bool unique_types = true) {
   py::list schema;
   pos = 0;
   std::for_each(header.begin(), header.end(), [&](const py::object &h_name) {
-    // std::cout << "position: " << pos << std::endl;
     py::dict meta;
-    py::list types;
     meta["name"] = !h_name ? py::none() : h_name;
     meta["position"] = pos;
-    std::for_each(
-        column_types.begin() + has_header, column_types.end(),
-        [&](const std::vector<py::object> &r_types) {
-          types.append(r_types.size() > pos ? r_types[pos] : py::none());
-        });
-    meta["types"] = types;
+    if (unique_types) {
+      std::unordered_set<std::string> types;
+      std::for_each(
+          column_types.begin() + has_header, column_types.end(),
+          [&](std::vector<std::string> r_types) {
+            types.insert(r_types.size() > pos ? r_types[pos] : "NoneType");
+          });
+      meta["types"] = py::cast(types);
+    } else {
+      std::vector<std::string> types;
+      std::for_each(
+          column_types.begin() + has_header, column_types.end(),
+          [&](std::vector<std::string> r_types) {
+            types.push_back(r_types.size() > pos ? r_types[pos] : "NoneType");
+          });
+      meta["types"] = py::cast(types);
+    }
     schema.append(meta);
     pos++;
   });
