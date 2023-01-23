@@ -76,7 +76,7 @@ inline const std::array<int, 2> empty_idx{};
 
 py::object eval_type(std::string value);
 py::object eval_datetime(const std::string &value);
-py::object eval_csv(const std::string &value);
+py::object eval_csv(const std::string &value, bool unique_types);
 bool is_nan(std::string value);
 
 std::map<std::string, std::vector<std::string>> convert_to_map_str(

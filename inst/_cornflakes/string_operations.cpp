@@ -601,7 +601,7 @@ std::string::const_iterator find_next_col_iter(
   return std::find(start_iter, end_iter, col_seperator);
 }
 
-py::object eval_csv(const std::string &value) {
+py::object eval_csv(const std::string &value, bool unique_types = true) {
   const size_t content_length = value.size();
   if (content_length == 0) {
     return py::none();  // no content
@@ -700,8 +700,15 @@ py::object eval_csv(const std::string &value) {
       // std::cout << "end_idx: " << end_iter-value.begin() << std::endl;
       // std::cout << "string: " << std::string(start_iter, value_iter) <<
       // std::endl;
-      column_types[i].push_back(
-          eval_type(std::string(start_iter, value_iter)).attr("__class__"));
+      pybind11::object some_type =
+          eval_type(std::string(start_iter, value_iter))
+              .attr("__class__")
+              .attr("__name__");
+      if (!unique_types ||
+          std::find(column_types[i].begin(), column_types[i].end(),
+                    some_type) == column_types[i].end()) {
+        column_types[i].push_back(some_type);
+      }
       if (value_iter == end_iter) break;
       start_iter = value_iter + 1;
     }
