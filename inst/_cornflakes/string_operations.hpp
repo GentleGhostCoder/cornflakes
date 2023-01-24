@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <execution>
 #include <iostream>
 #include <map>
 #include <regex>
@@ -40,7 +41,7 @@ inline const std::string COLUM_SEPERATORS = ",;\t|\b";
 inline const std::string SPECIAL_CHARS =
     COLUM_SEPERATORS + "!@#$%^&*()+?=,<>/\\ ";
 inline const std::vector<std::string> NAN_STRINGS = {"NA", "NONE", "NULL",
-                                                     "UNDEFINED"};
+                                                     "UNDEFINED", "NONETYPE"};
 inline const std::regex hex_regex = std::regex("0[xX][0-9a-fA-F]+");
 inline const std::regex boolen_true_regex =
     std::regex("(true|t)", std::regex::icase);
@@ -77,7 +78,7 @@ inline const std::array<int, 2> empty_idx{};
 
 py::object eval_type(std::string value);
 py::object eval_datetime(const std::string &value);
-py::object eval_csv(const std::string &value, bool unique_types);
+std::map<std::string, py::object> eval_csv(const std::string &input);
 bool is_nan(std::string value);
 
 std::map<std::string, std::vector<std::string>> convert_to_map_str(
