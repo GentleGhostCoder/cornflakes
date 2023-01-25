@@ -150,7 +150,7 @@ def create_file_loader(  # noqa: C901
                 config_dict = {}
                 for file_name, section_config in raw_config_dict.items():
                     for section_name, config in section_config.items():
-                        config_dict[f"{file_name}:{section_name}"] = config
+                        config_dict[f"{file_name}:{section_name or normalized_class_name(cls)}"] = config
                 config_dict = _check_config_dict(config_dict)
 
             logging.debug(f"Read config with sections: {config_dict.keys()}")
