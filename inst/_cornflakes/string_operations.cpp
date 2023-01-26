@@ -653,7 +653,7 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
   std::string cell;
   while (std::getline(line_stream, cell, column_separator[0])) {
     if (is_quoted(cell[0], cell.back())) {
-      cell = cell.erase(0, 1).erase(cell.size() - 2);
+      cell = cell.erase(0, 1).erase(cell.size() - 1);
     }
     header.push_back(cell);
   }
