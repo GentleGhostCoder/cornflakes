@@ -652,13 +652,18 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
   std::stringstream line_stream(lines[0]);
   std::string cell;
   while (std::getline(line_stream, cell, column_separator[0])) {
-    py::object py_cell = eval_type(cell);
-    header.push_back(py::str(py_cell).cast<std::string>());
+    if (is_quoted(cell[0], cell[1])) {
+      cell = cell.erase(0, 1).erase(cell.size() - 2);
+    }
+    header.push_back(cell);
+  }
+
+  for (const auto &h : header) {
     column_types.push_back(
-        py_cell.attr("__class__").attr("__name__").cast<std::string>());
+        eval_type(h).attr("__class__").attr("__name__").cast<std::string>());
     if ((column_types.back() != "str" &&
-         cell.find_first_of(SPECIAL_CHARS) == std::string::npos) ||
-        is_nan(cell)) {
+         h.find_first_of(SPECIAL_CHARS) == std::string::npos) ||
+        is_nan(h)) {
       has_header = false;
       break;
     }
