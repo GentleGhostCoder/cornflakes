@@ -712,7 +712,8 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
     }
   }
   format["column_types"] = py::cast(column_types);
-
+  format["column_count"] =
+      py::cast(!column_types.empty() ? column_types.size() : header.size());
   return format;
 }
 }  // namespace string_operations
