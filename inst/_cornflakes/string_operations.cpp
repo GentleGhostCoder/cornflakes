@@ -696,9 +696,6 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
                                    .attr("__class__")
                                    .attr("__name__")
                                    .cast<std::string>());
-        if (col_idx >= header.size()) {
-          header.emplace_back("");  // fill header
-        }
         col_idx++;
         continue;
       }
