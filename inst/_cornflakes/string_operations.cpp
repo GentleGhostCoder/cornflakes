@@ -653,7 +653,7 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
   std::string cell;
   while (std::getline(line_stream, cell, column_separator[0])) {
     py::object py_cell = eval_type(cell);
-    header.push_back(py_cell.cast<std::string>());
+    header.push_back(py::str(py_cell).cast<std::string>());
     column_types.push_back(
         py_cell.attr("__class__").attr("__name__").cast<std::string>());
     if ((column_types.back() != "str" &&
