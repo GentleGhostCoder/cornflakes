@@ -636,15 +636,6 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
   }
   format["column_separator"] = py::cast(column_separator);
 
-  std::vector<std::string> quoting_characters = {"\"", "\'"};
-  for (const auto &quote : quoting_characters) {
-    if (lines[0].find(quote) != std::string::npos) {
-      quoting_character = quote;
-      break;
-    }
-  }
-  format["quoting_character"] = py::cast(quoting_character);
-
   // Detect header
   std::vector<std::string> header;
   std::vector<std::string> column_types;
@@ -679,12 +670,34 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
     line = *it;
     std::stringstream l_stream(line);
     while (std::getline(l_stream, cell, column_separator[0])) {
+      if ((!cell.empty() && !is_nan(cell) &&
+           (cell[0] == QUOTE_CHARS[0] || cell[0] == QUOTE_CHARS[1]) &&
+           (!is_quoted(cell[0], cell.back()) ||
+            !(is_quoted(cell[0], cell.back()) &&
+              std::count(cell.begin(), cell.end(), cell[0]) % 2 == 0))) ||
+          (cell.length() == 1 &&
+           (cell[0] == QUOTE_CHARS[0] || cell[0] == QUOTE_CHARS[1]))) {
+        std::string full_cell = cell;
+        quoting_character = cell[0];
+        while (std::getline(l_stream, cell, column_separator[0])) {
+          full_cell.append(column_separator[0] + cell);
+          if (!cell.empty() &&
+              (cell.back() == QUOTE_CHARS[0] ||
+               cell.back() == QUOTE_CHARS[1]) &&
+              std::count(full_cell.begin(), full_cell.end(), full_cell[0]) %
+                      2 ==
+                  0) {
+            break;
+          }
+        }
+        cell = full_cell;
+      }
       if (col_idx < column_types.size() && !is_nan(column_types[col_idx])) {
         col_idx++;
         continue;
       }
-      if (col_idx >= column_types.size()) {
-        if (cell.empty()) {
+      if ((col_idx >= column_types.size()) != 0) {
+        if (cell.empty() || is_nan(cell)) {
           column_types.emplace_back("NoneType");
           if (col_idx >= header.size()) {
             header.emplace_back("");  // fill header
@@ -696,17 +709,18 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
                                    .attr("__class__")
                                    .attr("__name__")
                                    .cast<std::string>());
+        if (col_idx >= header.size()) {
+          header.emplace_back("");  // fill header
+        }
         col_idx++;
         continue;
       }
-      if (!cell.empty()) {
+      if (!cell.empty() && !is_nan(cell)) {
         auto cell_type = eval_type(cell)
                              .attr("__class__")
                              .attr("__name__")
                              .cast<std::string>();
-        if (is_nan(cell_type)) {
-          column_types[col_idx] = cell_type;
-        }
+        column_types[col_idx] = cell_type;
       }
       col_idx++;
     }
@@ -714,6 +728,7 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
   format["column_types"] = py::cast(column_types);
   format["column_count"] =
       py::cast(!column_types.empty() ? column_types.size() : header.size());
+  format["quoting_character"] = py::cast(quoting_character);
   return format;
 }
 }  // namespace string_operations
