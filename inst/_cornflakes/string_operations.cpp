@@ -594,7 +594,6 @@ std::string::const_iterator find_next_col_iter(
     std::string::const_iterator start_iter,
     std::string::const_iterator end_iter, const char col_seperator) {
   const char current_char = std::string(start_iter, start_iter + 1).at(0);
-  //         std::cout << "current_char: " << current_char << std::endl;
   if (current_char == QUOTE_CHARS[0] || current_char == QUOTE_CHARS[1]) {
     start_iter = std::find(start_iter + 1, end_iter, current_char);
   }
@@ -643,7 +642,7 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
   std::stringstream line_stream(lines[0]);
   std::string cell;
   while (std::getline(line_stream, cell, column_separator[0])) {
-    if (is_quoted(cell[0], cell.back())) {
+    if (!cell.empty() && is_quoted(cell[0], cell.back())) {
       cell = cell.erase(0, 1).erase(cell.size() - 1);
     }
     header.push_back(cell);
