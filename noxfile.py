@@ -188,7 +188,7 @@ def tests(session: Session) -> None:
     session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("coverage[toml]", "pytest", "pygments")
     try:
-        session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs, env={"NOX_RUNNING": True})
+        session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs, env={"NOX_RUNNING": "True"})
     finally:
         if session.interactive:
             session.notify("coverage")
