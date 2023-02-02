@@ -39,9 +39,18 @@ jobs:
             - name: Install required twine packaging dependencies
               run: pip install setuptools wheel twine
 
+            - name: Check twine package
+              run: twine check dist/*
+
+    build_many_linux:
+        runs-on: ${{ matrix.os }}
+        if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                python: ["3.8", "3.9", "3.10", "3.11"]
+
+        steps:
             - uses: RalfG/python-wheels-manylinux-build@v0.7.1
               with:
                   python-versions: "cp38-cp38 cp39-cp39 cp310-cp310 cp311-cp311"
-
-            - name: Check twine package
-              run: twine check dist/*
