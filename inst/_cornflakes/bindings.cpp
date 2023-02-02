@@ -99,10 +99,12 @@ PYBIND11_MODULE(_cornflakes, module) {
 
   module.def(
       "eval_csv",
-      [](const std::string &value) -> py::object {
-        return py::cast(string_operations::eval_csv(value));
+      [](const std::string &value,
+         const char *disallowed_header_chars) -> py::object {
+        return py::cast(
+            string_operations::eval_csv(value, disallowed_header_chars));
       },
-      py::arg("value").none(false),
+      py::arg("value").none(false), py::arg("disallowed_header_chars") = "",
       R"pbdoc(
         .. doxygenfunction:: string_operations::eval_csv
             :project: _cornflakes
