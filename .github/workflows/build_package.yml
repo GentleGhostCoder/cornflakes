@@ -60,9 +60,11 @@ jobs:
               name: Check out source-code repository
 
             - name: Setup Python
-              uses: actions/setup-python@v4
-              with:
-                  python-version: ${{ matrix.python }}
+              run: |
+                  python${{ matrix.python }} -m pip install --upgrade pip
+                  python${{ matrix.python }} -m pip install virtualenv
+                  python${{ matrix.python }} -m venv ./venv
+                  source ./venv/bin/activate
 
             - name: Install Poetry
               run: |
