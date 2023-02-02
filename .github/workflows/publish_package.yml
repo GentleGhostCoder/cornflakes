@@ -98,7 +98,7 @@ jobs:
             - name: Install required twine packaging dependencies
               run: |
                   source ./venv/bin/activate
-                  pip install setuptools wheel twine
+                  pip install setuptools wheel twine auditwheel
 
             - name: Build package
               run: |
