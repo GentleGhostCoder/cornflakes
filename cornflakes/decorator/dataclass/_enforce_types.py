@@ -72,7 +72,6 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
             return type_hint(**value)
 
         with suppress(KeyError):
-
             actual_type: Any = getattr(type_hint, "__origin__", getattr(type_hint, "type", type_hint))
 
             if isinstance(actual_type, SpecialForm):
@@ -91,7 +90,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                         if skip:
                             return
                         raise TypeError(
-                            f"Expected any of '{actual_types}' for attribute '{key}' but received type '{type(value)}')."
+                            f"Expected any of {actual_types!r} for attribute {key!r} but received type {type(value)!r})."
                         )
                     actual_types = [type(t) for t in actual_types]
                 values = [_check_type(t, key, value, skip=True) for t in actual_types]
@@ -101,7 +100,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                     if skip:
                         return
                     raise TypeError(
-                        f"Expected any of '{actual_types}' for attribute '{key}' but received type '{type(value)}')."
+                        f"Expected any of {actual_types!r} for attribute {key!r} but received type {type(value)!r})."
                     )
                 return next(item for item in values if item is not None)
 
@@ -110,7 +109,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                     if skip:
                         return
                     raise TypeError(
-                        f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
+                        f"Expected type {type_hint!r} for attribute {key!r} but received type {type(value)!r})."
                     )
                 actual_types = [t for t in get_args(type_hint) if t is not None] or [str] if value else [type(None)]
                 return actual_type(chain([_check_type(t, key, val) for val in value for t in actual_types]))
@@ -124,7 +123,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                         if skip:
                             return
                         raise TypeError(
-                            f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
+                            f"Expected type {type_hint!r} for attribute {key!r} but received type {type(value)!r})."
                         )
                     return actual_type(value)  # type: ignore
                 except Exception as exc:
@@ -132,7 +131,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
                         return
                     raise Exception(
                         f"\n{exc}"
-                        f"Expected type '{type_hint}' for attribute '{key}' but received type '{type(value)}')."
+                        f"Expected type {type_hint!r} for attribute {key!r} but received type {type(value)!r})."
                     ) from exc
 
             return value
@@ -171,7 +170,9 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validat
     def decorate(func):
         @wrap_kwargs(func)
         def wrapper(self, *args, **kwargs):
-            kwargs.update(dict(zip(func.__code__.co_varnames[1:], args)))
+            argument_names = func.__code__.co_varnames[1:]
+            argument_values = args[: len(argument_names)]
+            kwargs.update(dict(zip(argument_names, argument_values)))  # noqa: B905
             default_kwargs = {}
             default_kwargs.update(kwargs)
             if self.__eval_env__:

@@ -17,4 +17,4 @@ class MainConfig:
     sub_config: List[SubConfig] = field(default_factory=list)
 
 
-__all__ = ["MainConfig"]
+__all__ = ['MainConfig']

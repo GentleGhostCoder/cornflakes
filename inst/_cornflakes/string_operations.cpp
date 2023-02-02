@@ -55,7 +55,7 @@ py::list extract_between(const std::string &data, std::string start, char end) {
     result.append(py::cast(std::string(start_iter, value_iter)));
   }
 
-  return std::move(result);
+  return result;
 }
 
 template <class T_0, class T_1>
@@ -715,14 +715,15 @@ std::map<std::string, py::object> eval_csv(
         }
         cell = full_cell;
       }
-      if (col_idx < column_types.size() && !is_nan(column_types[col_idx])) {
+      if (col_idx < static_cast<int>(column_types.size()) &&
+          !is_nan(column_types[col_idx])) {
         col_idx++;
         continue;
       }
-      if ((col_idx >= column_types.size()) != 0) {
+      if ((col_idx >= static_cast<int>(column_types.size())) != 0) {
         if (cell.empty() || is_nan(cell)) {
           column_types.emplace_back("NoneType");
-          if (col_idx >= header.size()) {
+          if (col_idx >= static_cast<int>(column_types.size())) {
             header.emplace_back("");  // fill header
           }
           col_idx++;
@@ -732,7 +733,7 @@ std::map<std::string, py::object> eval_csv(
                                    .attr("__class__")
                                    .attr("__name__")
                                    .cast<std::string>());
-        if (col_idx >= header.size()) {
+        if (col_idx >= static_cast<int>(column_types.size())) {
           header.emplace_back("");  // fill header
         }
         col_idx++;

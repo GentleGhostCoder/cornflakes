@@ -26,8 +26,8 @@ def bg_process_option(self: Callable[..., None], background_process: bool, *func
         stderr = open(stderr_file, "w")
 
         command = (
-            f"import sys; exec(open('"
-            f"{abspath(getfile(self))}').read());"
+            f"import sys; exec(open("
+            f"{abspath(getfile(self))!r}).read());"
             f"{self.__name__}(*{func_args},**{func_kwargs});"
         )
 

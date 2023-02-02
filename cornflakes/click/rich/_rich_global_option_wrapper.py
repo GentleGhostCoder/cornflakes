@@ -16,7 +16,6 @@ def rich_global_option_wrapper(click_func, *wrap_args, pass_context: Optional[bo
     """Wrapper Method for rich command / group."""
 
     def global_option_click_decorator(func):
-
         click_cls = click_func(*wrap_args, **wrap_kwargs)(func)
 
         @wraps(func)
