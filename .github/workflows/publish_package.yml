@@ -110,7 +110,7 @@ jobs:
               run: |
                   source ./venv/bin/activate
                   python -m auditwheel repair $(ls dist/*.whl)
-                  python -m twine upload $(ls wheelhouse/*310*.whl)  --skip-existing --verbose
+                  python -m twine upload $(ls wheelhouse/*.whl)  --skip-existing --verbose
               env:
                   TWINE_USERNAME: __token__
                   TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
