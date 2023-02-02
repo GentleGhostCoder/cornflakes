@@ -55,7 +55,7 @@ py::list extract_between(const std::string &data, std::string start, char end) {
     result.append(py::cast(std::string(start_iter, value_iter)));
   }
 
-  return std::move(result);
+  return result;
 }
 
 template <class T_0, class T_1>
@@ -600,7 +600,8 @@ std::string::const_iterator find_next_col_iter(
   return std::find(start_iter, end_iter, col_seperator);
 }
 
-std::map<std::string, py::object> eval_csv(const std::string &input) {
+std::map<std::string, py::object> eval_csv(
+    const std::string &input, const char *extra_disallowed_header_chars = "") {
   std::map<std::string, py::object> format;
 
   // Detect line separator
@@ -642,6 +643,26 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
   std::stringstream line_stream(lines[0]);
   std::string cell;
   while (std::getline(line_stream, cell, column_separator[0])) {
+    if ((!cell.empty() && !is_nan(cell) &&
+         (cell[0] == QUOTE_CHARS[0] || cell[0] == QUOTE_CHARS[1]) &&
+         (!is_quoted(cell[0], cell.back()) ||
+          !(is_quoted(cell[0], cell.back()) &&
+            std::count(cell.begin(), cell.end(), cell[0]) % 2 == 0))) ||
+        (cell.length() == 1 &&
+         (cell[0] == QUOTE_CHARS[0] || cell[0] == QUOTE_CHARS[1]))) {
+      std::string full_cell = cell;
+      quoting_character = cell[0];
+      while (std::getline(line_stream, cell, column_separator[0])) {
+        full_cell.append(column_separator[0] + cell);
+        if (!cell.empty() &&
+            (cell.back() == QUOTE_CHARS[0] || cell.back() == QUOTE_CHARS[1]) &&
+            std::count(full_cell.begin(), full_cell.end(), full_cell[0]) % 2 ==
+                0) {
+          break;
+        }
+      }
+      cell = full_cell;
+    }
     if (!cell.empty() && is_quoted(cell[0], cell.back())) {
       cell = cell.erase(0, 1).erase(cell.size() - 1);
     }
@@ -651,11 +672,14 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
   for (const auto &h : header) {
     column_types.push_back(
         eval_type(h).attr("__class__").attr("__name__").cast<std::string>());
-    if ((column_types.back() != "str" &&
-         h.find_first_of(SPECIAL_CHARS) == std::string::npos) ||
-        is_nan(h)) {
+    if (column_types.back() == "NoneType") {
+      continue;
+    }
+    if (column_types.back() != "str" ||
+        h.find_first_of(SPECIAL_CHARS + extra_disallowed_header_chars) !=
+            std::string::npos ||
+        h.empty()) {
       has_header = false;
-      break;
     }
   }
   format["has_header"] = has_header ? py::str("True") : py::str("False");
@@ -691,14 +715,15 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
         }
         cell = full_cell;
       }
-      if (col_idx < column_types.size() && !is_nan(column_types[col_idx])) {
+      if (col_idx < static_cast<int>(column_types.size()) &&
+          !is_nan(column_types[col_idx])) {
         col_idx++;
         continue;
       }
-      if ((col_idx >= column_types.size()) != 0) {
+      if ((col_idx >= static_cast<int>(column_types.size())) != 0) {
         if (cell.empty() || is_nan(cell)) {
           column_types.emplace_back("NoneType");
-          if (col_idx >= header.size()) {
+          if (col_idx >= static_cast<int>(column_types.size())) {
             header.emplace_back("");  // fill header
           }
           col_idx++;
@@ -708,7 +733,7 @@ std::map<std::string, py::object> eval_csv(const std::string &input) {
                                    .attr("__class__")
                                    .attr("__name__")
                                    .cast<std::string>());
-        if (col_idx >= header.size()) {
+        if (col_idx >= static_cast<int>(column_types.size())) {
           header.emplace_back("");  // fill header
         }
         col_idx++;

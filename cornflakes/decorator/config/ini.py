@@ -38,7 +38,7 @@ def to_ini_bytes(
             bytes(
                 "\n".join(
                     [
-                        f'{cfg}="{type_to_str(getattr(self, cfg))}"'
+                        f"{cfg}={type_to_str(getattr(self, cfg))!r}"
                         for cfg in get_not_ignored_slots(self)
                         if cfg != "section_name"
                     ]

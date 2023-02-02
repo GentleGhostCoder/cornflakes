@@ -18,7 +18,6 @@ def auto_option(config, **options) -> F:  # noqa: C901
     _is_config = is_config(config)
 
     def auto_option_decorator(callback: Union[Union[Command, Group, RichCommand, RichGroup], Callable[..., None]]):
-
         if not callable(callback):
             raise TypeError("Wrapped object should be a function!")
 

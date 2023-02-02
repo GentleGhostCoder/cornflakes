@@ -41,8 +41,7 @@ def generate_group_module(  # noqa: C901
         template = file.read()
 
     if class_name:
-        template = template.replace("class Config", f"class {class_name}")
-        template = template.replace('["Config"]', f'["{class_name}"]')
+        template = template.replace("Config", class_name)
 
     # Write Template to prevent import errors
     with open(target_module_file, "w") as file:

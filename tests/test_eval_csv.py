@@ -1,4 +1,3 @@
-from datetime import datetime, time
 import unittest
 
 import cornflakes
@@ -16,36 +15,35 @@ class TestEvalDatetime(unittest.TestCase):
                 "'13:27:54.123','blabla ,blublub',NA\n"
             ),
             {
-                "content_length": 185,
-                "line_seperator": "\n",
-                "line_count": 2,
-                "column_seperator": ",",
                 "column_count": 7,
-                "schema": [
-                    {"name": "int_col", "position": 0, "types": [int]},
-                    {"name": "bool_col", "position": 1, "types": [bool]},
-                    {"name": "datetime_ms_col", "position": 2, "types": [datetime]},
-                    {"name": "datetime_col", "position": 3, "types": [datetime]},
-                    {"name": "time_col", "position": 4, "types": [time]},
-                    {
-                        "name": "text_with_quoted_seperator_col",
-                        "position": 5,
-                        "types": [str],
-                    },
-                    {"name": "None", "position": 6, "types": [type(None)]},
+                "column_separator": ",",
+                "column_types": ["int", "bool", "datetime", "datetime", "time", "str", "NoneType"],
+                "has_header": "True",
+                "header": [
+                    "int_col",
+                    "bool_col",
+                    "datetime_ms_col",
+                    "datetime_col",
+                    "time_col",
+                    "text_with_quoted_seperator_col",
+                    "None",
                 ],
+                "line_separator": "\n",
+                "parsed_line_count": 2,
+                "quoting_character": "'",
             },
         )
 
     def test_csv_bytes_col_names(self):
         self.assertEqual(
-            cornflakes.eval_csv("invalid_column?\n"),
+            cornflakes.eval_csv("invalid_column,,123,'bla,blub'\n", ".!@#$%^&*()+?=<>/\\ "),
             {
-                "content_length": 16,
-                "line_seperator": "\n",
-                "line_count": 1,
-                "column_seperator": ",",
-                "column_count": 1,
-                "schema": [{"name": None, "position": 0, "types": [str]}],
+                "column_count": 4,
+                "column_separator": ",",
+                "column_types": ["str", "NoneType", "int", "str"],
+                "has_header": "False",
+                "line_separator": "\n",
+                "parsed_line_count": 1,
+                "quoting_character": "'",
             },
         )

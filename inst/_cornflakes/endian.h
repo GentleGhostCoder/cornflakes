@@ -166,8 +166,6 @@
 
 #else
 
-#error platform not supported
-
 #endif
 
 #endif  // INST__CORNFLAKES_ENDIAN_H__
