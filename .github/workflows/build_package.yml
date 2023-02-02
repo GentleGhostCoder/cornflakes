@@ -48,7 +48,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest]
-                python: ["3.8", "3.9", "3.10", "3.11"]
+        #                python: ["3.8", "3.9", "3.10", "3.11"]
 
         steps:
             - uses: actions/checkout@v3.3.0
@@ -56,11 +56,6 @@ jobs:
                   remote: true
                   submodules: recursive
               name: Check out source-code repository
-
-            - name: Setup Python
-              uses: actions/setup-python@v4
-              with:
-                  python-version: ${{ matrix.python }}
 
             - name: Install Poetry
               run: |
@@ -72,11 +67,11 @@ jobs:
                   pip install ninja
                   ninja --version
 
-            - name: Build package
-              run: poetry build --ansi
-
             - name: Install required twine packaging dependencies
               run: pip install setuptools wheel twine
+
+            - name: Build package
+              run: poetry build
 
             - uses: RalfG/python-wheels-manylinux-build@v0.7.1
               with:
