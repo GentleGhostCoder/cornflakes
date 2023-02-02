@@ -62,6 +62,11 @@ jobs:
               with:
                   python-version: ${{ matrix.python }}
 
+            - name: Install Poetry
+              run: |
+                  pip install poetry
+                  poetry --version
+
             - name: Install Ninja
               run: |
                   pip install ninja
