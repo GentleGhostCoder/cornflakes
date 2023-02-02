@@ -102,11 +102,13 @@ jobs:
 
             - name: Build package
               run: |
+                  source ./venv/bin/activate
                   poetry build --ansi
 
             # Build and upload to PyPI
             - name: "Builds and uploads to PyPI"
               run: |
+                  source ./venv/bin/activate
                   python -m auditwheel repair $(ls dist/*.whl)
                   python -m twine upload $(ls wheelhouse/*310*.whl)  --skip-existing --verbose
               env:
