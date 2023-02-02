@@ -68,23 +68,31 @@ jobs:
 
             - name: Install Poetry
               run: |
+                  source ./venv/bin/activate
                   pip install poetry
                   poetry --version
 
             - name: Install Ninja
               run: |
+                  source ./venv/bin/activate
                   pip install ninja
                   ninja --version
 
             - name: Install required twine packaging dependencies
-              run: pip install setuptools wheel twine
+              run: |
+                  source ./venv/bin/activate
+                  pip install setuptools wheel twine
 
             - name: Build package
-              run: poetry build
+              run: |
+                  source ./venv/bin/activate
+                  poetry build
 
             #            - uses: RalfG/python-wheels-manylinux-build@v0.7.1
             #              with:
             #                  python-versions: "cp38-cp38 cp39-cp39 cp310-cp310 cp311-cp311"
 
             - name: Check twine package
-              run: twine check dist/*
+              run: |
+                  source ./venv/bin/activate
+                  twine check dist/*
