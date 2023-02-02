@@ -2,6 +2,8 @@ from dataclasses import InitVar, fields
 from typing import Optional
 from urllib.parse import ParseResult, parse_qs, urlparse, urlunparse
 
+import validators
+
 from cornflakes.decorator.config.tuple import to_tuple
 from cornflakes.decorator.dataclass._dataclass import dataclass as data
 from cornflakes.decorator.dataclass._field import field
@@ -29,6 +31,7 @@ class AnyUrl:
     :cvar username: url username (overwrites the netloc)
     :cvar password: url password (overwrites the netloc)
     :cvar tld: url tld if it is valid
+    :cvar valid: validators.url validation result
     """
 
     url: InitVar[Optional[str]] = None
@@ -44,6 +47,7 @@ class AnyUrl:
     username: Optional[str] = field(default=None, init=True, repr=False)
     password: Optional[str] = field(default=None, init=True, repr=False)
     tld: Optional[str] = field(default=None, init=True, repr=False)
+    valid: Optional[str] = field(default=None, init=True, repr=False)
     token: Optional[str] = field(default=None, init=True)
 
     def __init_parsed(self, parsed: ParseResult, overwrite=True):
@@ -78,6 +82,7 @@ class AnyUrl:
         tld = self.hostname[::-1].split(".", 1)[0][::-1]
         if tld in VALID_ZONES:
             self.tld = tld
+        self.valid = validators.url(self.hostname)
         self.token = self.token or self.password or self.username
 
     def __str__(self) -> str:
