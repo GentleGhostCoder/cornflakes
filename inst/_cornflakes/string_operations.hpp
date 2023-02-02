@@ -10,7 +10,6 @@
 
 #include <algorithm>
 #include <chrono>
-#include <execution>
 #include <iostream>
 #include <map>
 #include <regex>
