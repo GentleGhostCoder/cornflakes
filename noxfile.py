@@ -30,7 +30,7 @@ nox.options.sessions = (
     "docs-build",
 )
 
-
+os.environ["NOX_RUNNING"] = "True"
 # TODO: optimize build with session.install() instead of poetry build -> install dist
 
 
