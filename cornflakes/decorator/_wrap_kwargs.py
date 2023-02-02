@@ -9,9 +9,6 @@ _HAS_DEFAULT_FACTORY = getattr(dataclasses, "_HAS_DEFAULT_FACTORY", None)
 Empty = getattr(inspect, "_empty", None)
 
 
-# from cornflakes.decorator.dataclass._dataclass import dataclass as data
-
-
 def _not_excluded(default):
     return default != _HAS_DEFAULT_FACTORY
 
@@ -33,6 +30,7 @@ class KwargsWrapper:
     """KwargsWrapper Class."""
 
     wrapped_sig: Optional[Signature] = field(default=None, init=False)
+    key_names_no_default: List[str] = field(default_factory=list, init=False)
     key_names: List[str] = field(default_factory=list, init=False)
     arg_names: List[str] = field(default_factory=list, init=False)
     kwarg_names: List[str] = field(default_factory=list, init=False)
@@ -44,12 +42,13 @@ class KwargsWrapper:
 
     @property
     def _names(self):
-        return [*self.key_names, *self.arg_names, *self.kwarg_names]
+        return [*self.key_names_no_default, *self.key_names, *self.arg_names, *self.kwarg_names]
 
     @property
     def _passed_names(self):
         return ", ".join(
             [
+                *[f"{key}" for key in self.key_names_no_default],
                 *[f"{key}={key}" for key in self.key_names],
                 *[f"*{arg}" for arg in self.arg_names],
                 *[f"**{arg}" for arg in self.kwarg_names],
@@ -105,7 +104,7 @@ class KwargsWrapper:
                     self.kwarg_params.append(param)
                     continue
                 if _not_excluded(param.default):
-                    self.key_names.append(name)
+                    self.key_names_no_default.append(name)
                     self.key_params_no_default.append(param)
                 continue
 
@@ -140,14 +139,10 @@ class KwargsWrapper:
         wrapper_sig: Signature = signature(wrapper)
         self._update_params(wrapper_sig.parameters)
         ldict: Dict[str, Any] = {**self._defaults_dict, **self._annotations_dict}
-        # print(ldict)
-        # print(self.params_declaration)
-        # print(self.passed_names)
         wrapper_str = f"""
 def wrap_kwargs({self._params_declaration}):
     return wrapper({self._passed_names})
 """
-        # print(wrapper_str)
         exec(  # noqa: S102
             wrapper_str,
             locals(),

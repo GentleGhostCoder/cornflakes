@@ -28,7 +28,7 @@ jobs:
                   name: "sgeist"
                   email: "semjon.geist@ionos.com"
                   actor: "sgeist"
-                  token: "${{ secrets.CT_SYNC_TOKEN}}"
+                  token: "${{ secrets.CT_SYNC_TOKEN }}"
 
             - name: Sync project
               run: cookietemple sync . ${{ secrets.CT_SYNC_TOKEN }} zethson

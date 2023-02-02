@@ -71,7 +71,7 @@ def generate_group_module(  # noqa: C901
                 f"{cfg_name}: List[{cfg[0].__class__.__name__}] = "
                 f"{field.__name__}(default_factory={cfg.__class__.__name__})"
                 if isinstance(cfg, list)
-                else f"{cfg_name}: {cfg.__class__.__name__} = {cfg.__class__.__name__}()"
+                else f"{cfg_name}: {cfg.__class__.__name__} = {field.__name__}(default_factory={cfg.__class__.__name__})"
             )
             for cfg_name, cfg in ini_config_objects.items()
         ]

@@ -55,7 +55,7 @@ py::list extract_between(const std::string &data, std::string start, char end) {
     result.append(py::cast(std::string(start_iter, value_iter)));
   }
 
-  return result;
+  return std::move(result);
 }
 
 template <class T_0, class T_1>
@@ -594,162 +594,140 @@ std::string::const_iterator find_next_col_iter(
     std::string::const_iterator start_iter,
     std::string::const_iterator end_iter, const char col_seperator) {
   const char current_char = std::string(start_iter, start_iter + 1).at(0);
-  //         std::cout << "current_char: " << current_char << std::endl;
   if (current_char == QUOTE_CHARS[0] || current_char == QUOTE_CHARS[1]) {
     start_iter = std::find(start_iter + 1, end_iter, current_char);
   }
   return std::find(start_iter, end_iter, col_seperator);
 }
 
-py::object eval_csv(const std::string &value) {
-  const size_t content_length = value.size();
-  if (content_length == 0) {
-    return py::none();  // no content
-  }
-  // std::cout << value << std::endl;
-  // std::cout << "length: " << content_length << std::endl;
-  // find all line indexes
-  size_t line_sep_r = value.find_last_of(LINE_SEPERATORS.at(0));
-  size_t line_sep_n = value.find_last_of(LINE_SEPERATORS.at(1));
-  // std::cout << "line_sep_r: " << line_sep_r << std::endl;
-  // std::cout << "line_sep_n: " << line_sep_n << std::endl;
-  const char *line_sep =
-      (line_sep_r != std::string::npos && line_sep_r + 1 == line_sep_n)
-          ? "\r\n"
-          : ((line_sep_r != std::string::npos && line_sep_r > line_sep_n)
-                 ? "\r"
-                 : "\n");
-  const int line_sep_len = static_cast<int>(std::strlen(line_sep));
-  // std::cout << "line_sep: " << line_sep << std::endl;
-  std::vector<size_t>
-      row_positions;  // holds all the positions that sub occurs within str
-  size_t pos = value.find(line_sep, 0);
-  // std::cout << "line-position: " << pos << std::endl;
-  while (pos != std::string::npos) {
-    row_positions.push_back(pos);
-    pos = value.find(line_sep, pos + 1);
-    // std::cout << "line-position: " << pos << std::endl;
-  }
-  if (value.substr(value.size() - line_sep_len) != line_sep) {
-    row_positions.push_back(content_length);
-  }
-  //        row_positions.push_back(content_length);
-  // detect column seperator (wich is used mostly for seperation and is not
-  // quoted)
-  int column_count = 0;
-  char col_sep = COLUM_SEPERATORS[0];
-  std::vector<py::object> header;
-  bool has_header = false;
-  std::vector<py::object> column_values;
-  std::vector<std::vector<py::object>> column_types;
-  column_types.push_back(std::vector<pybind11::object>({}));
+std::map<std::string, py::object> eval_csv(const std::string &input) {
+  std::map<std::string, py::object> format;
 
-  std::string::const_iterator start_iter = value.begin();
-  std::string::const_iterator value_iter;
-  std::string::const_iterator end_iter = start_iter + 2;
-  std::advance(end_iter, row_positions[0] - 2);
-  // std::cout << "end_idx: " << row_positions[0] << std::endl;
-  for (auto sep : COLUM_SEPERATORS) {
-    // std::cout << "sep: " << sep << std::endl;
-    start_iter = value.begin();
-    column_values.clear();
-    while (true) {
-      // std::cout << "col_idx: " << start_iter-value.begin() << std::endl;
-      value_iter = find_next_col_iter(start_iter, end_iter, sep);
-      // std::cout << "test: " << std::string(start_iter, value_iter) <<
-      // std::endl;
-      column_values.push_back(py::str(std::string(start_iter, value_iter)));
-      if (value_iter == end_iter) break;
-      start_iter = value_iter + 1;
+  // Detect line separator
+  std::vector<std::string> line_separators = {"\r\n", "\r", "\n"};
+  std::string line_separator;
+  for (const auto &sep : line_separators) {
+    if (input.find(sep) != std::string::npos) {
+      line_separator = sep;
+      break;
     }
-    if (static_cast<int>(column_values.size()) > column_count) {
-      column_count = static_cast<int>(column_values.size());
-      col_sep = sep;
-      column_types[0].clear();
-      if (std::all_of(column_values.begin(), column_values.end(),
-                      [&](const py::object &value) {
-                        //                                    std::cout <<
-                        //                                    py::str(value.attr("__class__"))<<
-                        //                                    std::endl;
-                        py::object parsed =
-                            eval_type(value.cast<std::string>());
-                        column_types[0].push_back(parsed.attr("__class__"));
-                        return (py::isinstance<py::str>(parsed) &&
-                                value.cast<std::string>().find_first_of(
-                                    SPECIAL_CHARS) == std::string::npos) ||
-                               is_nan(value.cast<std::string>());
-                      })) {
-        // std::cout << "is a correct header!" << std::endl;
-        header = column_values;
-        has_header = true;
+  }
+  format["line_separator"] = py::cast(line_separator);
+
+  // Split input into lines
+  std::vector<std::string> lines;
+  std::stringstream ss(input);
+  std::string line;
+  while (std::getline(ss, line, line_separator[0])) {
+    lines.push_back(line);
+  }
+
+  format["parsed_line_count"] = py::cast(lines.size());
+
+  // Detect column separator and quoting character
+  std::vector<std::string> column_separators = {",", ";", "\t", "|", "\b"};
+  std::string column_separator, quoting_character;
+  for (const auto &sep : column_separators) {
+    if (lines[0].find(sep) != std::string::npos) {
+      column_separator = sep;
+      break;
+    }
+  }
+  format["column_separator"] = py::cast(column_separator);
+
+  // Detect header
+  std::vector<std::string> header;
+  std::vector<std::string> column_types;
+  bool has_header = true;
+  std::stringstream line_stream(lines[0]);
+  std::string cell;
+  while (std::getline(line_stream, cell, column_separator[0])) {
+    if (!cell.empty() && is_quoted(cell[0], cell.back())) {
+      cell = cell.erase(0, 1).erase(cell.size() - 1);
+    }
+    header.push_back(cell);
+  }
+
+  for (const auto &h : header) {
+    column_types.push_back(
+        eval_type(h).attr("__class__").attr("__name__").cast<std::string>());
+    if ((column_types.back() != "str" &&
+         h.find_first_of(SPECIAL_CHARS) == std::string::npos) ||
+        is_nan(h)) {
+      has_header = false;
+      break;
+    }
+  }
+  format["has_header"] = has_header ? py::str("True") : py::str("False");
+  if (has_header) {
+    format["header"] = py::cast(header);
+    column_types.clear();
+  }
+
+  for (auto it = std::next(lines.begin()); it != lines.end(); ++it) {
+    int col_idx = 0;
+    line = *it;
+    std::stringstream l_stream(line);
+    while (std::getline(l_stream, cell, column_separator[0])) {
+      if ((!cell.empty() && !is_nan(cell) &&
+           (cell[0] == QUOTE_CHARS[0] || cell[0] == QUOTE_CHARS[1]) &&
+           (!is_quoted(cell[0], cell.back()) ||
+            !(is_quoted(cell[0], cell.back()) &&
+              std::count(cell.begin(), cell.end(), cell[0]) % 2 == 0))) ||
+          (cell.length() == 1 &&
+           (cell[0] == QUOTE_CHARS[0] || cell[0] == QUOTE_CHARS[1]))) {
+        std::string full_cell = cell;
+        quoting_character = cell[0];
+        while (std::getline(l_stream, cell, column_separator[0])) {
+          full_cell.append(column_separator[0] + cell);
+          if (!cell.empty() &&
+              (cell.back() == QUOTE_CHARS[0] ||
+               cell.back() == QUOTE_CHARS[1]) &&
+              std::count(full_cell.begin(), full_cell.end(), full_cell[0]) %
+                      2 ==
+                  0) {
+            break;
+          }
+        }
+        cell = full_cell;
       }
+      if (col_idx < column_types.size() && !is_nan(column_types[col_idx])) {
+        col_idx++;
+        continue;
+      }
+      if ((col_idx >= column_types.size()) != 0) {
+        if (cell.empty() || is_nan(cell)) {
+          column_types.emplace_back("NoneType");
+          if (col_idx >= header.size()) {
+            header.emplace_back("");  // fill header
+          }
+          col_idx++;
+          continue;
+        }
+        column_types.push_back(eval_type(cell)
+                                   .attr("__class__")
+                                   .attr("__name__")
+                                   .cast<std::string>());
+        if (col_idx >= header.size()) {
+          header.emplace_back("");  // fill header
+        }
+        col_idx++;
+        continue;
+      }
+      if (!cell.empty() && !is_nan(cell)) {
+        auto cell_type = eval_type(cell)
+                             .attr("__class__")
+                             .attr("__name__")
+                             .cast<std::string>();
+        column_types[col_idx] = cell_type;
+      }
+      col_idx++;
     }
   }
-
-  for (int i = 1; i < static_cast<int>(row_positions.size()); i++) {
-    start_iter = value.begin();
-    end_iter = start_iter;
-    std::advance(end_iter, row_positions[i]);
-    std::advance(start_iter, row_positions[i - 1] + line_sep_len);
-    column_types.push_back(std::vector<pybind11::object>({}));
-    // std::cout << "row_positions: " << row_positions[i] << std::endl;
-    while (true) {
-      value_iter = find_next_col_iter(start_iter, end_iter, col_sep);
-      // std::cout << "start_iter: " << start_iter-value.begin() << std::endl;
-      // std::cout << "value_iter: " << value_iter-value.begin() << std::endl;
-      // std::cout << "end_idx: " << end_iter-value.begin() << std::endl;
-      // std::cout << "string: " << std::string(start_iter, value_iter) <<
-      // std::endl;
-      column_types[i].push_back(
-          eval_type(std::string(start_iter, value_iter)).attr("__class__"));
-      if (value_iter == end_iter) break;
-      start_iter = value_iter + 1;
-    }
-    if (static_cast<int>(column_types[i].size()) > column_count) {
-      column_count = static_cast<int>(column_types[i].size());
-    }
-    start_iter += line_sep_len;
-  }
-  header.resize(column_count);
-  //        // std::cout << "column_count: " << column_count << std::endl;
-  //        // std::cout << "col_sep: " << col_sep << std::endl;
-  //        for(auto & i : header){
-  //            if(!len(i)) i = py::cast("None");
-  //            // std::cout << i << std::endl;
-  //        }
-  //        // std::cout << "column_types_count: " << column_types.size() <<
-  //        std::endl; for(const auto& col : column_types) {
-  //            // std::cout << col.size() << std::endl;
-  //            for(auto & i : col) {
-  //                // std::cout << i << std::endl;
-  //            }
-  //        }
-
-  py::dict result;
-  result["content_length"] = content_length;
-  result["line_seperator"] = line_sep;
-  result["line_count"] = row_positions.size();
-  result["column_seperator"] = col_sep;
-  result["column_count"] = column_count;
-  py::list schema;
-  pos = 0;
-  std::for_each(header.begin(), header.end(), [&](const py::object &h_name) {
-    // std::cout << "position: " << pos << std::endl;
-    py::dict meta;
-    py::list types;
-    meta["name"] = !h_name ? py::none() : h_name;
-    meta["position"] = pos;
-    std::for_each(
-        column_types.begin() + has_header, column_types.end(),
-        [&](const std::vector<py::object> &r_types) {
-          types.append(r_types.size() > pos ? r_types[pos] : py::none());
-        });
-    meta["types"] = types;
-    schema.append(meta);
-    pos++;
-  });
-  result["schema"] = schema;
-
-  return result;
+  format["column_types"] = py::cast(column_types);
+  format["column_count"] =
+      py::cast(!column_types.empty() ? column_types.size() : header.size());
+  format["quoting_character"] = py::cast(quoting_character);
+  return format;
 }
 }  // namespace string_operations

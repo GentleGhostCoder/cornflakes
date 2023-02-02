@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Semjon Geist.
 
-#ifndef INST_CORNFLAKES_STRING_OPERATIONS_HPP_
-#define INST_CORNFLAKES_STRING_OPERATIONS_HPP_
+#ifndef INST__CORNFLAKES_STRING_OPERATIONS_HPP_
+#define INST__CORNFLAKES_STRING_OPERATIONS_HPP_
 
 #include <document.h>
 #include <pybind11/eval.h>
@@ -10,10 +10,12 @@
 
 #include <algorithm>
 #include <chrono>
+#include <execution>
 #include <iostream>
 #include <map>
 #include <regex>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -38,8 +40,8 @@ inline const std::string LINE_SEPERATORS = "\r\n";
 inline const std::string COLUM_SEPERATORS = ",;\t|\b";
 inline const std::string SPECIAL_CHARS =
     COLUM_SEPERATORS + "!@#$%^&*()+?=,<>/\\ ";
-inline const std::vector<std::string> NAN_STRINGS = {"NA", "NONE", "NULL",
-                                                     "UNDEFINED"};
+inline const std::vector<std::string> NAN_STRINGS = {
+    "NA", "NONE", "NULL", "UNDEFINED", "NONETYPE", "\"\""};
 inline const std::regex hex_regex = std::regex("0[xX][0-9a-fA-F]+");
 inline const std::regex boolen_true_regex =
     std::regex("(true|t)", std::regex::icase);
@@ -76,7 +78,7 @@ inline const std::array<int, 2> empty_idx{};
 
 py::object eval_type(std::string value);
 py::object eval_datetime(const std::string &value);
-py::object eval_csv(const std::string &value);
+std::map<std::string, py::object> eval_csv(const std::string &input);
 bool is_nan(std::string value);
 
 std::map<std::string, std::vector<std::string>> convert_to_map_str(
@@ -94,4 +96,4 @@ py::list extract_between(const std::string &data, std::string start, char end);
 py::object apply_match(const std::vector<std::string> &vec, std::string match);
 }  // namespace string_operations
 
-#endif  // INST_CORNFLAKES_STRING_OPERATIONS_HPP_
+#endif  // INST__CORNFLAKES_STRING_OPERATIONS_HPP_

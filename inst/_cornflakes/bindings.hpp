@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Semjon Geist.
-#ifndef INST_CORNFLAKES_BINDINGS_HPP_
-#define INST_CORNFLAKES_BINDINGS_HPP_
+#ifndef INST__CORNFLAKES_BINDINGS_HPP_
+#define INST__CORNFLAKES_BINDINGS_HPP_
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -16,4 +16,4 @@ namespace py = pybind11;
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
-#endif  // INST_CORNFLAKES_BINDINGS_HPP_
+#endif  // INST__CORNFLAKES_BINDINGS_HPP_

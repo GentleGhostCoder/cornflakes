@@ -24,3 +24,6 @@ class Settings:
 
     SECRET_KEY: str = ""
     #  END: required environment variables
+
+
+settings = Settings.from_file("examples/.env")

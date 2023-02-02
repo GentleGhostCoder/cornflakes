@@ -65,7 +65,7 @@ class Field(DataclassField):
         return (
             f"{DataclassField.__repr__(self)[:-1]},"
             f"validator={self.validator}, "
-            f"ignore={self.ignore}"
+            f"ignore={self.ignore}, "
             f"alias={self.alias})"
         )
 

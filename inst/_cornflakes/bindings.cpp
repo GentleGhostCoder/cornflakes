@@ -100,7 +100,7 @@ PYBIND11_MODULE(_cornflakes, module) {
   module.def(
       "eval_csv",
       [](const std::string &value) -> py::object {
-        return string_operations::eval_csv(value);
+        return py::cast(string_operations::eval_csv(value));
       },
       py::arg("value").none(false),
       R"pbdoc(

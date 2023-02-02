@@ -2,8 +2,9 @@ from dataclasses import InitVar
 import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
+from typing import Optional
 
-from cornflakes import AnyUrl, config, config_field
+from cornflakes import AnyUrl, config
 from cornflakes.decorator import field
 
 
@@ -11,6 +12,7 @@ from cornflakes.decorator import field
 class SubConfig:
     """Test Config Class."""
 
+    test: Optional[str] = None
     init_config: InitVar[bool] = True
     section_name: str = ""
     string: str = "bla123"
