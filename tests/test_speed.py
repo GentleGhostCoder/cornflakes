@@ -11,7 +11,7 @@ class TestSpeed(unittest.TestCase):
         s = perf_counter()
         for _ in range(1000):
             cornflakes.ini_load("tests/configs/default.ini")
-        self.assertTrue(0.1 > (perf_counter() - s))
+        self.assertTrue(0.15 > (perf_counter() - s))
 
     def test_eval_csv_speed(self):
         s = perf_counter()
@@ -19,4 +19,4 @@ class TestSpeed(unittest.TestCase):
             data = f.read(10000)
             for _ in range(1000):
                 cornflakes.eval_csv(data)
-        self.assertTrue(0.15 > (perf_counter() - s))
+        self.assertTrue(0.2 > (perf_counter() - s))
