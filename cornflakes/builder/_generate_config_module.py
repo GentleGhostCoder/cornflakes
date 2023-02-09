@@ -108,9 +108,10 @@ def generate_group_module(  # noqa: C901
     with open(target_module_file, "w") as file:
         file.write(template)
 
-    if "black" in os.listdir(sysconfig.get_paths()["purelib"]):
-        # fix format
-        # source_config = " ".join(source_config) if isinstance(source_config, list) else source_config
-        os.system(f"black {target_module_file}")  # noqa: S605
-    if "isort" in os.listdir(sysconfig.get_paths()["purelib"]):
-        os.system(f"isort {target_module_file}")  # noqa: S605
+    if os.path.exists(sysconfig.get_paths()["purelib"]):
+        if "black" in os.listdir(sysconfig.get_paths()["purelib"]):
+            # fix format
+            # source_config = " ".join(source_config) if isinstance(source_config, list) else source_config
+            os.system(f"black {target_module_file}")  # noqa: S605
+        if "isort" in os.listdir(sysconfig.get_paths()["purelib"]):
+            os.system(f"isort {target_module_file}")  # noqa: S605
