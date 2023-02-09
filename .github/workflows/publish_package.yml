@@ -59,11 +59,180 @@ jobs:
     #                  # https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
     #                  user: __token__
     #                  password: ${{ secrets.PYPI_TOKEN }}
-    release_many_linux:
+
+    release_manylinux_2_28_x86_64:
         runs-on: ${{ matrix.os }}
         if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
         container:
             image: quay.io/pypa/manylinux_2_28_x86_64:latest
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                python: ["3.8", "3.9", "3.10", "3.11"]
+
+        steps:
+            - uses: actions/checkout@v3.3.0
+              with:
+                  remote: true
+                  submodules: recursive
+              name: Check out source-code repository
+
+            - name: Setup Python
+              run: |
+                  python${{ matrix.python }} -m pip install --upgrade pip
+                  python${{ matrix.python }} -m pip install virtualenv
+                  python${{ matrix.python }} -m venv ./venv
+                  source ./venv/bin/activate
+
+            - name: Install Poetry
+              run: |
+                  source ./venv/bin/activate
+                  pip install poetry
+                  poetry --version
+
+            - name: Install Ninja
+              run: |
+                  source ./venv/bin/activate
+                  pip install ninja
+                  ninja --version
+
+            - name: Install required twine packaging dependencies
+              run: |
+                  source ./venv/bin/activate
+                  pip install setuptools wheel twine auditwheel
+
+            - name: Build package
+              run: |
+                  source ./venv/bin/activate
+                  poetry build --ansi
+
+            # Build and upload to PyPI
+            - name: "Builds and uploads to PyPI"
+              run: |
+                  source ./venv/bin/activate
+                  python -m auditwheel repair $(ls dist/*.whl)
+                  python -m twine upload $(ls wheelhouse/*.whl)  --skip-existing --verbose
+              env:
+                  TWINE_USERNAME: __token__
+                  TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+
+    release_manylinux2014_x86_64:
+        runs-on: ${{ matrix.os }}
+        if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
+        container:
+            image: quay.io/pypa/manylinux2014_x86_64:latest
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                python: ["3.8", "3.9", "3.10", "3.11"]
+
+        steps:
+            - uses: actions/checkout@v3.3.0
+              with:
+                  remote: true
+                  submodules: recursive
+              name: Check out source-code repository
+
+            - name: Setup Python
+              run: |
+                  python${{ matrix.python }} -m pip install --upgrade pip
+                  python${{ matrix.python }} -m pip install virtualenv
+                  python${{ matrix.python }} -m venv ./venv
+                  source ./venv/bin/activate
+
+            - name: Install Poetry
+              run: |
+                  source ./venv/bin/activate
+                  pip install poetry
+                  poetry --version
+
+            - name: Install Ninja
+              run: |
+                  source ./venv/bin/activate
+                  pip install ninja
+                  ninja --version
+
+            - name: Install required twine packaging dependencies
+              run: |
+                  source ./venv/bin/activate
+                  pip install setuptools wheel twine auditwheel
+
+            - name: Build package
+              run: |
+                  source ./venv/bin/activate
+                  poetry build --ansi
+
+            # Build and upload to PyPI
+            - name: "Builds and uploads to PyPI"
+              run: |
+                  source ./venv/bin/activate
+                  python -m auditwheel repair $(ls dist/*.whl)
+                  python -m twine upload $(ls wheelhouse/*.whl)  --skip-existing --verbose
+              env:
+                  TWINE_USERNAME: __token__
+                  TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+
+    release_manylinux2014_aarch64:
+        runs-on: ${{ matrix.os }}
+        if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
+        container:
+            image: quay.io/pypa/manylinux2014_aarch64:latest
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                python: ["3.8", "3.9", "3.10", "3.11"]
+
+        steps:
+            - uses: actions/checkout@v3.3.0
+              with:
+                  remote: true
+                  submodules: recursive
+              name: Check out source-code repository
+
+            - name: Setup Python
+              run: |
+                  python${{ matrix.python }} -m pip install --upgrade pip
+                  python${{ matrix.python }} -m pip install virtualenv
+                  python${{ matrix.python }} -m venv ./venv
+                  source ./venv/bin/activate
+
+            - name: Install Poetry
+              run: |
+                  source ./venv/bin/activate
+                  pip install poetry
+                  poetry --version
+
+            - name: Install Ninja
+              run: |
+                  source ./venv/bin/activate
+                  pip install ninja
+                  ninja --version
+
+            - name: Install required twine packaging dependencies
+              run: |
+                  source ./venv/bin/activate
+                  pip install setuptools wheel twine auditwheel
+
+            - name: Build package
+              run: |
+                  source ./venv/bin/activate
+                  poetry build --ansi
+
+            # Build and upload to PyPI
+            - name: "Builds and uploads to PyPI"
+              run: |
+                  source ./venv/bin/activate
+                  python -m auditwheel repair $(ls dist/*.whl)
+                  python -m twine upload $(ls wheelhouse/*.whl)  --skip-existing --verbose
+              env:
+                  TWINE_USERNAME: __token__
+                  TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+
+    release_manylinux2014_armv7l:
+        runs-on: ${{ matrix.os }}
+        if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
+        container:
+            image: quay.io/pypa/manylinux2014_armv7l:latest
         strategy:
             matrix:
                 os: [ubuntu-latest]
