@@ -6,8 +6,8 @@
 // licenses, if you want to. This code is trivial anyway. Consider it an example
 // on how to get the endian conversion functions on different platforms.
 
-#ifndef INST__CORNFLAKES_ENDIAN_H__
-#define INST__CORNFLAKES_ENDIAN_H__
+#ifndef INST__CORNFLAKES_CROSS_ENDIAN_H_
+#define INST__CORNFLAKES_CROSS_ENDIAN_H_
 
 #if (defined(_WIN16) || defined(_WIN32) || defined(_WIN64)) && \
     !defined(__WINDOWS__)
@@ -18,7 +18,7 @@
 
 #if defined(__linux__) || defined(__CYGWIN__)
 
-#include <endian_linux.h>
+#include <endian.h>
 
 #elif defined(__APPLE__)
 
@@ -168,4 +168,4 @@
 
 #endif
 
-#endif  // INST__CORNFLAKES_ENDIAN_H__
+#endif  // INST__CORNFLAKES_CROSS_ENDIAN_H_

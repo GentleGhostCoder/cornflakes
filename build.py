@@ -126,10 +126,21 @@
 #     )
 from glob import glob
 import os
+import re
 
 import docutils.core
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
+
+
+def find_replace(file_list, find, replace, file_pattern):
+    for file in [x for x in file_list if re.match(file_pattern, x)]:
+        with open(file) as file_r:
+            s = file_r.read()
+        s = s.replace(find, replace)
+        with open(file, "w") as file_w:
+            file_w.write(s)
+
 
 __version__ = "3.0.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
 with open("cornflakes/__init__.py") as f:
@@ -154,6 +165,8 @@ files = [
 ]
 
 ext_paths = [external_path, f"{external_path}/pybind11/include", f"{external_path}/rapidjson/include/rapidjson"]
+
+find_replace(glob(f"{external_path}/*/**"), "#include <endian.h>", "#include <cross_endian.h>", "^.*(.cpp|.h|.hpp)$")
 
 docutils.core.publish_file(source_path="README.rst", destination_path="README.html", writer_name="html")
 
