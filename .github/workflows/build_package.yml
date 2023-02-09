@@ -163,11 +163,9 @@ jobs:
                 python: ["3.8", "3.9", "3.10", "3.11"]
 
         steps:
-            - uses: actions/checkout@v3.3.0
-              with:
-                  remote: true
-                  submodules: recursive
-              name: Check out source-code repository
+            - name: Checkout Repo
+              run: |
+                  git clone https://github.com/semmjon/cornflakes . --recursive
 
             - name: Setup Python
               run: |
