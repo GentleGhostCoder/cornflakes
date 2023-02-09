@@ -183,7 +183,9 @@ def build(setup_kwargs):
             "long_description": long_description,
             "long_description_content_type": "text/html",
             "ext_modules": ext_modules,
-            "cmdclass": {"build_ext": build_ext},
-            "zip_safe": False,
+            "cmdclass": {
+                "build_ext": build_ext,
+            },
+            "zip_safe": True,
         }
     )
