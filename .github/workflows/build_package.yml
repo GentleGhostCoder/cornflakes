@@ -152,7 +152,7 @@ jobs:
                   source ./venv/bin/activate
                   twine check dist/*
 
-    build_manylinux2014_aarch64:
+    release_manylinux2014_aarch64:
         runs-on: ${{ matrix.os }}
         if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
         container:
@@ -163,45 +163,23 @@ jobs:
                 python: ["3.8", "3.9", "3.10", "3.11"]
 
         steps:
-            - uses: actions/checkout@v1
-              with:
-                  submodules: recursive
-              name: Check out source-code repository
-
-            - name: Setup Python
+            - name: Run build
               run: |
+                  git clone https://github.com/semmjon/cornflakes.git --recursive
+                  cp -r ./cornflakes .
                   python${{ matrix.python }} -m pip install --upgrade pip
                   python${{ matrix.python }} -m pip install virtualenv
                   python${{ matrix.python }} -m venv ./venv
                   source ./venv/bin/activate
-
-            - name: Install Poetry
-              run: |
-                  source ./venv/bin/activate
                   pip install poetry
                   poetry --version
-
-            - name: Install Ninja
-              run: |
-                  source ./venv/bin/activate
                   pip install ninja
                   ninja --version
-
-            - name: Install required twine packaging dependencies
-              run: |
-                  source ./venv/bin/activate
-                  pip install setuptools wheel twine
-
-            - name: Build package
-              run: |
-                  source ./venv/bin/activate
-                  poetry build
-
-            #            - uses: RalfG/python-wheels-manylinux-build@v0.7.1
-            #              with:
-            #                  python-versions: "cp38-cp38 cp39-cp39 cp310-cp310 cp311-cp311"
-
-            - name: Check twine package
-              run: |
-                  source ./venv/bin/activate
-                  twine check dist/*
+                  pip install setuptools wheel twine auditwheel
+                  poetry build --ansi
+                  python -m auditwheel repair $(ls dist/*.whl)
+                  python -m twine upload $(ls wheelhouse/*.whl)  --skip-existing --verbose
+              env:
+                  PYTHONPATH: /app
+                  TWINE_USERNAME: __token__
+                  TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
