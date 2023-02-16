@@ -842,7 +842,7 @@ tornado = {version = "*", markers = "python_version > \"2.7\""}
 name = "markdown-it-py"
 version = "2.1.0"
 description = "Python port of markdown-it. Markdown parsing, done right!"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -959,7 +959,7 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 name = "mdurl"
 version = "0.1.2"
 description = "Markdown URL utilities"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1471,7 +1471,7 @@ docutils = ">=0.11,<1.0"
 
 [[package]]
 name = "rich"
-version = "12.6.0"
+version = "13.3.1"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 category = "main"
 optional = false
@@ -1482,12 +1482,12 @@ files = [
 ]
 
 [package.dependencies]
-commonmark = ">=0.9.0,<0.10.0"
-pygments = ">=2.6.0,<3.0.0"
+markdown-it-py = ">=2.1.0,<3.0.0"
+pygments = ">=2.14.0,<3.0.0"
 typing-extensions = {version = ">=4.0.0,<5.0", markers = "python_version < \"3.9\""}
 
 [package.extras]
-jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
+jupyter = ["ipywidgets (>=7.5.1,<9)"]
 
 [[package]]
 name = "rich-rst"
