@@ -61,6 +61,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                         "bool_val": True,
                         "url": "https://localhost:8080",
+                        "enum": configs.sub_config.ExampleEnum.sample,
                         "some_env": "default_value",
                     },
                     {
@@ -76,6 +77,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                         "bool_val": True,
                         "url": "https://localhost:8080",
+                        "enum": configs.sub_config.ExampleEnum.sample,
                         "some_env": "default_value",
                     },
                     {
@@ -91,6 +93,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                         "bool_val": True,
                         "url": "https://localhost:8080",
+                        "enum": configs.sub_config.ExampleEnum.sample,
                         "some_env": "default_value",
                     },
                 ]
@@ -114,6 +117,7 @@ class TestConfigGeneration(unittest.TestCase):
                         IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                         True,
                         "https://localhost:8080",
+                        configs.sub_config.ExampleEnum.sample,
                         "default_value",
                     ),
                     (
@@ -129,6 +133,7 @@ class TestConfigGeneration(unittest.TestCase):
                         IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                         True,
                         "https://localhost:8080",
+                        configs.sub_config.ExampleEnum.sample,
                         "default_value",
                     ),
                     (
@@ -144,6 +149,7 @@ class TestConfigGeneration(unittest.TestCase):
                         IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                         True,
                         "https://localhost:8080",
+                        configs.sub_config.ExampleEnum.sample,
                         "default_value",
                     ),
                 ],
@@ -189,6 +195,7 @@ class TestConfigGeneration(unittest.TestCase):
                                 fragment="",
                                 token=None,
                             ),
+                            enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
@@ -213,6 +220,7 @@ class TestConfigGeneration(unittest.TestCase):
                                 fragment="",
                                 token=None,
                             ),
+                            enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
@@ -237,6 +245,7 @@ class TestConfigGeneration(unittest.TestCase):
                                 fragment="",
                                 token=None,
                             ),
+                            enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
                         ),
                     ]
@@ -271,6 +280,7 @@ class TestConfigGeneration(unittest.TestCase):
                                 fragment="",
                                 token=None,
                             ),
+                            enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
@@ -295,6 +305,7 @@ class TestConfigGeneration(unittest.TestCase):
                                 fragment="",
                                 token=None,
                             ),
+                            enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
                         ),
                         configs.sub_config.SubConfig(
@@ -319,6 +330,7 @@ class TestConfigGeneration(unittest.TestCase):
                                 fragment="",
                                 token=None,
                             ),
+                            enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
                         ),
                     ]
