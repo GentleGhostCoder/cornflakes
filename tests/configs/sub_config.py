@@ -1,11 +1,16 @@
 from dataclasses import InitVar
 import datetime
 from decimal import Decimal
+from enum import Enum
 from ipaddress import IPv4Address, IPv6Address
 from typing import Optional
 
 from cornflakes import AnyUrl, config
 from cornflakes.decorator import field
+
+
+class ExampleEnum(Enum):
+    sample = "abc"
 
 
 @config(sections=None, use_regex=True, is_list=True, frozen=True, eval_env=True, validate=True)
@@ -27,4 +32,5 @@ class SubConfig:
     url: AnyUrl = field(
         no_default=True,
     )
+    enum: ExampleEnum = ExampleEnum.sample
     some_env: str = field(default="default_value", alias=["some_env"], ignore=True)

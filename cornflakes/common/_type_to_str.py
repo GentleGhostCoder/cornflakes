@@ -1,4 +1,5 @@
 from decimal import Decimal
+from enum import Enum
 
 
 def type_to_str(f):
@@ -9,4 +10,6 @@ def type_to_str(f):
             if (e := (string := str(f).lower()).find("e")) != -1
             else str(f)
         )
+    if isinstance(f, Enum):
+        return str(f.value)
     return str(f)
