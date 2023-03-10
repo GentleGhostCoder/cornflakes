@@ -30,7 +30,7 @@ extensions = [
     "sphinx_click",
     "sphinx_rtd_dark_mode",
     "sphinx.ext.autosummary",
-    "sphinxcontrib.inlinesyntaxhighlight",
+    # "sphinxcontrib.inlinesyntaxhighlight",
     "myst_parser",
     "breathe",
 ]

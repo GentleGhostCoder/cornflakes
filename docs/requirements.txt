@@ -3,7 +3,6 @@ sphinx_rtd_theme>=1.2.0
 sphinx-rtd-dark-mode>=1.2.4
 sphinx-automodapi>=0.14.1
 sphinx_click>=4.4.0
-sphinxcontrib-inlinesyntaxhighlight>=0.2
 click>=8.0.1
 myst-parser>=1.0.0
 PyYAML>=6.0
