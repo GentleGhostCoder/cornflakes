@@ -148,3 +148,7 @@ dmypy.json
 
 # Coala
 *.orig
+/inst/ext/hash-library/
+/inst/ext/pybind11/
+/inst/ext/rapidjson/
+/inst/ext/strtk/
