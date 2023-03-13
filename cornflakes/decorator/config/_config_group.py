@@ -1,5 +1,6 @@
 from typing import Any, Callable, List, Optional, Union, cast
 
+from cornflakes.decorator import Index, funcat
 from cornflakes.decorator._types import ConfigGroup, DataclassProtocol
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.dataclass import dataclass
@@ -36,7 +37,7 @@ def config_group(
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
 
-        cls.from_file = staticmethod(create_group_loader(cls=cls))
+        cls.from_file = staticmethod(funcat(Index.reset, funcat_where="wrap")(create_group_loader(cls=cls)))
 
         return cast(ConfigGroup, cls)
 

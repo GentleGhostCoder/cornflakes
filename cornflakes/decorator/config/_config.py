@@ -1,13 +1,14 @@
 import logging
 from typing import Any, Callable, List, Optional, Union, cast
 
+from cornflakes.decorator import Index, funcat
 from cornflakes.decorator._types import Config, ConfigGroup, DataclassProtocol, Loader
 from cornflakes.decorator.config._config_group import config_group
-from cornflakes.decorator.config._helper import get_default_loader
 from cornflakes.decorator.config.dict import create_dict_file_loader
 from cornflakes.decorator.config.ini import create_ini_file_loader
 from cornflakes.decorator.config.yaml import create_yaml_file_loader
 from cornflakes.decorator.dataclass import dataclass
+from cornflakes.decorator.dataclass.helper import get_default_loader
 
 
 def config(
@@ -70,10 +71,12 @@ def config(
         cls.__chain_files__ = chain_files
         cls.__allow_empty_config__ = allow_empty
         cls.__config_filter_function__ = filter_function
-        cls.from_yaml = staticmethod(create_yaml_file_loader(cls=cls))
-        cls.from_ini = staticmethod(create_ini_file_loader(cls=cls))  # class not dependent method
-        cls.from_dict = staticmethod(create_dict_file_loader(cls=cls))
-        cls.from_file = getattr(cls, str(default_loader.value), cls.from_dict)
+        cls.from_yaml = staticmethod(funcat(Index.reset, funcat_where="wrap")(create_yaml_file_loader(cls=cls)))
+        cls.from_ini = staticmethod(
+            funcat(Index.reset, funcat_where="wrap")(create_ini_file_loader(cls=cls))
+        )  # class not dependent method
+        cls.from_dict = staticmethod(funcat(Index.reset, funcat_where="wrap")(create_dict_file_loader(cls=cls)))
+        cls.from_file = funcat(Index.reset, funcat_where="wrap")(getattr(cls, str(default_loader.value), cls.from_dict))
 
         return cast(Config, cls)
 

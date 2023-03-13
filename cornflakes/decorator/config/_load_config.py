@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, LoaderMethod
-from cornflakes.decorator.config._helper import (
+from cornflakes.decorator.dataclass.helper import (
     dataclass_fields,
     is_config_list,
     is_multi_config,

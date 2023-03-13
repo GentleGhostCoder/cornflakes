@@ -6,7 +6,7 @@ from ipaddress import IPv4Address, IPv6Address
 from typing import Optional
 
 from cornflakes import AnyUrl, config
-from cornflakes.decorator import field
+from cornflakes.decorator import Index, field
 
 
 class ExampleEnum(Enum):
@@ -17,6 +17,8 @@ class ExampleEnum(Enum):
 class SubConfig:
     """Test Config Class."""
 
+    idx_at5: Index = 5  # type: ignore
+    idx_at_first_ini_or_0: Index["SubConfig"] = 0  # type: ignore
     test: Optional[str] = None
     init_config: InitVar[bool] = True
     section_name: str = ""

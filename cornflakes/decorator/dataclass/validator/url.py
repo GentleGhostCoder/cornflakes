@@ -1,5 +1,5 @@
 from dataclasses import InitVar, fields
-from typing import Optional
+from typing import Any, Optional, cast
 from urllib.parse import ParseResult, parse_qs, urlparse, urlunparse
 
 import validators
@@ -51,7 +51,7 @@ class AnyUrl:
     token: Optional[str] = field(default=None, init=True)
 
     def __init_parsed(self, parsed: ParseResult, overwrite=True):
-        for f in fields(self):
+        for f in fields(cast(Any, self)):
             if (overwrite or not f.default) and hasattr(parsed, f.name):
                 setattr(self, f.name, getattr(parsed, f.name, None))
 

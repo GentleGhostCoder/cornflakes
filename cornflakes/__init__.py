@@ -5,7 +5,17 @@ from _cornflakes import apply_match, eval_csv, eval_datetime, eval_type, extract
 
 from cornflakes.logging import attach_log, setup_logging
 from cornflakes.common import patch_module
-from cornflakes.decorator import config, config_group, add_slots, click_cli, Loader, dataclass, field, config_field
+from cornflakes.decorator import (
+    config,
+    config_group,
+    add_slots,
+    click_cli,
+    Loader,
+    dataclass,
+    field,
+    config_field,
+    Index,
+)
 from cornflakes.decorator.dataclass.validator import AnyUrl
 from cornflakes.builder import generate_group_module
 from cornflakes.parser import yaml_load
@@ -13,7 +23,7 @@ from cornflakes.parser import yaml_load
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "3.1.6"  # <<COOKIETEMPLE_FORCE_BUMP>>
+__version__ = "3.1.7"  # <<COOKIETEMPLE_FORCE_BUMP>>
 
 __all__ = [
     "click_cli",
@@ -35,6 +45,7 @@ __all__ = [
     "patch_module",
     "dataclass",
     "field",
+    "Index",
     "config_field",
 ]
 
