@@ -17,8 +17,8 @@ class ExampleEnum(Enum):
 class SubConfig:
     """Test Config Class."""
 
-    idx_at5: Index = 5
-    idx_at_first_ini_or_0: Index["SubConfig"] = 0
+    idx_at5: Index = 5  # type: ignore
+    idx_at_first_ini_or_0: Index["SubConfig"] = 0  # type: ignore
     test: Optional[str] = None
     init_config: InitVar[bool] = True
     section_name: str = ""
