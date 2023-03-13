@@ -1,10 +1,11 @@
 from dataclasses import astuple, fields, is_dataclass
 from typing import Any
 
-from cornflakes.decorator.config._helper import tuple_factory
+from cornflakes.decorator._indexer import is_index
+from cornflakes.decorator.dataclass.helper import tuple_factory
 
 
-def to_tuple(self) -> Any:
+def to_tuple(self) -> Any:  # noqa: C901
     """Method to convert Dataclass with slots to dict."""
     if not is_dataclass(self):
         return self
@@ -19,10 +20,16 @@ def to_tuple(self) -> Any:
     if isinstance(new_tuple, tuple):
         new_tuple = list(new_tuple)
     for idx, f in enumerate(dc_fields):
-        if is_dataclass(value := getattr(self, f.name)):
+        if is_index(value := getattr(self, f.name)):
+            type(value).reset()
+            new_tuple[idx] = value
+        if is_dataclass(value):
             new_tuple[idx] = value.to_tuple()
         if isinstance(value, list):
             for sub_idx, sub_value in enumerate(value):
+                if is_index(sub_value):
+                    type(sub_value).reset()
+                    value[sub_idx] = sub_value
                 if is_dataclass(sub_value):
                     value[sub_idx] = sub_value.to_tuple()
             new_tuple[idx] = value

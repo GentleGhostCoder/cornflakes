@@ -49,6 +49,8 @@ class TestConfigGeneration(unittest.TestCase):
             {
                 "sub_config": [
                     {
+                        "idx_at5": 5,
+                        "idx_at_first_ini_or_0": 5,
                         "test": None,
                         "section_name": "sub_config_0",
                         "string": "bla0",
@@ -65,6 +67,8 @@ class TestConfigGeneration(unittest.TestCase):
                         "some_env": "default_value",
                     },
                     {
+                        "idx_at5": 6,
+                        "idx_at_first_ini_or_0": 6,
                         "test": None,
                         "section_name": "sub_config_1",
                         "string": "bla1",
@@ -81,6 +85,8 @@ class TestConfigGeneration(unittest.TestCase):
                         "some_env": "default_value",
                     },
                     {
+                        "idx_at5": 7,
+                        "idx_at_first_ini_or_0": 7,
                         "test": None,
                         "section_name": "sub_config_2",
                         "string": "bla2",
@@ -105,6 +111,8 @@ class TestConfigGeneration(unittest.TestCase):
             (
                 [
                     (
+                        5,
+                        5,
                         None,
                         "sub_config_0",
                         "bla0",
@@ -121,6 +129,8 @@ class TestConfigGeneration(unittest.TestCase):
                         "default_value",
                     ),
                     (
+                        6,
+                        6,
                         None,
                         "sub_config_1",
                         "bla1",
@@ -137,6 +147,8 @@ class TestConfigGeneration(unittest.TestCase):
                         "default_value",
                     ),
                     (
+                        7,
+                        7,
                         None,
                         "sub_config_2",
                         "bla2",
@@ -174,6 +186,7 @@ class TestConfigGeneration(unittest.TestCase):
                 {
                     "sub_config": [
                         configs.sub_config.SubConfig(
+                            idx_at_first_ini_or_0=5,
                             test=None,
                             section_name="sub_config_0",
                             string="bla0",
@@ -259,6 +272,7 @@ class TestConfigGeneration(unittest.TestCase):
                 MainConfig(
                     sub_config=[
                         configs.sub_config.SubConfig(
+                            idx_at_first_ini_or_0=5,
                             test=None,
                             section_name="sub_config_0",
                             string="bla0",

@@ -4,9 +4,9 @@ from typing import Optional
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
 from cornflakes.decorator._types import Config
-from cornflakes.decorator.config._helper import get_not_ignored_slots, is_config
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._write_config import write_config
+from cornflakes.decorator.dataclass.helper import get_not_ignored_slots, is_config
 
 
 def _parse_config_list(cfg, cfg_name: str, title: str):

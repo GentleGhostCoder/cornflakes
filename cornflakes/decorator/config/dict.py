@@ -2,9 +2,10 @@ from dataclasses import asdict, fields, is_dataclass
 import os
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from cornflakes.decorator._indexer import is_index
 from cornflakes.decorator._types import Config
-from cornflakes.decorator.config._helper import dict_factory
 from cornflakes.decorator.config._load_config import create_file_loader
+from cornflakes.decorator.dataclass.helper import dict_factory
 
 
 def to_dict(self) -> Any:
@@ -20,11 +21,17 @@ def to_dict(self) -> Any:
     ):
         return new_dict
     for f in dc_fields:
-        if is_dataclass(value := getattr(self, f.name)):
+        if is_index(value := getattr(self, f.name)):
+            type(value).reset()
+            new_dict.update({f.name: value})
+        if is_dataclass(value):
             new_dict.update({f.name: value.to_dict()})
         if isinstance(value, list) or isinstance(value, tuple):
             value = list(value)  # if tuple cast  to list
             for idx, sub_value in enumerate(value):
+                if is_index(sub_value):
+                    type(sub_value).reset()
+                    value[idx] = sub_value
                 if is_dataclass(sub_value):
                     value[idx] = sub_value.to_dict()
             new_dict.update({f.name: value})
