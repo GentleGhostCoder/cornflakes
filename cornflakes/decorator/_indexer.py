@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
-from typing import Dict, Type
+from typing import Dict, Optional, Type, TypeVar
+
+T = TypeVar("T")
 
 
 def is_index(obj):
@@ -14,7 +16,7 @@ class IndexCounter:
     name: str = ""
     start: int = 0
     index: int = field(default=0, init=False)
-    type: type = field(default=None, init=False)
+    type: Optional[Type] = field(default=None, init=False)
 
     def __post_init__(self):
         """Initialize the dataclass object."""
@@ -40,7 +42,7 @@ class IndexCounter:
             self.index = self.start
 
 
-class Index:
+class Index(int):
     """Indexer Class."""
 
     indices: Dict[str, IndexCounter] = {}
@@ -54,7 +56,7 @@ class Index:
         return super().__new__(cls).get_index("root")(start)
 
     @classmethod
-    def get_index(cls, name: str, start: int = 0) -> Type:
+    def get_index(cls, name: str, start: int = 0):
         """Get an Index instance with the given name."""
         if name not in cls.indices:
             # Create an instance of the new IndexCounter class
@@ -65,21 +67,13 @@ class Index:
         """Returns type error message."""
         raise TypeError(f"Cannot instantiate {self!r}")
 
-    def __instancecheck__(self, obj):
-        """Returns type error message."""
-        raise TypeError(f"{self} cannot be used with isinstance()")
-
-    def __subclasscheck__(self, cls):
-        """Returns type error message."""
-        raise TypeError(f"{self} cannot be used with issubclass()")
-
     @classmethod
-    def __getitem__(cls, key) -> Type:
+    def __getitem__(cls, key):
         """Return an Index instance with the given name."""
         return cls.get_index(key)
 
     @classmethod
-    def __class_getitem__(cls, key) -> Type:
+    def __class_getitem__(cls, key):
         """Return an Index instance with the given name."""
         return cls.get_index(key)
 
