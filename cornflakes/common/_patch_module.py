@@ -23,7 +23,10 @@ def patch_module(m):
     """
     for obj in [m[x] for x in m["__all__"]]:
         if not inspect.ismodule(obj) and not isclassmethod(obj):
-            obj.__module__ = m["__name__"]
+            try:
+                obj.__module__ = m["__name__"]
+            except AttributeError:
+                pass
 
     m[
         "__doc__"
