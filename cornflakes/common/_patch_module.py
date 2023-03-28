@@ -1,4 +1,5 @@
 import inspect
+import logging
 
 
 def isclassmethod(method):
@@ -25,8 +26,8 @@ def patch_module(m):
         if not inspect.ismodule(obj) and not isclassmethod(obj):
             try:
                 obj.__module__ = m["__name__"]
-            except AttributeError:
-                pass
+            except Exception as e:
+                logging.debug(e)
 
     m[
         "__doc__"

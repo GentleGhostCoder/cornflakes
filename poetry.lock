@@ -606,7 +606,7 @@ flake8 = ">=5.0.0"
 
 [[package]]
 name = "flake8-bugbear"
-version = "23.2.13"
+version = "23.3.23"
 description = "A plugin for flake8 finding likely bugs and design problems in your program. Contains warnings that don't belong in pyflakes and pycodestyle."
 category = "dev"
 optional = false
@@ -618,7 +618,7 @@ files = [
 
 [package.dependencies]
 attrs = ">=19.2.0"
-flake8 = ">=3.0.0"
+flake8 = ">=6.0.0"
 
 [package.extras]
 dev = ["coverage", "hypothesis", "hypothesmith (>=0.2)", "pre-commit", "pytest", "tox"]
