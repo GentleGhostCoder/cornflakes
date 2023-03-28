@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cornflakes"
-version = "3.1.8"  # <<COOKIETEMPLE_FORCE_BUMP>>
+version = "3.1.9"  # <<COOKIETEMPLE_FORCE_BUMP>>
 description = "Create generic any easy way to manage Configs for your project"
 authors = ["Semjon Geist <semjon.geist@ionos.com>"]
 license = "Apache2.0"
@@ -36,7 +36,7 @@ types-pyyaml = "^6.0.12.1"
 validators = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
-autoflake = "^2.0.0"
+autoflake = "^2.0.2"
 pytest = ">=6.2.3"
 coverage = {extras = ["toml"], version = ">=5.3"}
 safety = ">=1.9.0"

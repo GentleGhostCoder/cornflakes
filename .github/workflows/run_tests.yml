@@ -59,7 +59,7 @@ jobs:
 
         steps:
             - name: Check out the repository
-              uses: actions/checkout@v3.3.0
+              uses: actions/checkout@v3.5.0
               with:
                   remote: true
                   submodules: recursive
@@ -121,7 +121,7 @@ jobs:
                   print("::set-output name=result::{}".format(result))
 
             - name: Restore pre-commit cache
-              uses: actions/cache@v3.2.6
+              uses: actions/cache@v3.3.1
               if: matrix.session == 'pre-commit'
               with:
                   path: ~/.cache/pre-commit
@@ -151,7 +151,7 @@ jobs:
         needs: tests
         steps:
             - name: Check out the repository
-              uses: actions/checkout@v3.3.0
+              uses: actions/checkout@v3.5.0
 
             - name: Set up Python 3.8
               uses: actions/setup-python@v4
