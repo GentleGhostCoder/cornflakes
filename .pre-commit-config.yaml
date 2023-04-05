@@ -13,7 +13,7 @@ repos:
             language: system
             exclude: |
                 (?x)^(
-                inst/_cornflakes/strtk/strtk.hpp
+                inst/_cornflakes/strtk/strtk.hpp|pytest
                 )$
           - id: check-toml
             name: Check Toml
