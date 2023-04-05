@@ -12,7 +12,7 @@ from cornflakes.decorator.dataclass.helper import dataclass_fields
 F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
 
 
-def auto_option(config, config_file: bool = False, **options) -> F:  # noqa: C901
+def auto_option(config: Union[Config, Any], config_file: bool = False, **options) -> F:  # noqa: C901
     """Click Option Decorator to define a global option for cli decorator."""
     if not isclass(config):
         raise TypeError("config should be a class!")
@@ -33,7 +33,9 @@ def auto_option(config, config_file: bool = False, **options) -> F:  # noqa: C90
             if "config-file" in kwargs:
                 config_kwargs.update({"files": config_kwargs.pop("config-file")})
 
-            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file(**config_kwargs)
+            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup, Any] = config.from_file(
+                **config_kwargs
+            )
             if not __config:
                 raise ValueError("Config is empty!")
             if _is_config:

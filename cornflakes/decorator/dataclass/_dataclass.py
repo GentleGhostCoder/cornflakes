@@ -1,6 +1,6 @@
 from dataclasses import dataclass as new_dataclass
 from dataclasses import fields
-from typing import Any, Callable, Optional, Type, Union
+from typing import Any, Callable, Optional, Type, Union, cast
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator._types import DataclassProtocol
@@ -19,10 +19,10 @@ def dataclass(
     eval_env: bool = False,
     validate: bool = False,
     **kwargs
-) -> Union[DataclassProtocol, Callable[..., DataclassProtocol]]:
+) -> Union[DataclassProtocol, Callable[..., DataclassProtocol], Any]:
     """Wrapper around built-in dataclasses dataclass."""
 
-    def wrapper(w_cls: Type[Any]) -> DataclassProtocol:
+    def wrapper(w_cls: Type[Any]) -> Union[DataclassProtocol, Any]:
         dataclass_fields = {
             obj_name: getattr(w_cls, obj_name)
             for obj_name in dir(w_cls)
@@ -52,7 +52,7 @@ def dataclass(
 
         if validate:
             dc_cls = enforce(dc_cls, validate)
-        return dc_cls
+        return cast(DataclassProtocol, dc_cls)
 
     if cls:
         return wrapper(cls)

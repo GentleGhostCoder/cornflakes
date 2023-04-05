@@ -6,7 +6,7 @@ repos:
             entry: black
             language: system
             types: [python]
-            require_serial: true
+            require_spkg_resourceserial: true
           - id: check-added-large-files
             name: Check for added large files
             entry: check-added-large-files

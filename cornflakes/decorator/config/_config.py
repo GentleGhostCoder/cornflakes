@@ -2,7 +2,7 @@ import logging
 from typing import Any, Callable, List, Optional, Union, cast
 
 from cornflakes.decorator import Index, funcat
-from cornflakes.decorator._types import Config, ConfigGroup, DataclassProtocol, Loader
+from cornflakes.decorator._types import Config, ConfigGroup, Loader
 from cornflakes.decorator.config._config_group import config_group
 from cornflakes.decorator.config.dict import create_dict_file_loader
 from cornflakes.decorator.config.ini import create_ini_file_loader
@@ -22,7 +22,7 @@ def config(
     chain_files: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
-) -> Union[Union[Config, ConfigGroup], Callable[..., Union[Config, ConfigGroup]]]:
+) -> Union[Union[Config, ConfigGroup, Any], Callable[..., Union[Config, ConfigGroup, Any]]]:
     """Config decorator to parse Ini Files and implements config loader methods to config-classes.
 
     :param config_cls: Config class
@@ -44,7 +44,7 @@ def config(
     if not default_loader:
         default_loader = get_default_loader(files)
 
-    def wrapper(cls):
+    def wrapper(cls) -> Union[Config, ConfigGroup, Any]:
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
@@ -63,7 +63,7 @@ def config(
                 **kwargs,
             )(cls)
 
-        cls: Union[DataclassProtocol, Any] = dataclass(cls, **kwargs)
+        cls: Union[Config, Any] = dataclass(cls, **kwargs)
         cls.__config_sections__ = sections
         cls.__config_files__ = files
         cls.__multi_config__ = use_regex

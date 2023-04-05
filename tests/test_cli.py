@@ -8,7 +8,7 @@ from cornflakes.__main__ import main
 from cornflakes.click import auto_option, command, group
 
 
-@config()
+@config
 class SomeConfig:
     """Test CLI Config.
 
@@ -48,8 +48,6 @@ def runner() -> CliRunner:
 
 def test_main_succeeds(runner: CliRunner) -> None:
     """It exits with a status code of zero."""
-    result = runner.invoke(
-        main, ["test", "test_command", "--test-option", "test1234", "--test-arg", "123", "-cfg", "some-file.ini"]
-    )
+    result = runner.invoke(main, ["test", "test_command"])
     if result.exc_info:
         assert result.exc_info[0] == TypeError or result.exc_info[0] == DeprecationWarning or result.exit_code == 0

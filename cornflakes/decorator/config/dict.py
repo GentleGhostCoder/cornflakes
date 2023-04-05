@@ -39,11 +39,11 @@ def to_dict(self) -> Any:
 
 
 def create_dict_file_loader(
-    cls: Config,
-) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
+    cls: Union[Config, Any],
+) -> Callable[..., Dict[str, Optional[Union[Config, List[Config], Any]]]]:
     """Method to create file loader for ini files."""
 
-    def from_dict(*args, config_dict=None, **kwargs) -> Dict[str, Optional[Union[Config, List[Config]]]]:
+    def from_dict(*args, config_dict=None, **kwargs) -> Dict[str, Optional[Union[Config, List[Config], Any]]]:
         if not config_dict:
             config_dict = {}
         default_kwargs = {}

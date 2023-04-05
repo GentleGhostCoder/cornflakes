@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Callable, ClassVar, Dict, List, Optional, Protocol, TypeVar, Union
+from typing import Any, Callable, ClassVar, Dict, List, Optional, Protocol, TypeVar, Union, runtime_checkable
 
 _T = TypeVar("_T")
 
@@ -35,6 +35,7 @@ class ConfigArguments(Enum):
 ConfigArgument = Optional[Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]]
 
 
+@runtime_checkable
 class LoaderMethod(Protocol):
     """Config loader method protocol."""
 
@@ -52,6 +53,7 @@ class LoaderMethod(Protocol):
         ...
 
 
+@runtime_checkable
 class DataclassProtocol(Protocol):
     """Dataclass protocol custom implementation."""
 
@@ -70,6 +72,7 @@ class DataclassProtocol(Protocol):
         ...
 
 
+@runtime_checkable
 class Config(Protocol):
     """Config Protocol Type."""
 
@@ -91,7 +94,7 @@ class Config(Protocol):
     __chain_files__: ClassVar[bool]
     __allow_empty_config__: ClassVar[bool]
 
-    def __call__(self, *args, **kwargs) -> Any:
+    def __call__(self, *args, **kwargs) -> Union[DataclassProtocol, Any]:
         """Call Function."""
         ...
 
@@ -129,6 +132,7 @@ class Config(Protocol):
     from_file: LoaderMethod
 
 
+@runtime_checkable
 class ConfigGroup(Protocol):
     """ConfigGroup Protocol Type."""
 
@@ -148,7 +152,7 @@ class ConfigGroup(Protocol):
     __chain_files__: ClassVar[bool]
     __allow_empty_config__: ClassVar[bool]
 
-    def __call__(self, *args, **kwargs) -> Any:
+    def __call__(self, *args, **kwargs) -> Union[DataclassProtocol, Any]:
         """Call Function."""
         ...
 

@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Any, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
@@ -64,7 +64,7 @@ def to_ini(self, out_cfg: Optional[str] = None) -> Optional[bytearray]:
 
 
 def create_ini_file_loader(
-    cls: Config,
+    cls: Union[Config, Any],
 ):
     """Method to create file loader for ini files."""
 
