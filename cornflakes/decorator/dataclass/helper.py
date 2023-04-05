@@ -19,12 +19,12 @@ def config_files(cls) -> ConfigArgument:
     return getattr(cls, "__config_files__", [])
 
 
-def dataclass_fields(cls: Union[Config, ConfigGroup, DataclassProtocol]) -> dict:
+def dataclass_fields(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> dict:
     """Method to return dataclass fields."""
     return getattr(cls, "__dataclass_fields__", {})
 
 
-def dict_factory(cls: Union[Config, ConfigGroup, DataclassProtocol]) -> Any:
+def dict_factory(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> Any:
     """Method to return class __dict_factory__."""
     return getattr(cls, "__dict_factory__", dict)
 
@@ -34,7 +34,7 @@ def normalized_class_name(cls):
     return re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
 
 
-def tuple_factory(cls: Union[Config, ConfigGroup, DataclassProtocol]) -> Any:
+def tuple_factory(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> Any:
     """Method to return class __tuple_factory__."""
     return getattr(cls, "__tuple_factory__", tuple)
 

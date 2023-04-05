@@ -4,7 +4,7 @@ import logging
 import logging.config
 import os
 from types import FunctionType
-from typing import Any, Callable, Optional, Protocol, Union
+from typing import Any, Callable, List, Optional, Protocol, Union
 
 import yaml
 
@@ -14,6 +14,7 @@ def setup_logging(  # noqa: C901
     default_level: Optional[int] = None,
     env_key: str = "LOG_CFG",
     force: bool = False,
+    loggers: Optional[List[str]] = None,
     **kwargs,
 ):
     """Setup logging configuration.
@@ -22,6 +23,7 @@ def setup_logging(  # noqa: C901
     :param default_path: Default path to logging config file.
     :param default_level: Default log-level (Logging.INFO).
     :param env_key: Environment key to use for logging configuration.
+    :param loggers: List of loggers to set log-level for.
     :param kwargs: arguments to pass to rich_handler
     """
     if value := os.getenv(env_key, None):
@@ -31,8 +33,9 @@ def setup_logging(  # noqa: C901
         with open(default_path) as f:
             config = yaml.safe_load(f.read())
             if default_level and force:
-                for handler in config["root"]["handlers"]:
-                    config["handlers"][handler]["level"] = default_level or logging.root.level
+                for name, handler in config["root"]["handlers"].items():
+                    if loggers and name in loggers:
+                        config["handlers"][handler]["level"] = default_level or logging.root.level
                 config["root"]["level"] = default_level or logging.root.level
             logging.config.dictConfig(config)
     else:

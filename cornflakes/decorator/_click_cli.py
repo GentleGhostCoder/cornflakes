@@ -1,9 +1,9 @@
+from importlib.metadata import version
 from inspect import getfile
 import logging
 from typing import Any, Callable, Optional, Union
 
 from click import BaseCommand, Group, style, version_option
-import pkg_resources
 
 from cornflakes.click import RichConfig, RichGroup, group
 from cornflakes.decorator._types import Loader
@@ -13,7 +13,7 @@ from cornflakes.logging.logger import setup_logging
 
 def click_cli(  # noqa: C901
     callback: Optional[Callable] = None,
-    config: Optional[Config] = None,
+    config: Optional[Union[Config, Any]] = None,
     files: Optional[str] = None,
     loader: Loader = Loader.DICT_LOADER,
     default_log_level: int = logging.INFO,
@@ -49,7 +49,7 @@ def click_cli(  # noqa: C901
             if hasattr(w_callback, "__module__"):
                 module = w_callback.__module__.split(".", 1)[0]
                 if module != "__main__":
-                    __version = pkg_resources.get_distribution(module).version
+                    __version = version(module)
 
             version_args = {
                 "prog_name": name,

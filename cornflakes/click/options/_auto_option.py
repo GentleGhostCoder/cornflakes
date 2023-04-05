@@ -1,16 +1,18 @@
+from dataclasses import fields
+from functools import wraps
 from inspect import isclass
-import logging
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Union
 
 from click import Command, Group, option
 
-from cornflakes.click.rich import RichCommand, RichGroup, argument
+from cornflakes.click.rich import RichCommand, RichGroup
 from cornflakes.decorator.config import Config, ConfigGroup, is_config
+from cornflakes.decorator.dataclass.helper import dataclass_fields
 
 F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
 
 
-def auto_option(config, **options) -> F:  # noqa: C901
+def auto_option(config: Union[Config, Any], config_file: bool = False, **options) -> F:  # noqa: C901
     """Click Option Decorator to define a global option for cli decorator."""
     if not isclass(config):
         raise TypeError("config should be a class!")
@@ -21,21 +23,27 @@ def auto_option(config, **options) -> F:  # noqa: C901
         if not callable(callback):
             raise TypeError("Wrapped object should be a function!")
 
-        def wrapper(config_args: Optional[tuple] = None, *args, **kwargs):
-            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup] = config.from_file()
+        method = eval(  # noqa: S307
+            f"lambda *args, {', '.join({f'{f.name}' for f in fields(config) if f.init})}, **kwargs: None"
+        )
+
+        @wraps(wraps(callback)(method))
+        def wrapper(*args, **kwargs):
+            config_kwargs = {key: value for key, value in kwargs.items() if key in dataclass_fields(config)}
+            if "config-file" in kwargs:
+                config_kwargs.update({"files": config_kwargs.pop("config-file")})
+
+            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup, Any] = config.from_file(
+                **config_kwargs
+            )
             if not __config:
-                logging.error(f"Config is empty {__config} for file {config_args[0]} and section {config_args[1]}")
-                raise ValueError
+                raise ValueError("Config is empty!")
             if _is_config:
                 __config = __config.popitem()[1]
                 if isinstance(__config, list):
                     __config = __config[1]
-            kwargs.update(
-                {
-                    "config": __config,
-                    "config_args": config_args,
-                }
-            )
+            kwargs.update({"config": __config})
+
             return callback(
                 *args, **{key: value for key, value in kwargs.items() if key in callback.__code__.co_varnames}
             )
@@ -43,19 +51,25 @@ def auto_option(config, **options) -> F:  # noqa: C901
         if hasattr(callback, "params"):
             wrapper.params = callback.params
 
+        if hasattr(callback, "make_context"):
+            wrapper.make_context = callback.make_context
+
         configs = {}
         for line in config.__doc__.split("\n"):
             line = line.strip()
             if line[:5] == ":cvar":
                 line = line[6:].split(":")
-                configs.update({line[0]: line[1].strip()})
-        configs.update(options)
-        for slot_name in config.__dataclass_fields__.keys():
-            wrapper = option(
-                f"--{slot_name.replace('_', '-')}", **{"help": configs.get(slot_name, f"value for {slot_name}")}
-            )(wrapper)
+                configs.update({line[0]: {"help": line[1].strip()}})
 
-        wrapper = argument("config_args", required=False, nargs=-1, help="Passed Config to Method")(wrapper)
+        configs.update(options)
+
+        for slot_name in config.__dataclass_fields__.keys():
+            wrapper = option(f"--{slot_name.replace('_', '-')}", **configs.get(slot_name, f"value for {slot_name}"))(
+                wrapper
+            )
+
+        if config_file:
+            wrapper = option("-cfg", "--config-file", **{"help": "Config file path", "type": str})(wrapper)
 
         return wrapper
 

@@ -93,7 +93,7 @@ def create_file_loader(  # noqa: C901
         eval_env: Optional[bool] = None,
         allow_empty: Optional[bool] = None,
         **slot_kwargs,
-    ):
+    ) -> Union[Config, Any]:
         """Config parser from ini files.
 
         :param files: Default config files

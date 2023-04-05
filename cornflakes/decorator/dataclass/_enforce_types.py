@@ -40,7 +40,7 @@ SpecialForm = type(Optional)
 _empty = getattr(inspect, "_empty", None)
 
 
-def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup], validate=False):  # noqa: C901
+def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup, Any], validate=False):  # noqa: C901
     """Adds a simple decorator enforce_types that enables enforcing strict typing on a function or dataclass using annotations.
 
     Works with collection types and subtypes for example Dict[str, Tuple[int, int]], and with special types as Optional and Any.

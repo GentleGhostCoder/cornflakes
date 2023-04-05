@@ -13,7 +13,7 @@ def config_group(
     chain_files: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
-) -> Union[ConfigGroup, Callable[..., ConfigGroup]]:
+) -> Union[Union[ConfigGroup, Any], Callable[..., Union[ConfigGroup, Any]]]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
     :param config_cls: Config class
@@ -30,8 +30,8 @@ def config_group(
 
     kwargs.pop("validate", None)  # no validation for group
 
-    def wrapper(cls) -> ConfigGroup:
-        cls: Union[DataclassProtocol, Any] = dataclass(cls, **kwargs)
+    def wrapper(cls) -> Union[ConfigGroup, Any]:
+        cls: Union[ConfigGroup, DataclassProtocol, Any] = dataclass(cls, **kwargs)
         cls.__config_files__ = files
         cls.__chain_files__ = chain_files
         cls.__allow_empty_config__ = allow_empty

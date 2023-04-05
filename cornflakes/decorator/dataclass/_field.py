@@ -73,7 +73,7 @@ class Field(DataclassField):
 def field(
     *,
     default: Union[_MISSING_TYPE, Any] = MISSING,
-    default_factory: Union[_MISSING_TYPE, Callable] = MISSING,
+    default_factory: Union[_MISSING_TYPE, _WithoutDefault, Callable] = MISSING,
     init: Optional[bool] = True,
     repr: Optional[bool] = True,
     hash: Optional[Union[bool, _MISSING_TYPE]] = None,

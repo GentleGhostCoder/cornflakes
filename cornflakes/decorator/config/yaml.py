@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Optional, Type, Union
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 import yaml
 from yaml import SafeLoader, UnsafeLoader
@@ -29,7 +29,7 @@ def to_yaml(self, out_cfg: Optional[str] = None, *args, **kwargs) -> Optional[by
 
 
 def create_yaml_file_loader(
-    cls: Config,
+    cls: Union[Config, Any],
 ) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
     """Method to create file loader for yaml files."""
 

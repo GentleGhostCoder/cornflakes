@@ -6,14 +6,14 @@ repos:
             entry: black
             language: system
             types: [python]
-            require_serial: true
+            require_spkg_resourceserial: true
           - id: check-added-large-files
             name: Check for added large files
             entry: check-added-large-files
             language: system
             exclude: |
                 (?x)^(
-                inst/_cornflakes/strtk/strtk.hpp
+                inst/_cornflakes/strtk/strtk.hpp|pytest
                 )$
           - id: check-toml
             name: Check Toml

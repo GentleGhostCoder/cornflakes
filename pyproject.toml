@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cornflakes"
-version = "3.1.9"  # <<COOKIETEMPLE_FORCE_BUMP>>
+version = "3.2.0"  # <<COOKIETEMPLE_FORCE_BUMP>>
 description = "Create generic any easy way to manage Configs for your project"
 authors = ["Semjon Geist <semjon.geist@ionos.com>"]
 license = "Apache2.0"
@@ -69,7 +69,7 @@ breathe = ">=4.34.0"
 Cython  = ">=0.29.32"
 mock = ">=4.0.3"
 docutils = ">=0.17.1"
-setuptools = "^67.6.0"
+setuptools = "^67.6.1"
 ninja = ">=1.10.2.4"
 pybind11 = ">=2.10.1"
 nox = "^2022.8.7"
