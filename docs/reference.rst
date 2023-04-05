@@ -1,8 +1,14 @@
 Reference
 =========
 
-.. contents::
-    :local:
-    :backlinks: none
+Packages
+------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   cornflakes
+
+________________________________________________________
 
 .. automodule:: cornflakes

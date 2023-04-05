@@ -22,8 +22,13 @@ def patch_module(m):
     1. Overwrite names from submodules declared in __all__ to parent module.
     2. Overwrite doc_string and adds auto summary with objects defined in __all__.
     """
-    for obj in [m[x] for x in m["__all__"]]:
-        if not inspect.ismodule(obj) and not isclassmethod(obj):
+    if "__all__" not in m:
+        m["__all__"] = [x for x in m if not x.startswith("_")]
+    for obj in [m[x] for x in [x for x in m if not x.startswith("_")]]:
+        if inspect.ismodule(obj):
+            patch_module(obj)
+            return
+        if not isclassmethod(obj):
             try:
                 obj.__module__ = m["__name__"]
             except Exception as e:
@@ -32,6 +37,7 @@ def patch_module(m):
     m[
         "__doc__"
     ] = f"""{m["__doc__"]}
+
 .. currentmodule:: {m["__name__"]}
 
 .. autosummary::
