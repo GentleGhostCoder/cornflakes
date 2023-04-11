@@ -17,5 +17,3 @@ __all__ = [
     "patch_module",
     "wrap_kwargs",
 ]
-
-patch_module(globals())

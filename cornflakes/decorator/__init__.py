@@ -1,7 +1,5 @@
-"""cornflakes decorator module.
-__________________________________
-"""  # noqa: RST303 D205
-from cornflakes.common import patch_module
+"""cornflakes decorator module."""  # noqa: RST303 D205
+
 from cornflakes.decorator._indexer import Index
 from cornflakes.decorator._funcat import funcat
 from cornflakes.decorator.config import config, config_group
@@ -25,5 +23,3 @@ __all__ = [
     "Index",
     "funcat",
 ]
-
-patch_module(globals())

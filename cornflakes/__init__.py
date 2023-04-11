@@ -1,10 +1,9 @@
-"""cornflakes (Top-level package).
-____________________________________
-"""  # noqa: RST303 D205
+"""Top Level Module."""  # noqa: RST303 D205
 from _cornflakes import apply_match, eval_csv, eval_datetime, eval_type, extract_between, ini_load
 
-from cornflakes.logging import attach_log, setup_logging
 from cornflakes.common import patch_module
+from cornflakes.logging import attach_log, setup_logging
+
 from cornflakes.decorator import (
     config,
     config_group,
@@ -23,7 +22,7 @@ from cornflakes.parser import yaml_load
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "3.2.0"  # <<COOKIETEMPLE_FORCE_BUMP>>
+__version__ = "3.2.1"  # <<COOKIETEMPLE_FORCE_BUMP>>
 
 __all__ = [
     "click_cli",
@@ -42,11 +41,10 @@ __all__ = [
     "attach_log",
     "setup_logging",
     "Loader",
-    "patch_module",
     "dataclass",
     "field",
     "Index",
     "config_field",
 ]
 
-patch_module(globals())
+patch_module("cornflakes")

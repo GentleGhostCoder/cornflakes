@@ -9,6 +9,17 @@ Subpackages
 
    cornflakes.decorator.dataclass.validator
 
+Submodules
+----------
+
+cornflakes.decorator.dataclass.helper module
+--------------------------------------------
+
+.. automodule:: cornflakes.decorator.dataclass.helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

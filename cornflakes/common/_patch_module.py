@@ -1,5 +1,7 @@
+from importlib import import_module
 import inspect
 import logging
+from pkgutil import iter_modules
 
 
 def isclassmethod(method):
@@ -16,27 +18,44 @@ def isclassmethod(method):
     return False
 
 
-def patch_module(m):
+def _patch_module(m):
     """Method to overwrite module variables in a generic way.
 
     1. Overwrite names from submodules declared in __all__ to parent module.
     2. Overwrite doc_string and adds auto summary with objects defined in __all__.
     """
-    for obj in [m[x] for x in m["__all__"]]:
-        if not inspect.ismodule(obj) and not isclassmethod(obj):
+    for obj in [getattr(m, x, None) for x in getattr(m, "__all__", [key for key, _ in inspect.getmembers(m)])]:
+        if not obj:
+            continue
+        if inspect.ismodule(obj):
+            _patch_module(obj)
+            for sub_m in iter_modules(obj.__path__):
+                _patch_module(import_module(f"{obj.__name__}.{sub_m.name}"))
+            return
+        if not isclassmethod(obj):
             try:
-                obj.__module__ = m["__name__"]
+                obj.__module__ = getattr(m, "__name__", "")
             except Exception as e:
                 logging.debug(e)
 
-    m[
-        "__doc__"
-    ] = f"""{m["__doc__"]}
-.. currentmodule:: {m["__name__"]}
+    m.__doc__ = f"""{getattr(m, "__doc__", f"{getattr(m, '__name__', '')} module.")}
+.. currentmodule:: {getattr(m, '__name__', '')}
 
 .. autosummary::
    :toctree: _generate
 
     {'''
-    '''.join(m["__all__"])}
+    '''.join(getattr(m, "__all__", [key for key, _ in inspect.getmembers(m)]))}
 """
+
+
+def patch_module(module: str):
+    """Method to overwrite module with all submodules in a generic way.
+
+    1. Overwrite names from submodules declared in __all__ to parent module.
+    2. Overwrite doc_string and adds auto summary with objects defined in __all__.
+    """
+    m = import_module(module)
+    for sub_m in iter_modules(m.__path__):
+        _patch_module(import_module(f"{m.__name__}.{sub_m.name}"))
+    _patch_module(m)

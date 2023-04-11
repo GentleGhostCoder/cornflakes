@@ -1,6 +1,6 @@
 """cornflakes config generation."""
 from dataclasses import is_dataclass
-import importlib
+from importlib import import_module
 import inspect
 import logging
 import os
@@ -48,7 +48,7 @@ def generate_group_module(  # noqa: C901
         file.write(template)
 
     if isinstance(source_module, str):
-        source_module = importlib.import_module(source_module)
+        source_module = import_module(source_module)
 
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if is_dataclass(cfg_class) and inspect.isclass(cfg_class) and is_config(cfg_class):

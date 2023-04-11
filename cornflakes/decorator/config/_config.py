@@ -83,3 +83,6 @@ def config(
     if config_cls:
         return wrapper(config_cls)  # type: ignore
     return wrapper
+
+
+__all__ = ["config"]
