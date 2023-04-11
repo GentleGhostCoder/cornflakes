@@ -1,6 +1,7 @@
 from importlib import import_module
 import inspect
 import logging
+import os
 from pkgutil import iter_modules
 
 
@@ -55,6 +56,8 @@ def patch_module(module: str):
     1. Overwrite names from submodules declared in __all__ to parent module.
     2. Overwrite doc_string and adds auto summary with objects defined in __all__.
     """
+    if os.environ.get("CORNFLAKES_GENERATING_CONFIG_MODULE", "") == "True":
+        return
     m = import_module(module)
     for sub_m in iter_modules(m.__path__):
         _patch_module(import_module(f"{m.__name__}.{sub_m.name}"))
