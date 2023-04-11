@@ -41,11 +41,10 @@ __all__ = [
     "attach_log",
     "setup_logging",
     "Loader",
-    "patch_module",
     "dataclass",
     "field",
     "Index",
     "config_field",
 ]
 
-patch_module(globals())
+patch_module("cornflakes")
