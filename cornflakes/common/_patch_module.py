@@ -4,6 +4,8 @@ import logging
 import os
 from pkgutil import iter_modules
 
+__pached_modules = []
+
 
 def isclassmethod(method):
     """Check if a classmethod."""
@@ -56,9 +58,10 @@ def patch_module(module: str):
     1. Overwrite names from submodules declared in __all__ to parent module.
     2. Overwrite doc_string and adds auto summary with objects defined in __all__.
     """
-    if os.environ.get("CORNFLAKES_GENERATING_CONFIG_MODULE", "") == "True":
+    if os.environ.get("CORNFLAKES_GENERATING_CONFIG_MODULE", "") == "True" or module in __pached_modules:
         return
+    __pached_modules.append(module)
     m = import_module(module)
-    for sub_m in iter_modules(m.__path__):
+    for sub_m in iter_modules(getattr(m, "__path__", [])):
         _patch_module(import_module(f"{m.__name__}.{sub_m.name}"))
     _patch_module(m)
