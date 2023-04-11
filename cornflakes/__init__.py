@@ -16,7 +16,7 @@ from cornflakes.decorator import (
     Index,
 )
 from cornflakes.decorator.dataclass.validator import AnyUrl
-from cornflakes.builder import generate_group_module
+from cornflakes.builder import generate_config_module
 from cornflakes.parser import yaml_load
 
 
@@ -36,7 +36,7 @@ __all__ = [
     "config_group",
     "AnyUrl",
     "add_slots",
-    "generate_group_module",
+    "generate_config_module",
     "yaml_load",
     "attach_log",
     "setup_logging",
@@ -45,6 +45,7 @@ __all__ = [
     "field",
     "Index",
     "config_field",
+    "patch_module",
 ]
 
 patch_module("cornflakes")

@@ -14,7 +14,7 @@ from cornflakes.decorator import ConfigArguments, Loader, field
 from cornflakes.decorator.config import config_files, config_group, is_config
 
 
-def generate_group_module(  # noqa: C901
+def generate_config_module(  # noqa: C901
     source_module: Union[ModuleType, str],
     source_config: Optional[Union[Dict[str, Union[List[str], str]], List[str], str]] = None,
     target_module_file: Optional[str] = None,
@@ -30,6 +30,7 @@ def generate_group_module(  # noqa: C901
     extra_imports = []
     files = kwargs.get(ConfigArguments.files.name, [])
     files = files if isinstance(files, list) else [files]
+    os.environ["CORNFLAKES_GENERATING_CONFIG_MODULE"] = "True"
 
     if ConfigArguments.files.name not in kwargs:
         kwargs.update({ConfigArguments.files.name: source_config})

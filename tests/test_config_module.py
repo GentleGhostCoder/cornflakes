@@ -6,7 +6,7 @@ import time
 import unittest
 
 from cornflakes import AnyUrl
-from cornflakes.builder import generate_group_module
+from cornflakes.builder import generate_config_module
 from cornflakes.decorator import Loader
 from tests import configs
 
@@ -26,7 +26,7 @@ class TestConfigGeneration(unittest.TestCase):
         test_file = "tests/configs/default.py.txt"
         ini_group_args = {"files": "tests/configs/default.ini", "eval_env": True}
 
-        generate_group_module(
+        generate_config_module(
             class_name="MainConfig",
             source_module=configs.sub_config,
             source_config=source_config,
