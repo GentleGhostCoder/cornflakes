@@ -1304,7 +1304,7 @@ files = [
 
 [[package]]
 name = "pygments"
-version = "2.14.0"
+version = "2.15.0"
 description = "Pygments is a syntax highlighting package written in Python."
 category = "main"
 optional = false
@@ -1319,7 +1319,7 @@ plugins = ["importlib-metadata"]
 
 [[package]]
 name = "pytest"
-version = "7.2.2"
+version = "7.3.0"
 description = "pytest: simple powerful testing with Python"
 category = "dev"
 optional = false
@@ -1330,7 +1330,6 @@ files = [
 ]
 
 [package.dependencies]
-attrs = ">=19.2.0"
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
 exceptiongroup = {version = ">=1.0.0rc8", markers = "python_version < \"3.11\""}
 iniconfig = "*"
@@ -1339,7 +1338,7 @@ pluggy = ">=0.12,<2.0"
 tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 
 [package.extras]
-testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
+testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
 name = "pytz"
