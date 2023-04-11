@@ -22,7 +22,7 @@ from cornflakes.parser import yaml_load
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "3.2.0"  # <<COOKIETEMPLE_FORCE_BUMP>>
+__version__ = "3.2.1"  # <<COOKIETEMPLE_FORCE_BUMP>>
 
 __all__ = [
     "click_cli",
@@ -41,11 +41,10 @@ __all__ = [
     "attach_log",
     "setup_logging",
     "Loader",
-    "patch_module",
     "dataclass",
     "field",
     "Index",
     "config_field",
 ]
 
-patch_module(globals())
+patch_module("cornflakes")

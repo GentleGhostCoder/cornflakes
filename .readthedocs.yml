@@ -23,7 +23,8 @@ build:
             - python -m pip install ninja
             - python -m pip install PyYAML
             - python -m pip install pybind11
-            - python -m poetry install --verbose
+            - python -m pip install cornflakes
+            #            - python -m poetry install --verbose
             - make docs
 
 # Build documentation in the docs/ directory with Sphinx
