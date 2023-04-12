@@ -42,6 +42,7 @@ def _patch_module(m):
                 logging.debug(e)
 
     m.__doc__ = f"""{getattr(m, "__doc__", f"{getattr(m, '__name__', '')} module.")}
+
 .. currentmodule:: {getattr(m, '__name__', '')}
 
 .. autosummary::
