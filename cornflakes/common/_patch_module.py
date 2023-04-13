@@ -32,7 +32,7 @@ def _patch_module(m):
             continue
         if inspect.ismodule(obj):
             _patch_module(obj)
-            for sub_m in iter_modules(obj.__path__):
+            for sub_m in iter_modules(getattr(obj, "__path__", [])):
                 _patch_module(import_module(f"{obj.__name__}.{sub_m.name}"))
             return
         if not isclassmethod(obj):
