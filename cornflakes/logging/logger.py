@@ -33,9 +33,9 @@ def setup_logging(  # noqa: C901
         with open(default_path) as f:
             config = yaml.safe_load(f.read())
             if default_level and force:
-                for name, handler in config["root"]["handlers"].items():
-                    if loggers and name in loggers:
-                        config["handlers"][handler]["level"] = default_level or logging.root.level
+                for handler_name in config["root"]["handlers"]:
+                    if loggers and handler_name in loggers:
+                        config["handlers"][handler_name]["level"] = default_level or logging.root.level
                 config["root"]["level"] = default_level or logging.root.level
             logging.config.dictConfig(config)
     else:
@@ -63,7 +63,7 @@ def setup_logging(  # noqa: C901
             }
         )
         for handler in logging.root.handlers:
-            if hasattr(handler, "setLevel"):
+            if hasattr(handler, "setLevel") and force:
                 handler.setLevel(default_level or logging.root.level)
         for logger in logging.root.manager.loggerDict.values():
             if isinstance(logger, logging.Logger) and hasattr(logger, "__cornflakes__"):
