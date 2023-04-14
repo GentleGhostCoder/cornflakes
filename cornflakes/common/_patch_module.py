@@ -1,5 +1,5 @@
 from importlib import import_module
-import inspect
+from inspect import getmembers, ismodule
 import logging
 import os
 from pkgutil import iter_modules
@@ -27,10 +27,10 @@ def _patch_module(m):
     1. Overwrite names from submodules declared in __all__ to parent module.
     2. Overwrite doc_string and adds auto summary with objects defined in __all__.
     """
-    for obj in [getattr(m, x, None) for x in getattr(m, "__all__", [key for key, _ in inspect.getmembers(m)])]:
+    for obj in [getattr(m, x, None) for x in getattr(m, "__all__", [key for key, _ in getmembers(m)])]:
         if not obj:
             continue
-        if inspect.ismodule(obj):
+        if ismodule(obj):
             _patch_module(obj)
             for sub_m in iter_modules(getattr(obj, "__path__", [])):
                 _patch_module(import_module(f"{obj.__name__}.{sub_m.name}"))
@@ -49,7 +49,7 @@ def _patch_module(m):
    :toctree: _generate
 
     {'''
-    '''.join(getattr(m, "__all__", [key for key, _ in inspect.getmembers(m)]))}
+    '''.join(getattr(m, "__all__", [key for key, _ in getmembers(m)]))}
 """
 
 

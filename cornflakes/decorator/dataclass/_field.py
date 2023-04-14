@@ -194,15 +194,9 @@ class Field(DataclassField):
         :return: Field repr
         """
         return (
-            f"Field("
-            f"default={self.default!r}, "
-            f"default_factory={self.default_factory!r}, "
-            f"init={self.init!r}, "
-            f"repr={self.repr!r}, "
-            f"hash={self.hash!r}, "
-            f"compare={self.compare!r}, "
-            f"metadata={self.metadata!r}, "
-            f"kw_only={self.kw_only!r}, "
+            f"{DataclassField.__repr__(self)[:-1]}, "
+            f"validator={self.validator!r}, "
+            f"ignore={self.ignore!r}, "
             f"alias={self.alias!r}, "
             f"title={self.title!r}, "
             f"description={self.description!r}, "
@@ -224,9 +218,7 @@ class Field(DataclassField):
             f"max_length={self.max_length!r}, "
             f"allow_mutation={self.allow_mutation!r}, "
             f"regex={self.regex!r}, "
-            f"discriminator={self.discriminator!r}, "
-            f"validator={self.validator!r}, "
-            f"ignore={self.ignore!r})"
+            f"discriminator={self.discriminator!r})"
         )
 
 
