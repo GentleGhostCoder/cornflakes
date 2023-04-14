@@ -17,7 +17,11 @@ class Field(DataclassField):
     """
 
     __slots__ = (
-        *getattr(DataclassField, "__slots__", ()),
+        *getattr(
+            DataclassField,
+            "__slots__",
+            ("default", "default_factory", "repr", "hash", "init", "compare", "metadata", "kw_only"),
+        ),
         "validator",
         "ignore",
         "alias",
