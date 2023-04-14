@@ -20,7 +20,7 @@ class Field(DataclassField):
         *getattr(
             DataclassField,
             "__slots__",
-            ("default", "default_factory", "repr", "hash", "init", "compare", "metadata", "kw_only"),
+            (),
         ),
         "validator",
         "ignore",
@@ -258,7 +258,7 @@ def field(
     discriminator: Optional[str] = None,
     no_default: bool = False,
     **extra: Any,
-) -> DataclassField:
+) -> Union[DataclassField, Any]:
     """This function is used instead of exposing Field creation directly.
 
     So that a type checker can be told (via overloads) that this is a function whose type depends on its parameters.
