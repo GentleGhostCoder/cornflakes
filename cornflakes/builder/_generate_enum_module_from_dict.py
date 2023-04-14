@@ -21,7 +21,7 @@ def generate_enum_module_from_dict(source_dict: Union[str, Dict[str, str]], targ
 from enum import Enum
 
 
-class SchemaTypes(Enum, str):
+class SchemaTypes(str, Enum):
     """Schema Types."""
     {enum}
 '''
