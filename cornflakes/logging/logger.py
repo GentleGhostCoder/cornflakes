@@ -63,7 +63,7 @@ def setup_logging(  # noqa: C901
             }
         )
         for handler in logging.root.handlers:
-            if hasattr(handler, "setLevel"):
+            if hasattr(handler, "setLevel") and force:
                 handler.setLevel(default_level or logging.root.level)
         for logger in logging.root.manager.loggerDict.values():
             if isinstance(logger, logging.Logger) and hasattr(logger, "__cornflakes__"):
