@@ -130,7 +130,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup, Any], va
                     if skip:
                         return
                     raise Exception(
-                        f"\n{exc}"
+                        f"\n{exc}\n"
                         f"Expected type {type_hint!r} for attribute {key!r} but received type {type(value)!r})."
                     ) from exc
 
