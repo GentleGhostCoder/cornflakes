@@ -1,5 +1,6 @@
 """cornflakes config generation."""
 
 from cornflakes.builder._generate_config_module import generate_config_module
+from cornflakes.builder._generate_enum_module_from_dict import generate_enum_module_from_dict
 
-__all__ = ["generate_config_module"]
+__all__ = ["generate_config_module", "generate_enum_module_from_dict"]
