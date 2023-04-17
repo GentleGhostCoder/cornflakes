@@ -101,6 +101,11 @@ PYBIND11_MODULE(_cornflakes, module) {
       "eval_csv",
       [](const std::string &value,
          const char *disallowed_header_chars) -> py::object {
+        if (value.empty()) {
+          py::object logger = py::module::import("logging");
+          logger.attr("error")("Can´t evaluate empty csv value!");
+          return py::none();
+        }
         return py::cast(
             string_operations::eval_csv(value, disallowed_header_chars));
       },
