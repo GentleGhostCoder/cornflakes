@@ -36,7 +36,7 @@ types-pyyaml = "^6.0.12.1"
 validators = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
-autoflake = "^2.0.2"
+autoflake = "^2.1.0"
 pytest = ">=6.2.3"
 coverage = {extras = ["toml"], version = ">=5.3"}
 safety = ">=1.9.0"
