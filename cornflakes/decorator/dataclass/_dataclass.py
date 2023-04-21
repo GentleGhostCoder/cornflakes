@@ -18,6 +18,7 @@ def dataclass(
     tuple_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
+    updatable: bool = False,
     **kwargs
 ) -> Union[DataclassProtocol, Callable[..., DataclassProtocol], Any]:
     """Wrapper around built-in dataclasses dataclass."""
@@ -49,6 +50,17 @@ def dataclass(
         dc_cls.to_yaml = to_yaml
         dc_cls.to_yaml_bytes = to_yaml_bytes
         dc_cls.to_ini_bytes = to_ini_bytes
+
+        if updatable and not kwargs.get("frozen", False):
+
+            def _update(self, new):
+                for key, value in new.items():
+                    try:
+                        setattr(self, key, value)
+                    except AttributeError:
+                        pass
+
+            dc_cls.update = _update
 
         if validate:
             dc_cls = enforce(dc_cls, validate)
