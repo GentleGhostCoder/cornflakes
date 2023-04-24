@@ -125,10 +125,10 @@
 #         }
 #     )
 from glob import glob
-from importlib import import_module
 import os
 import re
 
+import docutils.core
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
@@ -168,9 +168,7 @@ ext_paths = [external_path, f"{external_path}/pybind11/include", f"{external_pat
 
 find_replace(glob(f"{external_path}/*/**"), "#include <endian.h>", "#include <cross_endian.h>", "^.*(.cpp|.h|.hpp)$")
 
-import_module("docutils.core").publish_file(
-    source_path="README.rst", destination_path="README.html", writer_name="html"
-)
+docutils.core.publish_file(source_path="README.rst", destination_path="README.html", writer_name="html")
 
 with open("README.html") as fh:
     long_description = fh.read()

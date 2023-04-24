@@ -25,6 +25,7 @@ def to_yaml_bytes(self, *args, **kwargs) -> Optional[bytearray]:
 
 def to_yaml(self, out_cfg: Optional[str] = None, *args, **kwargs) -> Optional[bytearray]:
     """Method to write an instance of the main config class of the module into a yaml file."""
+    # TODO: More Tests for nested Objects
     return write_config(self.to_yaml_bytes(*args, **kwargs), out_cfg)
 
 
