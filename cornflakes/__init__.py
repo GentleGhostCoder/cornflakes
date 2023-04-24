@@ -22,7 +22,7 @@ from cornflakes.parser import yaml_load
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "3.2.8"  # <<COOKIETEMPLE_FORCE_BUMP>>
+__version__ = "3.2.9"  # <<COOKIETEMPLE_FORCE_BUMP>>
 
 __all__ = [
     "click_cli",
