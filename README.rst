@@ -49,6 +49,13 @@ To make things easier for me, lightweight public libraries were included
 * strtk
 * rapidjson
 
+RoadMap:
+~~~~~~~~~
+
+- Fix to_..<file-format> Methods
+- Enrich json methods
+
+
 Features:
 ~~~~~~~~~
 

@@ -54,7 +54,7 @@ lint: ## check style with flake8
 	flake8 cornflakes tests
 
 test: ## run tests quickly with the default Python
-	pytest
+	pytest -o log_cli=true
 
 test-all: ## run tests on every Python version with tox
 	nox
