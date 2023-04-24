@@ -64,9 +64,9 @@ def auto_option(config: Union[Config, Any], config_file: bool = False, **options
         configs.update(options)
 
         for slot_name in config.__dataclass_fields__.keys():
-            wrapper = option(f"--{slot_name.replace('_', '-')}", **configs.get(slot_name, f"value for {slot_name}"))(
-                wrapper
-            )
+            wrapper = option(
+                f"--{slot_name.replace('_', '-')}", **configs.get(slot_name, {"help": f"value for {slot_name}"})
+            )(wrapper)
 
         if config_file:
             wrapper = option("-cfg", "--config-file", **{"help": "Config file path", "type": str})(wrapper)
