@@ -12,4 +12,8 @@ def type_to_str(f):
         )
     if isinstance(f, Enum):
         return str(f.value)
+    if isinstance(f, list):
+        return [type_to_str(i) for i in f]
+    if isinstance(f, dict):
+        return {k: type_to_str(v) for k, v in f.items()}
     return str(f)

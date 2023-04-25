@@ -11,15 +11,16 @@ from cornflakes.decorator.dataclass.helper import get_not_ignored_slots, is_conf
 
 def _parse_config_list(cfg, cfg_name: str, title: str):
     _ini_bytes = bytearray()
-    has_list = isinstance(cfg, list)
-    if is_config(cfg) and not has_list:
+    is_list = isinstance(cfg, list)
+    if is_config(cfg) and not is_list:
         return cfg.to_ini_bytes(cfg_name)
-    elif has_list:
+    elif is_list:
         for n, sub_cfg in enumerate(cfg):
-            cfg_name = f"{cfg_name}_{n}"
+            sub_cfg_name = f"{cfg_name}_{n}"
             if is_config(sub_cfg) and hasattr(sub_cfg, "section_name"):
-                cfg_name = sub_cfg.section_name
-            _ini_bytes.extend(_parse_config_list(sub_cfg, cfg_name, title))
+                # if sub_cfg contains a section_name, use it instead of the default
+                sub_cfg_name = sub_cfg.section_name
+            _ini_bytes.extend(_parse_config_list(sub_cfg, sub_cfg_name, title))
         return _ini_bytes
     else:
         logging.warning(f"The Value {cfg_name} of {title} be in a child config class!")
