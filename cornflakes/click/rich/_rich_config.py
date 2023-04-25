@@ -41,7 +41,7 @@ class RichConfig:
     STYLE_OPTIONS_TABLE_SHOW_LINES: bool = False
     STYLE_OPTIONS_TABLE_LEADING: int = 0
     STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
-    STYLE_OPTIONS_TABLE_PADDING: Tuple[int] = (0, 1)
+    STYLE_OPTIONS_TABLE_PADDING: Tuple[int, int] = (0, 1)
     STYLE_OPTIONS_TABLE_BOX: str = ""
     STYLE_OPTIONS_TABLE_ROW_STYLES: List[str] = None
     STYLE_OPTIONS_TABLE_BORDER_STYLE: str = None
