@@ -110,7 +110,6 @@ balanced_wrapping=true
 line_length=120
 profile = "black"
 
-
 [tool.coverage.paths]
 source = ["cornflakes", "*/site-packages"]
 
@@ -137,7 +136,8 @@ requires = [
 #    "fastentrypoints"
 ]
 #build-backend = "setuptools.build_meta"
-build-backend = "poetry.core.masonry.api"
+#build-backend = "poetry.core.masonry.api"
+build-backend = "poetry.masonry.api"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
