@@ -10,7 +10,7 @@ repository = "https://github.com/sgeist/cornflakes"
 documentation = "https://cornflakes.readthedocs.io"
 packages = [
     { include = "cornflakes"},
-    { include = "build.py" }
+    { include = "build" }
 ]
 classifiers = [
     "Programming Language :: Python :: 3.8",
@@ -139,13 +139,6 @@ requires = [
 ]
 #build-backend = "setuptools.build_meta"
 build-backend = "poetry.core.masonry.api"
-
-[tool.setuptools]
-py-modules = ["cornflakes", "build"]
-
-[project]
-name = "cornflakes"
-version = "3.3.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
