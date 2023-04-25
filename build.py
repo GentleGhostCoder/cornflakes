@@ -170,7 +170,7 @@ find_replace(glob(f"{external_path}/*/**"), "#include <endian.h>", "#include <cr
 
 # docutils.core.publish_file(source_path="README.rst", destination_path="README.html", writer_name="html")
 
-with open("README.html") as fh:
+with open("README.rst") as fh:
     long_description = fh.read()
 
 
