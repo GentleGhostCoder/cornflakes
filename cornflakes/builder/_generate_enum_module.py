@@ -11,7 +11,7 @@ def generate_enum_module(
     sources: Union[str, List[str], Dict[str, Any], ModuleType],
     target_module_file: Optional[str],
     module_description: Optional[str] = None,
-    enum_description: Optional[str] = None,
+    class_description: Optional[str] = None,
     comments: Optional[Union[Dict[str, str], List[str]]] = None,
 ):
     """Generate Schema Types Enum from datahub module."""
@@ -53,7 +53,7 @@ def generate_enum_module(
     )
 
     module_description = f'''"""{module_description}"""''' if module_description else ""  # noqa: B907
-    enum_description = f'''"""{enum_description}"""''' if enum_description else ""  # noqa: B907
+    class_description = f'''"""{class_description}"""''' if class_description else ""  # noqa: B907
 
     module = f'''{f"""{module_description}
 """ if module_description else ""}from enum import Enum
@@ -61,8 +61,8 @@ def generate_enum_module(
 """ if not isinstance(sources, (list, dict)) else ""}
 
 class {title}(Enum):
-    {f"""{enum_description}
-    """ if enum_description else ""}{enum}
+    {f"""{class_description}
+    """ if class_description else ""}{enum}
 '''
 
     with open(target_module_file, "w") as f:
