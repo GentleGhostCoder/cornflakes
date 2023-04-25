@@ -141,6 +141,9 @@ requires = [
 #build-backend = "setuptools.build_meta"
 #build-backend = "poetry.core.masonry.api"
 
+[tool.setuptools]
+py-modules = ["cornflakes", "build.py"]
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 minversion = "6.0"
