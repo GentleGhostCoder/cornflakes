@@ -144,6 +144,9 @@ requires = [
 [tool.setuptools]
 py-modules = ["cornflakes", "build.py"]
 
+[project]
+name = "cornflakes"
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 minversion = "6.0"
