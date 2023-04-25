@@ -127,7 +127,7 @@ generate-setup-file = true
 script = "build.py"
 
 [tool.setuptools]
-py-modules = ["cornflakes"]
+py-modules = []
 
 [build-system]
 requires = [
