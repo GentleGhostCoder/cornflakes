@@ -87,8 +87,8 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
         if hook.name.endswith(".sample") or not hook.is_file():
             continue
 
-        if not hook.read_bytes().startswith(b"#!"):
-            continue
+        # if not hook.read_bytes().startswith(b"#!"):
+        #     continue
 
         text = hook.read_text()
 
@@ -178,10 +178,11 @@ def tests(session: Session) -> None:
     session.run("pip", "install", "isort")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    session.run("pip", "install", "virtualenv", "--upgrade")  # fix bug for windows tests
     if os.path.exists("build"):
         shutil.rmtree("build")
     # session.install(".")  # not working with so builds
-    session.run("poetry", "build")
+    session.run("poetry", "build", "-v")
     version = session.name.replace("tests-", "").replace(".", "")
     search = f"*cp{version}*.whl"
     file = list(Path("dist").glob(search))[0].name

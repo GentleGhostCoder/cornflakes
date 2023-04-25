@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cornflakes"
-version = "3.2.9"  # <<COOKIETEMPLE_FORCE_BUMP>>
+version = "3.3.0"  # <<COOKIETEMPLE_FORCE_BUMP>>
 description = "Create generic any easy way to manage Configs for your project"
 authors = ["Semjon Geist <semjon.geist@ionos.com>"]
 license = "Apache2.0"
@@ -37,7 +37,7 @@ validators = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
 autoflake = "^2.0.2"
-pytest = ">=6.2.3"
+pytest = ">= 7.3.1"
 coverage = {extras = ["toml"], version = ">=5.3"}
 safety = ">=1.9.0"
 typeguard = ">=2.12.0"
@@ -69,13 +69,14 @@ breathe = ">=4.34.0"
 Cython  = ">=0.29.32"
 mock = ">=4.0.3"
 docutils = ">=0.17.1"
-setuptools = "^67.6.1"
+setuptools = "^67.7.2"
 ninja = ">=1.10.2.4"
-pybind11 = ">=2.10.1"
-nox = "^2022.8.7"
+nox = "^2023.4.22"
 nox-poetry = "^1.0.1"
 compiledb = "^0.10.1"
 isort = "^5.12.0"
+virtualenv = "^20.22.0"
+pybind11 = "^2.10.4"
 
 [tool.poetry.scripts]
 cornflakes = "cornflakes.__main__:main"

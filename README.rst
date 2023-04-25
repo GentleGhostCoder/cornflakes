@@ -49,6 +49,13 @@ To make things easier for me, lightweight public libraries were included
 * strtk
 * rapidjson
 
+
+Short Term RoadMap:
+~~~~~~~~~~~~~~~~~~~~
+
+- Enrich json methods
+- Fix / Test the to_<file-format> Methods
+
 Features:
 ~~~~~~~~~
 

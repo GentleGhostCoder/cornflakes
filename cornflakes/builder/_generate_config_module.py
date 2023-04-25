@@ -20,6 +20,8 @@ def generate_config_module(  # noqa: C901
     target_module_file: Optional[str] = None,
     class_name: Optional[str] = None,
     loader: Loader = Loader.FILE_LOADER,
+    module_description: str = "Automatically generated Default Config.",
+    class_description: str = "Main config class of the module.",
     *args,
     **kwargs,
 ):
@@ -43,6 +45,9 @@ def generate_config_module(  # noqa: C901
 
     if class_name:
         template = template.replace("Config", class_name)
+
+    template = template.replace("Template Module.", module_description)
+    template = template.replace("Template Class.", class_description)
 
     # Write Template to prevent import errors
     with open(target_module_file, "w") as file:

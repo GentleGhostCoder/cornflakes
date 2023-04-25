@@ -105,7 +105,6 @@ inline void ParseDefinedKeys(SectionData t_SectionData,
   for (const auto &item : t_ParserData.m_ParserConfig.keys) {
     for (auto item_value : item.second) {
       int type = 0;  // default, 1=list, 2=dict
-
       std::string::const_iterator start_iter =
           t_SectionData.m_FileData.contents.begin();
       std::string::const_iterator end_iter =
@@ -131,8 +130,6 @@ inline void ParseDefinedKeys(SectionData t_SectionData,
         // get value
         start_iter = std::search(value_iter, end_iter, item_value.begin(),
                                  item_value.end());
-        // std::boyer_moore_horspool_searcher(...)
-
         if (start_iter == end_iter) {
           if (!t_SectionData.section_envir
                    .attr("get")(py::cast(item.first), py::none())
@@ -178,8 +175,8 @@ inline void ParseDefinedKeys(SectionData t_SectionData,
 
         // get total key name if only prefix
         while (true) {
-          if (type || std::string(start_iter - 1, start_iter) ==
-                          &system_operations::NEWLINE)
+          if (type || std::string(start_iter - 1, start_iter).c_str()[0] ==
+                          system_operations::NEWLINE)
             break;
           --start_iter;
         }

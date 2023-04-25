@@ -9,7 +9,7 @@ jobs:
         name: ${{ matrix.session }} ${{ matrix.python-version }} / ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         strategy:
-            fail-fast: false
+            fail-fast: true
             matrix:
                 include:
                     - {
@@ -59,7 +59,7 @@ jobs:
 
         steps:
             - name: Check out the repository
-              uses: actions/checkout@v3.5.0
+              uses: actions/checkout@v3.5.2
               with:
                   remote: true
                   submodules: recursive
@@ -83,6 +83,10 @@ jobs:
                     exit 1
                   fi
               shell: bash
+
+            - name: Update virtualenv
+              run: |
+                  pip install virtualenv --upgrade
 
             - name: Install Ninja
               run: |
@@ -151,7 +155,7 @@ jobs:
         needs: tests
         steps:
             - name: Check out the repository
-              uses: actions/checkout@v3.5.0
+              uses: actions/checkout@v3.5.2
 
             - name: Set up Python 3.8
               uses: actions/setup-python@v4
@@ -195,4 +199,4 @@ jobs:
               run: nox --force-color --session=coverage -- xml -i
 
             - name: Upload coverage report
-              uses: codecov/codecov-action@v3.1.1
+              uses: codecov/codecov-action@v3.1.3

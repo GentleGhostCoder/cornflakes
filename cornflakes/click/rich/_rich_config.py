@@ -1,6 +1,6 @@
 from dataclasses import field
 from os import getenv
-from typing import Dict, List, Literal, Optional, Protocol, Union
+from typing import Dict, List, Literal, Optional, Protocol, Tuple, Union
 
 from click import Option
 
@@ -38,22 +38,22 @@ class RichConfig:
     STYLE_REQUIRED_LONG: str = "dim red"
     STYLE_OPTIONS_PANEL_BORDER: str = "dim"
     ALIGN_OPTIONS_PANEL: str = "left"
-    STYLE_OPTIONS_TABLE_SHOW_LINES = False
-    STYLE_OPTIONS_TABLE_LEADING = 0
-    STYLE_OPTIONS_TABLE_PAD_EDGE = False
-    STYLE_OPTIONS_TABLE_PADDING = (0, 1)
+    STYLE_OPTIONS_TABLE_SHOW_LINES: bool = False
+    STYLE_OPTIONS_TABLE_LEADING: int = 0
+    STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
+    STYLE_OPTIONS_TABLE_PADDING: Tuple[int, int] = (0, 1)
     STYLE_OPTIONS_TABLE_BOX: str = ""
-    STYLE_OPTIONS_TABLE_ROW_STYLES = None
-    STYLE_OPTIONS_TABLE_BORDER_STYLE = None
+    STYLE_OPTIONS_TABLE_ROW_STYLES: List[str] = None
+    STYLE_OPTIONS_TABLE_BORDER_STYLE: str = None
     STYLE_COMMANDS_PANEL_BORDER: str = "dim"
     ALIGN_COMMANDS_PANEL: str = "left"
-    STYLE_COMMANDS_TABLE_SHOW_LINES = False
-    STYLE_COMMANDS_TABLE_LEADING = 0
-    STYLE_COMMANDS_TABLE_PAD_EDGE = False
-    STYLE_COMMANDS_TABLE_PADDING = (0, 1)
+    STYLE_COMMANDS_TABLE_SHOW_LINES: bool = False
+    STYLE_COMMANDS_TABLE_LEADING: int = 0
+    STYLE_COMMANDS_TABLE_PAD_EDGE: bool = False
+    STYLE_COMMANDS_TABLE_PADDING: Tuple[int, int] = (0, 1)
     STYLE_COMMANDS_TABLE_BOX: str = ""
-    STYLE_COMMANDS_TABLE_ROW_STYLES = None
-    STYLE_COMMANDS_TABLE_BORDER_STYLE = None
+    STYLE_COMMANDS_TABLE_ROW_STYLES: List[str] = None
+    STYLE_COMMANDS_TABLE_BORDER_STYLE: List[str] = None
     STYLE_ERRORS_PANEL_BORDER: str = "red"
     ALIGN_ERRORS_PANEL: str = "left"
     STYLE_ERRORS_SUGGESTION: str = "dim"
@@ -89,10 +89,12 @@ class RichConfig:
     APPEND_METAVARS_REQUIRED: bool = False  # Append metavar REQUIRED_LONG_STRING (eg. [required]) after the help text
     GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
     OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
-    USE_RST: bool = True
+    USE_RST: bool = True  # Parse help strings as reStructuredText
+    SHOW_RST_ERRORS: bool = False  # Show errors when parsing reStructuredText
     USE_MARKDOWN: bool = False  # Parse help strings as markdown
     USE_MARKDOWN_EMOJI: bool = True  # Parse emoji codes in markdown :smile:
     USE_RICH_MARKUP: bool = False  # Parse help strings for rich markup (eg. [red]my text[/])
+    CODE_THEME: str = "monokai"  # Theme for code blocks in reStructuredText and Markdown
     # Define sorted groups of panels to display subcommands
     USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 
