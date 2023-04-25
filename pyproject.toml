@@ -1,3 +1,7 @@
+[project]
+name = "cornflakes"
+version = "3.3.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
+
 [tool.poetry]
 name = "cornflakes"
 version = "3.3.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
