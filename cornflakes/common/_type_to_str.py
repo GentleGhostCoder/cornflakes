@@ -17,7 +17,7 @@ def type_to_str(f):
         return str(f).lower()
     if isinstance(f, Enum):
         return str(f.value)
-    if isinstance(f, list):
+    if isinstance(f, (list, tuple)):
         return json.dumps([type_to_str(v) for v in f])
     if isinstance(f, dict):
         return json.dumps({k: type_to_str(v) for k, v in f.items()})
