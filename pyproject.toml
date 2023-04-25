@@ -22,9 +22,9 @@ include = [ # include cpp sources for not compiled dist
     { path = "inst/ext", format = "sdist" },
     { path = "inst/_cornflakes", format = "sdist" }
 ]
-#exclude = [
-#    { path = "cornflakes/__pycache__" }
-#]
+exclude = [
+    { path = "cornflakes/__pycache__" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
@@ -125,6 +125,9 @@ show_missing = true
 [tool.poetry.build]
 generate-setup-file = true
 script = "build.py"
+
+[tool.setuptools]
+py-modules = ["cornflakes"]
 
 [build-system]
 requires = [
