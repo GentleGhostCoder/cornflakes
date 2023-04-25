@@ -84,9 +84,12 @@ jobs:
                   fi
               shell: bash
 
+            - name: Upgrade Pip
+              run: pipx install --upgrade pip
+
             - name: Install Ninja
               run: |
-                  pip install ninja
+                  pipx install ninja
                   ninja --version
 
             - name: Install Poetry
@@ -96,7 +99,7 @@ jobs:
 
             - name: Install Docs Requirements
               run: |
-                  pip install -r docs/requirements.txt
+                  pipx install -r docs/requirements.txt
 
             - name: Install nox nox-poetry rich
               run: |
