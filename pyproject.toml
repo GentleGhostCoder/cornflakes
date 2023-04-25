@@ -121,8 +121,8 @@ source = ["cornflakes"]
 show_missing = true
 
 [tool.poetry.build]
-generate-setup-file = true
 script = "build.py"
+generate-setup-file = true
 
 [build-system]
 requires = [
