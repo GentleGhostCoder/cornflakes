@@ -178,6 +178,7 @@ def tests(session: Session) -> None:
     session.run("pip", "install", "isort")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    session.run("pip", "install", "virtualenv", "--upgrade")  # fix bug for windows tests
     if os.path.exists("build"):
         shutil.rmtree("build")
     # session.install(".")  # not working with so builds
