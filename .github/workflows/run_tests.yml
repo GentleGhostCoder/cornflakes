@@ -84,6 +84,10 @@ jobs:
                   fi
               shell: bash
 
+            - name: Update virtualenv
+              run: |
+                  pip install virtualenv --upgrade
+
             - name: Install Ninja
               run: |
                   pip install ninja
