@@ -56,7 +56,6 @@ Short Term RoadMap:
 - Enrich json methods
 - Fix / Test the to_<file-format> Methods
 
-
 Features:
 ~~~~~~~~~
 

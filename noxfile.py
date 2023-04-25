@@ -181,7 +181,7 @@ def tests(session: Session) -> None:
     if os.path.exists("build"):
         shutil.rmtree("build")
     # session.install(".")  # not working with so builds
-    session.run("poetry", "build")
+    session.run("poetry", "build", "-v")
     version = session.name.replace("tests-", "").replace(".", "")
     search = f"*cp{version}*.whl"
     file = list(Path("dist").glob(search))[0].name
