@@ -87,10 +87,8 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
         if hook.name.endswith(".sample") or not hook.is_file():
             continue
 
-        hook_bytes = hook.read_bytes()
-
-        if not hook_bytes or not hook.read_bytes().startswith(b"#!"):
-            continue
+        # if not hook.read_bytes().startswith(b"#!"):
+        #     continue
 
         text = hook.read_text()
 
