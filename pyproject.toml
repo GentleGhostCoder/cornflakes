@@ -10,8 +10,7 @@ repository = "https://github.com/sgeist/cornflakes"
 documentation = "https://cornflakes.readthedocs.io"
 packages = [
     { include = "cornflakes"},
-    { include = "build.py" },
-    { exclude = ["assets", "inst", "makefiles", "tests"]}
+    { include = "build.py" }
 ]
 classifiers = [
     "Programming Language :: Python :: 3.8",
