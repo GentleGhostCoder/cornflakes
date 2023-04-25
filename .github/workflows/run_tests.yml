@@ -84,12 +84,9 @@ jobs:
                   fi
               shell: bash
 
-            - name: Upgrade Pip
-              run: pip install --upgrade pip
-
             - name: Install Ninja
               run: |
-                  pipx install ninja
+                  pip install ninja
                   ninja --version
 
             - name: Install Poetry
