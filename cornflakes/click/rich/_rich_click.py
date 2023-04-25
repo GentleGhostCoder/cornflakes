@@ -62,7 +62,7 @@ def get_rich_console(config: RichConfig) -> Console:
     )
 
 
-def _make_rich_rext(
+def _make_rich_text(
     text: str, config: RichConfig, style: str = ""
 ) -> Union[rich.markdown.Markdown, rich.text.Text, RestructuredText]:
     """Take a string, remove indentations, and return styled text.
@@ -84,11 +84,11 @@ def _make_rich_rext(
     # Remove indentations from input text
     text = inspect.cleandoc(text)
     if config.USE_RST:
-        return RestructuredText(f"| {text}")
+        return RestructuredText(f"| {text}", code_theme=config.CODE_THEME, show_errors=config.SHOW_RST_ERRORS)
     if config.USE_MARKDOWN:
         if config.USE_MARKDOWN_EMOJI:
             text = Emoji.replace(text)
-        return Markdown(text, style=style)
+        return Markdown(text, style=style, code_theme=config.CODE_THEME)
     if config.USE_RICH_MARKUP:
         return highlighter(Text.from_markup(text, style=style))
     else:
@@ -124,7 +124,7 @@ def _get_help_text(obj: Union[click.Command, click.Group], config: RichConfig) -
     # Remove single linebreaks
     if not config.USE_MARKDOWN and not first_line.startswith("\b"):
         first_line = first_line.replace("\n", " ")
-    yield _make_rich_rext(first_line.strip(), config=config, style=config.STYLE_HELPTEXT_FIRST_LINE)
+    yield _make_rich_text(first_line.strip(), config=config, style=config.STYLE_HELPTEXT_FIRST_LINE)
 
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
@@ -141,7 +141,7 @@ def _get_help_text(obj: Union[click.Command, click.Group], config: RichConfig) -
             # Join with double linebreaks if markdown
             remaining_lines = "\n\n".join(remaining_paragraphs)
 
-        yield _make_rich_rext(remaining_lines, config=config, style=config.STYLE_HELPTEXT)
+        yield _make_rich_text(remaining_lines, config=config, style=config.STYLE_HELPTEXT)
 
 
 # flake8: noqa: C901
@@ -189,7 +189,7 @@ def _get_parameter_help(
                 x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
                 for x in paragraphs
             ]
-        items.append(_make_rich_rext("\n".join(paragraphs).strip(), config=config, style=config.STYLE_OPTION_HELP))
+        items.append(_make_rich_text("\n".join(paragraphs).strip(), config=config, style=config.STYLE_OPTION_HELP))
 
     # Append metavar if requested
     if config.APPEND_METAVARS_HELP:
@@ -265,7 +265,7 @@ def _make_command_help(config: RichConfig, help_text: str = "") -> Union[rich.te
         paragraphs[0] = paragraphs[0].replace("\n", " ")
     elif paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
-    return _make_rich_rext(paragraphs[0].strip(), config=config, style=config.STYLE_OPTION_HELP)
+    return _make_rich_text(paragraphs[0].strip(), config=config, style=config.STYLE_OPTION_HELP)
 
 
 def rich_format_help(
@@ -299,7 +299,7 @@ def rich_format_help(
     # Header text if we have it
     if config.HEADER_TEXT:
         console.print(
-            Padding(_make_rich_rext(config.HEADER_TEXT, config=config, style=config.STYLE_HEADER_TEXT), (1, 1, 0, 1))
+            Padding(_make_rich_text(config.HEADER_TEXT, config=config, style=config.STYLE_HEADER_TEXT), (1, 1, 0, 1))
         )
 
     # Print usage
@@ -542,7 +542,7 @@ def rich_format_help(
     # Footer text if we have it
     if config.FOOTER_TEXT:
         console.print(
-            Padding(_make_rich_rext(config.FOOTER_TEXT, config=config, style=config.STYLE_FOOTER_TEXT), (1, 1, 0, 1))
+            Padding(_make_rich_text(config.FOOTER_TEXT, config=config, style=config.STYLE_FOOTER_TEXT), (1, 1, 0, 1))
         )
 
 
