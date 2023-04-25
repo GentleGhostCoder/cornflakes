@@ -170,18 +170,8 @@ find_replace(glob(f"{external_path}/*/**"), "#include <endian.h>", "#include <cr
 
 docutils.core.publish_file(source_path="README.rst", destination_path="README.html", writer_name="html")
 
-with open("README.html") as fh:
-    long_description = fh.read()
-
-# replace some string in file .nox\tests-3-8\lib\site-packages\virtualenv\create\describe.py
-find_replace(
-    glob(f".nox/tests-3-8/lib/site-packages/virtualenv/create/describe.py"),
-    "sys_vars = self.interpreter.sysconfig_vars",
-    """sys_vars = self.interpreter.sysconfig_vars
-             print(sys_vars)
-             """,
-    "^.*(.py)$",
-)
+# with open("README.html") as fh:
+#     long_description = fh.read()
 
 
 def build(setup_kwargs):
@@ -190,7 +180,7 @@ def build(setup_kwargs):
     ]
     setup_kwargs.update(
         {
-            "long_description": long_description,
+            # "long_description": long_description,
             "long_description_content_type": "text/html",
             "ext_modules": ext_modules,
             "cmdclass": {
