@@ -142,7 +142,7 @@ requires = [
 #build-backend = "poetry.core.masonry.api"
 
 [tool.setuptools]
-py-modules = ["cornflakes", "build.py"]
+py-modules = ["cornflakes", "build"]
 
 [project]
 name = "cornflakes"
