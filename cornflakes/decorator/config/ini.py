@@ -54,7 +54,8 @@ def to_ini_bytes(
         cfg = getattr(self, cfg_name)
         _ini_bytes.extend(_parse_config_list(cfg, cfg_name, title))
 
-    _ini_bytes.pop()  # at least remove second line-break
+    if _ini_bytes:
+        _ini_bytes.pop()  # at least remove second line-break
 
     return _ini_bytes
 
