@@ -146,6 +146,7 @@ py-modules = ["cornflakes", "build.py"]
 
 [project]
 name = "cornflakes"
+version = "3.3.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
