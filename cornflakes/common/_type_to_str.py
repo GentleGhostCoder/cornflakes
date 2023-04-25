@@ -21,4 +21,4 @@ def type_to_str(f):
         return json.dumps([type_to_str(v) for v in f])
     if isinstance(f, dict):
         return json.dumps({k: type_to_str(v) for k, v in f.items()})
-    return f
+    return str(f)
