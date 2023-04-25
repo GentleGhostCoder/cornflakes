@@ -1,5 +1,6 @@
 from decimal import Decimal
 from enum import Enum
+import json
 
 
 def type_to_str(f):
@@ -10,10 +11,14 @@ def type_to_str(f):
             if (e := (string := str(f).lower()).find("e")) != -1
             else str(f)
         )
+    if isinstance(f, int):
+        return f
+    if isinstance(f, bool):
+        return str(f).lower()
     if isinstance(f, Enum):
         return str(f.value)
     if isinstance(f, list):
-        return [type_to_str(i) for i in f]
+        return json.dumps([type_to_str(v) for v in f])
     if isinstance(f, dict):
-        return {k: type_to_str(v) for k, v in f.items()}
-    return str(f)
+        return json.dumps({k: type_to_str(v) for k, v in f.items()})
+    return f

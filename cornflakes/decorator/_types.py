@@ -71,6 +71,30 @@ class DataclassProtocol(Protocol):
         """Call Function."""
         ...
 
+    def to_dict(self, *args, **kwargs) -> Any:
+        """Parse config to dict."""
+        ...
+
+    def to_tuple(self, *args, **kwargs) -> Any:
+        """Parse config to tuple."""
+        ...
+
+    def to_ini(self, *args, **kwargs) -> Optional[bytearray]:
+        """Parse config to ini file / bytes."""
+        ...
+
+    def to_yaml(self, *args, **kwargs) -> Optional[bytearray]:
+        """Parse config to yaml file / bytes."""
+        ...
+
+    def to_yaml_bytes(self, *args, **kwargs) -> Optional[bytearray]:
+        """Parse config to yaml bytes."""
+        ...
+
+    def to_ini_bytes(self, *args, **kwargs) -> Optional[bytearray]:
+        """Parse config to ini bytes."""
+        ...
+
 
 @runtime_checkable
 class Config(Protocol):
