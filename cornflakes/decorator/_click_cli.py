@@ -39,7 +39,7 @@ def click_cli(  # noqa: C901
         else:
             config = RichConfig(*args, **kwargs)
 
-    def cli_wrapper(w_callback: Callable) -> Callable[..., Union[BaseCommand, Group, RichGroup]]:
+    def cli_wrapper(w_callback: Callable) -> Callable[..., Union[BaseCommand, Group, RichGroup, Command, RichCommand]]:
         if not callable(w_callback):
             return w_callback
 
