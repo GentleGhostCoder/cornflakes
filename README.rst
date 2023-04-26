@@ -15,7 +15,7 @@
    :target: https://pypi.org/project/cornflakes
    :alt: Python Version
 .. |License| image:: https://img.shields.io/github/license/semmjon/cornflakes
-   :target: https://opensource.org/licenses/Apache2.0
+   :target: https://opensource.org/licenses/MIT
    :alt: License
 .. |Read the Docs| image:: https://img.shields.io/readthedocs/cornflakes/latest.svg?label=Read%20the%20Docs
    :target: https://cornflakes.readthedocs.io
@@ -29,6 +29,9 @@
 .. |Codecov| image:: https://codecov.io/gh/semmjon/cornflakes/branch/release-1.4.5/graph/badge.svg
    :target: https://codecov.io/gh/semmjon/cornflakes
    :alt: Codecov
+.. |Pre-Commit-CI| image:: https://results.pre-commit.ci/badge/github/sgeist-ionos/cornflakes/main.svg
+   :target: https://results.pre-commit.ci/latest/github/sgeist-ionos/cornflakes/main
+   :alt: pre-commit.ci status
 
 .. code::
 
