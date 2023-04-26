@@ -46,6 +46,7 @@ from cornflakes.decorator import click_cli
     HEADER_TEXT="Create generic any easy to manage Configs for your Project.",
     GLOBAL_OPTIONS=[verbose_option, bg_process_option],
     VERSION_INFO=True,
+    as_command=True,
 )
 def main():
     """Main CLI Entrypoint Method."""

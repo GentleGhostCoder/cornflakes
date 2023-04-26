@@ -6,17 +6,24 @@ See referenced Code at https://github.com/ewels/rich-click.git
 # from click import *  # noqa: F401, F403
 import click
 
-
 from cornflakes.click.rich import RichArg, argument, RichCommand, command, RichGroup, group, RichConfig
 from cornflakes.click.options import bg_process_option, verbose_option, global_option, auto_option
 
-# Pach click
-click.argument = argument
-click.group = group
-click.command = command
-click.Group = RichGroup
-click.Command = RichCommand
-click.Argument = RichArg
+RICH_CLICK_ENABLED = False
+
+
+def patch_click():
+    """Patch click to use rich extensions."""
+    global RICH_CLICK_ENABLED
+    if not RICH_CLICK_ENABLED:
+        click.argument = argument
+        click.group = group
+        click.command = command
+        click.Group = RichGroup
+        click.Command = RichCommand
+        click.Argument = RichArg
+        RICH_CLICK_ENABLED = True
+
 
 __all__ = [
     "global_option",
@@ -29,4 +36,5 @@ __all__ = [
     "RichGroup",
     "RichCommand",
     "RichConfig",
+    "patch_click",
 ]
