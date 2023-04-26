@@ -15,12 +15,10 @@ def type_to_str(f):
         return str(f)
     if isinstance(f, int):
         return f
-    if not f:
-        return ""
     if isinstance(f, Enum):
         return str(f.value)
     if isinstance(f, (list, tuple)):
         return json.dumps([v_str for v in f if (v_str := type_to_str(v))])
     if isinstance(f, dict):
         return json.dumps({k: type_to_str(v) for k, v in f.items()})
-    return str(f)
+    return str(f or "")
