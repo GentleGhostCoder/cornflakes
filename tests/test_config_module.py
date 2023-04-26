@@ -47,7 +47,7 @@ class TestConfigGeneration(unittest.TestCase):
         self.assertEqual(
             MainConfig.from_file().to_dict(),
             {
-                "sub_config": [
+                "sub_config_class": [
                     {
                         "idx_at5": 5,
                         "idx_at_first_ini_or_0": 5,
@@ -217,11 +217,11 @@ class TestConfigGeneration(unittest.TestCase):
         environ["some_env"] = "test123"
 
         self.assertEqual(
-            repr(configs.sub_config.SubConfig.from_ini("tests/configs/default.ini")),
+            repr(configs.sub_config.SubConfigClass.from_ini("tests/configs/default.ini")),
             repr(
                 {
-                    "sub_config": [
-                        configs.sub_config.SubConfig(
+                    "sub_config_class": [
+                        configs.sub_config.SubConfigClass(
                             idx_at_first_ini_or_0=5,
                             test=None,
                             section_name="sub_config_0",
@@ -253,7 +253,7 @@ class TestConfigGeneration(unittest.TestCase):
                             sep=",",
                             euro="€",
                         ),
-                        configs.sub_config.SubConfig(
+                        configs.sub_config.SubConfigClass(
                             test=None,
                             section_name="sub_config_1",
                             string="bla1",
@@ -284,7 +284,7 @@ class TestConfigGeneration(unittest.TestCase):
                             sep=",",
                             euro="€",
                         ),
-                        configs.sub_config.SubConfig(
+                        configs.sub_config.SubConfigClass(
                             test=None,
                             section_name="sub_config_2",
                             string="bla2",
@@ -324,8 +324,8 @@ class TestConfigGeneration(unittest.TestCase):
             repr(MainConfig.from_file()),
             repr(
                 MainConfig(
-                    sub_config=[
-                        configs.sub_config.SubConfig(
+                    sub_config_class=[
+                        configs.sub_config.SubConfigClass(
                             idx_at_first_ini_or_0=5,
                             test=None,
                             section_name="sub_config_0",
@@ -357,7 +357,7 @@ class TestConfigGeneration(unittest.TestCase):
                             sep=",",
                             euro="€",
                         ),
-                        configs.sub_config.SubConfig(
+                        configs.sub_config.SubConfigClass(
                             test=None,
                             section_name="sub_config_1",
                             string="bla1",
@@ -388,7 +388,7 @@ class TestConfigGeneration(unittest.TestCase):
                             sep=",",
                             euro="€",
                         ),
-                        configs.sub_config.SubConfig(
+                        configs.sub_config.SubConfigClass(
                             test=None,
                             section_name="sub_config_2",
                             string="bla2",

@@ -13,12 +13,12 @@ class ExampleEnum(Enum):
     sample = "abc"
 
 
-@config(sections=None, use_regex=True, is_list=True, frozen=True, eval_env=True, validate=True)
-class SubConfig:
+@config(sections="sub_config", use_regex=True, is_list=True, frozen=True, eval_env=True, validate=True)
+class SubConfigClass:
     """Test Config Class."""
 
     idx_at5: Index = 5  # type: ignore
-    idx_at_first_ini_or_0: Index["SubConfig"] = 0  # type: ignore
+    idx_at_first_ini_or_0: Index["SubConfigClass"] = 0  # type: ignore
     test: Optional[str] = None
     init_config: InitVar[bool] = True
     section_name: str = ""

@@ -65,7 +65,7 @@ def to_ini(self, out_cfg: Optional[str] = None) -> Optional[bytearray]:
     title = getattr(self, "section_name", getattr(self, "__config_sections__", self.__class__.__name__.lower()))
     if isinstance(title, (list, tuple)):
         title = title[0]
-    return write_config(self.to_ini_bytes(title, out_cfg))
+    return write_config(self.to_ini_bytes(title), out_cfg)
 
 
 def create_ini_file_loader(
