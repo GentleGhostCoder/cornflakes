@@ -15,7 +15,7 @@
    :target: https://pypi.org/project/cornflakes
    :alt: Python Version
 .. |License| image:: https://img.shields.io/github/license/semmjon/cornflakes
-   :target: https://opensource.org/licenses/MIT
+   :target: https://opensource.org/licenses/Apache2.0
    :alt: License
 .. |Read the Docs| image:: https://img.shields.io/readthedocs/cornflakes/latest.svg?label=Read%20the%20Docs
    :target: https://cornflakes.readthedocs.io
