@@ -41,9 +41,9 @@ inline const std::vector<std::string> NAN_STRINGS = {
     "NA", "NONE", "NULL", "UNDEFINED", "NONETYPE", "\"\""};
 inline const std::regex hex_regex = std::regex("0[xX][0-9a-fA-F]+");
 inline const std::regex boolen_true_regex =
-    std::regex("(true|t)", std::regex::icase);
+    std::regex("true", std::regex::icase);
 inline const std::regex boolen_false_regex =
-    std::regex("(false|f)", std::regex::icase);
+    std::regex("false", std::regex::icase);
 inline const std::regex numeric_regex =
     std::regex("(^([+-]?\\d[0-9]*)?(\\.(.*e-)?)?([0-9]*)?$)");
 static const std::regex uuid_regex(
