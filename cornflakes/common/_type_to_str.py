@@ -11,10 +11,10 @@ def type_to_str(f):
             if (e := (string := str(f).lower()).find("e")) != -1
             else str(f)
         )
+    if isinstance(f, bool):
+        return str(f)
     if isinstance(f, int):
         return f
-    if isinstance(f, bool):
-        return str(f).lower()
     if not f:
         return ""
     if isinstance(f, Enum):
