@@ -44,44 +44,19 @@
 Information
 -----------
 
-This package was created by starting C ++ methods to incorporate into my python implementations.
-To make things easier for me, lightweight public libraries were included
-(especially to carry out string operations):
+The Python module "cornflakes" was started as a hobby project and offers an alternative to Pydantic for managing configurations and data structures. It allows creating generic and easy to manage configurations for your project. Unlike Pydantic, which is based on inheritance, "cornflakes" uses a decorator (similar to dataclass) to map data structures.
 
-* hash-library
-* strtk
-* rapidjson
+In addition to a dataclass decorator with additional functionality, there is also a config decorator. This makes it possible to read the dataclass from configuration files. This can be very useful if you want to save your application configurations to a file.
 
+The module also has a click wrapper that simplifies the implementation of command line applications. By integrating the Rich module, the application is additionally equipped with colors and other functions.
+
+There are other useful methods in the base of the module that are generally useful for Python development. These can help you develop your projects faster and more efficiently.
 
 Short Term RoadMap:
 ~~~~~~~~~~~~~~~~~~~~
 
 - Enrich json methods
 - Fix / Test the to_<file-format> Methods
-
-Features:
-~~~~~~~~~
-
-The following features have currently been implemented:
-    * config management system
-        - based on dataclass
-        - alternative Implementation for pydantic (BaseSettings)
-        - ini support files by a lightweight and fast parser (-> ini_load)
-        - yaml support (based on PyYAML)
-        - environment variables
-        - (future) support json (based on orjson)
-    * command line interface management
-        - method: click_cli (decorator)
-        - based on click and rich
-        - easy to use and start with
-    * eval_type
-        - method to parse strings in python-types e.g. int | bool | timestamp
-    * simple_hmac
-        - vectorized c++ hmac implementation
-    * default_ca_path
-        - python function to find a default ssl / ca certificate path
-
-Currently, the package is tested for Linux, Mac and Windows
 
 Development
 -----------
