@@ -21,7 +21,8 @@ def click_cli(  # noqa: C901
     *args,
     **kwargs,
 ) -> Union[
-    Callable[[Any], Callable[..., Union[BaseCommand, RichGroup]]], Callable[..., Union[BaseCommand, Group, RichGroup]]
+    Callable[[Any], Callable[..., Union[BaseCommand, RichGroup]]],
+    Callable[..., Union[BaseCommand, Group, RichGroup, Command, RichCommand]],
 ]:
     """Function that creates generic click CLI Object."""
     patch_click()
