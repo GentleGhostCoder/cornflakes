@@ -77,7 +77,7 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup, Any], va
             if isinstance(actual_type, SpecialForm):
                 actual_type = getattr(type_hint, "__args__", type_hint)
 
-            if isinstance(actual_type, str):
+            if actual_type == str:
                 return str(value or "")  # fix default string is not 'None'
 
             if isinstance(actual_type, list) or isinstance(actual_type, tuple):

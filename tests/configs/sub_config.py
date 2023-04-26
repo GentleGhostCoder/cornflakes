@@ -23,6 +23,7 @@ class SubConfig:
     init_config: InitVar[bool] = True
     section_name: str = ""
     string: str = "bla123"
+    empty_string: str = ""
     datetime_datetime: datetime.datetime = datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc)
     datetime_time: datetime.time = datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc)
     int_val: int = 1
