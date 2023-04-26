@@ -3,12 +3,27 @@ from inspect import getfile
 import logging
 from typing import Any, Callable, Optional, Union
 
+import click
 from click import BaseCommand, Command, Group, style, version_option
 
-from cornflakes.click import RichCommand, RichConfig, RichGroup, command, group, patch_click
-from cornflakes.decorator._types import Loader
-from cornflakes.decorator.config import Config
+from cornflakes.decorator.click.rich import RichArg, RichCommand, RichConfig, RichGroup, argument, command, group
+from cornflakes.decorator.types import Config, Loader
 from cornflakes.logging.logger import setup_logging
+
+RICH_CLICK_ENABLED = False
+
+
+def patch_click():
+    """Patch click to use rich extensions."""
+    global RICH_CLICK_ENABLED
+    if not RICH_CLICK_ENABLED:
+        click.argument = argument
+        click.group = group
+        click.command = command
+        click.Group = RichGroup
+        click.Command = RichCommand
+        click.Argument = RichArg
+        RICH_CLICK_ENABLED = True
 
 
 def click_cli(  # noqa: C901

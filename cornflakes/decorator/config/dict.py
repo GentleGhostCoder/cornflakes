@@ -3,9 +3,9 @@ import os
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes.decorator._indexer import is_index
-from cornflakes.decorator._types import Config
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.dataclass.helper import dict_factory
+from cornflakes.decorator.types import Config
 
 
 def to_dict(self) -> Any:

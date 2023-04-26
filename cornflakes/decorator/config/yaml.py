@@ -3,9 +3,9 @@ from typing import Any, Callable, Dict, List, Optional, Type, Union
 import yaml
 from yaml import SafeLoader, UnsafeLoader
 
-from cornflakes.decorator._types import Config
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._write_config import write_config
+from cornflakes.decorator.types import Config
 from cornflakes.parser import yaml_load
 
 

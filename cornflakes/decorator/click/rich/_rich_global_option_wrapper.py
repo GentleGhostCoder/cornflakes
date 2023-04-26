@@ -5,9 +5,9 @@ from typing import Callable, Optional, Union
 from click import get_current_context
 from click.core import Context
 
-from cornflakes.click.rich._rich_argument import RichArg
-from cornflakes.click.rich._rich_command import RichCommand
-from cornflakes.click.rich._rich_group import RichGroup
+from cornflakes.decorator.click.rich._rich_argument import RichArg
+from cornflakes.decorator.click.rich._rich_command import RichCommand
+from cornflakes.decorator.click.rich._rich_group import RichGroup
 
 F = Callable[..., Union[RichCommand, RichGroup, RichArg]]
 

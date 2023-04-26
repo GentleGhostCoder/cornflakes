@@ -10,8 +10,9 @@ from typing import Dict, List, Optional, Union
 
 import cornflakes.builder.config_template
 from cornflakes.common import unquoted_string
-from cornflakes.decorator import ConfigArguments, Loader, field
+from cornflakes.decorator import field
 from cornflakes.decorator.config import config_files, config_group, is_config
+from cornflakes.decorator.types import ConfigArguments, Loader
 
 
 def generate_config_module(  # noqa: C901

@@ -8,7 +8,7 @@ from typing import Any, Callable, Optional, Union, get_args
 from _cornflakes import eval_type
 from cornflakes.common import extract_var_names
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
-from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, ConfigGroup, DataclassProtocol
+from cornflakes.decorator.types import WITHOUT_DEFAULT, Config, ConfigGroup, DataclassProtocol
 from cornflakes.decorator.dataclass.helper import dataclass_fields
 
 # from types import GenericAlias

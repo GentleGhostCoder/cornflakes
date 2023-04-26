@@ -3,13 +3,13 @@ from dataclasses import fields
 from typing import Any, Callable, Optional, Type, Union, cast
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
-from cornflakes.decorator._types import DataclassProtocol
 from cornflakes.decorator.config.dict import to_dict
 from cornflakes.decorator.config.ini import to_ini, to_ini_bytes
 from cornflakes.decorator.config.tuple import to_tuple
 from cornflakes.decorator.config.yaml import to_yaml, to_yaml_bytes
 from cornflakes.decorator.dataclass._enforce_types import enforce_types as enforce
 from cornflakes.decorator.dataclass._field import Field
+from cornflakes.decorator.types import DataclassProtocol
 
 
 def dataclass(

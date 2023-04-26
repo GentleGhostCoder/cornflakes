@@ -1,7 +1,7 @@
 import re
 from typing import Any, Optional, Union
 
-from cornflakes.decorator._types import Config, ConfigArgument, ConfigGroup, DataclassProtocol, Loader
+from cornflakes.decorator.types import Config, ConfigArgument, ConfigGroup, DataclassProtocol, Loader
 
 
 def is_config(cls):

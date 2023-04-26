@@ -2,13 +2,13 @@ import logging
 from typing import Any, Callable, List, Optional, Union, cast
 
 from cornflakes.decorator import Index, funcat
-from cornflakes.decorator._types import Config, ConfigGroup, Loader
 from cornflakes.decorator.config._config_group import config_group
 from cornflakes.decorator.config.dict import create_dict_file_loader
 from cornflakes.decorator.config.ini import create_ini_file_loader
 from cornflakes.decorator.config.yaml import create_yaml_file_loader
 from cornflakes.decorator.dataclass import dataclass
 from cornflakes.decorator.dataclass.helper import get_default_loader
+from cornflakes.decorator.types import Config, ConfigGroup, Loader
 
 
 def config(
@@ -83,6 +83,3 @@ def config(
     if config_cls:
         return wrapper(config_cls)  # type: ignore
     return wrapper
-
-
-__all__ = ["config"]

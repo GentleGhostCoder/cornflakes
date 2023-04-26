@@ -1,6 +1,6 @@
 import logging
 
-from cornflakes.click.options._global import global_option
+from cornflakes.decorator.click.options._global import global_option
 from cornflakes.logging.logger import setup_logging
 
 

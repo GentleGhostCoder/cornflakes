@@ -2,6 +2,7 @@
 from _cornflakes import apply_match, eval_csv, eval_datetime, eval_type, extract_between, ini_load
 
 from cornflakes.common import patch_module
+from cornflakes.decorator.types import Loader, Config, ConfigGroup
 from cornflakes.logging import attach_log, setup_logging
 
 from cornflakes.decorator import (
@@ -9,7 +10,6 @@ from cornflakes.decorator import (
     config_group,
     add_slots,
     click_cli,
-    Loader,
     dataclass,
     field,
     config_field,
@@ -34,6 +34,8 @@ __all__ = [
     "apply_match",
     "config",
     "config_group",
+    "Config",
+    "ConfigGroup",
     "AnyUrl",
     "add_slots",
     "generate_config_module",

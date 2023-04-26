@@ -19,7 +19,7 @@ from rich.text import Text
 from rich.theme import Theme
 from rich_rst import RestructuredText
 
-from cornflakes.click.rich._rich_config import RichConfig as RichConfig
+from cornflakes.decorator.click.rich._rich_config import RichConfig as RichConfig
 
 # Support rich <= 10.6.0
 # try:

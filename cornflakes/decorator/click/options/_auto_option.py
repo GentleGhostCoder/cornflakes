@@ -5,9 +5,10 @@ from typing import Any, Callable, Dict, List, Union
 
 from click import Command, Group, option
 
-from cornflakes.click.rich import RichCommand, RichGroup
-from cornflakes.decorator.config import Config, ConfigGroup, is_config
+from cornflakes.decorator.click.rich import RichCommand, RichGroup
+from cornflakes.decorator.config import is_config
 from cornflakes.decorator.dataclass.helper import dataclass_fields
+from cornflakes.decorator.types import Config, ConfigGroup
 
 F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
 

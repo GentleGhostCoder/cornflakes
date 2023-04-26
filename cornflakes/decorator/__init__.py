@@ -4,9 +4,8 @@ from cornflakes.decorator._indexer import Index
 from cornflakes.decorator._funcat import funcat
 from cornflakes.decorator.config import config, config_group
 from cornflakes.decorator._add_dataclass_slots import add_slots
-from cornflakes.decorator._click_cli import click_cli
+from cornflakes.decorator.click import click_cli
 from cornflakes.decorator.dataclass import field, dataclass
-from cornflakes.decorator._types import ConfigArguments, Loader
 
 config_field = field
 
@@ -18,8 +17,6 @@ __all__ = [
     "click_cli",
     "dataclass",
     "field",
-    "Loader",
-    "ConfigArguments",
     "Index",
     "funcat",
 ]

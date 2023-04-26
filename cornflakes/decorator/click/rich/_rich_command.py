@@ -3,8 +3,8 @@ from typing import Any, List
 
 from click import ClickException, Command, Context, HelpFormatter, Parameter, exceptions
 
-from cornflakes.click.rich._rich_click import rich_abort_error, rich_format_error, rich_format_help
-from cornflakes.click.rich._rich_config import RichConfig as RichConfig
+from cornflakes.decorator.click.rich._rich_click import rich_abort_error, rich_format_error, rich_format_help
+from cornflakes.decorator.click.rich._rich_config import RichConfig as RichConfig
 
 
 class RichCommand(Command):

@@ -2,8 +2,8 @@
 import logging
 from typing import Any, Callable, Optional, Union
 
-from cornflakes.decorator._types import ConfigArgument, ConfigGroup
 from cornflakes.decorator.dataclass.helper import is_config, is_config_list
+from cornflakes.decorator.types import ConfigArgument, ConfigGroup
 
 
 def create_group_loader(cls) -> Callable[..., Union[ConfigGroup, Any]]:
