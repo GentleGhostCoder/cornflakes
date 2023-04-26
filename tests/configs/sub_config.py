@@ -36,3 +36,8 @@ class SubConfig:
     )
     enum: ExampleEnum = ExampleEnum.sample
     some_env: str = field(default="default_value", alias=["some_env"], ignore=True)
+    lineterminator: str = "\n"
+    escapechar: str = "\\"
+    quotechar: str = '"'
+    sep: str = ","
+    euro: str = "€"

@@ -168,8 +168,8 @@ class TestEvalType(unittest.TestCase):
 
     def test_hex(self):
         self.assertEqual(
-            cornflakes.eval_type("0x00"),
-            0,
+            cornflakes.eval_type("0xa"),
+            10,
         )
         self.assertEqual(
             cornflakes.eval_type("0xFF"),

@@ -512,10 +512,23 @@ py::object eval_type(std::string value) {
     return (py::module::import("builtins").attr("int")(value));
   }
 
+  if (value.length() <= 2 && value[0] == ESCAPE_CHAR[0]) {
+    if (value == "\\n") {
+      return py::str("\n");
+    } else if (value == "\\r") {
+      return py::str("\r");
+    } else if (value == "\\t") {
+      return py::str("\t");
+    } else if (value == "\\\\") {
+      return py::str("\\");
+    }
+  }
+
   // is hex char
-  if (value[0] == HEX_CHAR[0] && std::toupper(value[1]) == HEX_CHAR[1] &&
+  if (value.length() <= 4 && value[0] == HEX_CHAR[0] &&
+      std::toupper(value[1]) == HEX_CHAR[1] &&
       std::regex_match(value, hex_regex)) {
-    return (py::cast(std::stoul(value, nullptr, 16)));
+    return py::cast(std::stoul(value, nullptr, 16));
   }
 
   const char upper_first_char = static_cast<char>(std::toupper(value[0]));
@@ -588,16 +601,6 @@ py::object eval_type(std::string value) {
 /// is detected
 py::object eval_datetime(const std::string &value) {
   return to_generic_datetime(value);
-}
-
-std::string::const_iterator find_next_col_iter(
-    std::string::const_iterator start_iter,
-    std::string::const_iterator end_iter, const char col_seperator) {
-  const char current_char = std::string(start_iter, start_iter + 1).at(0);
-  if (current_char == QUOTE_CHARS[0] || current_char == QUOTE_CHARS[1]) {
-    start_iter = std::find(start_iter + 1, end_iter, current_char);
-  }
-  return std::find(start_iter, end_iter, col_seperator);
 }
 
 std::map<std::string, py::object> eval_csv(

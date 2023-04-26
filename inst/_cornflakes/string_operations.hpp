@@ -25,7 +25,6 @@ using std::chrono::milliseconds;
 namespace py = pybind11;
 
 namespace string_operations {  // cppcheck-suppress syntaxError
-
 // Constants
 //    inline const char NULL_CHAR = '0';
 inline const char *QUOTE_CHARS = "\"\'";
