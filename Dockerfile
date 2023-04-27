@@ -4,6 +4,6 @@ FROM python:3.8.1-alpine
 RUN apk update
 RUN apk add make automake gcc g++ git
 
-RUN pip install cornflakes
+RUN pip install cornflakes==3.3.4 # '''<<COOKIETEMPLE_FORCE_BUMP>>'''
 
 CMD cornflakes
