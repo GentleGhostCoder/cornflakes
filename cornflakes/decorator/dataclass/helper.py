@@ -28,18 +28,17 @@ def dataclass_fields(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) ->
 
 def dict_factory(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> Any:
     """Method to return class __dict_factory__."""
-    dict_factory_method = getattr(cls, "__dict_factory__", dict)
-
-    # check if any field in class is a memoryview type
-    if any([f.type == memoryview for f in dataclass_fields(cls).values()]):
-        # if so, return a dict factory that converts memoryview to bytes
-        def dict_factory_wrapper(obj):
-            """Method to convert memoryview to bytes."""
-            return dict_factory_method({k: bytes(v) if isinstance(v, memoryview) else v for k, v in obj})
-
-        return dict_factory_wrapper
-
-    return dict_factory_method
+    # dict_factory_method = getattr(cls, "__dict_factory__", dict)
+    #
+    # # check if any field in class is a memoryview type
+    # if any([f.type == memoryview for f in dataclass_fields(cls).values()]):
+    #     # if so, return a dict factory that converts memoryview to bytes
+    #     def dict_factory_wrapper(obj):
+    #         """Method to convert memoryview to bytes."""
+    #         return dict_factory_method({k: bytes(v) if isinstance(v, memoryview) else v for k, v in obj})
+    #
+    #     return dict_factory_wrapper
+    return getattr(cls, "__dict_factory__", dict)
 
 
 def normalized_class_name(cls):
