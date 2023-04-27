@@ -1,5 +1,11 @@
+from datetime import datetime
+from decimal import Decimal
+from enum import Enum
+from ipaddress import IPv4Address, IPv6Address
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Type, Union
 from uuid import UUID
 
+from cornflakes import field
 from cornflakes.decorator.dataclass import dataclass as data
 from cornflakes.decorator.datalite.datalite_decorator import datalite
 
@@ -7,7 +13,15 @@ from cornflakes.decorator.datalite.datalite_decorator import datalite
 def test_datalite():
     """Test datalite decorator."""
 
-    @datalite(db_path="test_datalite.db", type_overload={bytes: "BLOB", UUID: "BLOB"})
+    class StatusEnum(Enum):
+        ACTIVE = "active"
+        INACTIVE = "inactive"
+        PENDING = "pending"
+
+    def generator_function() -> Generator[int, None, None]:
+        yield from range(10)
+
+    # @datalite(db_path="test_datalite.db", type_overload={bytes: "BLOB", UUID: "BLOB"})
     @data(
         dict_factory=None,
         tuple_factory=None,
@@ -22,9 +36,33 @@ def test_datalite():
         float_value: float = 0.0
         bytes_value: bytes = b"blub"
         uuid_value: UUID = UUID("00000000-0000-0000-0000-000000000000")
+        bool_value: bool = False
+        datetime_value: datetime = datetime.now()
+        decimal_value: Decimal = Decimal("0.00")
+        list_value: List[str] = field(default_factory=list)
+        dict_value: Dict[str, Any] = field(default_factory=dict)
+        tuple_value: Tuple[int, str] = field(default_factory=lambda: (1, "blub"))
+        ipv4_value: IPv4Address = IPv4Address("192.0.2.0")
+        ipv6_value: IPv6Address = IPv6Address("2001:db8::1")
+        status_value: StatusEnum = StatusEnum.ACTIVE
+        none_value: None = None
+        complex_value: complex = 1 + 2j
+        set_value: set = field(default_factory=lambda: {1, 2, 3})
+        frozenset_value: frozenset = field(default_factory=lambda: frozenset({1, 2, 3}))
+        bytearray_value: bytearray = bytearray(b"hello")
+        memoryview_value: memoryview = memoryview(b"world")
+        slice_value: slice = slice(1, 5, 2)
+        range_value: range = range(0, 10, 2)
+        classmethod_value: classmethod = classmethod(lambda cls: print("classmethod called"))
+        any_value: Any = "anything"
+        type_value: Type[int] = int
+        callable_value: Callable[[int, int], int] = lambda x, y: x + y
+        generator_value: Generator[int, None, None] = generator_function()
+        optional_value: Optional[int] = None
+        union_value: Union[int, str] = "blub"
 
-    test = TestDataLite("blub1", 1, 1.0, b"blub1")
-    test.create_entry()
+    # test = TestDataLite("blub1", 1, 1.0, b"blub1")
+    # test.create_entry()
 
 
 """

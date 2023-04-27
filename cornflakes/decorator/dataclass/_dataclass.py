@@ -1,5 +1,6 @@
+import dataclasses
 from dataclasses import dataclass as new_dataclass
-from dataclasses import fields
+from dataclasses import fields, is_dataclass
 from typing import Any, Callable, Optional, Type, Union, cast
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
@@ -12,6 +13,86 @@ from cornflakes.decorator.dataclass._field import Field
 from cornflakes.decorator.types import DataclassProtocol
 
 
+def _zero_copy_asdict_inner(obj, dict_factory):
+    """Patched version of dataclasses._asdict_inner that does not copy the dataclass values."""
+    if is_dataclass(obj):
+        result = []
+        for f in fields(obj):
+            value = _zero_copy_asdict_inner(getattr(obj, f.name), dict_factory)
+            result.append((f.name, value))
+        return dict_factory(result)
+    elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
+        # obj is a namedtuple.  Recurse into it, but the returned
+        # object is another namedtuple of the same type.  This is
+        # similar to how other list- or tuple-derived classes are
+        # treated (see below), but we just need to create them
+        # differently because a namedtuple's __init__ needs to be
+        # called differently (see bpo-34363).
+
+        # I'm not using namedtuple's _asdict()
+        # method, because:
+        # - it does not recurse in to the namedtuple fields and
+        #   convert them to dicts (using dict_factory).
+        # - I don't actually want to return a dict here.  The main
+        #   use case here is json.dumps, and it handles converting
+        #   namedtuples to lists.  Admittedly we're losing some
+        #   information here when we produce a json list instead of a
+        #   dict.  Note that if we returned dicts here instead of
+        #   namedtuples, we could no longer call asdict() on a data
+        #   structure where a namedtuple was used as a dict key.
+
+        return type(obj)(*[_zero_copy_asdict_inner(v, dict_factory) for v in obj])
+    elif isinstance(obj, (list, tuple)):
+        # Assume we can create an object of this type by passing in a
+        # generator (which is not true for namedtuples, handled
+        # above).
+        return type(obj)(_zero_copy_asdict_inner(v, dict_factory) for v in obj)
+    elif isinstance(obj, dict):
+        return type(obj)(
+            (_zero_copy_asdict_inner(k, dict_factory), _zero_copy_asdict_inner(v, dict_factory)) for k, v in obj.items()
+        )
+    else:
+        return obj
+
+
+def _zero_copy_astuple_inner(obj, tuple_factory):
+    if is_dataclass(obj):
+        result = []
+        for f in fields(obj):
+            value = _zero_copy_astuple_inner(getattr(obj, f.name), tuple_factory)
+            result.append(value)
+        return tuple_factory(result)
+    elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
+        # obj is a namedtuple.  Recurse into it, but the returned
+        # object is another namedtuple of the same type.  This is
+        # similar to how other list- or tuple-derived classes are
+        # treated (see below), but we just need to create them
+        # differently because a namedtuple's __init__ needs to be
+        # called differently (see bpo-34363).
+        return type(obj)(*[_zero_copy_astuple_inner(v, tuple_factory) for v in obj])
+    elif isinstance(obj, (list, tuple)):
+        # Assume we can create an object of this type by passing in a
+        # generator (which is not true for namedtuples, handled
+        # above).
+        return type(obj)(_zero_copy_astuple_inner(v, tuple_factory) for v in obj)
+    elif isinstance(obj, dict):
+        return type(obj)(
+            (_zero_copy_astuple_inner(k, tuple_factory), _zero_copy_astuple_inner(v, tuple_factory))
+            for k, v in obj.items()
+        )
+    else:
+        return obj
+
+
+DATACLASS_PATCHED = False
+
+
+def patch_dataclasses():
+    if not DATACLASS_PATCHED:
+        setattr(dataclasses, "_asdict_inner", _zero_copy_asdict_inner)
+        setattr(dataclasses, "_astuple_inner", _zero_copy_astuple_inner)
+
+
 def dataclass(
     cls=None,
     dict_factory: Optional[Callable] = None,
@@ -22,6 +103,8 @@ def dataclass(
     **kwargs
 ) -> Union[DataclassProtocol, Callable[..., DataclassProtocol], Any]:
     """Wrapper around built-in dataclasses dataclass."""
+
+    patch_dataclasses()
 
     def wrapper(w_cls: Type[Any]) -> Union[DataclassProtocol, Any]:
         dataclass_fields = {
