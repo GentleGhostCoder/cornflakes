@@ -1,11 +1,29 @@
 from dataclasses import Field
 import sqlite3 as sql
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
+from uuid import UUID
 
-from .constraints import Unique
+from cornflakes.decorator.dataclass.helper import dataclass_fields
+from cornflakes.decorator.datalite.constraints import Unique
 
 type_table: Dict[Optional[type], str] = {None: "NULL", int: "INTEGER", float: "REAL", str: "TEXT", bytes: "BLOB"}
 type_table.update({Unique[key]: f"{value} NOT NULL UNIQUE" for key, value in type_table.items()})
+
+validator_table: Dict[str, Optional[type]] = {
+    "NULL": type(None),
+    "INTEGER": int,
+    "REAL": float,
+    "TEXT": str,
+    "BLOB": bytes,
+}
+formatter_table: Dict[type, Callable[[...], Any]] = {
+    int: int,
+    float: float,
+    str: str,
+    bytes: bytes,
+    type(None): lambda x: None,
+    UUID: lambda x: x.bytes,
+}
 
 
 def _convert_type(type_: Optional[type], type_overload: Dict[Optional[type], str]) -> str:
@@ -24,7 +42,7 @@ def _convert_type(type_: Optional[type], type_overload: Dict[Optional[type], str
         raise TypeError("Requested type not in the default or overloaded type table.")
 
 
-def _convert_sql_format(value: Any) -> str:
+def _convert_sql_format(value: Any, db_type: str = None) -> str:
     """
     Given a Python value, convert to string representation
     of the equivalent SQL datatype.
@@ -35,6 +53,10 @@ def _convert_sql_format(value: Any) -> str:
     >>> _convert_sql_format("John Smith")
     '"John Smith"'
     """
+    if type(value) in formatter_table:
+        value = formatter_table[type(value)](value)
+    if db_type:
+        value = validator_table[db_type](value)
     if value is None:
         return "NULL"
     elif isinstance(value, str):
@@ -57,7 +79,7 @@ def _get_table_cols(cur: sql.Cursor, table_name: str) -> List[str]:
     return [row_info[1] for row_info in cur.fetchall()][1:]
 
 
-def _get_default(default_object: object, type_overload: Dict[Optional[type], str]) -> str:
+def _get_default(default_object: object, type_overload: Dict[Optional[type], str], db_type: str) -> str:
     """
     Check if the field's default object is filled,
     if filled return the string to be put in the,
@@ -68,11 +90,11 @@ def _get_default(default_object: object, type_overload: Dict[Optional[type], str
     empty string if no string is necessary.
     """
     if type(default_object) in type_overload:
-        return f" DEFAULT {_convert_sql_format(default_object)}"
+        return f" DEFAULT {_convert_sql_format(default_object, db_type)}"
     return ""
 
 
-def _create_table(class_: type, cursor: sql.Cursor, type_overload: Dict[Optional[type], str] = type_table) -> None:
+def _create_table(class_: type, cursor: sql.Cursor, type_overload: Dict[Optional[type], str] = None) -> None:
     """
     Create the table for a specific dataclass given
     :param class_: A dataclass.
@@ -81,10 +103,13 @@ def _create_table(class_: type, cursor: sql.Cursor, type_overload: Dict[Optional
     with a custom table, this is that custom table.
     :return: None.
     """
-    fields: List[Field] = [class_.__dataclass_fields__[key] for key in class_.__dataclass_fields__.keys()]
+    if not type_overload:
+        type_overload = type_table
+    fields: List[Field] = [dataclass_fields(class_)[key] for key in dataclass_fields(class_).keys()]
     fields.sort(key=lambda field: field.name)  # Since dictionaries *may* be unsorted.
     sql_fields = ", ".join(
-        f"{field.name} {_convert_type(field.type, type_overload)}" f"{_get_default(field.default, type_overload)}"
+        f"{field.name} {_convert_type(field.type, type_overload)}"
+        f"{_get_default(field.default, type_overload, _convert_type(field.type, type_overload))}"
         for field in fields
     )
     sql_fields = "obj_id INTEGER PRIMARY KEY AUTOINCREMENT, " + sql_fields

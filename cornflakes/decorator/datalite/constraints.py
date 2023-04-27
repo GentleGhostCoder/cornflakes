@@ -15,9 +15,9 @@ class ConstraintFailedError(Exception):
     """
 
 
+Unique = Union[Tuple[T], T]
 """
 Dataclass fields hinted with this type signals
     datalite that the bound column of this
     field in the table is NOT NULL and UNIQUE.
 """
-Unique = Union[Tuple[T], T]

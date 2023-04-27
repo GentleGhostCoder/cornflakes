@@ -148,3 +148,6 @@ dmypy.json
 
 # Coala
 *.orig
+
+# DB files
+*.db

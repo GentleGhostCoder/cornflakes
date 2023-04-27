@@ -1,6 +1,6 @@
 repos:
     - repo: https://github.com/charliermarsh/ruff-pre-commit
-      # Ruff version.
+      # Ruff version. TODO: remove flake8 in future
       rev: "v0.0.263"
       hooks:
           - id: ruff

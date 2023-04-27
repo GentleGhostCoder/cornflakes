@@ -7,7 +7,7 @@ import sqlite3 as sql
 from sqlite3.dbapi2 import IntegrityError
 from typing import Callable, Dict, Optional
 
-from .commons import _create_table, type_table
+from .commons import _create_table, formatter_table, type_table
 from .constraints import ConstraintFailedError
 
 
@@ -29,7 +29,7 @@ def _create_entry(self) -> None:
                 f"INSERT INTO {table_name}("
                 f"{', '.join(item[0] for item in kv_pairs)})"
                 f" VALUES ({', '.join('?' for item in kv_pairs)})",
-                [item[1] for item in kv_pairs],
+                [formatter_table[type(item[1])](item[1]) for item in kv_pairs],
             )
             self.__setattr__("obj_id", cur.lastrowid)
             con.commit()

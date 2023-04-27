@@ -1,6 +1,8 @@
+from dataclasses import Field
 import re
-from typing import Any, Optional, Union
+from typing import Any, Dict, Optional, Union
 
+from cornflakes.decorator.dataclass._field import Field as CField
 from cornflakes.decorator.types import Config, ConfigArgument, ConfigGroup, DataclassProtocol, Loader
 
 
@@ -19,7 +21,7 @@ def config_files(cls) -> ConfigArgument:
     return getattr(cls, "__config_files__", [])
 
 
-def dataclass_fields(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> dict:
+def dataclass_fields(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> Dict[str, Union[Field, CField]]:
     """Method to return dataclass fields."""
     return getattr(cls, "__dataclass_fields__", {})
 

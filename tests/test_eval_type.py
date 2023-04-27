@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from ipaddress import ip_address
 import sys
 import unittest
+from uuid import UUID
 
 import cornflakes
 
@@ -164,6 +165,12 @@ class TestEvalType(unittest.TestCase):
         self.assertEqual(
             cornflakes.eval_type("2017-01-01 24:23:23"),
             "2017-01-01 24:23:23",
+        )
+
+    def test_uuid(self):
+        self.assertEqual(
+            cornflakes.eval_type("123e4567-e89b-12d3-a456-426655440000"),
+            UUID("123e4567-e89b-12d3-a456-426655440000"),
         )
 
     def test_hex(self):

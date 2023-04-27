@@ -5,9 +5,11 @@ definitions change. This functions deal with Schema Migrations.
 from dataclasses import Field
 from os.path import exists
 import sqlite3 as sql
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
-from .commons import _create_table, _get_table_cols
+from cornflakes.decorator.dataclass import Field as CField
+from cornflakes.decorator.dataclass.helper import dataclass_fields
+from cornflakes.decorator.datalite.commons import _create_table, _get_table_cols
 
 
 def _get_db_table(class_: type) -> Tuple[str, str]:
@@ -58,7 +60,7 @@ def _copy_records(database_name: str, table_name: str):
     """
     with sql.connect(database_name) as con:
         cur: sql.Cursor = con.cursor()
-        cur.execute(f"SELECT * FROM {table_name};")
+        cur.execute("SELECT * FROM ?;", (table_name,))
         values = cur.fetchall()
         keys = _get_table_cols(cur, table_name)
         keys.insert(0, "obj_id")
@@ -76,13 +78,13 @@ def _drop_table(database_name: str, table_name: str) -> None:
     """
     with sql.connect(database_name) as con:
         cur: sql.Cursor = con.cursor()
-        cur.execute(f"DROP TABLE {table_name};")
+        cur.execute("DROP TABLE ?;", (table_name,))
         con.commit()
 
 
 def _modify_records(
     data, col_to_del: Tuple[str], col_to_add: Tuple[str], flow: Dict[str, str]
-) -> Tuple[Dict[str, str]]:
+) -> Optional[List[Dict[str, str]]]:
     """
     Modify the asdict records in accordance
         with schema migration rules provided.
@@ -141,7 +143,7 @@ def _migrate_records(
         class_(**record).create_entry()
 
 
-def basic_migrate(class_: type, column_transfer: dict = None) -> None:
+def basic_migrate(cls: type, column_transfer: dict = None) -> None:
     """
     Given a class, compare its previous table,
     delete the fields that no longer exist,
@@ -150,18 +152,18 @@ def basic_migrate(class_: type, column_transfer: dict = None) -> None:
     from previous column to the new ones. It should be
     noted that, the obj_ids do not persist.
 
-    :param class_: Datalite class to migrate.
+    :param cls: Datalite class to migrate.
     :param column_transfer: A dictionary showing which
         columns will be copied to new ones.
     :return: None.
     """
-    database_name, table_name = _get_db_table(class_)
+    database_name, table_name = _get_db_table(cls)
     table_column_names: Tuple[str] = _get_table_column_names(database_name, table_name)
-    values = class_.__dataclass_fields__.values()
-    data_fields: Tuple[Field] = tuple(field for field in values)
+    values = dataclass_fields(cls).values()
+    data_fields: Tuple[Union[Field, CField], ...] = tuple(field for field in values)
     data_field_names: Tuple[str] = tuple(field.name for field in data_fields)
     columns_to_be_deleted: Tuple[str] = tuple(column for column in table_column_names if column not in data_field_names)
     columns_to_be_added: Tuple[str] = tuple(column for column in data_field_names if column not in table_column_names)
     records = _copy_records(database_name, table_name)
     _drop_table(database_name, table_name)
-    _migrate_records(class_, database_name, records, columns_to_be_deleted, columns_to_be_added, column_transfer)
+    _migrate_records(cls, database_name, records, columns_to_be_deleted, columns_to_be_added, column_transfer)

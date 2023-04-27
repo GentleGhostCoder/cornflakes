@@ -1,6 +1,7 @@
 import sqlite3 as sql
 from typing import Any, List, Tuple
 
+from ..dataclass.helper import dataclass_fields
 from .commons import _convert_sql_format, _get_table_cols
 
 
@@ -30,7 +31,7 @@ def is_fetchable(class_: type, obj_id: int) -> bool:
     with sql.connect(getattr(class_, "db_path")) as con:
         cur: sql.Cursor = con.cursor()
         try:
-            cur.execute(f"SELECT 1 FROM {class_.__name__.lower()} WHERE obj_id = ?;", (obj_id,))
+            cur.execute(f"SELECT 1 FROM {class_.__name__.lower()}  WHERE 'obj_id' = ?;", (obj_id,))
         except sql.OperationalError:
             raise KeyError(f"Table {class_.__name__.lower()} does not exist.")
     return bool(cur.fetchall())
@@ -86,7 +87,7 @@ def _convert_record_to_object(class_: type, record: Tuple[Any], field_names: Lis
     :return: the created object.
     """
     kwargs = dict(zip(field_names, record[1:]))
-    field_types = {key: value.type for key, value in class_.__dataclass_fields__.items()}
+    field_types = {key: value.type for key, value in dataclass_fields(class_).items()}
     for key in kwargs:
         if field_types[key] == bytes:
             kwargs[key] = bytes(kwargs[key], encoding="utf-8")

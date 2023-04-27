@@ -8,8 +8,8 @@ import sqlite3 as sql
 from typing import List, Tuple, TypeVar, Union
 from warnings import warn
 
-from .commons import _convert_sql_format, _create_table
-from .constraints import ConstraintFailedError
+from cornflakes.decorator.datalite.commons import _convert_sql_format, _create_table
+from cornflakes.decorator.datalite.constraints import ConstraintFailedError
 
 T = TypeVar("T")
 
@@ -24,11 +24,11 @@ class HeterogeneousCollectionError(Exception):
 
 def _check_homogeneity(objects: Union[List[T], Tuple[T]]) -> None:
     """
-    Check if all of the members a Tuple or a List
+    Check if all the members a Tuple or a List
     is of the same type.
 
     :param objects: Tuple or list to check.
-    :return: If all of the members of the same type.
+    :return: If all the members of the same type.
     """
     class_ = objects[0].__class__
     if not all([isinstance(obj, class_) or isinstance(objects[0], obj.__class__) for obj in objects]):
@@ -37,11 +37,11 @@ def _check_homogeneity(objects: Union[List[T], Tuple[T]]) -> None:
 
 def _toggle_memory_protection(cur: sql.Cursor, protect_memory: bool) -> None:
     """
-    Given a cursor to an sqlite3 connection, if memory protection is false,
+    Given a cursor to a sqlite3 connection, if memory protection is false,
         toggle memory protections off.
 
     :param cur: Cursor to an open SQLite3 connection.
-    :param protect_memory: Whether or not should memory be protected.
+    :param protect_memory: Whether should memory be protected.
     :return: Memory protections off.
     """
     if not protect_memory:
@@ -58,7 +58,7 @@ def _mass_insert(objects: Union[List[T], Tuple[T]], db_name: str, protect_memory
 
     :param objects: Objects to insert.
     :param db_name: Name of the database to insert.
-    :param protect_memory: Whether or not memory
+    :param protect_memory: Whether memory or not
         protections are on or off.
     :return: None
     """
@@ -73,17 +73,23 @@ def _mass_insert(objects: Union[List[T], Tuple[T]], db_name: str, protect_memory
         sql_queries.append(
             f"INSERT INTO {table_name}("
             + f"{', '.join(item[0] for item in kv_pairs)})"
-            + f" VALUES ({', '.join(_convert_sql_format(item[1]) for item in kv_pairs)});"
+            + f" VALUES ({', '.join(_convert_sql_format(item[1], item[0]) for item in kv_pairs)});"
         )
     with sql.connect(db_name) as con:
         cur: sql.Cursor = con.cursor()
         try:
             _toggle_memory_protection(cur, protect_memory)
-            cur.execute(f"SELECT obj_id FROM {table_name} ORDER BY obj_id DESC LIMIT 1")
-            index_tuple = cur.fetchone()
-            if index_tuple:
-                first_index = index_tuple[0]
-            cur.executescript("BEGIN TRANSACTION;\n" + "\n".join(sql_queries) + "\nEND TRANSACTION;")
+            cur.execute("SELECT 'obj_id' FROM ? ORDER BY 'obj_id' DESC LIMIT 1", (table_name,))
+            # TODO: Check if this is needed.
+            # index_tuple = cur.fetchone()
+            # if index_tuple:
+            #     first_index = index_tuple[0]
+            cur.executescript(
+                f"""BEGIN TRANSACTION;
+            {'''
+            '''.join(sql_queries)}
+END TRANSACTION;"""
+            )
         except sql.IntegrityError:
             raise ConstraintFailedError
     con.commit()
