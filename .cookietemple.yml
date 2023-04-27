@@ -1,9 +1,9 @@
-cookietemple_version: '1.4.1 # <<COOKIETEMPLE_NO_BUMP>>'
+cookietemple_version: "1.4.1 # <<COOKIETEMPLE_NO_BUMP>>"
 domain: cli
 language: python
 project_slug: cornflakes
 project_slug_no_hyphen: cornflakes
-template_version: '2.1.1 # <<COOKIETEMPLE_NO_BUMP>>'
+template_version: "2.1.1 # <<COOKIETEMPLE_NO_BUMP>>"
 template_handle: cli-python
 github_username: sgeist
 creator_github_username: sgeist

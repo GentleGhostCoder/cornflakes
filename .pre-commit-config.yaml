@@ -1,4 +1,9 @@
 repos:
+    - repo: https://github.com/charliermarsh/ruff-pre-commit
+      # Ruff version.
+      rev: "v0.0.263"
+      hooks:
+          - id: ruff
     - repo: local
       hooks:
           - id: black
@@ -6,7 +11,6 @@ repos:
             entry: black
             language: system
             types: [python]
-            require_spkg_resourceserial: true
           - id: check-added-large-files
             name: Check for added large files
             entry: check-added-large-files
@@ -47,9 +51,10 @@ repos:
           - id: flake8
             name: flake8
             entry: flake8
-            language: system
+            language: python_venv
             types: [python]
             require_serial: true
+            additional_dependencies: [Flake8-pyproject]
           - id: pyupgrade
             name: pyupgrade
             description: Automatically upgrade syntax for newer versions.

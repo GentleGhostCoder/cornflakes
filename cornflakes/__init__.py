@@ -1,24 +1,12 @@
 """Top Level Module."""  # noqa: RST303 D205
 from _cornflakes import apply_match, eval_csv, eval_datetime, eval_type, extract_between, ini_load
-
-from cornflakes.common import patch_module
-from cornflakes.decorator.types import Loader, Config, ConfigGroup
-from cornflakes.logging import attach_log, setup_logging
-
-from cornflakes.decorator import (
-    config,
-    config_group,
-    add_slots,
-    click_cli,
-    dataclass,
-    field,
-    config_field,
-    Index,
-)
-from cornflakes.decorator.dataclass.validator import AnyUrl
 from cornflakes.builder import generate_config_module
+from cornflakes.common import patch_module
+from cornflakes.decorator import Index, add_slots, click_cli, config, config_field, config_group, dataclass, field
+from cornflakes.decorator.dataclass.validator import AnyUrl
+from cornflakes.decorator.types import Config, ConfigGroup, Loader
+from cornflakes.logging import attach_log, setup_logging
 from cornflakes.parser import yaml_load
-
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"

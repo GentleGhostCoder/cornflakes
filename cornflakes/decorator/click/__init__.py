@@ -3,9 +3,8 @@ __________________________________
 See referenced Code at https://github.com/ewels/rich-click.git
 """  # noqa: RST303 D205
 from cornflakes.decorator.click._click_cli import click_cli
-from cornflakes.decorator.click.rich import RichArg, argument, RichCommand, command, RichGroup, group, RichConfig
-from cornflakes.decorator.click.options import bg_process_option, verbose_option, global_option, auto_option
-
+from cornflakes.decorator.click.options import auto_option, bg_process_option, global_option, verbose_option
+from cornflakes.decorator.click.rich import RichArg, RichCommand, RichConfig, RichGroup, argument, command, group
 
 __all__ = [
     "global_option",

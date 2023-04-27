@@ -1,5 +1,5 @@
-from contextlib import suppress
 import inspect
+from contextlib import suppress
 from dataclasses import MISSING, is_dataclass
 from itertools import chain
 from os import environ
@@ -8,8 +8,8 @@ from typing import Any, Callable, Optional, Union, get_args
 from _cornflakes import eval_type
 from cornflakes.common import extract_var_names
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
-from cornflakes.decorator.types import WITHOUT_DEFAULT, Config, ConfigGroup, DataclassProtocol
 from cornflakes.decorator.dataclass.helper import dataclass_fields
+from cornflakes.decorator.types import WITHOUT_DEFAULT, Config, ConfigGroup, DataclassProtocol
 
 # from types import GenericAlias
 # import typing
