@@ -8,11 +8,24 @@ import sysconfig
 from types import ModuleType
 from typing import Dict, List, Optional, Union
 
-import cornflakes.builder.config_template
 from cornflakes.common import unquoted_string
 from cornflakes.decorator import field
 from cornflakes.decorator.config import config_files, config_group, is_config
 from cornflakes.decorator.types import ConfigArguments, Loader
+
+TEMPLATE = '''"""Template Module."""
+from cornflakes import config_group
+
+
+@config_group
+class Config:
+    """Template Class."""
+
+    # modules
+
+
+__all__ = ["Config"]
+'''
 
 
 def generate_config_module(  # noqa: C901
@@ -41,8 +54,7 @@ def generate_config_module(  # noqa: C901
     if not target_module_file:
         target_module_file = f'{source_module.__name__.replace(".", "/")}/default.py'
 
-    with open(cornflakes.builder.config_template.__file__) as file:
-        template = file.read()
+    template = TEMPLATE  # create copy of template
 
     if class_name:
         template = template.replace("Config", class_name)
