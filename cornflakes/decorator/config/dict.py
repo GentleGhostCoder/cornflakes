@@ -8,7 +8,7 @@ from cornflakes.decorator.types import Config
 def create_dict_file_loader(
     cls: Union[Config, Any],
 ) -> Callable[..., Dict[str, Optional[Union[Config, List[Config], Any]]]]:
-    """Method to create file loader for passed dicts."""
+    """Method to create file loader for passed dict."""
 
     def from_dict(*args, config_dict=None, **kwargs) -> Dict[str, Optional[Union[Config, List[Config], Any]]]:
         if not config_dict:

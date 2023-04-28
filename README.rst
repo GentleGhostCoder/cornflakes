@@ -150,12 +150,3 @@ Run pre-commit:
 .. code::
 
    pre-commit run -a
-
-Publish
-~~~~~~~
-
-Its not recommended publish manually (use git-ci or github workflows instead).
-
-.. code::
-
-   make publish

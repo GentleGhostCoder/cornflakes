@@ -98,9 +98,10 @@ jobs:
                   pipx install poetry
                   poetry --version
 
-            - name: Install Docs Requirements
+            - name: Install Dependencies
               run: |
                   pip install -r docs/requirements.txt
+                  poetry install --only dev
 
             - name: Install nox nox-poetry rich
               run: |

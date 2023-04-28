@@ -7,13 +7,13 @@ import sqlite3 as sql
 from sqlite3.dbapi2 import IntegrityError
 from typing import Callable, Dict, Optional
 
-from .commons import _create_table, formatter_table, type_table
-from .constraints import ConstraintFailedError
+from cornflakes.decorator.datalite.commons import _convert_sql_format, _create_table, type_table
+from cornflakes.decorator.datalite.constraints import ConstraintFailedError
 
 
 def _create_entry(self) -> None:
     """
-    Given an object, create the entry for the object. As a side-effect,
+    Given an object, create the entry for the object. As a side effect,
     this will set the object_id attribute of the object to the unique
     id of the entry.
     :param self: Instance of the object.
@@ -29,7 +29,7 @@ def _create_entry(self) -> None:
                 f"INSERT INTO {table_name}("
                 f"{', '.join(item[0] for item in kv_pairs)})"
                 f" VALUES ({', '.join('?' for item in kv_pairs)})",
-                [formatter_table[type(item[1])](item[1]) for item in kv_pairs],
+                [_convert_sql_format(item[1], item[0]) for item in kv_pairs],
             )
             self.__setattr__("obj_id", cur.lastrowid)
             con.commit()

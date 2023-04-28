@@ -1,28 +1,138 @@
 from dataclasses import Field
+from datetime import date, datetime, time
+from decimal import Decimal
+from enum import Enum
+from ipaddress import IPv4Address, IPv6Address
+import json
+import pickle
 import sqlite3 as sql
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Type, Union
 from uuid import UUID
 
 from cornflakes.decorator.dataclass.helper import dataclass_fields
 from cornflakes.decorator.datalite.constraints import Unique
 
-type_table: Dict[Optional[type], str] = {None: "NULL", int: "INTEGER", float: "REAL", str: "TEXT", bytes: "BLOB"}
-type_table.update({Unique[key]: f"{value} NOT NULL UNIQUE" for key, value in type_table.items()})
+
+def str_to_bool(s: str) -> bool:
+    if s.lower() == "true":
+        return True
+    elif s.lower() == "false":
+        return False
+    else:
+        raise ValueError("String does not represent a boolean value")
+
+
+def default_formatter(x: Any) -> Any:
+    return x
+
+
+def uuid_formatter(x: UUID) -> bytes:
+    return x.bytes
+
+
+def generator_formatter(x: "Generator") -> None:
+    raise ValueError("Generators cannot be serialized to SQLite")
+
+
+SpecialForm = type(Optional)
+
+
+type_table: Dict[Optional[type], str] = {
+    None: "NULL",
+    int: "INTEGER",
+    float: "REAL",
+    str: "TEXT",
+    bytes: "BLOB",
+    bool: "INTEGER",
+    datetime: "TIMESTAMP",
+    date: "DATE",
+    time: "TIME",
+    Decimal: "NUMERIC",
+    # additional types
+    List: "TEXT",
+    Dict: "TEXT",
+    Tuple: "TEXT",
+    IPv4Address: "TEXT",
+    IPv6Address: "TEXT",
+    Enum: "TEXT",
+    complex: "TEXT",
+    set: "TEXT",
+    frozenset: "TEXT",
+    bytearray: "BLOB",
+    memoryview: "BLOB",
+    slice: "TEXT",
+    range: "TEXT",
+    classmethod: "BLOB",
+    Any: "BLOB",
+    Type: "TEXT",
+    Callable: "BLOB",
+    Generator: "TEXT",
+    Optional: "BLOB",
+    Union: "BLOB",
+    UUID: "BLOB",
+}
+
+type_table.update(
+    {
+        Unique[key]
+        if not isinstance(key, SpecialForm)
+        else Unique[getattr(key, "__args__", type(None))]: f"{value}"
+        + (" NOT NULL UNIQUE" if not isinstance(key, SpecialForm) else "")
+        for key, value in type_table.items()
+    }
+)
 
 validator_table: Dict[str, Optional[type]] = {
     "NULL": type(None),
     "INTEGER": int,
     "REAL": float,
     "TEXT": str,
-    "BLOB": bytes,
+    "BLOB": lambda x: bytes(x) if isinstance(x, (bytes, bytearray)) else x,
+    "TIMESTAMP": lambda x: isinstance(x, datetime) and str(x) or "NULL",
+    "DATE": lambda x: isinstance(x, date) and str(x) or "NULL",
+    "TIME": lambda x: isinstance(x, time) and str(x) or "NULL",
+    "NUMERIC": Decimal,
 }
+# additional validators
+validator_table.update(
+    {
+        "IPv4Address": IPv4Address,
+        "IPv6Address": IPv6Address,
+        "Enum": Enum,
+        "slice": slice,
+        "UUID": UUID,
+    }
+)
+
 formatter_table: Dict[type, Callable[[...], Any]] = {
     int: int,
     float: float,
     str: str,
     bytes: bytes,
     type(None): lambda x: None,
+    bool: lambda x: int(x),
     UUID: lambda x: x.bytes,
+    # additional formatters
+    List: lambda x: json.dumps(x),
+    Dict: lambda x: json.dumps(x),
+    Tuple: lambda x: json.dumps(x),
+    IPv4Address: str,
+    IPv6Address: str,
+    Enum: lambda x: x.value,
+    complex: lambda x: str(x),
+    set: lambda x: json.dumps(list(x)),
+    frozenset: lambda x: json.dumps(list(x)),
+    bytearray: bytes,
+    memoryview: bytes,
+    slice: lambda x: f"{x.start}:{x.stop}:{x.step}",
+    range: lambda x: f"{x.start}:{x.stop}:{x.step}",
+    classmethod: lambda x: str(x),
+    Any: lambda x: pickle.dumps(x),
+    Type: lambda x: x.__name__,
+    Callable: lambda x: pickle.dumps(x),
+    Generator: lambda x: json.dumps(list(x)),
+    Optional: lambda x: pickle.dumps(x),
+    Union: lambda x: pickle.dumps(x),
 }
 
 
@@ -55,7 +165,7 @@ def _convert_sql_format(value: Any, db_type: str = None) -> str:
     """
     if type(value) in formatter_table:
         value = formatter_table[type(value)](value)
-    if db_type:
+    if db_type and db_type in validator_table:
         value = validator_table[db_type](value)
     if value is None:
         return "NULL"
