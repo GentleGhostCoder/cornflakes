@@ -91,11 +91,11 @@ jobs:
 
             - name: Update virtualenv
               run: |
-                  pip install virtualenv --upgrade
+                  pipx install virtualenv --upgrade
 
             - name: Install Ninja
               run: |
-                  pip install ninja
+                  pipx install ninja
                   ninja --version
 
             - name: Install Poetry
