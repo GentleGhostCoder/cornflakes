@@ -106,8 +106,6 @@ jobs:
 
             - name: Install Dependencies
               run: |
-                  pipx install cookiecutter
-                  pipx runpip cookicutter install -r docs/requirements.txt
                   poetry install --only dev
 
             - name: Install nox nox-poetry rich
