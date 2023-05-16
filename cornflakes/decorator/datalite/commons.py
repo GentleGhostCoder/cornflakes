@@ -2,9 +2,11 @@ from dataclasses import Field
 from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
+from inspect import isclass
 from ipaddress import IPv4Address, IPv6Address
 import json
 import pickle
+import re
 import sqlite3 as sql
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Type, Union
 from uuid import UUID
@@ -30,15 +32,15 @@ def uuid_formatter(x: UUID) -> bytes:
     return x.bytes
 
 
-def generator_formatter(x: "Generator") -> None:
+def generator_formatter(_: "Generator") -> None:
     raise ValueError("Generators cannot be serialized to SQLite")
 
 
 SpecialForm = type(Optional)
 
-
 type_table: Dict[Optional[type], str] = {
     None: "NULL",
+    type(None): "NULL",
     int: "INTEGER",
     float: "REAL",
     str: "TEXT",
@@ -49,9 +51,12 @@ type_table: Dict[Optional[type], str] = {
     time: "TIME",
     Decimal: "NUMERIC",
     # additional types
-    List: "TEXT",
-    Dict: "TEXT",
-    Tuple: "TEXT",
+    tuple: "JSON",
+    Tuple: "JSON",
+    list: "JSON",
+    List: "JSON",
+    dict: "JSON",
+    Dict: "JSON",
     IPv4Address: "TEXT",
     IPv6Address: "TEXT",
     Enum: "TEXT",
@@ -69,7 +74,7 @@ type_table: Dict[Optional[type], str] = {
     Generator: "TEXT",
     Optional: "BLOB",
     Union: "BLOB",
-    UUID: "BLOB",
+    UUID: "TEXT",
 }
 
 type_table.update(
@@ -91,68 +96,79 @@ validator_table: Dict[str, Optional[type]] = {
     "TIMESTAMP": lambda x: isinstance(x, datetime) and str(x) or "NULL",
     "DATE": lambda x: isinstance(x, date) and str(x) or "NULL",
     "TIME": lambda x: isinstance(x, time) and str(x) or "NULL",
-    "NUMERIC": Decimal,
+    "NUMERIC": lambda x: Decimal(str(x)),
 }
-# additional validators
-validator_table.update(
-    {
-        "IPv4Address": IPv4Address,
-        "IPv6Address": IPv6Address,
-        "Enum": Enum,
-        "slice": slice,
-        "UUID": UUID,
-    }
-)
 
 formatter_table: Dict[type, Callable[[...], Any]] = {
-    int: int,
-    float: float,
+    int: str,
+    float: str,
+    Decimal: str,
     str: str,
-    bytes: bytes,
-    type(None): lambda x: None,
-    bool: lambda x: int(x),
-    UUID: lambda x: x.bytes,
+    bytes: lambda x: re.sub('(^"|"$)', "", json.dumps(str(x)[2:-1])),
+    type(None): lambda _: "",
+    bool: lambda x: str(int(x)),
+    UUID: str,
     # additional formatters
+    tuple: lambda x: json.dumps(list(x)),
+    Tuple: lambda x: json.dumps(list(x)),
+    list: lambda x: json.dumps(x),
     List: lambda x: json.dumps(x),
+    dict: lambda x: json.dumps(x),
     Dict: lambda x: json.dumps(x),
-    Tuple: lambda x: json.dumps(x),
-    IPv4Address: str,
-    IPv6Address: str,
-    Enum: lambda x: x.value,
-    complex: lambda x: str(x),
-    set: lambda x: json.dumps(list(x)),
-    frozenset: lambda x: json.dumps(list(x)),
-    bytearray: bytes,
-    memoryview: bytes,
-    slice: lambda x: f"{x.start}:{x.stop}:{x.step}",
-    range: lambda x: f"{x.start}:{x.stop}:{x.step}",
+    datetime: lambda x: str(x),
+    date: lambda x: str(x),
+    time: lambda x: str(x),
+    IPv4Address: lambda x: re.sub('(^"|"$)', "", json.dumps(str(x))),
+    IPv6Address: lambda x: re.sub('(^"|"$)', "", json.dumps(str(x))),
+    Enum: lambda x: re.sub('(^"|"$)', "", json.dumps(x.value)),
+    complex: lambda x: re.sub('(^"|"$)', "", json.dumps(str(x))),
+    set: lambda x: list(x),
+    frozenset: lambda x: list(x),
+    bytearray: lambda x: '"' + str(bytes(x)).replace("b'", "")[:-1] + '"',
+    memoryview: lambda x: '"' + str(bytes(x)).replace("b'", "")[:-1] + '"',
+    slice: lambda x: json.dumps(f"{x.start}:{x.stop}:{x.step}"),
+    range: lambda x: json.dumps(f"{x.start}:{x.stop}:{x.step}"),
     classmethod: lambda x: str(x),
     Any: lambda x: pickle.dumps(x),
-    Type: lambda x: x.__name__,
+    Type: lambda x: json.dumps(x.__name__),
     Callable: lambda x: pickle.dumps(x),
-    Generator: lambda x: json.dumps(list(x)),
+    Generator: lambda x: list(x),
     Optional: lambda x: pickle.dumps(x),
     Union: lambda x: pickle.dumps(x),
 }
 
 
-def _convert_type(type_: Optional[type], type_overload: Dict[Optional[type], str]) -> str:
+def _convert_type(type_hint: Optional[type], type_overload: Dict[Optional[type], str]) -> str:
     """
     Given a Python type, return the str name of its
     SQLlite equivalent.
-    :param type_: A Python type, or None.
+    :param type_hint: A Python type, or None.
     :param type_overload: A type table to overload the custom type table.
     :return: The str name of the sql type.
     >>> _convert_type(int)
     "INTEGER"
     """
     try:
-        return type_overload[type_]
+        actual_type: Any = getattr(type_hint, "__origin__", getattr(type_hint, "type", type_hint))
+        if isinstance(actual_type, SpecialForm):
+            actual_type = getattr(type_hint, "__args__", type_hint)
+        if isclass(actual_type) and issubclass(actual_type, Enum):
+            actual_type = Enum
+        if isinstance(actual_type, list) or isinstance(actual_type, tuple):
+            actual_type = next(item for item in actual_type if not isinstance(item, type(None)))
+        return type_overload[actual_type]
     except KeyError:
         raise TypeError("Requested type not in the default or overloaded type table.")
 
 
-def _convert_sql_format(value: Any, db_type: str = None) -> str:
+def _validate_sql_type(value, db_type):
+    """Validate and format value for insertion into SQLite."""
+    if value is None:
+        return ""
+    return validator_table[db_type](value)
+
+
+def _convert_sql_format(value: Any) -> str:
     """
     Given a Python value, convert to string representation
     of the equivalent SQL datatype.
@@ -163,18 +179,16 @@ def _convert_sql_format(value: Any, db_type: str = None) -> str:
     >>> _convert_sql_format("John Smith")
     '"John Smith"'
     """
-    if type(value) in formatter_table:
-        value = formatter_table[type(value)](value)
-    if db_type and db_type in validator_table:
-        value = validator_table[db_type](value)
-    if value is None:
-        return "NULL"
-    elif isinstance(value, str):
-        return f'"{value}"'
-    elif isinstance(value, bytes):
-        return '"' + str(value).replace("b'", "")[:-1] + '"'
-    else:
-        return str(value)
+    try:
+        type_hint = type(value)
+        actual_type: Any = getattr(type_hint, "__origin__", getattr(type_hint, "type", type_hint))
+        if isinstance(actual_type, SpecialForm):
+            actual_type = getattr(type_hint, "__args__", type_hint)
+        if isclass(actual_type) and issubclass(actual_type, Enum):
+            actual_type = Enum
+        return formatter_table[actual_type](value)
+    except KeyError:
+        raise TypeError("Requested type not in the default or overloaded type table.")
 
 
 def _get_table_cols(cur: sql.Cursor, table_name: str) -> List[str]:
@@ -200,7 +214,10 @@ def _get_default(default_object: object, type_overload: Dict[Optional[type], str
     empty string if no string is necessary.
     """
     if type(default_object) in type_overload:
-        return f" DEFAULT {_convert_sql_format(default_object, db_type)}"
+        value = _convert_sql_format(_validate_sql_type(default_object, db_type))
+        if db_type in ["TEXT", "DATE", "TIMESTAMP", "TIME"]:
+            return f" DEFAULT '{value}'"
+        return f" DEFAULT {value}"
     return ""
 
 

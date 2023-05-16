@@ -1,6 +1,8 @@
 from datetime import date, datetime, time
 from decimal import Decimal
 from enum import Enum
+from ipaddress import IPv4Address, IPv6Address
+from typing import Any, Dict, Generator, List, Tuple
 from uuid import UUID
 
 from cornflakes import field
@@ -16,8 +18,8 @@ def test_datalite():
         INACTIVE = "inactive"
         PENDING = "pending"
 
-    # def generator_function() -> Generator[int, None, None]:
-    #     yield from range(10)
+    def generator_function() -> Generator[int, None, None]:
+        yield from range(10)
 
     @datalite(db_path="test_datalite.db")
     @data(
@@ -39,14 +41,13 @@ def test_datalite():
         date_value: date = datetime.now().date()
         time_value: time = datetime.now().time()
         decimal_value: Decimal = Decimal("0.00")
-        # list_value: List[str] = field(default_factory=list)
-        # dict_value: Dict[str, Any] = field(default_factory=dict)
-        # tuple_value: Tuple[int, str] = field(default_factory=lambda: (1, "blub"))
-        # ipv4_value: IPv4Address = IPv4Address("192.0.2.0")
-        # ipv6_value: IPv6Address = IPv6Address("2001:db8::1")
-        # status_value: StatusEnum = StatusEnum.ACTIVE
-        # none_value: None = None
-        # complex_value: complex = 1 + 2j
+        list_value: List[str] = field(default_factory=list)
+        dict_value: Dict[str, Any] = field(default_factory=dict)
+        tuple_value: Tuple[int, str] = field(default_factory=lambda: (1, "blub"))
+        ipv4_value: IPv4Address = IPv4Address("192.0.2.0")
+        ipv6_value: IPv6Address = IPv6Address("2001:db8::1")
+        enum_value: StatusEnum = StatusEnum.ACTIVE
+        complex_value: complex = 1 + 2j
         # set_value: set = field(default_factory=lambda: {1, 2, 3})
         # frozenset_value: frozenset = field(default_factory=lambda: frozenset({1, 2, 3}))
         # bytearray_value: bytearray = bytearray(b"hello")

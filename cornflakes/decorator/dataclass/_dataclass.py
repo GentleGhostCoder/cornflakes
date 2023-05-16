@@ -8,18 +8,19 @@ from cornflakes.decorator.config.ini import to_ini, to_ini_bytes
 from cornflakes.decorator.config.yaml import to_yaml, to_yaml_bytes
 from cornflakes.decorator.dataclass._enforce_types import enforce_types as enforce
 from cornflakes.decorator.dataclass._field import Field
-from cornflakes.decorator.dataclass.helper import dict_factory, tuple_factory
+from cornflakes.decorator.dataclass.helper import dict_factory as d_factory
+from cornflakes.decorator.dataclass.helper import tuple_factory as t_factory
 from cornflakes.decorator.types import DataclassProtocol
 
 
-def _zero_copy_asdict_inner(obj, dict_factory):
+def _zero_copy_asdict_inner(obj, factory):
     """Patched version of dataclasses._asdict_inner that does not copy the dataclass values."""
     if is_dataclass(obj):
         result = []
         for f in fields(obj):
-            value = _zero_copy_asdict_inner(getattr(obj, f.name), dict_factory)
+            value = _zero_copy_asdict_inner(getattr(obj, f.name), factory)
             result.append((f.name, value))
-        return dict_factory(result)
+        return result
     elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
         # obj is a namedtuple.  Recurse into it, but the returned
         # object is another namedtuple of the same type.  This is
@@ -40,27 +41,27 @@ def _zero_copy_asdict_inner(obj, dict_factory):
         #   namedtuples, we could no longer call asdict() on a data
         #   structure where a namedtuple was used as a dict key.
 
-        return type(obj)(*[_zero_copy_asdict_inner(v, dict_factory) for v in obj])
+        return type(obj)(*[_zero_copy_asdict_inner(v, factory) for v in obj])
     elif isinstance(obj, (list, tuple)):
         # Assume we can create an object of this type by passing in a
         # generator (which is not true for namedtuples, handled
         # above).
-        return type(obj)(_zero_copy_asdict_inner(v, dict_factory) for v in obj)
+        return type(obj)(_zero_copy_asdict_inner(v, factory) for v in obj)
     elif isinstance(obj, dict):
         return type(obj)(
-            (_zero_copy_asdict_inner(k, dict_factory), _zero_copy_asdict_inner(v, dict_factory)) for k, v in obj.items()
+            (_zero_copy_asdict_inner(k, factory), _zero_copy_asdict_inner(v, factory)) for k, v in obj.items()
         )
     else:
         return obj
 
 
-def _zero_copy_astuple_inner(obj, tuple_factory):
+def _zero_copy_astuple_inner(obj, factory):
     if is_dataclass(obj):
         result = []
         for f in fields(obj):
-            value = _zero_copy_astuple_inner(getattr(obj, f.name), tuple_factory)
+            value = _zero_copy_astuple_inner(getattr(obj, f.name), factory)
             result.append(value)
-        return tuple_factory(result)
+        return factory(result)
     elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
         # obj is a namedtuple.  Recurse into it, but the returned
         # object is another namedtuple of the same type.  This is
@@ -68,26 +69,25 @@ def _zero_copy_astuple_inner(obj, tuple_factory):
         # treated (see below), but we just need to create them
         # differently because a namedtuple's __init__ needs to be
         # called differently (see bpo-34363).
-        return type(obj)(*[_zero_copy_astuple_inner(v, tuple_factory) for v in obj])
+        return type(obj)(*[_zero_copy_astuple_inner(v, factory) for v in obj])
     elif isinstance(obj, (list, tuple)):
         # Assume we can create an object of this type by passing in a
         # generator (which is not true for namedtuples, handled
         # above).
-        return type(obj)(_zero_copy_astuple_inner(v, tuple_factory) for v in obj)
+        return type(obj)(_zero_copy_astuple_inner(v, factory) for v in obj)
     elif isinstance(obj, dict):
         return type(obj)(
-            (_zero_copy_astuple_inner(k, tuple_factory), _zero_copy_astuple_inner(v, tuple_factory))
-            for k, v in obj.items()
+            (_zero_copy_astuple_inner(k, factory), _zero_copy_astuple_inner(v, factory)) for k, v in obj.items()
         )
     else:
         return obj
 
 
-def _zero_copy_asdict(obj, *, dict_factory=dict):
+def _zero_copy_asdict(obj, *, factory=dict):
     """Custom version of dataclasses.asdict that does not copy the dataclass values."""
     if not is_dataclass(obj):
         raise TypeError("asdict() should be called on dataclass instances")
-    return _zero_copy_asdict_inner(obj, dict_factory)
+    return _zero_copy_asdict_inner(obj, factory)
 
 
 def _zero_copy_astuple(obj, *, tuple_factory=tuple):
@@ -101,11 +101,12 @@ def to_dict(self) -> Any:
     """Method to convert Dataclass with slots to dict."""
     if not is_dataclass(self):
         return self
-    new_dict = _zero_copy_asdict(self, dict_factory=dict_factory(self))
+    new_dict = _zero_copy_asdict(self, factory=d_factory(self))
+    dc_fields = fields(self)
     if not (
         isinstance(new_dict, dict)
         or any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields])
-        if (dc_fields := fields(self))
+        if dc_fields
         else True
     ):
         return new_dict
@@ -131,11 +132,12 @@ def to_tuple(self) -> Any:  # noqa: C901
     """Method to convert Dataclass with slots to dict."""
     if not is_dataclass(self):
         return self
-    new_tuple = _zero_copy_astuple(self, tuple_factory=tuple_factory(self))
+    new_tuple = _zero_copy_astuple(self, tuple_factory=t_factory(self))
+    dc_fields = fields(self)
     if not (
         isinstance(new_tuple, (list, tuple))
         or any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields])
-        if (dc_fields := fields(self))
+        if dc_fields
         else True
     ):
         return new_tuple

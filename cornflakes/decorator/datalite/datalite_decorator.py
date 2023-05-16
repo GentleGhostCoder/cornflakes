@@ -28,8 +28,8 @@ def _create_entry(self) -> None:
             cur.execute(
                 f"INSERT INTO {table_name}("
                 f"{', '.join(item[0] for item in kv_pairs)})"
-                f" VALUES ({', '.join('?' for item in kv_pairs)})",
-                [_convert_sql_format(item[1], item[0]) for item in kv_pairs],
+                f" VALUES ({', '.join('?' for _ in kv_pairs)})",
+                [_convert_sql_format(item[1]) for item in kv_pairs],
             )
             self.__setattr__("obj_id", cur.lastrowid)
             con.commit()

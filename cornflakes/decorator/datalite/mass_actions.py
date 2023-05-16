@@ -73,7 +73,7 @@ def _mass_insert(objects: Union[List[T], Tuple[T]], db_name: str, protect_memory
         sql_queries.append(
             f"INSERT INTO {table_name}("
             + f"{', '.join(item[0] for item in kv_pairs)})"
-            + f" VALUES ({', '.join(_convert_sql_format(item[1], item[0]) for item in kv_pairs)});"
+            + f" VALUES ({', '.join(_convert_sql_format(item[1]) for item in kv_pairs)});"
         )
     with sql.connect(db_name) as con:
         cur: sql.Cursor = con.cursor()
