@@ -91,6 +91,7 @@ jobs:
 
             - name: Update virtualenv
               run: |
+                  pipx install virtualenv
                   pipx upgrade virtualenv
 
             - name: Install Ninja
