@@ -162,6 +162,7 @@ def pytype(session):
     ]  # "--disable=import-error"
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    session.run("pip", "install", "pydantic[dotenv]")
     session.run("poetry", "build")
     version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
     search = f"*cp{version}*.whl"
@@ -217,6 +218,7 @@ def typeguard(session: Session) -> None:
     """Runtime type checking using Typeguard."""
     session.run("pip", "install", "black")
     session.run("pip", "install", "isort")
+    session.run("pip", "install", "pydantic[dotenv]")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("poetry", "build")
