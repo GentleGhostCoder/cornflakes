@@ -20,7 +20,7 @@ def _zero_copy_asdict_inner(obj, factory):
         for f in fields(obj):
             value = _zero_copy_asdict_inner(getattr(obj, f.name), factory)
             result.append((f.name, value))
-        return result
+        return factory(result)
     elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
         # obj is a namedtuple.  Recurse into it, but the returned
         # object is another namedtuple of the same type.  This is
