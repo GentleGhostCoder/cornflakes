@@ -45,7 +45,7 @@ class TestSpeed(unittest.TestCase):
             name: str
             age: int
 
-        class PydanticConfig(BaseSettings):
+        class PydanticConfig(BaseSettings):  # type: ignore
             name: str
             age: int
 

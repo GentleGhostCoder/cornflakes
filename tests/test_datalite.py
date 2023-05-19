@@ -10,13 +10,14 @@ from cornflakes.decorator.dataclass import dataclass as data
 from cornflakes.decorator.datalite.datalite_decorator import datalite
 
 
+class StatusEnum(Enum):
+    ACTIVE = "active"
+    INACTIVE = "inactive"
+    PENDING = "pending"
+
+
 def test_datalite():
     """Test datalite decorator."""
-
-    class StatusEnum(Enum):
-        ACTIVE = "active"
-        INACTIVE = "inactive"
-        PENDING = "pending"
 
     def generator_function() -> Generator[int, None, None]:
         yield from range(10)

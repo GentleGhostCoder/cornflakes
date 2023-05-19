@@ -84,7 +84,7 @@ def _drop_table(database_name: str, table_name: str) -> None:
 
 def _modify_records(
     data, col_to_del: Tuple[str], col_to_add: Tuple[str], flow: Dict[str, str]
-) -> Optional[List[Dict[str, str]]]:
+) -> List[Dict[str, Optional[str]]]:
     """
     Modify the asdict records in accordance
         with schema migration rules provided.
@@ -143,7 +143,7 @@ def _migrate_records(
         class_(**record).create_entry()
 
 
-def basic_migrate(cls: type, column_transfer: dict = None) -> None:
+def basic_migrate(cls: type, column_transfer: Optional[dict] = None) -> None:
     """
     Given a class, compare its previous table,
     delete the fields that no longer exist,

@@ -87,7 +87,7 @@ type_table.update(
     }
 )
 
-validator_table: Dict[str, Optional[type]] = {
+validator_table: Dict[str, Union[Callable[[Any], Any], Type]] = {
     "NULL": type(None),
     "INTEGER": int,
     "REAL": float,
@@ -99,7 +99,7 @@ validator_table: Dict[str, Optional[type]] = {
     "NUMERIC": lambda x: Decimal(str(x)),
 }
 
-formatter_table: Dict[type, Callable[[...], Any]] = {
+formatter_table: Dict[Type, Any] = {
     int: str,
     float: str,
     Decimal: str,
@@ -138,7 +138,7 @@ formatter_table: Dict[type, Callable[[...], Any]] = {
 }
 
 
-def _convert_type(type_hint: Optional[type], type_overload: Dict[Optional[type], str]) -> str:
+def _convert_type(type_hint: Optional[type], type_overload: Optional[Dict[Optional[type], str]] = None) -> str:
     """
     Given a Python type, return the str name of its
     SQLlite equivalent.
@@ -146,8 +146,10 @@ def _convert_type(type_hint: Optional[type], type_overload: Dict[Optional[type],
     :param type_overload: A type table to overload the custom type table.
     :return: The str name of the sql type.
     >>> _convert_type(int)
-    "INTEGER"
+    'INTEGER'
     """
+    if type_overload is None:
+        type_overload = type_table
     try:
         actual_type: Any = getattr(type_hint, "__origin__", getattr(type_hint, "type", type_hint))
         if isinstance(actual_type, SpecialForm):
@@ -168,16 +170,16 @@ def _validate_sql_type(value, db_type):
     return validator_table[db_type](value)
 
 
-def _convert_sql_format(value: Any) -> str:
+def _convert_sql_format(value: Any) -> Union[str, int]:
     """
     Given a Python value, convert to string representation
     of the equivalent SQL datatype.
     :param value: A value, ie: a literal, a variable etc.
     :return: The string representation of the SQL equivalent.
     >>> _convert_sql_format(1)
-    "1"
+    '1'
     >>> _convert_sql_format("John Smith")
-    '"John Smith"'
+    'John Smith'
     """
     try:
         type_hint = type(value)
@@ -221,7 +223,7 @@ def _get_default(default_object: object, type_overload: Dict[Optional[type], str
     return ""
 
 
-def _create_table(class_: type, cursor: sql.Cursor, type_overload: Dict[Optional[type], str] = None) -> None:
+def _create_table(class_: type, cursor: sql.Cursor, type_overload: Optional[Dict[Optional[type], str]] = None) -> None:
     """
     Create the table for a specific dataclass given
     :param class_: A dataclass.

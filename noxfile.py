@@ -1,7 +1,6 @@
 """Nox sessions."""
 import os
 from pathlib import Path
-import re
 import shlex
 import shutil
 import sys
@@ -163,11 +162,12 @@ def pytype(session):
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("pip", "install", "pydantic[dotenv]")
-    session.run("poetry", "build")
-    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
-    search = f"*cp{version}*.whl"
-    file = list(Path("dist").glob(search))[0].name
-    session.run("pip", "install", f"dist/{file}", "--force-reinstall")
+    session.run("poetry", "install")
+    # session.run("poetry", "build")
+    # version = re.sub(".*-", "", session.name.replace("pytype-", "")).replace(".", "")
+    # search = f"*cp{version}*.whl"
+    # file = list(Path("dist").glob(search))[0].name
+    # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("pytype")
     session.run("pytype", *args)
 
@@ -181,14 +181,15 @@ def tests(session: Session) -> None:
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("pip", "install", "virtualenv", "--upgrade")  # fix bug for windows tests
-    if os.path.exists("build"):
-        shutil.rmtree("build")
-    # session.install(".")  # not working with so builds
-    session.run("poetry", "build", "-v")
-    version = session.name.replace("tests-", "").replace(".", "")
-    search = f"*cp{version}*.whl"
-    file = list(Path("dist").glob(search))[0].name
-    session.run("pip", "install", f"dist/{file}", "--force-reinstall")
+    session.run("poetry", "install")
+    # if os.path.exists("build"):
+    #     shutil.rmtree("build")
+    # # session.install(".")  # not working with so builds
+    # session.run("poetry", "build", "-v")
+    # version = session.name.replace("tests-", "").replace(".", "")
+    # search = f"*cp{version}*.whl"
+    # file = list(Path("dist").glob(search))[0].name
+    # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("coverage[toml]", "pytest", "pygments")
     try:
         session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs, env={"NOX_RUNNING": "True"})
@@ -221,11 +222,12 @@ def typeguard(session: Session) -> None:
     session.run("pip", "install", "pydantic[dotenv]")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
-    session.run("poetry", "build")
-    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
-    search = f"*cp{version}*.whl"
-    file = list(Path("dist").glob(search))[0].name
-    session.run("pip", "install", f"dist/{file}", "--force-reinstall")
+    session.run("poetry", "install")
+    # session.run("poetry", "build")
+    # version = re.sub(".*-", "", session.name.replace("typeguard-", "")).replace(".", "")
+    # search = f"*cp{version}*.whl"
+    # file = list(Path("dist").glob(search))[0].name
+    # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("pytest", "typeguard", "pygments")
     session.run("pytest", f"--typeguard-packages={package}", *session.posargs)
 
@@ -236,11 +238,11 @@ def xdoctest(session: Session) -> None:
     args = session.posargs or ["all"]
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
-    session.run("poetry", "build")
-    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
-    search = f"*cp{version}*.whl"
-    file = list(Path("dist").glob(search))[0].name
-    session.run("pip", "install", f"dist/{file}", "--force-reinstall")
+    session.run("poetry", "install")
+    # version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
+    # search = f"*cp{version}*.whl"
+    # file = list(Path("dist").glob(search))[0].name
+    # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("xdoctest[colors]")
     session.run("python", "-m", "xdoctest", package, *args)
 
@@ -251,11 +253,12 @@ def docs_build(session: Session) -> None:
     args = session.posargs or ["docs", "docs/_build"]
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
-    session.run("poetry", "build")
-    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
-    search = f"*cp{version}*.whl"
-    file = list(Path("dist").glob(search))[0].name
-    session.run("pip", "install", f"dist/{file}", "--force-reinstall")
+    session.run("poetry", "install")
+    # session.run("poetry", "build")
+    # version = re.sub(".*-", "", session.name.replace("docs_build-", "")).replace(".", "")
+    # search = f"*cp{version}*.whl"
+    # file = list(Path("dist").glob(search))[0].name
+    # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install(
         "sphinx",
         "sphinx-click",
@@ -279,11 +282,12 @@ def docs(session: Session) -> None:
     args = session.posargs or ["--open-browser", "docs", "docs/_build"]
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
-    session.run("poetry", "build")
-    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
-    search = f"*cp{version}*.whl"
-    file = list(Path("dist").glob(search))[0].name
-    session.run("pip", "install", f"dist/{file}", "--force-reinstall")
+    session.run("poetry", "install")
+    # session.run("poetry", "build")
+    # version = re.sub(".*-", "", session.name.replace("docs-", "")).replace(".", "")
+    # search = f"*cp{version}*.whl"
+    # file = list(Path("dist").glob(search))[0].name
+    # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install(
         "sphinx",
         "sphinx-autobuild",
