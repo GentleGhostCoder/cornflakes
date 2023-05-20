@@ -85,10 +85,11 @@ cornflakes = "cornflakes.__main__:main"
 [[tool.poetry.source]]
 name = "cornflakes"
 url = "https://pypi.org/"
-
+priority = "default"
 
 
 [tool.poetry.group.dev.dependencies]
+markdown-it-py = "^2.2.0"
 
 [tool.black]
 line-length = 120
