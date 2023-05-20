@@ -86,7 +86,7 @@ cornflakes = "cornflakes.__main__:main"
 [[tool.poetry.source]]
 name = "cornflakes"
 url = "https://pypi.org/"
-priority = "default"
+priority = "primary"
 
 [tool.black]
 line-length = 120
