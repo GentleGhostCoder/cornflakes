@@ -1,7 +1,6 @@
 """Nox sessions."""
 import os
 from pathlib import Path
-import re
 import shlex
 import shutil
 import sys
