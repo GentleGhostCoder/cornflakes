@@ -78,6 +78,7 @@ isort = "^5.12.0"
 virtualenv = "^20.23.0"
 pybind11 = "^2.10.4"
 pydantic = {extras = ["dotenv"], version = "^1.10.7"}
+markdown-it-py = "^2.2.0"
 
 [tool.poetry.scripts]
 cornflakes = "cornflakes.__main__:main"
@@ -86,10 +87,6 @@ cornflakes = "cornflakes.__main__:main"
 name = "cornflakes"
 url = "https://pypi.org/"
 priority = "default"
-
-
-[tool.poetry.group.dev.dependencies]
-markdown-it-py = "^2.2.0"
 
 [tool.black]
 line-length = 120
