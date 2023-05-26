@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes package &mdash; cornflakes 3.3.4 documentation</title>
+  <title>cornflakes package &mdash; cornflakes 3.3.5 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom_cookietemple.css" type="text/css" />
@@ -14,6 +14,8 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
@@ -38,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.4
+                3.3.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -102,24 +104,7 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="cornflakes.builder.html">cornflakes.builder package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cornflakes.builder.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cornflakes.builder.html#cornflakes-builder-config-template-module">cornflakes.builder.config_template module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cornflakes.builder.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="cornflakes.click.html">cornflakes.click package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cornflakes.click.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cornflakes.click.options.html">cornflakes.click.options package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.click.options.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cornflakes.click.rich.html">cornflakes.click.rich package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.click.rich.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="cornflakes.click.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cornflakes.common.html">cornflakes.common package</a><ul>
@@ -128,11 +113,15 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cornflakes.decorator.html">cornflakes.decorator package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cornflakes.decorator.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.decorator.click.html">cornflakes.decorator.click package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.click.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.click.html#module-contents">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="cornflakes.decorator.config.html">cornflakes.decorator.config package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.config.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.config.html#cornflakes-decorator-config-dict-module">cornflakes.decorator.config.dict module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.config.html#cornflakes-decorator-config-ini-module">cornflakes.decorator.config.ini module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.config.html#cornflakes-decorator-config-tuple-module">cornflakes.decorator.config.tuple module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.config.html#cornflakes-decorator-config-yaml-module">cornflakes.decorator.config.yaml module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.config.html#module-contents">Module contents</a></li>
 </ul>
@@ -144,8 +133,21 @@
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.dataclass.html#module-contents">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.decorator.datalite.html">cornflakes.decorator.datalite package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.datalite.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.datalite.html#cornflakes-decorator-datalite-commons-module">cornflakes.decorator.datalite.commons module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.datalite.html#cornflakes-decorator-datalite-constraints-module">cornflakes.decorator.datalite.constraints module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.datalite.html#cornflakes-decorator-datalite-datalite-decorator-module">cornflakes.decorator.datalite.datalite_decorator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.datalite.html#cornflakes-decorator-datalite-fetch-module">cornflakes.decorator.datalite.fetch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.datalite.html#cornflakes-decorator-datalite-mass-actions-module">cornflakes.decorator.datalite.mass_actions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.datalite.html#cornflakes-decorator-datalite-migrations-module">cornflakes.decorator.datalite.migrations module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.decorator.datalite.html#module-contents">Module contents</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cornflakes.decorator.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cornflakes.decorator.html#cornflakes-decorator-types-module">cornflakes.decorator.types module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cornflakes.decorator.html#module-contents">Module contents</a></li>
 </ul>
 </li>

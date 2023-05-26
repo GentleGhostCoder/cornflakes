@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Information &mdash; cornflakes 3.3.4 documentation</title>
+  <title>Information &mdash; cornflakes 3.3.5 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom_cookietemple.css" type="text/css" />
@@ -14,6 +14,8 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
@@ -37,7 +39,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.4
+                3.3.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -94,71 +96,16 @@
 </div>
 <section id="information">
 <h1>Information<a class="headerlink" href="#information" title="Permalink to this heading"></a></h1>
-<p>This package was created by starting C ++ methods to incorporate into my python implementations.
-To make things easier for me, lightweight public libraries were included
-(especially to carry out string operations):</p>
-<ul class="simple">
-<li><p>hash-library</p></li>
-<li><p>strtk</p></li>
-<li><p>rapidjson</p></li>
-</ul>
+<p>The Python module “cornflakes” was started as a hobby project and offers an alternative to Pydantic for managing configurations and data structures. It allows creating generic and easy to manage configurations for your project. Unlike Pydantic, which is based on inheritance, “cornflakes” uses a decorator (similar to dataclass) to map data structures.</p>
+<p>In addition to a dataclass decorator with additional functionality, there is also a config decorator. This makes it possible to read the dataclass from configuration files. This can be very useful if you want to save your application configurations to a file.</p>
+<p>The module also has a click wrapper that simplifies the implementation of command line applications. By integrating the Rich module, the application is additionally equipped with colors and other functions.</p>
+<p>There are other useful methods in the base of the module that are generally useful for Python development. These can help you develop your projects faster and more efficiently.</p>
 <section id="short-term-roadmap">
 <h2>Short Term RoadMap:<a class="headerlink" href="#short-term-roadmap" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>Enrich json methods</p></li>
 <li><p>Fix / Test the to_&lt;file-format&gt; Methods</p></li>
 </ul>
-</section>
-<section id="features">
-<h2>Features:<a class="headerlink" href="#features" title="Permalink to this heading"></a></h2>
-<dl class="simple">
-<dt>The following features have currently been implemented:</dt><dd><ul class="simple">
-<li><dl class="simple">
-<dt>config management system</dt><dd><ul>
-<li><p>based on dataclass</p></li>
-<li><p>alternative Implementation for pydantic (BaseSettings)</p></li>
-<li><p>ini support files by a lightweight and fast parser (-&gt; ini_load)</p></li>
-<li><p>yaml support (based on PyYAML)</p></li>
-<li><p>environment variables</p></li>
-<li><p>(future) support json (based on orjson)</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>command line interface management</dt><dd><ul>
-<li><p>method: click_cli (decorator)</p></li>
-<li><p>based on click and rich</p></li>
-<li><p>easy to use and start with</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>eval_type</dt><dd><ul>
-<li><p>method to parse strings in python-types e.g. int | bool | timestamp</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>simple_hmac</dt><dd><ul>
-<li><p>vectorized c++ hmac implementation</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>default_ca_path</dt><dd><ul>
-<li><p>python function to find a default ssl / ca certificate path</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-<p>Currently, the package is tested for Linux, Mac and Windows</p>
 </section>
 </section>
 <section id="development">
@@ -228,25 +175,16 @@ option which is needed for the pybind11 submodule:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">run</span> <span class="o">-</span><span class="n">a</span>
 </pre></div>
 </div>
-</section>
-<section id="publish">
-<h2>Publish<a class="headerlink" href="#publish" title="Permalink to this heading"></a></h2>
-<p>Its not recommended publish manually (use git-ci or github workflows instead).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">publish</span>
-</pre></div>
-</div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Information</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#short-term-roadmap">Short Term RoadMap:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="readme.html#features">Features:</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#development">Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#commands">Commands</a></li>
-<li class="toctree-l2"><a class="reference internal" href="readme.html#publish">Publish</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>

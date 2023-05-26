@@ -20,14 +20,6 @@ cornflakes.decorator.config.ini module
    :undoc-members:
    :show-inheritance:
 
-cornflakes.decorator.config.tuple module
-----------------------------------------
-
-.. automodule:: cornflakes.decorator.config.tuple
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 cornflakes.decorator.config.yaml module
 ---------------------------------------
 
