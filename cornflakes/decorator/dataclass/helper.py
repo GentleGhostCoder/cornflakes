@@ -1,3 +1,4 @@
+"""Dataclass helper functions used by the custom dataclass decorator."""
 from dataclasses import Field
 import re
 from typing import Any, Dict, Optional, Union

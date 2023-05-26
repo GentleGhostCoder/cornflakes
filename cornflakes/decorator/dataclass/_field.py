@@ -7,6 +7,9 @@ from cornflakes.decorator.types import WITHOUT_DEFAULT, _WithoutDefault
 _MISSING_TYPE = type(MISSING)
 
 
+# TODO: add init_var_trigger -> like alias to call the validator method and pass the values
+
+
 class Field(DataclassField):
     """Instances of dataclasses Field wrapped for configs.
 
