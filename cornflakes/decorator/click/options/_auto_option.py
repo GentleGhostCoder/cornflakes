@@ -1,13 +1,14 @@
 from dataclasses import fields
 from functools import wraps
 from inspect import isclass
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Union
 
 from click import Command, Group, option
 
-from cornflakes.click.rich import RichCommand, RichGroup
-from cornflakes.decorator.config import Config, ConfigGroup, is_config
+from cornflakes.decorator.click.rich import RichCommand, RichGroup
+from cornflakes.decorator.config import is_config
 from cornflakes.decorator.dataclass.helper import dataclass_fields
+from cornflakes.decorator.types import Config
 
 F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
 
@@ -33,9 +34,7 @@ def auto_option(config: Union[Config, Any], config_file: bool = False, **options
             if "config-file" in kwargs:
                 config_kwargs.update({"files": config_kwargs.pop("config-file")})
 
-            __config: Union[Dict[str, Union[Config, List[Config]]], ConfigGroup, Any] = config.from_file(
-                **config_kwargs
-            )
+            __config = config.from_file(**config_kwargs)
             if not __config:
                 raise ValueError("Config is empty!")
             if _is_config:

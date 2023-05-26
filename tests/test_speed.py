@@ -2,6 +2,7 @@ import os
 from time import perf_counter
 import unittest
 
+from pydantic import BaseModel, BaseSettings
 import pytest
 
 import cornflakes
@@ -25,3 +26,71 @@ class TestSpeed(unittest.TestCase):
             for _ in range(1000):
                 cornflakes.eval_csv(data)
         self.assertTrue(0.15 > (perf_counter() - s))
+
+    @pytest.mark.skipif(os.environ.get("NOX_RUNNING", "False"))
+    def test_compare_custom_dataclass_with_padantic(self):
+        """Test that compare custom dataclass with padantic."""
+
+        @cornflakes.dataclass
+        class CustomCornflakesDataclass:
+            name: str
+            age: int
+
+        @cornflakes.config
+        class CustomCornflakesConfig:
+            name: str
+            age: int
+
+        class PydanticDataclass(BaseModel):
+            name: str
+            age: int
+
+        class PydanticConfig(BaseSettings):  # type: ignore
+            name: str
+            age: int
+
+            class Config:
+                env_file = "tests/configs/name_age"
+                fields = {"name": {"env": "name"}, "age": {"env": "age"}}
+
+        s = perf_counter()
+        for _ in range(10000):
+            CustomCornflakesDataclass(name="test", age=1)
+        custom = perf_counter() - s
+
+        s = perf_counter()
+        for _ in range(1000):
+            CustomCornflakesConfig.from_ini("tests/configs/name_age")
+        custom_config = perf_counter() - s
+
+        s = perf_counter()
+        for _ in range(10000):
+            PydanticDataclass(name="test", age=1)
+        pydantic = perf_counter() - s
+
+        s = perf_counter()
+        for _ in range(1000):
+            PydanticConfig()
+        pydantic_config = perf_counter() - s
+
+        self.assertTrue(custom < pydantic)
+        self.assertTrue(custom_config < pydantic_config)
+
+        # compare pydantic-dict method with to_dict
+        s = perf_counter()
+        for _ in range(10000):
+            CustomCornflakesDataclass(name="test", age=1).to_dict()
+        custom_to_dict = perf_counter() - s
+
+        s = perf_counter()
+        for _ in range(10000):
+            CustomCornflakesConfig(name="test", age=1).to_dict()
+        custom_config_to_dict = perf_counter() - s
+
+        s = perf_counter()
+        for _ in range(10000):
+            PydanticDataclass(name="test", age=1).dict()
+        pydantic_dict = perf_counter() - s
+
+        self.assertTrue(custom_to_dict < pydantic_dict)
+        self.assertTrue(custom_config_to_dict < pydantic_dict)

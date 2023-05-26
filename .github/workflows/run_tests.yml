@@ -37,7 +37,11 @@ jobs:
                           os: windows-latest,
                           session: "tests",
                       }
-                    - { python-version: 3.8, os: macos-10.15, session: "tests" }
+                    - {
+                          python-version: 3.8,
+                          os: macos-latest,
+                          session: "tests",
+                      }
                     - {
                           python-version: 3.8,
                           os: ubuntu-latest,
@@ -68,6 +72,7 @@ jobs:
               uses: actions/setup-python@v4
               with:
                   python-version: ${{ matrix.python-version }}
+            #                  cache: "poetry"
 
             - name: Install dependencies
               run: |
@@ -86,11 +91,12 @@ jobs:
 
             - name: Update virtualenv
               run: |
-                  pip install virtualenv --upgrade
+                  pipx install virtualenv
+                  pipx upgrade virtualenv
 
             - name: Install Ninja
               run: |
-                  pip install ninja
+                  pipx install ninja
                   ninja --version
 
             - name: Install Poetry
@@ -98,9 +104,9 @@ jobs:
                   pipx install poetry
                   poetry --version
 
-            - name: Install Docs Requirements
+            - name: Install Dependencies
               run: |
-                  pip install -r docs/requirements.txt
+                  poetry install --only dev
 
             - name: Install nox nox-poetry rich
               run: |
@@ -199,4 +205,4 @@ jobs:
               run: nox --force-color --session=coverage -- xml -i
 
             - name: Upload coverage report
-              uses: codecov/codecov-action@v3.1.3
+              uses: codecov/codecov-action@v3.1.4

@@ -8,7 +8,6 @@ Subpackages
    :maxdepth: 4
 
    cornflakes.builder
-   cornflakes.click
    cornflakes.common
    cornflakes.decorator
    cornflakes.logging

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cornflakes"
-version = "3.3.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
+version = "3.3.5"  # <<COOKIETEMPLE_FORCE_BUMP>>
 description = "Create generic any easy way to manage Configs for your project"
 authors = ["Semjon Geist <semjon.geist@ionos.com>"]
 license = "Apache2.0"
@@ -9,8 +9,7 @@ homepage = "https://github.com/sgeist/cornflakes"
 repository = "https://github.com/sgeist/cornflakes"
 documentation = "https://cornflakes.readthedocs.io"
 packages = [
-    { include = "cornflakes"},
-    { include = "build.py"}
+    { include = "cornflakes"}
 ]
 classifiers = [
     "Programming Language :: Python :: 3.8",
@@ -22,9 +21,9 @@ include = [ # include cpp sources for not compiled dist
     { path = "inst/ext", format = "sdist" },
     { path = "inst/_cornflakes", format = "sdist" }
 ]
-#exclude = [
-#    { path = "cornflakes/__pycache__" }
-#]
+exclude = [
+    { path = "cornflakes/__pycache__" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
@@ -54,18 +53,19 @@ flake8-rst-docstrings = ">=0.2.3"
 pep8-naming = ">=0.11.1"
 darglint = ">=1.5.8"
 pre-commit-hooks = ">=4.0.1"
-sphinx-rtd-theme = ">=0.5.0"
-sphinx-click = ">=3.0.0"
+sphinx-rtd-theme = ">=1.2.0"
+sphinx-click = ">=4.4.0"
 Pygments = ">=2.8.1"
 types-pkg-resources = ">=0.1.2"
 types-requests = ">=2.25.2"
 types-attrs = ">=19.1.0"
-sphinx-rtd-dark-mode = ">=1.2.3"
+sphinx-rtd-dark-mode = ">=1.2.4"
+sphinx-automodapi = ">=0.15.0"
 Jinja2 = ">=3.0.1"
 mypy = ">=0.910"
 pyupgrade = ">=2.31.0"
-myst_parser = ">=0.18.0"
-breathe = ">=4.34.0"
+myst_parser = ">=1.0.0"
+breathe = ">=4.35.0"
 Cython  = ">=0.29.32"
 mock = ">=4.0.3"
 docutils = ">=0.17.1"
@@ -75,8 +75,10 @@ nox = "^2023.4.22"
 nox-poetry = "^1.0.1"
 compiledb = "^0.10.1"
 isort = "^5.12.0"
-virtualenv = "^20.22.0"
+virtualenv = "^20.23.0"
 pybind11 = "^2.10.4"
+pydantic = {extras = ["dotenv"], version = "^1.10.7"}
+markdown-it-py = "^2.2.0"
 
 [tool.poetry.scripts]
 cornflakes = "cornflakes.__main__:main"
@@ -84,12 +86,35 @@ cornflakes = "cornflakes.__main__:main"
 [[tool.poetry.source]]
 name = "cornflakes"
 url = "https://pypi.org/"
-default = false
-secondary = false
+priority = "primary"
+
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
 
 [tool.black]
 line-length = 120
 skip-string-normalization = false
+
+[tool.ruff]
+ignore = ["E501","D100","N813"]
+line-length = 120
+exclude =[".git","__pycache__","docs/source/conf.py,build*","dist/*",".venv","ext/*","setup*","tests/*","cmake-build-debug*"]
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.flake8]
+select = ["B","B9","C","D","DAR","E","F","N","RST","B","W"]
+ignore = ["E203","E501","RST201","RST203","RST301","W503","D100","N813","RST304","WPS412"]
+max-line-length = 120
+max-complexity = 10
+docstring-convention = "google"
+per-file-ignores = ["tests/*:S101"]
+exclude =[".git","__pycache__","docs/source/conf.py,build*","dist/*",".venv","ext/*","setup*","tests/*","cmake-build-debug*"]
+strictness="long"
+docstring_style="sphinx"
 
 [tool.mypy]
 strict = false
@@ -111,7 +136,6 @@ balanced_wrapping=true
 line_length=120
 profile = "black"
 
-
 [tool.coverage.paths]
 source = ["cornflakes", "*/site-packages"]
 
@@ -123,8 +147,8 @@ source = ["cornflakes"]
 show_missing = true
 
 [tool.poetry.build]
-generate-setup-file = true
 script = "build.py"
+generate-setup-file = true
 
 [build-system]
 requires = [
@@ -138,7 +162,7 @@ requires = [
 #    "fastentrypoints"
 ]
 #build-backend = "setuptools.build_meta"
-#build-backend = "poetry.core.masonry.api"
+build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

@@ -1,5 +1,5 @@
-from contextlib import suppress
 import inspect
+from contextlib import suppress
 from dataclasses import MISSING, is_dataclass
 from itertools import chain
 from os import environ
@@ -8,8 +8,8 @@ from typing import Any, Callable, Optional, Union, get_args
 from _cornflakes import eval_type
 from cornflakes.common import extract_var_names
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
-from cornflakes.decorator._types import WITHOUT_DEFAULT, Config, ConfigGroup, DataclassProtocol
 from cornflakes.decorator.dataclass.helper import dataclass_fields
+from cornflakes.decorator.types import WITHOUT_DEFAULT, Config, ConfigGroup, DataclassProtocol
 
 # from types import GenericAlias
 # import typing
@@ -77,6 +77,9 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup, Any], va
             if isinstance(actual_type, SpecialForm):
                 actual_type = getattr(type_hint, "__args__", type_hint)
 
+            if actual_type == str:
+                return str(value or "")  # fix default string is not 'None'
+
             if isinstance(actual_type, list) or isinstance(actual_type, tuple):
                 actual_types = (
                     [t for t in actual_type if t is not None]
@@ -113,6 +116,9 @@ def enforce_types(config: Union[DataclassProtocol, Config, ConfigGroup, Any], va
                     )
                 actual_types = [t for t in get_args(type_hint) if t is not None] or [str] if value else [type(None)]
                 return actual_type(chain([_check_type(t, key, val) for val in value for t in actual_types]))
+
+            if inspect.isbuiltin(actual_type) or inspect.isfunction(actual_type):
+                return actual_type(value)
 
             if not inspect.isclass(actual_type):
                 return _check_type(actual_type, key, value)

@@ -1,28 +1,46 @@
 from importlib.metadata import version
 from inspect import getfile
 import logging
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional, Union, cast
 
-from click import BaseCommand, Group, style, version_option
+import click
+from click import BaseCommand, Command, Group, style, version_option
 
-from cornflakes.click import RichConfig, RichGroup, group
-from cornflakes.decorator._types import Loader
-from cornflakes.decorator.config import Config
+from cornflakes.decorator.click.rich import RichArg, RichCommand, RichConfig, RichGroup, argument, command, group
+from cornflakes.decorator.types import Config, Loader
 from cornflakes.logging.logger import setup_logging
+
+RICH_CLICK_PATCHED = False
+
+
+def patch_click():
+    """Patch click to use rich extensions."""
+    global RICH_CLICK_PATCHED
+    if not RICH_CLICK_PATCHED:
+        click.argument = argument
+        click.group = group
+        click.command = command
+        click.Group = RichGroup
+        click.Command = RichCommand
+        click.Argument = RichArg
+        RICH_CLICK_PATCHED = True
 
 
 def click_cli(  # noqa: C901
     callback: Optional[Callable] = None,
-    config: Optional[Union[Config, Any]] = None,
+    config: Optional[Union[RichConfig, Config, Any]] = None,
     files: Optional[str] = None,
     loader: Loader = Loader.DICT_LOADER,
     default_log_level: int = logging.INFO,
+    as_command: bool = False,
     *args,
     **kwargs,
 ) -> Union[
-    Callable[[Any], Callable[..., Union[BaseCommand, RichGroup]]], Callable[..., Union[BaseCommand, Group, RichGroup]]
+    Callable[[Any], Callable[..., Union[BaseCommand, RichGroup]]],
+    Callable[..., Union[BaseCommand, Group, RichGroup, Command, RichCommand]],
 ]:
     """Function that creates generic click CLI Object."""
+    patch_click()
     setup_logging(default_level=default_log_level)
     if not config:
         if not files:
@@ -36,12 +54,17 @@ def click_cli(  # noqa: C901
         else:
             config = RichConfig(*args, **kwargs)
 
-    def cli_wrapper(w_callback: Callable) -> Callable[..., Union[BaseCommand, Group, RichGroup]]:
+    config = cast(RichConfig, config)
+
+    def cli_wrapper(w_callback: Callable) -> Callable[..., Union[BaseCommand, Group, RichGroup, Command, RichCommand]]:
         if not callable(w_callback):
             return w_callback
 
         module = getfile(w_callback)
-        cli_group: Union[BaseCommand, Group, RichGroup] = group(module.split(".", 1)[0], config=config)(w_callback)
+        if as_command:
+            cli: Union[BaseCommand, Command, RichCommand] = command(module.split(".", 1)[0], config=config)(w_callback)
+        else:
+            cli: Union[BaseCommand, Group, RichGroup] = group(module.split(".", 1)[0], config=config)(w_callback)
         if config.VERSION_INFO:
             name = w_callback.__qualname__
             __version = "0.0.1"
@@ -58,14 +81,14 @@ def click_cli(  # noqa: C901
                     f"\033[95m{module}\033" f"[0m \033[95m" f"Version\033[0m: \033[1m" f"{__version}\033[0m"
                 ),
             }
-            cli_group = version_option(**version_args)(cli_group)
+            cli: Any = version_option(**version_args)(cli)
 
-        if cli_group.config.GLOBAL_OPTIONS:
-            for option_obj in cli_group.config.GLOBAL_OPTIONS:
-                cli_group.params.extend(option_obj.params)
+        if cli.config.GLOBAL_OPTIONS:
+            for option_obj in cli.config.GLOBAL_OPTIONS:
+                cli.params.extend(option_obj.params)
         if config.CONTEXT_SETTINGS:
-            cli_group.context_settings = config.CONTEXT_SETTINGS
-        return cli_group
+            cli.context_settings = config.CONTEXT_SETTINGS
+        return cli
 
     if callback:
         return cli_wrapper(callback)

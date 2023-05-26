@@ -5,7 +5,7 @@ import subprocess  # noqa: S404
 import sys
 from typing import Callable
 
-from cornflakes.click.options._global import global_option
+from cornflakes.decorator.click.options._global import global_option
 
 
 @global_option(

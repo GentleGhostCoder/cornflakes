@@ -1,9 +1,9 @@
 from typing import Any, Callable, List, Optional, Union, cast
 
 from cornflakes.decorator import Index, funcat
-from cornflakes.decorator._types import ConfigGroup, DataclassProtocol
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.dataclass import dataclass
+from cornflakes.decorator.types import ConfigGroup, DataclassProtocol
 
 
 def config_group(

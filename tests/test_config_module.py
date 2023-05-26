@@ -7,7 +7,7 @@ import unittest
 
 from cornflakes import AnyUrl
 from cornflakes.builder import generate_config_module
-from cornflakes.decorator import Loader
+from cornflakes.decorator.types import Loader
 from tests import configs
 
 
@@ -47,13 +47,14 @@ class TestConfigGeneration(unittest.TestCase):
         self.assertEqual(
             MainConfig.from_file().to_dict(),
             {
-                "sub_config": [
+                "sub_config_class": [
                     {
                         "idx_at5": 5,
                         "idx_at_first_ini_or_0": 5,
                         "test": None,
                         "section_name": "sub_config_0",
                         "string": "bla0",
+                        "empty_string": "",
                         "datetime_datetime": datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                         "datetime_time": datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                         "int_val": 1,
@@ -65,6 +66,11 @@ class TestConfigGeneration(unittest.TestCase):
                         "url": "https://localhost:8080",
                         "enum": configs.sub_config.ExampleEnum.sample,
                         "some_env": "default_value",
+                        "lineterminator": "\n",
+                        "escapechar": "\\",
+                        "quotechar": '"',
+                        "sep": ",",
+                        "euro": "€",
                     },
                     {
                         "idx_at5": 6,
@@ -72,6 +78,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "test": None,
                         "section_name": "sub_config_1",
                         "string": "bla1",
+                        "empty_string": "",
                         "datetime_datetime": datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                         "datetime_time": datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                         "int_val": 1,
@@ -79,10 +86,15 @@ class TestConfigGeneration(unittest.TestCase):
                         "decimal": Decimal("1E-40"),
                         "ipv4": IPv4Address("127.0.0.1"),
                         "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                        "bool_val": True,
+                        "bool_val": False,
                         "url": "https://localhost:8080",
                         "enum": configs.sub_config.ExampleEnum.sample,
                         "some_env": "default_value",
+                        "lineterminator": "\n",
+                        "escapechar": "\\",
+                        "quotechar": '"',
+                        "sep": ",",
+                        "euro": "€",
                     },
                     {
                         "idx_at5": 7,
@@ -90,6 +102,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "test": None,
                         "section_name": "sub_config_2",
                         "string": "bla2",
+                        "empty_string": "",
                         "datetime_datetime": datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                         "datetime_time": datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                         "int_val": 1,
@@ -97,10 +110,15 @@ class TestConfigGeneration(unittest.TestCase):
                         "decimal": Decimal("1E-40"),
                         "ipv4": IPv4Address("127.0.0.1"),
                         "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                        "bool_val": True,
+                        "bool_val": False,
                         "url": "https://localhost:8080",
                         "enum": configs.sub_config.ExampleEnum.sample,
                         "some_env": "default_value",
+                        "lineterminator": "\n",
+                        "escapechar": "\\",
+                        "quotechar": '"',
+                        "sep": ",",
+                        "euro": "€",
                     },
                 ]
             },
@@ -116,6 +134,7 @@ class TestConfigGeneration(unittest.TestCase):
                         None,
                         "sub_config_0",
                         "bla0",
+                        "",
                         datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                         datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                         1,
@@ -127,6 +146,11 @@ class TestConfigGeneration(unittest.TestCase):
                         "https://localhost:8080",
                         configs.sub_config.ExampleEnum.sample,
                         "default_value",
+                        "\n",
+                        "\\",
+                        '"',
+                        ",",
+                        "€",
                     ),
                     (
                         6,
@@ -134,6 +158,7 @@ class TestConfigGeneration(unittest.TestCase):
                         None,
                         "sub_config_1",
                         "bla1",
+                        "",
                         datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                         datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                         1,
@@ -141,10 +166,15 @@ class TestConfigGeneration(unittest.TestCase):
                         Decimal("1E-40"),
                         IPv4Address("127.0.0.1"),
                         IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                        True,
+                        False,
                         "https://localhost:8080",
                         configs.sub_config.ExampleEnum.sample,
                         "default_value",
+                        "\n",
+                        "\\",
+                        '"',
+                        ",",
+                        "€",
                     ),
                     (
                         7,
@@ -152,6 +182,7 @@ class TestConfigGeneration(unittest.TestCase):
                         None,
                         "sub_config_2",
                         "bla2",
+                        "",
                         datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                         datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                         1,
@@ -159,10 +190,15 @@ class TestConfigGeneration(unittest.TestCase):
                         Decimal("1E-40"),
                         IPv4Address("127.0.0.1"),
                         IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                        True,
+                        False,
                         "https://localhost:8080",
                         configs.sub_config.ExampleEnum.sample,
                         "default_value",
+                        "\n",
+                        "\\",
+                        '"',
+                        ",",
+                        "€",
                     ),
                 ],
             ),
@@ -181,15 +217,16 @@ class TestConfigGeneration(unittest.TestCase):
         environ["some_env"] = "test123"
 
         self.assertEqual(
-            repr(configs.sub_config.SubConfig.from_ini("tests/configs/default.ini")),
+            repr(configs.sub_config.SubConfigClass.from_ini("tests/configs/default.ini")),
             repr(
                 {
-                    "sub_config": [
-                        configs.sub_config.SubConfig(
+                    "sub_config_class": [
+                        configs.sub_config.SubConfigClass(
                             idx_at_first_ini_or_0=5,
                             test=None,
                             section_name="sub_config_0",
                             string="bla0",
+                            empty_string="",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                             datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                             int_val=1,
@@ -210,11 +247,17 @@ class TestConfigGeneration(unittest.TestCase):
                             ),
                             enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
+                            lineterminator="\n",
+                            escapechar="\\",
+                            quotechar='"',
+                            sep=",",
+                            euro="€",
                         ),
-                        configs.sub_config.SubConfig(
+                        configs.sub_config.SubConfigClass(
                             test=None,
                             section_name="sub_config_1",
                             string="bla1",
+                            empty_string="",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                             datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                             int_val=1,
@@ -222,7 +265,7 @@ class TestConfigGeneration(unittest.TestCase):
                             decimal=Decimal("1E-40"),
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                            bool_val=True,
+                            bool_val=False,
                             url=AnyUrl(
                                 scheme="https",
                                 netloc="localhost:8080",
@@ -235,11 +278,17 @@ class TestConfigGeneration(unittest.TestCase):
                             ),
                             enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
+                            lineterminator="\n",
+                            escapechar="\\",
+                            quotechar='"',
+                            sep=",",
+                            euro="€",
                         ),
-                        configs.sub_config.SubConfig(
+                        configs.sub_config.SubConfigClass(
                             test=None,
                             section_name="sub_config_2",
                             string="bla2",
+                            empty_string="",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                             datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                             int_val=1,
@@ -247,7 +296,7 @@ class TestConfigGeneration(unittest.TestCase):
                             decimal=Decimal("1E-40"),
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                            bool_val=True,
+                            bool_val=False,
                             url=AnyUrl(
                                 scheme="https",
                                 netloc="localhost:8080",
@@ -260,6 +309,11 @@ class TestConfigGeneration(unittest.TestCase):
                             ),
                             enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
+                            lineterminator="\n",
+                            escapechar="\\",
+                            quotechar='"',
+                            sep=",",
+                            euro="€",
                         ),
                     ]
                 }
@@ -270,12 +324,13 @@ class TestConfigGeneration(unittest.TestCase):
             repr(MainConfig.from_file()),
             repr(
                 MainConfig(
-                    sub_config=[
-                        configs.sub_config.SubConfig(
+                    sub_config_class=[
+                        configs.sub_config.SubConfigClass(
                             idx_at_first_ini_or_0=5,
                             test=None,
                             section_name="sub_config_0",
                             string="bla0",
+                            empty_string="",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                             datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                             int_val=1,
@@ -296,11 +351,17 @@ class TestConfigGeneration(unittest.TestCase):
                             ),
                             enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
+                            lineterminator="\n",
+                            escapechar="\\",
+                            quotechar='"',
+                            sep=",",
+                            euro="€",
                         ),
-                        configs.sub_config.SubConfig(
+                        configs.sub_config.SubConfigClass(
                             test=None,
                             section_name="sub_config_1",
                             string="bla1",
+                            empty_string="",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                             datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                             int_val=1,
@@ -308,7 +369,7 @@ class TestConfigGeneration(unittest.TestCase):
                             decimal=Decimal("1E-40"),
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                            bool_val=True,
+                            bool_val=False,
                             url=AnyUrl(
                                 scheme="https",
                                 netloc="localhost:8080",
@@ -321,11 +382,17 @@ class TestConfigGeneration(unittest.TestCase):
                             ),
                             enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
+                            lineterminator="\n",
+                            escapechar="\\",
+                            quotechar='"',
+                            sep=",",
+                            euro="€",
                         ),
-                        configs.sub_config.SubConfig(
+                        configs.sub_config.SubConfigClass(
                             test=None,
                             section_name="sub_config_2",
                             string="bla2",
+                            empty_string="",
                             datetime_datetime=datetime.datetime(2006, 3, 17, 13, 27, 54, tzinfo=datetime.timezone.utc),
                             datetime_time=datetime.time(13, 27, 54, tzinfo=datetime.timezone.utc),
                             int_val=1,
@@ -333,7 +400,7 @@ class TestConfigGeneration(unittest.TestCase):
                             decimal=Decimal("1E-40"),
                             ipv4=IPv4Address("127.0.0.1"),
                             ipv6=IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
-                            bool_val=True,
+                            bool_val=False,
                             url=AnyUrl(
                                 scheme="https",
                                 netloc="localhost:8080",
@@ -346,6 +413,11 @@ class TestConfigGeneration(unittest.TestCase):
                             ),
                             enum=configs.sub_config.ExampleEnum.sample,
                             some_env="test123",
+                            lineterminator="\n",
+                            escapechar="\\",
+                            quotechar='"',
+                            sep=",",
+                            euro="€",
                         ),
                     ]
                 )

@@ -1,7 +1,10 @@
+"""Dataclass helper functions used by the custom dataclass decorator."""
+from dataclasses import Field
 import re
-from typing import Any, Optional, Union
+from typing import Any, Dict, Optional, Union
 
-from cornflakes.decorator._types import Config, ConfigArgument, ConfigGroup, DataclassProtocol, Loader
+from cornflakes.decorator.dataclass._field import Field as CField
+from cornflakes.decorator.types import Config, ConfigArgument, ConfigGroup, DataclassProtocol, Loader
 
 
 def is_config(cls):
@@ -19,13 +22,23 @@ def config_files(cls) -> ConfigArgument:
     return getattr(cls, "__config_files__", [])
 
 
-def dataclass_fields(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> dict:
+def dataclass_fields(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> Dict[str, Union[Field, CField]]:
     """Method to return dataclass fields."""
     return getattr(cls, "__dataclass_fields__", {})
 
 
 def dict_factory(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> Any:
     """Method to return class __dict_factory__."""
+    # dict_factory_method = getattr(cls, "__dict_factory__", dict)
+    #
+    # # check if any field in class is a memoryview type
+    # if any([f.type == memoryview for f in dataclass_fields(cls).values()]):
+    #     # if so, return a dict factory that converts memoryview to bytes
+    #     def dict_factory_wrapper(obj):
+    #         """Method to convert memoryview to bytes."""
+    #         return dict_factory_method({k: bytes(v) if isinstance(v, memoryview) else v for k, v in obj})
+    #
+    #     return dict_factory_wrapper
     return getattr(cls, "__dict_factory__", dict)
 
 

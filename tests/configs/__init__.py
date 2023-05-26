@@ -1,5 +1,5 @@
 """Configs Test Suite."""
 from tests.configs.default import MainConfig
-from tests.configs.sub_config import SubConfig
+from tests.configs.sub_config import SubConfigClass
 
-__all__ = ["MainConfig", "SubConfig"]
+__all__ = ["MainConfig", "SubConfigClass"]

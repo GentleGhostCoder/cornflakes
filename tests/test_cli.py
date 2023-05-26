@@ -1,11 +1,11 @@
 """Test cases for the cli decorator."""
-from click import option
+from click import command, group, option
 from click.testing import CliRunner
 import pytest
 
 from cornflakes import config
 from cornflakes.__main__ import main
-from cornflakes.click import auto_option, command, group
+from cornflakes.decorator.click import auto_option
 
 
 @config

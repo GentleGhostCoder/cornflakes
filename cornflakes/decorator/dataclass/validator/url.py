@@ -4,8 +4,8 @@ from urllib.parse import ParseResult, parse_qs, urlparse, urlunparse
 
 import validators
 
-from cornflakes.decorator.config.tuple import to_tuple
 from cornflakes.decorator.dataclass._dataclass import dataclass as data
+from cornflakes.decorator.dataclass._dataclass import to_tuple
 from cornflakes.decorator.dataclass._field import field
 
 

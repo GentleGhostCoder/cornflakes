@@ -19,7 +19,7 @@ from rich.text import Text
 from rich.theme import Theme
 from rich_rst import RestructuredText
 
-from cornflakes.click.rich._rich_config import RichConfig as RichConfig
+from cornflakes.decorator.click.rich._rich_config import RichConfig as RichConfig
 
 # Support rich <= 10.6.0
 # try:
@@ -243,7 +243,9 @@ def _get_parameter_help(
 
 
 # flake8: noqa: C901
-def _make_command_help(config: RichConfig, help_text: str = "") -> Union[rich.text.Text, rich.markdown.Markdown]:
+def _make_command_help(
+    config: RichConfig, help_text: str = ""
+) -> Union[rich.markdown.Markdown, rich.text.Text, RestructuredText]:
     """Build click help text for a click group command.
 
     That is, when calling help on groups with multiple subcommands

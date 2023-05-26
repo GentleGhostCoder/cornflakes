@@ -148,3 +148,9 @@ dmypy.json
 
 # Coala
 *.orig
+
+# DB files
+*.db
+
+# Ruff linting
+/.ruff_cache/

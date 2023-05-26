@@ -2,9 +2,12 @@ from dataclasses import Field as DataclassField
 from dataclasses import MISSING
 from typing import Any, Callable, List, Optional, Union
 
-from cornflakes.decorator._types import WITHOUT_DEFAULT, _WithoutDefault
+from cornflakes.decorator.types import WITHOUT_DEFAULT, _WithoutDefault
 
 _MISSING_TYPE = type(MISSING)
+
+
+# TODO: add init_var_trigger -> like alias to call the validator method and pass the values
 
 
 class Field(DataclassField):

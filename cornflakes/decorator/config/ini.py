@@ -3,10 +3,10 @@ from typing import Any, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
-from cornflakes.decorator._types import Config
 from cornflakes.decorator.config._load_config import create_file_loader
 from cornflakes.decorator.config._write_config import write_config
 from cornflakes.decorator.dataclass.helper import get_not_ignored_slots, is_config
+from cornflakes.decorator.types import Config
 
 
 def _parse_config_list(cfg, cfg_name: str, title: str):
@@ -17,9 +17,9 @@ def _parse_config_list(cfg, cfg_name: str, title: str):
     elif is_list:
         for n, sub_cfg in enumerate(cfg):
             sub_cfg_name = f"{cfg_name}_{n}"
-            if is_config(sub_cfg) and hasattr(sub_cfg, "section_name"):
+            if is_config(sub_cfg) and (hasattr(sub_cfg, "section_name") or hasattr(sub_cfg, "__config_sections__")):
                 # if sub_cfg contains a section_name, use it instead of the default
-                sub_cfg_name = sub_cfg.section_name
+                sub_cfg_name = getattr(sub_cfg, "section_name", sub_cfg.__config_sections__)
             _ini_bytes.extend(_parse_config_list(sub_cfg, sub_cfg_name, title))
         return _ini_bytes
     else:
@@ -39,7 +39,7 @@ def to_ini_bytes(
             bytes(
                 "\n".join(
                     [
-                        f"{cfg}={type_to_str(getattr(self, cfg))!r}"
+                        f'{cfg}={f"{type_to_str(getattr(self, cfg))!r}" if getattr(self, cfg) is not None else ""}'
                         for cfg in get_not_ignored_slots(self)
                         if cfg != "section_name"
                     ]
@@ -54,14 +54,18 @@ def to_ini_bytes(
         cfg = getattr(self, cfg_name)
         _ini_bytes.extend(_parse_config_list(cfg, cfg_name, title))
 
-    _ini_bytes.pop()  # at least remove second line-break
+    if _ini_bytes:
+        _ini_bytes.pop()  # at least remove second line-break
 
     return _ini_bytes
 
 
 def to_ini(self, out_cfg: Optional[str] = None) -> Optional[bytearray]:
     """Method to write an instance of the main config class of the module into an ini file."""
-    return write_config(self.to_ini_bytes(self.__class__.__name__.lower()), out_cfg)
+    title = getattr(self, "section_name", getattr(self, "__config_sections__", self.__class__.__name__.lower()))
+    if isinstance(title, (list, tuple)):
+        title = title[0]
+    return write_config(self.to_ini_bytes(title), out_cfg)
 
 
 def create_ini_file_loader(
