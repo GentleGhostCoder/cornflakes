@@ -3,7 +3,7 @@ from typing import Callable, Any, Optional, Union
 
 from click import argument as click_argument
 from click import command as click_command
-from click import group as click_group, Command
+from click import group as click_group, Command, Group
 
 from cornflakes.decorator.click.rich._rich_argument import RichArg
 from cornflakes.decorator.click.rich._rich_command import RichCommand
@@ -38,7 +38,7 @@ def argument(*args, cls=RichArg, **kwargs) -> F:  # type: ignore
     return click_argument(*args, cls=cls, **kwargs)
 
 
-def group_command(self, name: Optional[str], cmd: Union[Command, RichCommand] = None):
+def group_command(self, name: Optional[str], cmd: Union[Command, RichCommand, Any] = None):
     """Decorator to register a RichCommand with this group."""
 
     def wrapper(callback):
@@ -52,7 +52,7 @@ def group_command(self, name: Optional[str], cmd: Union[Command, RichCommand] = 
     return wrapper
 
 
-def group_group(self, name: Optional[str], cmd: Union[Command, RichGroup] = None):
+def group_group(self, name: Optional[str], cmd: Union[Group, RichGroup, Any] = None):
     """Decorator to register a RichGroup with this group."""
 
     def wrapper(callback):
