@@ -60,7 +60,7 @@ def setup_logging(  # noqa: C901
                     "level": default_level or logging.root.level,
                     "handlers": ["default"],
                 },
-                "disable_existing_loggers": False,
+                "disable_existing_loggers": not force,
             }
         )
         for handler in logging.root.handlers:
