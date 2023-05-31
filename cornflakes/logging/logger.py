@@ -32,10 +32,11 @@ def setup_logging(  # noqa: C901
     if os.path.exists(default_path):
         with open(default_path) as f:
             config = yaml.safe_load(f.read())
-            if default_level and force:
-                for handler_name in config["root"]["handlers"]:
-                    if loggers and handler_name in loggers:
-                        config["handlers"][handler_name]["level"] = default_level or logging.root.level
+            if default_level:
+                if force:
+                    for handler_name in config["root"]["handlers"]:
+                        if loggers and handler_name in loggers:
+                            config["handlers"][handler_name]["level"] = default_level or logging.root.level
                 config["root"]["level"] = default_level or logging.root.level
             logging.config.dictConfig(config)
     else:
@@ -51,12 +52,12 @@ def setup_logging(  # noqa: C901
                 "handlers": {
                     "default": {
                         "class": "rich.logging.RichHandler",
-                        "level": "INFO",
+                        "level": default_level or logging.root.level,
                         "formatter": "default",
                     },
                 },
                 "root": {
-                    "level": "INFO",
+                    "level": default_level or logging.root.level,
                     "handlers": ["default"],
                 },
                 "disable_existing_loggers": False,

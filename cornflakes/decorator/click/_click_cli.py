@@ -6,7 +6,17 @@ from typing import Any, Callable, Optional, Union, cast
 import click
 from click import BaseCommand, Command, Group, style, version_option
 
-from cornflakes.decorator.click.rich import RichArg, RichCommand, RichConfig, RichGroup, argument, command, group
+from cornflakes.decorator.click.rich import (
+    RichArg,
+    RichCommand,
+    RichConfig,
+    RichGroup,
+    argument,
+    command,
+    group,
+    group_command,
+    group_group,
+)
 from cornflakes.decorator.types import Config, Loader
 from cornflakes.logging.logger import setup_logging
 
@@ -23,6 +33,8 @@ def patch_click():
         click.Group = RichGroup
         click.Command = RichCommand
         click.Argument = RichArg
+        click.Group.command = group_command
+        click.Group.group = group_group
         RICH_CLICK_PATCHED = True
 
 
