@@ -30,7 +30,7 @@ class RichGroup(Group):
     def callback(self):
         """Callback method with is wrapped over the command group."""
 
-    def add_command(self, cmd: Union[Command, RichCommand], name: Optional[str] = None) -> None:
+    def add_command(self, cmd: Union[Command, RichCommand, Group, Any], name: Optional[str] = None) -> None:
         """Registers another :class:`Command` with this group.
 
         If the name is not provided, the name of the command is used.

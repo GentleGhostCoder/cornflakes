@@ -1,6 +1,10 @@
 """Command-line interface."""
+import logging
+
+import click
+
 from cornflakes.decorator import click_cli
-from cornflakes.decorator.click import RichGroup, bg_process_option, verbose_option
+from cornflakes.decorator.click import bg_process_option, verbose_option
 
 
 @click_cli(
@@ -28,8 +32,8 @@ from cornflakes.decorator.click import RichGroup, bg_process_option, verbose_opt
     COMMAND_GROUPS={
         "cornflakes": [
             {
-                "name": "Commands",
-                "commands": [],
+                "name": "Test Commands",
+                "commands": ["print"],
             },
         ]
     },
@@ -50,10 +54,21 @@ def main():
     """Main CLI Entrypoint Method."""
 
 
-if isinstance(main, RichGroup):
-    for command in []:
-        main.add_command(command)
-        main.config.COMMAND_GROUPS.get("cornflakes")[0].get("commands").append(command.name)  # type: ignore
+@main.group("print")
+def print_group():
+    """Test Group."""
+
+
+logger = logging.getLogger("new_logger")
+
+
+@print_group.command("hello")
+def hello_world_command(verbose):
+    """Hello World Command."""
+    click.echo("Hello World!")
+    logger.info("Info log message test.")
+    logger.debug("Debug log message test.")
+
 
 __all__ = ["main"]
 
