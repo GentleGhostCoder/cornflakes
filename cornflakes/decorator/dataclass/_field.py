@@ -1,5 +1,6 @@
 from dataclasses import Field as DataclassField
 from dataclasses import MISSING
+from types import MappingProxyType
 from typing import Any, Callable, List, Optional, Union
 
 from cornflakes.decorator.types import WITHOUT_DEFAULT, _WithoutDefault
@@ -60,7 +61,7 @@ class Field(DataclassField):
         repr: Optional[bool] = True,
         hash: Optional[Union[bool, _MISSING_TYPE]] = None,
         compare: Optional[bool] = True,
-        metadata: Optional[bool] = None,
+        metadata: Optional[MappingProxyType[Any, Any]] = None,
         kw_only: Union[_MISSING_TYPE, bool] = MISSING,
         validator: Optional[Union[Callable[[str], Any], _MISSING_TYPE]] = MISSING,
         alias: Optional[Union[List[str], str]] = None,
@@ -191,6 +192,44 @@ class Field(DataclassField):
         for k, v in extra.items():
             setattr(self, k, v)
 
+    def __deepcopy__(self, memo):
+        new_field = self.__class__(
+            default=self.default,
+            default_factory=self.default_factory,
+            init=self.init,
+            repr=self.repr,
+            hash=self.hash,
+            compare=self.compare,
+            metadata=self.metadata,
+            validator=self.validator,
+            ignore=self.ignore,
+            alias=self.alias,
+            title=self.title,
+            description=self.description,
+            exclude=self.exclude,
+            include=self.include,
+            const=self.const,
+            gt=self.gt,
+            ge=self.ge,
+            lt=self.lt,
+            le=self.le,
+            multiple_of=self.multiple_of,
+            allow_inf_nan=self.allow_inf_nan,
+            max_digits=self.max_digits,
+            decimal_places=self.decimal_places,
+            min_items=self.min_items,
+            max_items=self.max_items,
+            unique_items=self.unique_items,
+            min_length=self.min_length,
+            max_length=self.max_length,
+            allow_mutation=self.allow_mutation,
+            regex=self.regex,
+            discriminator=self.discriminator,
+            **self.extra,
+        )
+        memo[id(self)] = new_field
+        return new_field
+
     def __repr__(self):
         """Repr Field method.
 
@@ -233,7 +272,7 @@ def field(
     repr: Optional[bool] = True,
     hash: Optional[Union[bool, _MISSING_TYPE]] = None,
     compare: Optional[bool] = True,
-    metadata: Optional[bool] = None,
+    metadata: Optional[MappingProxyType[Any, Any]] = None,
     kw_only: Union[_MISSING_TYPE, bool] = MISSING,
     validator: Optional[Union[Callable[[str], Any], _MISSING_TYPE]] = MISSING,
     alias: Optional[Union[List[str], str]] = None,
