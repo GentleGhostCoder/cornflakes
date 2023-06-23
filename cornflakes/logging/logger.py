@@ -78,8 +78,6 @@ def setup_logging(  # noqa: C901
         if isinstance(logging.root, logging.Logger):
             logging.root.setLevel(default_level or logging.root.level)
 
-        print(logging.root.manager.loggerDict)
-
 
 class LoggerMetaClass(type):
     """LoggerMetaClass used for  metaclass."""
