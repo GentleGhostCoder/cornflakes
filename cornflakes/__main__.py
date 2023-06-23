@@ -51,7 +51,7 @@ from cornflakes.decorator.click import bg_process_option, verbose_option
     VERSION_INFO=True,
 )
 def main():
-    """Main CLI Entrypoint Method."""
+    """"""
 
 
 @main.group("print")
