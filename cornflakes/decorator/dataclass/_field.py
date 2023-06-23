@@ -192,8 +192,8 @@ class Field(DataclassField):
         for k, v in extra.items():
             setattr(self, k, v)
 
-    def __deepcopy__(self, memo):
-        new_field = self.__class__(
+    def __deepcopy__(self, memodict={}):
+        return self.__class__(
             default=self.default,
             default_factory=self.default_factory,
             init=self.init,
@@ -201,9 +201,10 @@ class Field(DataclassField):
             hash=self.hash,
             compare=self.compare,
             metadata=self.metadata,
+            kw_only=self.kw_only,
             validator=self.validator,
-            ignore=self.ignore,
             alias=self.alias,
+            ignore=self.ignore,
             title=self.title,
             description=self.description,
             exclude=self.exclude,
@@ -227,8 +228,6 @@ class Field(DataclassField):
             discriminator=self.discriminator,
             **self.extra,
         )
-        memo[id(self)] = new_field
-        return new_field
 
     def __repr__(self):
         """Repr Field method.
