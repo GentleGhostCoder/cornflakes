@@ -1,7 +1,7 @@
 repos:
     - repo: https://github.com/charliermarsh/ruff-pre-commit
       # Ruff version. TODO: remove flake8 in future
-      rev: "v0.0.270"
+      rev: "v0.0.272"
       hooks:
           - id: ruff
     - repo: https://github.com/psf/black
@@ -72,7 +72,7 @@ repos:
                 - "--remove-duplicate-keys"
                 - "--remove-unused-variables"
     - repo: https://github.com/asottile/pyupgrade
-      rev: v3.4.0
+      rev: v3.7.0
       hooks:
           - id: pyupgrade
             name: pyupgrade
@@ -129,7 +129,7 @@ repos:
                 ]
             files: \.(c|h|cpp)$
     - repo: https://github.com/sirosen/check-jsonschema
-      rev: 0.23.0
+      rev: 0.23.2
       hooks:
           - id: check-github-actions
           - id: check-github-workflows
