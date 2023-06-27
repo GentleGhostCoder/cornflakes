@@ -1,7 +1,7 @@
 repos:
     - repo: https://github.com/charliermarsh/ruff-pre-commit
       # Ruff version. TODO: remove flake8 in future
-      rev: "v0.0.272"
+      rev: "v0.0.275"
       hooks:
           - id: ruff
     - repo: https://github.com/psf/black
@@ -58,7 +58,7 @@ repos:
             require_serial: true
             additional_dependencies: [Flake8-pyproject]
     - repo: https://github.com/PyCQA/autoflake
-      rev: v2.1.1
+      rev: v2.2.0
       hooks:
           - id: autoflake
             name: autoflake
