@@ -244,7 +244,7 @@ def xdoctest(session: Session) -> None:
     # file = list(Path("dist").glob(search))[0].name
     # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("xdoctest[colors]")
-    session.run("python", "-m", "xdoctest", package, *args)
+    session.run("xdoctest", package, *args)
 
 
 @session(name="docs-build", python=python_versions)

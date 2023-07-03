@@ -1,6 +1,5 @@
 from dataclasses import Field as DataclassField
 from dataclasses import MISSING
-from types import MappingProxyType
 from typing import Any, Callable, List, Optional, Union
 
 from cornflakes.decorator.types import WITHOUT_DEFAULT, _WithoutDefault
@@ -61,7 +60,7 @@ class Field(DataclassField):
         repr: Optional[bool] = True,
         hash: Optional[Union[bool, _MISSING_TYPE]] = None,
         compare: Optional[bool] = True,
-        metadata: Optional[MappingProxyType[Any, Any]] = None,
+        metadata: Any = None,
         kw_only: Union[_MISSING_TYPE, bool] = MISSING,
         validator: Optional[Union[Callable[[str], Any], _MISSING_TYPE]] = MISSING,
         alias: Optional[Union[List[str], str]] = None,
@@ -192,7 +191,7 @@ class Field(DataclassField):
         for k, v in extra.items():
             setattr(self, k, v)
 
-    def __deepcopy__(self, memodict={}):
+    def __deepcopy__(self, memodict=None):
         return self.__class__(
             default=self.default,
             default_factory=self.default_factory,
@@ -271,7 +270,7 @@ def field(
     repr: Optional[bool] = True,
     hash: Optional[Union[bool, _MISSING_TYPE]] = None,
     compare: Optional[bool] = True,
-    metadata: Optional[MappingProxyType[Any, Any]] = None,
+    metadata: Any = None,
     kw_only: Union[_MISSING_TYPE, bool] = MISSING,
     validator: Optional[Union[Callable[[str], Any], _MISSING_TYPE]] = MISSING,
     alias: Optional[Union[List[str], str]] = None,

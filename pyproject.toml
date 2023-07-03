@@ -79,6 +79,10 @@ virtualenv = "^20.23.0"
 pybind11 = "^2.10.4"
 pydantic = {extras = ["dotenv"], version = "^1.10.7"}
 markdown-it-py = "^2.2.0"
+clang-format = "^16.0.6"
+clang-tidy = "^15.0.2.1"
+cpplint = "^1.6.1"
+
 
 [tool.poetry.scripts]
 cornflakes = "cornflakes.__main__:main"
