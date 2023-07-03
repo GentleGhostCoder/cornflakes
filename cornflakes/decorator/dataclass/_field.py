@@ -192,15 +192,22 @@ class Field(DataclassField):
             setattr(self, k, v)
 
     def __deepcopy__(self, memodict=None):
+        dc_field_args = {
+            key: value
+            for key, value in (
+                ("default", self.default),  # type: ignore
+                ("default_factory", self.default_factory),
+                ("init", self.init),
+                ("repr", self.repr),
+                ("hash", self.hash),
+                ("compare", self.compare),
+                ("metadata", self.metadata),
+                ("kw_only", self.kw_only),  # type: ignore
+            )
+            if key in Field.__init__.__code__.co_varnames
+        }
         return self.__class__(
-            default=self.default,
-            default_factory=self.default_factory,
-            init=self.init,
-            repr=self.repr,
-            hash=self.hash,
-            compare=self.compare,
-            metadata=self.metadata,
-            kw_only=self.kw_only,
+            **dc_field_args,
             validator=self.validator,
             alias=self.alias,
             ignore=self.ignore,
