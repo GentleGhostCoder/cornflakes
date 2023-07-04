@@ -121,6 +121,9 @@ def precommit(session: Session) -> None:
         "pre-commit-hooks",
         "compiledb",
         "pyupgrade",
+        "cpplint",
+        "clang-format",
+        "clang-tidy",
     )
     session.run("pre-commit", *args)
     if args and args[0] == "install":
