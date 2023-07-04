@@ -119,19 +119,7 @@ Create dev venv:
 
    python -m venv .venv
    source .venv/bin/activate
-   pip install cookietemple ninja pre-commit poetry
-
-Bump Version using cookietemple:
-
-.. code::
-
-   cookietemple bump-version "<version(e.g 0.0.1)>"
-
-Run lint using cookietemple:
-
-.. code::
-
-   cookietemple lint .
+   pip install ninja pre-commit poetry
 
 Install pre-commit:
 

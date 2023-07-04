@@ -142,7 +142,7 @@ def find_replace(file_list, find, replace, file_pattern):
             file_w.write(s)
 
 
-__version__ = "3.0.4"  # <<COOKIETEMPLE_FORCE_BUMP>>
+__version__ = "3.0.4"  # <<FORCE_BUMP>>
 with open("cornflakes/__init__.py") as f:
     while line := f.readline():
         if "__version__" in line:
