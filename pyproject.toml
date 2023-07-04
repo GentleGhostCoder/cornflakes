@@ -87,15 +87,15 @@ cpplint = "^1.6.1"
 [tool.poetry.scripts]
 cornflakes = "cornflakes.__main__:main"
 
-[[tool.poetry.source]]
-name = "cornflakes"
-url = "https://pypi.org/"
-priority = "primary"
-
-
-[[tool.poetry.source]]
-name = "PyPI"
-priority = "primary"
+#[[tool.poetry.source]]
+#name = "cornflakes"
+#url = "https://pypi.org/"
+#priority = "primary"
+#
+#
+#[[tool.poetry.source]]
+#name = "PyPI"
+#priority = "primary"
 
 [tool.black]
 line-length = 120
