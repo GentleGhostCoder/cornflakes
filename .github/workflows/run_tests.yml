@@ -101,7 +101,7 @@ jobs:
 
             - name: Install Poetry
               run: |
-                  pipx install poetry
+                  pipx install poetry setuptools
                   poetry --version
 
             - name: Install Dependencies
