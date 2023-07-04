@@ -24,8 +24,9 @@ def update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:
     return c
 
 
-with open("./pyproject.toml") as fr:
-    content = fr.read()
+def main() -> None:
+    with open("./pyproject.toml") as fr:
+        content = fr.read()
     toml_dict = cast(Dict, toml.loads(content))
     subprocess.run(["poetry", "update"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     output = subprocess.run(["pip", "list"], capture_output=True)
@@ -43,3 +44,7 @@ with open("./pyproject.toml") as fr:
 
     subprocess.run(["poetry", "lock"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print("Dependencies updated and pyproject.toml overwritten.")
+
+
+if __name__ == "__main__":
+    main()
