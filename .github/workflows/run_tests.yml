@@ -99,10 +99,13 @@ jobs:
                   pipx install ninja
                   ninja --version
 
+            - name: Install Setuptools
+              run: |
+                  pip install --upgrade pip setuptools wheel
+
             - name: Install Poetry
               run: |
                   pipx install poetry
-                  pipx install setuptools
                   poetry --version
 
             - name: Install Dependencies
