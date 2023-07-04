@@ -29,6 +29,7 @@ help:
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
 clean-build: ## remove build artifacts
+	rm -fr '*.so'
 	rm -fr build/
 	rm -fr setup.py
 	rm -fr dist/
@@ -94,3 +95,6 @@ dist: clean-build clean-pyc bump ## builds source and wheel package
 install: clean-build clean-pyc ## install the package to the active Python's site-packages
 	# pip install dist/*.whl
 	poetry install --verbose # not working for some reason -> not copying source files
+
+all: install dist
+	c++ --version  # default compile method (not needed but here for the IDE)
