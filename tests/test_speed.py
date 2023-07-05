@@ -2,7 +2,8 @@ import os
 from time import perf_counter
 import unittest
 
-from pydantic import BaseModel, BaseSettings
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings
 import pytest
 
 import cornflakes
