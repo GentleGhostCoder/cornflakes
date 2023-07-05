@@ -1,7 +1,22 @@
+ci:
+    skip:
+        [
+            black,
+            check-added-large-files,
+            check-toml,
+            check-yaml,
+            end-of-file-fixer,
+            trailing-whitespace-fixer,
+            clang-format,
+            cpplint,
+            cppcheck,
+            pyupgrade,
+        ]
+
 repos:
     - repo: https://github.com/astral-sh/ruff-pre-commit
       # Ruff version. TODO: remove flake8 in future
-      rev: "v0.0.276"
+      rev: "v0.0.277"
       hooks:
           - id: ruff
     - repo: https://github.com/psf/black
