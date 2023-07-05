@@ -13,7 +13,7 @@ def config_group(
     chain_files: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
-) -> Union[Union[ConfigGroup, Any], Callable[..., Union[ConfigGroup, Any]]]:
+) -> Union[ConfigGroup, Callable[..., ConfigGroup]]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
     :param config_cls: Config class

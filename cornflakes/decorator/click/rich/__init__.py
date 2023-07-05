@@ -66,4 +66,14 @@ def group_group(self, name: Optional[str], cmd: Union[Group, RichGroup, Any] = N
     return wrapper
 
 
-__all__ = ["RichConfig", "RichGroup", "RichCommand", "RichArg", "command", "group", "argument", "group_command"]
+__all__ = [
+    "RichConfig",
+    "RichGroup",
+    "RichCommand",
+    "RichArg",
+    "command",
+    "group",
+    "argument",
+    "group_group",
+    "group_command",
+]

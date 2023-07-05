@@ -29,6 +29,7 @@ help:
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
 clean-build: ## remove build artifacts
+	rm -fr '*.so'
 	rm -fr build/
 	rm -fr setup.py
 	rm -fr dist/
@@ -81,8 +82,19 @@ preview: docs
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
-bump:
-	poetry version $(git describe --tags --abbrev=0)
+bump-patch:
+	cornflakes bump "patch"
+
+bump-minor:
+	cornflakes bump "minor"
+
+bump-major:
+	cornflakes bump "major"
+
+bump: bump-patch # default
+
+update:
+	cornflakes update
 
 publish: dist ## package and upload a release
 	poetry publish
@@ -93,3 +105,6 @@ dist: clean-build clean-pyc bump ## builds source and wheel package
 install: clean-build clean-pyc ## install the package to the active Python's site-packages
 	# pip install dist/*.whl
 	poetry install --verbose # not working for some reason -> not copying source files
+
+all: install dist
+	c++ --version  # default compile method (not needed but here for the IDE)

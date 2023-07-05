@@ -73,18 +73,19 @@ def click_cli(  # noqa: C901
             return w_callback
 
         module = getfile(w_callback)
+
+        if hasattr(w_callback, "__module__"):
+            module = w_callback.__module__.split(".", 1)[0]
+            if module != "__main__":
+                __version = version(module)
+
         if as_command:
-            cli: Union[BaseCommand, Command, RichCommand] = command(module.split(".", 1)[0], config=config)(w_callback)
+            cli: Union[BaseCommand, Command, RichCommand] = command(module, config=config)(w_callback)
         else:
-            cli: Union[BaseCommand, Group, RichGroup] = group(module.split(".", 1)[0], config=config)(w_callback)
+            cli: Union[BaseCommand, Group, RichGroup] = group(module, config=config)(w_callback)
         if config.VERSION_INFO:
             name = w_callback.__qualname__
             __version = "0.0.1"
-
-            if hasattr(w_callback, "__module__"):
-                module = w_callback.__module__.split(".", 1)[0]
-                if module != "__main__":
-                    __version = version(module)
 
             version_args = {
                 "prog_name": name,

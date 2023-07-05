@@ -121,6 +121,9 @@ def precommit(session: Session) -> None:
         "pre-commit-hooks",
         "compiledb",
         "pyupgrade",
+        "cpplint",
+        "clang-format",
+        "clang-tidy",
     )
     session.run("pre-commit", *args)
     if args and args[0] == "install":
@@ -162,6 +165,7 @@ def pytype(session):
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("pip", "install", "pydantic[dotenv]")
+    session.run("pip", "install", "pydantic-settings")
     session.run("poetry", "install")
     # session.run("poetry", "build")
     # version = re.sub(".*-", "", session.name.replace("pytype-", "")).replace(".", "")
@@ -244,7 +248,7 @@ def xdoctest(session: Session) -> None:
     # file = list(Path("dist").glob(search))[0].name
     # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("xdoctest[colors]")
-    session.run("python", "-m", "xdoctest", package, *args)
+    session.run("xdoctest", package, *args)
 
 
 @session(name="docs-build", python=python_versions)

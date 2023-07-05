@@ -15,6 +15,7 @@ def setup_logging(  # noqa: C901
     env_key: str = "LOG_CFG",
     force: bool = False,
     loggers: Optional[List[str]] = None,
+    handlers: Optional[List[str]] = None,
     **kwargs,
 ):
     """Setup logging configuration.
@@ -24,6 +25,7 @@ def setup_logging(  # noqa: C901
     :param default_level: Default log-level (Logging.INFO).
     :param env_key: Environment key to use for logging configuration.
     :param loggers: List of loggers to set log-level for.
+    :param handlers: List of handlers to set log-level for.
     :param kwargs: arguments to pass to rich_handler
     """
     if value := os.getenv(env_key, None):
@@ -35,8 +37,11 @@ def setup_logging(  # noqa: C901
             if default_level:
                 if force:
                     for handler_name in config["root"]["handlers"]:
-                        if loggers and handler_name in loggers:
+                        if handlers and handler_name in handlers:
                             config["handlers"][handler_name]["level"] = default_level or logging.root.level
+                    for logger in config["root"]["loggers"]:
+                        if loggers and logger in loggers:
+                            config["loggers"][logger]["level"] = default_level or logging.root.level
                 config["root"]["level"] = default_level or logging.root.level
             logging.config.dictConfig(config)
     else:
@@ -66,8 +71,9 @@ def setup_logging(  # noqa: C901
         for handler in logging.root.handlers:
             if hasattr(handler, "setLevel") and force:
                 handler.setLevel(default_level or logging.root.level)
-        for logger in logging.root.manager.loggerDict.values():
-            if isinstance(logger, logging.Logger) and hasattr(logger, "__cornflakes__"):
+        for logger_name, logger in logging.root.manager.loggerDict.items():
+            if isinstance(logger, logging.Logger) and loggers and logger_name in loggers:
+                logger.disabled = False
                 logger.setLevel(default_level or logging.root.level)
         if isinstance(logging.root, logging.Logger):
             logging.root.setLevel(default_level or logging.root.level)
@@ -99,6 +105,7 @@ def __wrap_class(
     log_level: Optional[int] = None,
 ):
     w_obj.logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__name__}")
+    w_obj.logger.addHandler(logging.root.handlers[0])
     w_obj.logger.__cornflakes__ = True
     w_obj.logger.setLevel(log_level or logging.root.level)
 
@@ -119,6 +126,7 @@ def __wrap_function(
     log_level: Optional[int] = None,
 ):
     logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__qualname__}")
+    logger.addHandler(logging.root.handlers[0])
     logger.__cornflakes__ = True
     logger.setLevel(log_level or logging.root.level)
     if logger.level != logging.DEBUG:

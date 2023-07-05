@@ -9,9 +9,14 @@ from cornflakes.logging.logger import setup_logging
     help="Base logging level is set to logging.DEBUG.",
     is_flag=True,
 )
-def verbose_option(verbose):
+def verbose_option(verbose, self):
     """Default Option for verbose logging."""
-    setup_logging(default_level=logging.DEBUG if verbose else None)
+    setup_logging(
+        default_level=logging.DEBUG if verbose else None,
+        loggers=[logger for logger in logging.root.manager.loggerDict if self.__module__ in logger]
+        if self.__module__
+        else None,
+    )
 
 
 @global_option(

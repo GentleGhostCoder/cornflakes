@@ -1,16 +1,16 @@
-# this cmakelist is optional and not required for build but helps for ide
-# dependencies evaluation.
+# this Cmakelist.txt is optional and not required for c++ development (ide ->
+# autocompletion) dependencies evaluation.
 cmake_minimum_required(VERSION 3.4...3.22)
 project(_cornflakes LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inst/ext)
-# set(DOCS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../docs)
 
-add_subdirectory(${EXT_DIR}/pybind11 [EXCLUDE_FROM_ALL])
+add_subdirectory(${EXT_DIR}/pybind11)
 
-# install(DIRECTORY ${EXT_DIR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+# include_directories(${CMAKE_CURRENT_SOURCE_DIR}/.venv/lib/python3.10/site-packages/pybind11/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/${PYTHON_SITE}/pybind11/include)
 include_directories(${EXT_DIR})
 include_directories(${EXT_DIR}/rapidjson/include/rapidjson)
 include_directories(${CMAKE_SOURCE_DIR}/inst/_cornflakes)

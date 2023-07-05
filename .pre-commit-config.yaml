@@ -1,7 +1,22 @@
+ci:
+    skip:
+        [
+            black,
+            check-added-large-files,
+            check-toml,
+            check-yaml,
+            end-of-file-fixer,
+            trailing-whitespace,
+            clang-format,
+            cpplint,
+            cppcheck,
+            pyupgrade,
+        ]
+
 repos:
-    - repo: https://github.com/charliermarsh/ruff-pre-commit
+    - repo: https://github.com/astral-sh/ruff-pre-commit
       # Ruff version. TODO: remove flake8 in future
-      rev: "v0.0.270"
+      rev: "v0.0.277"
       hooks:
           - id: ruff
     - repo: https://github.com/psf/black
@@ -47,6 +62,31 @@ repos:
             language: system
             types: [text]
             stages: [commit, push, manual]
+    - repo: https://github.com/pocc/pre-commit-hooks
+      rev: v1.3.5
+      hooks:
+          - id: clang-format
+            args: [--style=Google]
+          - id: cpplint
+            args:
+                [
+                    --exclude=inst/ext/*,
+                    --exclude=inst/_cornflakes/datetime_utils.hpp,
+                    --exclude=cmake-build-debug/*,
+                    --filter=-build/c++11,
+                ]
+          - id: cppcheck
+            name: cppcheck
+            entry: cppcheck
+            language: system
+            args:
+                [
+                    inst/cornflakes,
+                    "--suppress=syntaxError:inst/_cornflakes/datetime_utils.hpp",
+                    -DVERSION_INFO=$VERSION_INFO,
+                    --std=c++17,
+                ]
+            files: \.(c|h|cpp)$
     - repo: https://github.com/pycqa/flake8
       rev: "6.0.0" # pick a git hash / tag to point to
       hooks:
@@ -58,7 +98,7 @@ repos:
             require_serial: true
             additional_dependencies: [Flake8-pyproject]
     - repo: https://github.com/PyCQA/autoflake
-      rev: v2.1.1
+      rev: v2.2.0
       hooks:
           - id: autoflake
             name: autoflake
@@ -72,7 +112,7 @@ repos:
                 - "--remove-duplicate-keys"
                 - "--remove-unused-variables"
     - repo: https://github.com/asottile/pyupgrade
-      rev: v3.4.0
+      rev: v3.8.0
       hooks:
           - id: pyupgrade
             name: pyupgrade
@@ -103,33 +143,8 @@ repos:
             additional_dependencies: [pyyaml]
             types: [file]
             files: (\.cmake|CMakeLists.txt)(.in)?$
-    - repo: https://github.com/bmorcos/pre-commit-hooks-cpp
-      rev: 9a5aa38207bf557961110d6a4f7e3a9d352911f9
-      hooks:
-          - id: clang-format
-            args: [--style=Google]
-          - id: cpplint
-            args:
-                [
-                    --exclude=inst/ext/*,
-                    --exclude=inst/_cornflakes/datetime_utils.hpp,
-                    --exclude=cmake-build-debug/*,
-                    --filter=-build/c++11,
-                ]
-          - id: cppcheck
-            name: cppcheck
-            entry: cppcheck
-            language: system
-            args:
-                [
-                    inst/cornflakes,
-                    "--suppress=syntaxError:inst/_cornflakes/datetime_utils.hpp",
-                    -DVERSION_INFO=$VERSION_INFO,
-                    --std=c++17,
-                ]
-            files: \.(c|h|cpp)$
     - repo: https://github.com/sirosen/check-jsonschema
-      rev: 0.23.0
+      rev: 0.23.2
       hooks:
           - id: check-github-actions
           - id: check-github-workflows
