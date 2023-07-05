@@ -165,6 +165,7 @@ def pytype(session):
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("pip", "install", "pydantic[dotenv]")
+    session.run("pip", "install", "pydantic-settings")
     session.run("poetry", "install")
     # session.run("poetry", "build")
     # version = re.sub(".*-", "", session.name.replace("pytype-", "")).replace(".", "")
