@@ -6,7 +6,7 @@ ci:
             check-toml,
             check-yaml,
             end-of-file-fixer,
-            trailing-whitespace-fixer,
+            trailing-whitespace,
             clang-format,
             cpplint,
             cppcheck,
