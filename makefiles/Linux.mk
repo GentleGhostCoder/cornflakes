@@ -82,9 +82,19 @@ preview: docs
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
-bump:
-	scripts/bump_version.sh $(shell git describe --tags --abbrev=0)
-	poetry version $(shell git describe --tags --abbrev=0)
+bump-patch:
+	cornflakes bump "patch"
+
+bump-minor:
+	cornflakes bump "minor"
+
+bump-major:
+	cornflakes bump "major"
+
+bump: bump-patch # default
+
+update:
+	cornflakes update
 
 publish: dist ## package and upload a release
 	poetry publish

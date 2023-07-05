@@ -22,7 +22,7 @@ def config(
     chain_files: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
-) -> Union[Union[Config, ConfigGroup, Any], Callable[..., Union[Config, ConfigGroup, Any]]]:
+) -> Union[Union[Config, ConfigGroup], Callable[..., Union[Config, ConfigGroup]]]:
     """Config decorator to parse Ini Files and implements config loader methods to config-classes.
 
     :param config_cls: Config class

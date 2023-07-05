@@ -170,7 +170,7 @@ def dataclass(
     validate: bool = False,
     updatable: bool = False,
     **kwargs,
-) -> Union[DataclassProtocol, Callable[..., DataclassProtocol], Any]:
+) -> Union[DataclassProtocol, Callable[..., DataclassProtocol]]:
     """Wrapper around built-in dataclasses dataclass."""
 
     def wrapper(w_cls: Type[Any]) -> Union[DataclassProtocol, Any]:

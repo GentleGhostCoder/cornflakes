@@ -4,7 +4,7 @@ from click.testing import CliRunner
 import pytest
 
 from cornflakes import config
-from cornflakes.__main__ import main
+from cornflakes.cli import cli
 from cornflakes.decorator.click import auto_option
 
 
@@ -37,7 +37,7 @@ def some_command(config, test_option, test_arg):
 
 some_group.add_command(some_command)
 
-main.add_command(some_group)
+cli.add_command(some_group)
 
 
 @pytest.fixture
@@ -48,6 +48,6 @@ def runner() -> CliRunner:
 
 def test_main_succeeds(runner: CliRunner) -> None:
     """It exits with a status code of zero."""
-    result = runner.invoke(main, ["test", "test_command"])
+    result = runner.invoke(cli, ["test", "test_command"])
     if result.exc_info:
         assert result.exc_info[0] == TypeError or result.exc_info[0] == DeprecationWarning or result.exit_code == 0

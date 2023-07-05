@@ -4,8 +4,10 @@ from typing import Dict, cast
 from packaging import version
 import toml
 
+from cornflakes.cli import cli
 
-def update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:
+
+def _update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:
     def update(deps: Dict, content: str) -> str:
         for key in deps:
             v = deps[key]
@@ -24,7 +26,9 @@ def update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:
     return c
 
 
-def main() -> None:
+@cli.command("update")
+def update_deps() -> None:
+    """Update dependencies to latest version."""
     with open("./pyproject.toml") as fr:
         content = fr.read()
     toml_dict = cast(Dict, toml.loads(content))
@@ -36,7 +40,7 @@ def main() -> None:
         if len(module_vals) != 2:
             continue
         name, latest_version = module_vals
-        content = update_deps(name, latest_version, toml_dict, content)
+        content = _update_deps(name, latest_version, toml_dict, content)
 
     if content:
         with open("./pyproject.toml", "w") as fw:
@@ -47,4 +51,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    update_deps()
