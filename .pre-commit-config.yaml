@@ -1,5 +1,5 @@
 ci:
-    skip:
+    skip: # cant resolve executable in pre-commit.ci Service
         [
             black,
             check-added-large-files,
