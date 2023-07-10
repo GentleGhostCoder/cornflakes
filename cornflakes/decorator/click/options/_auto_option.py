@@ -7,7 +7,7 @@ from click import Command, Group, option
 
 from cornflakes.decorator.click.rich import RichCommand, RichGroup
 from cornflakes.decorator.config import is_config
-from cornflakes.decorator.dataclass.helper import dataclass_fields
+from cornflakes.decorator.dataclass.helper import dataclass_fields, dc_slot_get_default, dc_slot_missing_default
 from cornflakes.decorator.types import Config
 
 F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
@@ -62,10 +62,18 @@ def auto_option(config: Union[Config, Any], config_file: bool = False, **options
 
         configs.update(options)
 
-        for slot_name in config.__dataclass_fields__.keys():
-            wrapper = option(
-                f"--{slot_name.replace('_', '-')}", **configs.get(slot_name, {"help": f"value for {slot_name}"})
-            )(wrapper)
+        for slot_name, slot in config.__dataclass_fields__.items():
+            option_args = configs.get(slot_name, {})
+            if "help" not in option_args:
+                option_args["help"] = f"value for {slot_name}"
+            if "default" not in option_args:
+                if dc_slot_missing_default(slot):
+                    option_args["required"] = "True"
+                else:
+                    option_args["default"] = dc_slot_get_default(slot)
+            if "type" not in option_args:
+                option_args["type"] = slot.type
+            wrapper = option(f"--{slot_name.replace('_', '-')}", **option_args)(wrapper)
 
         if config_file:
             wrapper = option("-cfg", "--config-file", **{"help": "Config file path", "type": str})(wrapper)

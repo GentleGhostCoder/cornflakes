@@ -2,10 +2,7 @@ from dataclasses import Field as DataclassField
 from dataclasses import MISSING
 from typing import Any, Callable, List, Optional, Union
 
-from cornflakes.decorator.types import WITHOUT_DEFAULT, _WithoutDefault
-
-_MISSING_TYPE = type(MISSING)
-
+from cornflakes.decorator.types import MISSING_TYPE, WITHOUT_DEFAULT
 
 # TODO: add init_var_trigger -> like alias to call the validator method and pass the values
 
@@ -54,15 +51,15 @@ class Field(DataclassField):
 
     def __init__(
         self,
-        default: Union[_MISSING_TYPE, Any] = MISSING,
-        default_factory: Union[_MISSING_TYPE, _WithoutDefault, Callable[..., Any]] = MISSING,
+        default: Union[MISSING_TYPE, Any] = MISSING,
+        default_factory: Union[MISSING_TYPE, WITHOUT_DEFAULT, Callable[..., Any]] = MISSING,
         init: Optional[bool] = True,
         repr: Optional[bool] = True,
-        hash: Optional[Union[bool, _MISSING_TYPE]] = None,
+        hash: Optional[Union[bool, MISSING_TYPE]] = None,
         compare: Optional[bool] = True,
         metadata: Any = None,
-        kw_only: Union[_MISSING_TYPE, bool] = MISSING,
-        validator: Optional[Union[Callable[[str], Any], _MISSING_TYPE]] = MISSING,
+        kw_only: Union[MISSING_TYPE, bool] = MISSING,
+        validator: Optional[Union[Callable[[str], Any], MISSING_TYPE]] = MISSING,
         alias: Optional[Union[List[str], str]] = None,
         ignore: Optional[bool] = False,
         title: Optional[str] = None,
@@ -271,15 +268,15 @@ class Field(DataclassField):
 
 def field(
     *,
-    default: Union[_MISSING_TYPE, Any] = MISSING,
-    default_factory: Union[_MISSING_TYPE, _WithoutDefault, Callable[..., Any]] = MISSING,
+    default: Union[MISSING_TYPE, Any] = MISSING,
+    default_factory: Union[MISSING_TYPE, WITHOUT_DEFAULT, Callable[..., Any]] = MISSING,
     init: Optional[bool] = True,
     repr: Optional[bool] = True,
-    hash: Optional[Union[bool, _MISSING_TYPE]] = None,
+    hash: Optional[Union[bool, MISSING_TYPE]] = None,
     compare: Optional[bool] = True,
     metadata: Any = None,
-    kw_only: Union[_MISSING_TYPE, bool] = MISSING,
-    validator: Optional[Union[Callable[[str], Any], _MISSING_TYPE]] = MISSING,
+    kw_only: Union[MISSING_TYPE, bool] = MISSING,
+    validator: Optional[Union[Callable[[str], Any], MISSING_TYPE]] = MISSING,
     alias: Optional[Union[List[str], str]] = None,
     ignore: Optional[bool] = False,
     title: Optional[str] = None,

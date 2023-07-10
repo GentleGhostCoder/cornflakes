@@ -4,7 +4,15 @@ import re
 from typing import Any, Dict, Optional, Union
 
 from cornflakes.decorator.dataclass._field import Field as CField
-from cornflakes.decorator.types import Config, ConfigArgument, ConfigGroup, DataclassProtocol, Loader
+from cornflakes.decorator.types import (
+    MISSING_TYPE,
+    WITHOUT_DEFAULT,
+    Config,
+    ConfigArgument,
+    ConfigGroup,
+    DataclassProtocol,
+    Loader,
+)
 
 
 def is_config(cls):
@@ -77,6 +85,21 @@ def is_allow_empty(cls):
 def pass_section_name(cls):
     """Method to return flag that the config has section_name in slots, so that the section title is passed in."""
     return "section_name" in cls.__dataclass_fields__.keys()
+
+
+def dc_slot_missing_default(slot):
+    """Cheks if the dataclass has a default / default_factory."""
+    return slot.default in (MISSING_TYPE, WITHOUT_DEFAULT) and slot.default_factory in (MISSING_TYPE, WITHOUT_DEFAULT)
+
+
+def dc_slot_get_default(slot):
+    """Method to get the default value of the dataclass."""
+    return slot.default if slot.default not in (MISSING_TYPE, WITHOUT_DEFAULT) else slot.default_factory
+
+
+def get_default_value(cls):
+    """Method to get the default value of the dataclass."""
+    # if any of dataclass_fields values has for def
 
 
 def get_default_loader(files: Optional[list] = None):

@@ -1,3 +1,4 @@
+from dataclasses import MISSING
 from enum import Enum
 from typing import Any, Callable, ClassVar, Dict, List, Optional, Protocol, TypeVar, Union, runtime_checkable
 
@@ -9,6 +10,7 @@ class _WithoutDefault:
 
 
 WITHOUT_DEFAULT = _WithoutDefault()
+MISSING_TYPE = type(MISSING)
 
 
 class Loader(Enum):
