@@ -9,7 +9,7 @@ class _WithoutDefault:
     pass
 
 
-WITHOUT_DEFAULT = _WithoutDefault()
+WITHOUT_DEFAULT = type(_WithoutDefault())
 MISSING_TYPE = type(MISSING)
 
 
