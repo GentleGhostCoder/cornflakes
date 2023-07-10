@@ -20,6 +20,8 @@ def _parse_config_list(cfg, cfg_name: str, title: str):
             if is_config(sub_cfg) and (hasattr(sub_cfg, "section_name") or hasattr(sub_cfg, "__config_sections__")):
                 # if sub_cfg contains a section_name, use it instead of the default
                 sub_cfg_name = getattr(sub_cfg, "section_name", sub_cfg.__config_sections__)
+                if isinstance(sub_cfg_name, (list, tuple)):
+                    sub_cfg_name = sub_cfg_name[0]
             _ini_bytes.extend(_parse_config_list(sub_cfg, sub_cfg_name, title))
         return _ini_bytes
     else:
