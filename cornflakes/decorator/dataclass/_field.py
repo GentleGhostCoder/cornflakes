@@ -1,6 +1,6 @@
 from dataclasses import Field as DataclassField
 from dataclasses import MISSING
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, List, Optional, Type, Union
 
 from cornflakes.decorator.types import MISSING_TYPE, WITHOUT_DEFAULT
 
@@ -52,7 +52,7 @@ class Field(DataclassField):
     def __init__(
         self,
         default: Union[MISSING_TYPE, Any] = MISSING,
-        default_factory: Union[MISSING_TYPE, WITHOUT_DEFAULT, Callable[..., Any]] = MISSING,
+        default_factory: Union[MISSING_TYPE, Type[WITHOUT_DEFAULT], Callable[..., Any]] = MISSING,
         init: Optional[bool] = True,
         repr: Optional[bool] = True,
         hash: Optional[Union[bool, MISSING_TYPE]] = None,
@@ -269,7 +269,7 @@ class Field(DataclassField):
 def field(
     *,
     default: Union[MISSING_TYPE, Any] = MISSING,
-    default_factory: Union[MISSING_TYPE, WITHOUT_DEFAULT, Callable[..., Any]] = MISSING,
+    default_factory: Union[MISSING_TYPE, Type[WITHOUT_DEFAULT], Callable[..., Any]] = MISSING,
     init: Optional[bool] = True,
     repr: Optional[bool] = True,
     hash: Optional[Union[bool, MISSING_TYPE]] = None,
