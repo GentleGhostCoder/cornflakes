@@ -42,10 +42,6 @@ def create_group_loader(cls) -> Callable[..., Union[ConfigGroup, Any]]:
         if not files:
             files = cls.__config_files__
 
-        # if not config_dict:
-        #     config_dict = OrderedDict(loader({None: files}, eval_env=eval_env))
-        #     print(config_dict)
-        # logging.debug(f"Read config with sections: {config_dict.keys()}")
         for slot_class in list(getattr(cls, "__annotations__", {}).values())[len(slot_args) :]:
             if is_config_list(slot_class):
                 slot_class = slot_class.__args__[0]

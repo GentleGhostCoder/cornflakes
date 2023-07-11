@@ -55,8 +55,11 @@ There are other useful methods in the base of the module that are generally usef
 Short Term RoadMap:
 ~~~~~~~~~~~~~~~~~~~~
 
+- Change Code Annotations
+    - remove Any annotations if possible
+    - change Protocol Annotations to specific type classes
 - Enrich json methods
-- Fix / Test the to_<file-format> Methods
+- Fix / Test the to_<file-format> Methods (specially yaml)
 
 Development
 -----------

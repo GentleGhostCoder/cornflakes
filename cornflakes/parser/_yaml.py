@@ -1,4 +1,3 @@
-import collections.abc
 from os import environ
 from os.path import abspath, expanduser
 from typing import Any, Dict, List, Optional, Type, Union, cast
@@ -6,14 +5,7 @@ from typing import Any, Dict, List, Optional, Type, Union, cast
 import yaml
 from yaml import SafeLoader, UnsafeLoader
 
-
-def _update(d, u):
-    for k, v in u.items():
-        if isinstance(v, collections.abc.Mapping):
-            d[k] = _update(d.get(k, {}), v)
-        else:
-            d[k] = v
-    return d
+from cornflakes.common import recursive_update
 
 
 def _get_updated_key(config: Dict, values: List[str], defaults: Dict):
@@ -53,15 +45,15 @@ def _get_all_sections(
     for section_key, section_names in sections.items():
         if not section_key:
             if isinstance(section_names, str):
-                _update(new_config, _get_section(config.get(section_names, {}), keys, defaults))
+                recursive_update(new_config, _get_section(config.get(section_names, {}), keys, defaults))
                 continue
             for section in section_names:
-                _update(new_config, _get_section(config.get(section, {}), keys, defaults))
+                recursive_update(new_config, _get_section(config.get(section, {}), keys, defaults))
         if isinstance(section_names, str):
-            _update(new_config, {section_key: _get_section(config.get(section_names, {}), keys, defaults)})
+            recursive_update(new_config, {section_key: _get_section(config.get(section_names, {}), keys, defaults)})
             continue
         for section in section_names:
-            _update(new_config, {section_key: _get_section(config.get(section, {}), keys, defaults)})
+            recursive_update(new_config, {section_key: _get_section(config.get(section, {}), keys, defaults)})
     return new_config
 
 
@@ -138,18 +130,18 @@ def yaml_load(
     for file_key, file_names in files.items():
         if not file_key:
             if isinstance(file_names, str):
-                _update(config, _yaml_read(file_names, sections, keys, defaults, loader))
+                recursive_update(config, _yaml_read(file_names, sections, keys, defaults, loader))
                 return config
 
             for file in file_names:
-                _update(config, _yaml_read(file, sections, keys, defaults, loader))
+                recursive_update(config, _yaml_read(file, sections, keys, defaults, loader))
                 return config
 
         if isinstance(file_names, str):
-            _update(config, {file_key: _yaml_read(file_names, sections, keys, defaults, loader)})
+            recursive_update(config, {file_key: _yaml_read(file_names, sections, keys, defaults, loader)})
             return config
 
         for file in file_names:
-            _update(config, {file_key: _yaml_read(file, sections, keys, defaults, loader)})
+            recursive_update(config, {file_key: _yaml_read(file, sections, keys, defaults, loader)})
 
     return config

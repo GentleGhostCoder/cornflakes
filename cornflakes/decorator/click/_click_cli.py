@@ -79,6 +79,8 @@ def click_cli(  # noqa: C901
             if module != "__main__":
                 __version = version(module)
 
+        module = module.replace("_", "-")
+
         if as_command:
             cli: Union[BaseCommand, Command, RichCommand] = command(module, config=config)(w_callback)
         else:

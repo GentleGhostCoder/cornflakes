@@ -122,6 +122,20 @@ class DataclassProtocol(Protocol):
         """
         ...
 
+    def validate_kwargs(self, validate=False, **kwargs) -> Dict[str, Any]:
+        """Validate kwargs.
+
+        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.validate_dataclass_kwargs`.
+        """
+        ...
+
+    def check_kwargs(self, validate=False, **kwargs) -> Dict[str, Any]:
+        """Check dataclass kwargs.
+
+        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.check_dataclass_kwargs`.
+        """
+        ...
+
 
 @runtime_checkable
 class Config(Protocol):
@@ -192,6 +206,20 @@ class Config(Protocol):
         """Parse config to ini bytes.
 
         Method implemented in :meth:`cornflakes.decorator.config.ini.to_ini_bytes`.
+        """
+        ...
+
+    def validate_kwargs(self, validate=False, **kwargs) -> Dict[str, Any]:
+        """Validate kwargs.
+
+        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.validate_dataclass_kwargs`.
+        """
+        ...
+
+    def check_kwargs(self, validate=False, **kwargs) -> Dict[str, Any]:
+        """Check dataclass kwargs.
+
+        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.check_dataclass_kwargs`.
         """
         ...
 
@@ -268,6 +296,20 @@ class ConfigGroup(Protocol):
         """Parse config to ini bytes.
 
         Method implemented in :meth:`cornflakes.decorator.config.ini.to_ini_bytes`.
+        """
+        ...
+
+    def validate_kwargs(self, validate=False, **kwargs) -> Dict[str, Any]:
+        """Validate kwargs.
+
+        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.validate_dataclass_kwargs`.
+        """
+        ...
+
+    def check_kwargs(self, validate=False, **kwargs) -> Dict[str, Any]:
+        """Check dataclass kwargs.
+
+        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.check_dataclass_kwargs`.
         """
         ...
 

@@ -43,7 +43,6 @@ class TestConfigGeneration(unittest.TestCase):
         self.assertEqual(generated_config_module, defined_config_module)
 
         from tests.configs.default import MainConfig
-        from tests.configs.sub_config import SubConfigClass
 
         self.assertEqual(
             MainConfig.from_file().to_dict(),

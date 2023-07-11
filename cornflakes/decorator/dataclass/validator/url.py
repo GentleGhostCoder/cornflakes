@@ -74,15 +74,16 @@ class AnyUrl:
                 else ""
             )
             port = f":{self.port or parsed.port}" if self.port or parsed.port else ""
-            hostname = self.hostname if self.hostname else parsed.hostname
+            hostname = self.hostname or parsed.hostname
             self.netloc = f"{login}{hostname}{port}"
         parsed = urlparse(to_tuple(self))
         self.query_args.update(parse_qs(parsed.query))
         self.__init_parsed(parsed, overwrite=True)
-        tld = self.hostname[::-1].split(".", 1)[0][::-1]
-        if tld in VALID_ZONES:
-            self.tld = tld
-        self.valid = validators.url(self.hostname)
+        if self.hostname:
+            tld = self.hostname[::-1].split(".", 1)[0][::-1]
+            if tld in VALID_ZONES:
+                self.tld = tld
+        self.valid = validators.url(self.hostname or "")
         self.token = self.token or self.password or self.username
 
     def __str__(self) -> str:

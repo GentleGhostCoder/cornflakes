@@ -49,7 +49,7 @@ def create_file_loader(  # noqa: C901
         if not config and allow_empty:
             return
         config.update(cls_kwargs)
-        error_args = [key for key in config if key not in dataclass_fields(cls)]
+        error_args = [key for key in config if key not in [*dataclass_fields(cls)]]
         if error_args:
             logging.debug(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
             logging.debug(f"Please check Args: {error_args}")
@@ -63,14 +63,14 @@ def create_file_loader(  # noqa: C901
         return {
             section: config
             for section, config in config_dict.items()
-            if not any([True for key in required_keys if key not in config.keys()])
+            if not any(True for key in required_keys if key not in config.keys())
         }
 
     def _check_any_key_in_fields(config_dict):
         return {
             section: config
             for section, config in config_dict.items()
-            if any([key in dataclass_fields(cls).keys() for key in config.keys()])
+            if any(key in dataclass_fields(cls).keys() for key in config.keys())
         }
 
     def _check_config_dict(config_dict):
@@ -153,10 +153,10 @@ def create_file_loader(  # noqa: C901
                         config_dict[f"{file_name}:{section_name or normalized_class_name(cls)}"] = config
                 config_dict = _check_config_dict(config_dict)
 
-            logging.debug(f"Read config with sections: {config_dict.keys()}")
+            logging.debug(f"Read config with sections: {list(config_dict.keys())}")
 
         regex = f'({"|".join(sections) if isinstance(sections, list) else sections or ""})'
-        logging.debug(f"Load all configs that mach **{regex}**")
+        logging.debug(f"Load all configs that match regex: `{regex}`")
 
         config_dict = {
             section: config

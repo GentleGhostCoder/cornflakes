@@ -21,6 +21,7 @@ class RichCommand(Command):
     ignore_unknown_options = False
     name = ""
     context_settings: dict
+    parent = None
 
     def callback(self):
         """Callback method with is wrapped over the command."""

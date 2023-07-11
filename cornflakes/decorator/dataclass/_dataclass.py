@@ -1,3 +1,4 @@
+import contextlib
 from dataclasses import dataclass as new_dataclass
 from dataclasses import fields, is_dataclass
 from typing import Any, Callable, Optional, Type, Union, cast
@@ -6,8 +7,9 @@ from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator._indexer import is_index
 from cornflakes.decorator.config.ini import to_ini, to_ini_bytes
 from cornflakes.decorator.config.yaml import to_yaml, to_yaml_bytes
-from cornflakes.decorator.dataclass._enforce_types import enforce_types as enforce
+from cornflakes.decorator.dataclass._enforce_types import enforce_types
 from cornflakes.decorator.dataclass._field import Field
+from cornflakes.decorator.dataclass._validate import check_dataclass_kwargs, validate_dataclass_kwargs
 from cornflakes.decorator.dataclass.helper import dict_factory as d_factory
 from cornflakes.decorator.dataclass.helper import tuple_factory as t_factory
 from cornflakes.decorator.types import DataclassProtocol
@@ -56,7 +58,7 @@ def to_tuple(self) -> Any:  # noqa: C901
     dc_fields = fields(self)
     if not (
         isinstance(new_tuple, (list, tuple))
-        or any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields])
+        or any(is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields)
         if dc_fields
         else True
     ):
@@ -142,7 +144,7 @@ def to_dict(self) -> Any:
     dc_fields = fields(self)
     if not (
         isinstance(new_dict, dict)
-        or any([is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields])
+        or any(is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields)
         if dc_fields
         else True
     ):
@@ -153,7 +155,7 @@ def to_dict(self) -> Any:
             new_dict.update({f.name: value})
         if is_dataclass(value):
             new_dict.update({f.name: value.to_dict()})
-        if isinstance(value, list) or isinstance(value, tuple):
+        if isinstance(value, (list, tuple)):
             value = list(value)  # if tuple cast  to list
             for idx, sub_value in enumerate(value):
                 if is_index(sub_value):
@@ -172,6 +174,7 @@ def dataclass(
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    skip_missing: bool = False,
     **kwargs,
 ) -> Union[DataclassProtocol, Callable[..., DataclassProtocol]]:
     """Wrapper around built-in dataclasses dataclass."""
@@ -204,21 +207,20 @@ def dataclass(
         dc_cls.to_yaml_bytes = to_yaml_bytes
         dc_cls.to_ini_bytes = to_ini_bytes
 
+        dc_cls.validate_kwargs = classmethod(validate_dataclass_kwargs)
+        dc_cls.check_kwargs = classmethod(check_dataclass_kwargs)
+
         if updatable and not kwargs.get("frozen", False):
 
             def _update(self, new):
                 for key, value in new.items():
-                    try:
+                    with contextlib.suppress(AttributeError):
                         setattr(self, key, value)
-                    except AttributeError:
-                        pass
 
             dc_cls.update = _update
 
         if validate:
-            dc_cls = enforce(dc_cls, validate)
+            dc_cls = enforce_types(dc_cls, validate=validate)
         return cast(DataclassProtocol, dc_cls)
 
-    if cls:
-        return wrapper(cls)
-    return wrapper
+    return wrapper(cls) if cls else wrapper
