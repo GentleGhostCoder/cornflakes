@@ -5,6 +5,7 @@ from os import environ
 from typing import Any, Callable
 
 from _cornflakes import eval_type
+
 from cornflakes.common import check_type, extract_var_names
 from cornflakes.decorator.dataclass.helper import dataclass_fields
 from cornflakes.decorator.types import WITHOUT_DEFAULT
