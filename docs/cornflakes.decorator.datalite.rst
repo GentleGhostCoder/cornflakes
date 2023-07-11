@@ -52,6 +52,14 @@ cornflakes.decorator.datalite.migrations module
    :undoc-members:
    :show-inheritance:
 
+cornflakes.decorator.datalite.type\_mapping module
+--------------------------------------------------
+
+.. automodule:: cornflakes.decorator.datalite.type_mapping
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

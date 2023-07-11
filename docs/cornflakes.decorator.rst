@@ -15,6 +15,14 @@ Subpackages
 Submodules
 ----------
 
+cornflakes.decorator.string\_builder module
+-------------------------------------------
+
+.. automodule:: cornflakes.decorator.string_builder
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cornflakes.decorator.types module
 ---------------------------------
 

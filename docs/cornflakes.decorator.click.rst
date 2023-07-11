@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   cornflakes.decorator.click.helper
    cornflakes.decorator.click.options
    cornflakes.decorator.click.rich
 

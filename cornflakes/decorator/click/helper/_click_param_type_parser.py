@@ -10,6 +10,8 @@ from cornflakes.decorator.types import MISSING_TYPE, WITHOUT_DEFAULT
 
 
 def click_param_type_parser(config):
+    """Create click param type parser."""
+
     def create_click_param_type(type_class):
         if not isclass(type_class):
             type_class = get_actual_type(type_class)
