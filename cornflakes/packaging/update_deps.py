@@ -9,19 +9,20 @@ from cornflakes.cli import cli
 
 def _update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:
     def update(deps: Dict, content: str) -> str:
-        for key in deps:
-            v = deps[key]
-            if isinstance(v, str) and name.lower() == key.lower() and v[0] in ("~", "^"):
-                current_version = v[1:]
+        for d in deps:
+            v = deps[d]
+            if isinstance(v, str) and name.lower().replace("-", "_") == d.lower().replace("-", "_"):
+                current_version = v[1:].replace("=", "")
                 if version.parse(current_version) < version.parse(latest_version):
                     updated_version_str = f"{v[0]}{latest_version}"
                     content = content.replace(current_version, latest_version)
                     print(f"Updating {name} from {v} to {updated_version_str}")
-                    deps[key] = updated_version_str
+                    deps[d] = updated_version_str
         return content
 
-    c = update(t["tool"]["poetry"]["dependencies"], c)
-    c = update(t["tool"]["poetry"]["dev-dependencies"], c)
+    for key in t["tool"]["poetry"].keys():
+        if key.endswith("dependencies"):
+            c = update(t["tool"]["poetry"][key], c)
 
     return c
 
