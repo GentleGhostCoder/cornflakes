@@ -70,7 +70,6 @@ def _apply_auto_option_config(func, **kwargs):
         config_kwargs[Constants.config_decorator.FILES] = list(
             kwargs.pop(Constants.config_option.CONFIG_FILE_OPTION_PARAM, "")
         )
-        print(config_kwargs[Constants.config_decorator.FILES])
 
     kwargs[passed_key] = getattr(func, Constants.config_option.READ_CONFIG_METHOD, {})(**config_kwargs)
     config_type = get_actual_type(func_params[passed_key].annotation)

@@ -17,7 +17,6 @@ F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, 
 
 
 def _update_options_help(callback, config):
-    print(callback)
     if (
         "__click_params__" in dir(callback)
         and getattr(callback, "__click_params__")

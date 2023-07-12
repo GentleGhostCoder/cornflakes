@@ -6,7 +6,6 @@ from cornflakes.decorator.types import Config, ConfigGroup, Dataclass
 
 def enforce_types(dc_cls: Union[Dataclass, Config, ConfigGroup], validate=False):  # noqa: C901
     """Adds a simple decorator enforce_types that enables enforcing strict typing on a function or dataclass using annotations."""
-    print(dc_cls)
 
     def decorate(func):
         @wrap_kwargs(func)
