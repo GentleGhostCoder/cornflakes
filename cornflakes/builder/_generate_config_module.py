@@ -11,7 +11,7 @@ from typing import Dict, List, Optional, Union
 from cornflakes.common import unquoted_string
 from cornflakes.decorator import field
 from cornflakes.decorator.config import config_files, config_group, is_config
-from cornflakes.decorator.types import ConfigArguments, Loader
+from cornflakes.decorator.types import Constants, Loader
 
 TEMPLATE = '''"""Template Module."""
 from cornflakes import config_group
@@ -44,12 +44,12 @@ def generate_config_module(  # noqa: C901
     ini_config_objects = {}
     imports = []
     extra_imports = []
-    files = kwargs.get(ConfigArguments.files.name, [])
+    files = kwargs.get(Constants.config_decorator.FILES, [])
     files = files if isinstance(files, list) else [files]
     os.environ["CORNFLAKES_GENERATING_CONFIG_MODULE"] = "True"
 
-    if ConfigArguments.files.name not in kwargs:
-        kwargs.update({ConfigArguments.files.name: source_config})
+    if Constants.config_decorator.FILES not in kwargs:
+        kwargs.update({Constants.config_decorator.FILES: source_config})
 
     if not target_module_file:
         target_module_file = f'{source_module.__name__.replace(".", "/")}/default.py'
@@ -76,9 +76,9 @@ def generate_config_module(  # noqa: C901
             imports.append(cfg_name)
             files.extend([file for file in config_files(cfg_class) if file and file not in files])
 
-    if ConfigArguments.filter_function.name in kwargs:
-        filter_function = kwargs.pop(ConfigArguments.filter_function.name)
-        kwargs[ConfigArguments.filter_function.name] = unquoted_string(filter_function.__name__)
+    if Constants.config_decorator.FILTER_FUNCTION in kwargs:
+        filter_function = kwargs.pop(Constants.config_decorator.FILTER_FUNCTION)
+        kwargs[Constants.config_decorator.FILTER_FUNCTION] = unquoted_string(filter_function.__name__)
         extra_imports.append(f"from {filter_function.__module__} import {filter_function.__name__}")
 
     logging.debug(f"Found configs: {imports}")

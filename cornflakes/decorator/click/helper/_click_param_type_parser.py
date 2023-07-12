@@ -4,6 +4,7 @@ from inspect import isclass
 
 from click import Choice, ParamType
 
+from _cornflakes import eval_type
 from cornflakes.common import get_actual_type
 from cornflakes.decorator.dataclass import check_dataclass_kwargs
 from cornflakes.decorator.types import MISSING_TYPE, WITHOUT_DEFAULT
@@ -19,7 +20,9 @@ def click_param_type_parser(config):
         if isinstance(type_class, (list, tuple)):
             if all(isinstance(t, str) for t in type_class):
                 return partial(lambda choices: Choice(choices), choices=type_class)
-            type_class_name = "|".join(getattr(t, "__name__", str(t)) for t in type_class if isinstance(t, type(None)))
+            type_class_name = "|".join(
+                getattr(t, "__name__", str(t)) for t in type_class if t is not type(None)  # noqa: E721
+            )
         elif is_dataclass(type_class):
             type_class_name = f"{type_class.__name__}(**DICT)"
         else:
@@ -30,7 +33,9 @@ def click_param_type_parser(config):
 
             def convert(self, value, param, ctx):
                 if not isinstance(value, (MISSING_TYPE, WITHOUT_DEFAULT)):
-                    check_dataclass_kwargs(config, **{param.name: value}, validate=True)
+                    return check_dataclass_kwargs(config, **{param.name: eval_type(str(value))}, validate=True)[
+                        param.name
+                    ]
 
         return ClickParamType
 

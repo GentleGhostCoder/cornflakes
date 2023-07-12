@@ -1,7 +1,10 @@
 import contextlib
-from dataclasses import dataclass as new_dataclass
+import dataclasses
 from dataclasses import fields, is_dataclass
-from typing import Any, Callable, Optional, Type, Union, cast
+import sys
+from typing import Any, Callable, Literal, Optional, TypeVar, Union, overload
+
+from typing_extensions import dataclass_transform
 
 from cornflakes.decorator._add_dataclass_slots import add_slots
 from cornflakes.decorator._indexer import is_index
@@ -12,7 +15,9 @@ from cornflakes.decorator.dataclass._field import Field
 from cornflakes.decorator.dataclass._validate import check_dataclass_kwargs, validate_dataclass_kwargs
 from cornflakes.decorator.dataclass.helper import dict_factory as d_factory
 from cornflakes.decorator.dataclass.helper import tuple_factory as t_factory
-from cornflakes.decorator.types import DataclassProtocol
+from cornflakes.decorator.types import Dataclass
+
+_T = TypeVar("_T")
 
 
 def _zero_copy_astuple_inner(obj, factory):
@@ -167,38 +172,141 @@ def to_dict(self) -> Any:
     return new_dict
 
 
+if sys.version_info >= (3, 10):
+
+    @dataclass_transform(field_specifiers=(dataclasses.field, Field))
+    @overload
+    def dataclass(
+        *,
+        init: Literal[False] = False,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        validate_on_init: bool | None = None,
+        kw_only: bool = ...,
+        slots: bool = ...,
+        dict_factory: Optional[Callable] = None,
+        tuple_factory: Optional[Callable] = None,
+        eval_env: bool = False,
+        validate: bool = False,
+        updatable: bool = False,
+    ) -> Callable[[type[_T]], Dataclass]:  # type: ignore
+        ...
+
+    @dataclass_transform(field_specifiers=(dataclasses.field, Field))
+    @overload
+    def dataclass(
+        _cls: type[_T],  # type: ignore
+        *,
+        init: Literal[False] = False,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        kw_only: bool = ...,
+        slots: bool = ...,
+        dict_factory: Optional[Callable] = None,
+        tuple_factory: Optional[Callable] = None,
+        eval_env: bool = False,
+        validate: bool = False,
+        updatable: bool = False,
+    ) -> Dataclass:
+        ...
+
+else:
+
+    @dataclass_transform(field_specifiers=(dataclasses.field, Field))
+    @overload
+    def dataclass(
+        *,
+        init: Literal[False] = False,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        dict_factory: Optional[Callable] = None,
+        tuple_factory: Optional[Callable] = None,
+        eval_env: bool = False,
+        validate: bool = False,
+        updatable: bool = False,
+    ) -> Callable[[type[_T]], Dataclass]:  # type: ignore
+        ...
+
+    @dataclass_transform(field_specifiers=(dataclasses.field, Field))
+    @overload
+    def dataclass(
+        _cls: type[_T],  # type: ignore
+        *,
+        init: Literal[False] = False,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        dict_factory: Optional[Callable] = None,
+        tuple_factory: Optional[Callable] = None,
+        eval_env: bool = False,
+        validate: bool = False,
+        updatable: bool = False,
+    ) -> Dataclass:
+        ...
+
+
+@dataclass_transform(field_specifiers=(dataclasses.field, Field))
 def dataclass(
-    cls=None,
+    cls: type[_T] = None,
+    *,
+    init: Literal[False] = True,
+    repr: bool = True,
+    eq: bool = True,
+    order: bool = False,
+    unsafe_hash: bool = False,
+    frozen: bool = False,
+    match_args: bool = True,
+    kw_only: bool = False,
+    slots: bool = False,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
-    skip_missing: bool = False,
     **kwargs,
-) -> Union[DataclassProtocol, Callable[..., DataclassProtocol]]:
+) -> Union[Union[Dataclass, type[_T]], Callable[..., Union[Dataclass, type[_T]]]]:
     """Wrapper around built-in dataclasses dataclass."""
 
-    def wrapper(w_cls: Type[Any]) -> Union[DataclassProtocol, Any]:
+    # if sys.version_info >= (3, 10):
+    #     kwargs = dict(kw_only=kw_only, slots=slots, match_args=match_args)
+    # else:
+    #     kwargs = {}
+
+    def wrapper(w_cls) -> Union[Dataclass, type[_T]]:
         dataclass_fields = {
             obj_name: getattr(w_cls, obj_name)
             for obj_name in dir(w_cls)
             if isinstance(getattr(w_cls, obj_name), Field) and hasattr(getattr(w_cls, obj_name), "alias")
         }
-        has_add_slots = (
-            kwargs.pop("slots", False)
-            if "slots" in kwargs and "slots" not in new_dataclass.__code__.co_varnames
-            else False
+        dc_cls = dataclasses.dataclass(  # type: ignore[call-overload]
+            w_cls,
+            init=init,
+            repr=repr,
+            eq=eq,
+            order=order,
+            unsafe_hash=unsafe_hash,
+            frozen=frozen,
+            **kwargs,
         )
-        dc_cls: Union[DataclassProtocol, Any] = new_dataclass(w_cls, **kwargs)
-        if has_add_slots:
+        if slots:
             dc_cls = add_slots(dc_cls)
         dc_cls.__dataclass_fields__.update(dataclass_fields)
         dc_cls.__dict_factory__ = dict_factory or dict
         dc_cls.__tuple_factory__ = tuple_factory or tuple
         dc_cls.__eval_env__ = eval_env
 
-        dc_cls.__ignored_slots__ = [f.name for f in fields(dc_cls) if getattr(f, "ignore", False)]
+        dc_cls.__ignored_slots__ = [f.name for f in dataclasses.fields(dc_cls) if getattr(f, "ignore", False)]
 
         dc_cls.to_dict = to_dict
         dc_cls.to_tuple = to_tuple
@@ -221,6 +329,7 @@ def dataclass(
 
         if validate:
             dc_cls = enforce_types(dc_cls, validate=validate)
-        return cast(DataclassProtocol, dc_cls)
+
+        return dc_cls
 
     return wrapper(cls) if cls else wrapper

@@ -1,7 +1,7 @@
 """Dataclass helper functions used by the custom dataclass decorator."""
 from dataclasses import Field
 import re
-from typing import Any, Dict, Optional, Union
+from typing import Dict, Optional, Union
 
 from cornflakes.decorator.dataclass._field import Field as CField
 from cornflakes.decorator.types import (
@@ -10,7 +10,7 @@ from cornflakes.decorator.types import (
     Config,
     ConfigArgument,
     ConfigGroup,
-    DataclassProtocol,
+    Dataclass,
     Loader,
 )
 
@@ -30,12 +30,12 @@ def config_files(cls) -> ConfigArgument:
     return getattr(cls, "__config_files__", [])
 
 
-def dataclass_fields(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> Dict[str, Union[Field, CField]]:
+def dataclass_fields(cls: Union[Config, ConfigGroup, Dataclass]) -> Dict[str, Union[Field, CField]]:
     """Method to return dataclass fields."""
     return getattr(cls, "__dataclass_fields__", {})
 
 
-def dict_factory(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> Any:
+def dict_factory(cls):
     """Method to return class __dict_factory__."""
     # dict_factory_method = getattr(cls, "__dict_factory__", dict)
     #
@@ -55,7 +55,7 @@ def normalized_class_name(cls):
     return re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
 
 
-def tuple_factory(cls: Union[Config, ConfigGroup, DataclassProtocol, Any]) -> Any:
+def tuple_factory(cls):
     """Method to return class __tuple_factory__."""
     return getattr(cls, "__tuple_factory__", tuple)
 

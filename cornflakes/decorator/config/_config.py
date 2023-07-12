@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, List, Optional, Union, cast
+from typing import Callable, List, Optional, Union
 
 from cornflakes.decorator import Index, funcat
 from cornflakes.decorator.config._config_group import config_group
@@ -8,7 +8,7 @@ from cornflakes.decorator.config.ini import create_ini_file_loader
 from cornflakes.decorator.config.yaml import create_yaml_file_loader
 from cornflakes.decorator.dataclass import dataclass
 from cornflakes.decorator.dataclass.helper import get_default_loader
-from cornflakes.decorator.types import Config, ConfigGroup, Loader
+from cornflakes.decorator.types import Config, ConfigGroup, Dataclass, Loader
 
 
 def config(
@@ -22,7 +22,7 @@ def config(
     chain_files: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
-) -> Union[Union[Config, ConfigGroup], Callable[..., Union[Config, ConfigGroup]]]:
+) -> Union[Union[Dataclass, Config, ConfigGroup], Callable[..., Union[Dataclass, Config, ConfigGroup]]]:
     """Config decorator to parse Ini Files and implements config loader methods to config-classes.
 
     :param config_cls: Config class
@@ -44,7 +44,7 @@ def config(
     if not default_loader:
         default_loader = get_default_loader(files)
 
-    def wrapper(cls) -> Union[Config, ConfigGroup, Any]:
+    def wrapper(cls) -> Union[Dataclass, Config, ConfigGroup]:
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(cls, "__annotations__"):
@@ -63,7 +63,7 @@ def config(
                 **kwargs,
             )(cls)
 
-        cls: Union[Config, Any] = dataclass(cls, **kwargs)
+        cls = dataclass(cls, **kwargs)
         cls.__config_sections__ = sections
         cls.__config_files__ = files
         cls.__multi_config__ = use_regex
@@ -78,8 +78,6 @@ def config(
         cls.from_dict = staticmethod(funcat(Index.reset, funcat_where="wrap")(create_dict_file_loader(cls=cls)))
         cls.from_file = funcat(Index.reset, funcat_where="wrap")(getattr(cls, str(default_loader.value), cls.from_dict))
 
-        return cast(Config, cls)
+        return cls
 
-    if config_cls:
-        return wrapper(config_cls)  # type: ignore
-    return wrapper
+    return wrapper(config_cls) if config_cls else wrapper

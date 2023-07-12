@@ -1,9 +1,9 @@
-from typing import Any, Callable, List, Optional, Union, cast
+from typing import Callable, List, Optional, Union
 
 from cornflakes.decorator import Index, funcat
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.dataclass import dataclass
-from cornflakes.decorator.types import ConfigGroup, DataclassProtocol
+from cornflakes.decorator.types import ConfigGroup, Dataclass
 
 
 def config_group(
@@ -13,7 +13,7 @@ def config_group(
     chain_files: Optional[bool] = False,
     filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
-) -> Union[ConfigGroup, Callable[..., ConfigGroup]]:
+) -> Union[Union[Dataclass, ConfigGroup], Callable[..., Union[Dataclass, ConfigGroup]]]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
     :param config_cls: Config class
@@ -30,8 +30,8 @@ def config_group(
 
     kwargs.pop("validate", None)  # no validation for group
 
-    def wrapper(cls) -> Union[ConfigGroup, Any]:
-        cls: Union[ConfigGroup, DataclassProtocol, Any] = dataclass(cls, **kwargs)
+    def wrapper(cls) -> Union[Dataclass, ConfigGroup]:
+        cls = dataclass(cls, **kwargs)
         cls.__config_files__ = files
         cls.__chain_files__ = chain_files
         cls.__allow_empty_config__ = allow_empty
@@ -39,7 +39,7 @@ def config_group(
 
         cls.from_file = staticmethod(funcat(Index.reset, funcat_where="wrap")(create_group_loader(cls=cls)))
 
-        return cast(ConfigGroup, cls)
+        return cls
 
     if config_cls:
         return wrapper(config_cls)
