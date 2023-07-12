@@ -2,9 +2,9 @@ from dataclasses import is_dataclass
 from functools import partial
 from inspect import isclass
 
-from _cornflakes import eval_type
 from click import Choice, ParamType
 
+from _cornflakes import eval_type
 from cornflakes.common import get_actual_type
 from cornflakes.decorator.dataclass import check_dataclass_kwargs
 from cornflakes.decorator.types import MISSING_TYPE, WITHOUT_DEFAULT
