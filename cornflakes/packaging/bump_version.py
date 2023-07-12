@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import pathlib
 import subprocess
 import sys
 
@@ -54,9 +55,7 @@ def bump_version(level="patch"):
         for file in files:
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
-                with open(file_path) as f:
-                    content = f.read()
-
+                content = pathlib.Path(file_path).read_text()
                 # Check if the file contains the string "# <<FORCE_BUMP>>"
                 if "# <<FORCE_BUMP>>" in content:
                     # Increment the version number in the file

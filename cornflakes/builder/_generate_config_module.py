@@ -33,7 +33,7 @@ def generate_config_module(  # noqa: C901
     source_config: Optional[Union[Dict[str, Union[List[str], str]], List[str], str]] = None,
     target_module_file: Optional[str] = None,
     class_name: Optional[str] = None,
-    loader: Loader = Loader.FILE_LOADER,
+    loader: Loader = Loader.FILE,
     module_description: str = "Automatically generated Default Config.",
     class_description: str = "Main config class of the module.",
     *args,
@@ -44,12 +44,12 @@ def generate_config_module(  # noqa: C901
     ini_config_objects = {}
     imports = []
     extra_imports = []
-    files = kwargs.get(Constants.config_decorator.FILES, [])
+    files = kwargs.get(Constants.config_decorator_args.FILES, [])
     files = files if isinstance(files, list) else [files]
     os.environ["CORNFLAKES_GENERATING_CONFIG_MODULE"] = "True"
 
-    if Constants.config_decorator.FILES not in kwargs:
-        kwargs.update({Constants.config_decorator.FILES: source_config})
+    if Constants.config_decorator_args.FILES not in kwargs:
+        kwargs.update({Constants.config_decorator_args.FILES: source_config})
 
     if not target_module_file:
         target_module_file = f'{source_module.__name__.replace(".", "/")}/default.py'
@@ -76,9 +76,9 @@ def generate_config_module(  # noqa: C901
             imports.append(cfg_name)
             files.extend([file for file in config_files(cfg_class) if file and file not in files])
 
-    if Constants.config_decorator.FILTER_FUNCTION in kwargs:
-        filter_function = kwargs.pop(Constants.config_decorator.FILTER_FUNCTION)
-        kwargs[Constants.config_decorator.FILTER_FUNCTION] = unquoted_string(filter_function.__name__)
+    if Constants.config_decorator_args.FILTER_FUNCTION in kwargs:
+        filter_function = kwargs.pop(Constants.config_decorator_args.FILTER_FUNCTION)
+        kwargs[Constants.config_decorator_args.FILTER_FUNCTION] = unquoted_string(filter_function.__name__)
         extra_imports.append(f"from {filter_function.__module__} import {filter_function.__name__}")
 
     logging.debug(f"Found configs: {imports}")

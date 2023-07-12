@@ -2,7 +2,7 @@ import contextlib
 import dataclasses
 from dataclasses import fields, is_dataclass
 import sys
-from typing import Any, Callable, Literal, Optional, TypeVar, Union, overload
+from typing import Any, Callable, Optional, TypeVar, Union, overload
 
 from typing_extensions import dataclass_transform
 
@@ -178,7 +178,7 @@ if sys.version_info >= (3, 10):
     @overload
     def dataclass(
         *,
-        init: Literal[False] = False,
+        init: bool = True,
         repr: bool = True,
         eq: bool = True,
         order: bool = False,
@@ -187,6 +187,7 @@ if sys.version_info >= (3, 10):
         validate_on_init: bool | None = None,
         kw_only: bool = ...,
         slots: bool = ...,
+        match_args: bool = ...,
         dict_factory: Optional[Callable] = None,
         tuple_factory: Optional[Callable] = None,
         eval_env: bool = False,
@@ -200,7 +201,7 @@ if sys.version_info >= (3, 10):
     def dataclass(
         _cls: type[_T],  # type: ignore
         *,
-        init: Literal[False] = False,
+        init: bool = True,
         repr: bool = True,
         eq: bool = True,
         order: bool = False,
@@ -208,6 +209,7 @@ if sys.version_info >= (3, 10):
         frozen: bool = False,
         kw_only: bool = ...,
         slots: bool = ...,
+        match_args: bool = ...,
         dict_factory: Optional[Callable] = None,
         tuple_factory: Optional[Callable] = None,
         eval_env: bool = False,
@@ -222,7 +224,7 @@ else:
     @overload
     def dataclass(
         *,
-        init: Literal[False] = False,
+        init: bool = True,
         repr: bool = True,
         eq: bool = True,
         order: bool = False,
@@ -241,7 +243,7 @@ else:
     def dataclass(
         _cls: type[_T],  # type: ignore
         *,
-        init: Literal[False] = False,
+        init: bool = True,
         repr: bool = True,
         eq: bool = True,
         order: bool = False,
@@ -260,7 +262,7 @@ else:
 def dataclass(
     cls: type[_T] = None,
     *,
-    init: Literal[False] = True,
+    init: bool = True,
     repr: bool = True,
     eq: bool = True,
     order: bool = False,
@@ -278,10 +280,10 @@ def dataclass(
 ) -> Union[Union[Dataclass, type[_T]], Callable[..., Union[Dataclass, type[_T]]]]:
     """Wrapper around built-in dataclasses dataclass."""
 
-    # if sys.version_info >= (3, 10):
-    #     kwargs = dict(kw_only=kw_only, slots=slots, match_args=match_args)
-    # else:
-    #     kwargs = {}
+    if sys.version_info >= (3, 10):
+        kwargs = dict(kw_only=kw_only, slots=slots, match_args=match_args)
+    else:
+        kwargs = {}
 
     def wrapper(w_cls) -> Union[Dataclass, type[_T]]:
         dataclass_fields = {
@@ -299,8 +301,9 @@ def dataclass(
             frozen=frozen,
             **kwargs,
         )
-        if slots:
+        if slots and sys.version_info < (3, 10):
             dc_cls = add_slots(dc_cls)
+
         dc_cls.__dataclass_fields__.update(dataclass_fields)
         dc_cls.__dict_factory__ = dict_factory or dict
         dc_cls.__tuple_factory__ = tuple_factory or tuple

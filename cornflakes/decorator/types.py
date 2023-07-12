@@ -16,15 +16,15 @@ MISSING_TYPE = type(MISSING)
 class Loader(Enum):
     """Config Loader Enums."""
 
-    INI_LOADER = "from_ini"
-    YAML_LOADER = "from_yaml"
-    DICT_LOADER = "from_dict"
-    FILE_LOADER = "from_file"
+    INI = "from_ini"
+    YAML = "from_yaml"
+    DICT = "from_dict"
+    FILE = "from_file"
 
 
 @dataclass(frozen=True)
 class ConfigOption:
-    """Config Option Constants Enums."""
+    """Config Option Constants."""
 
     READ_CONFIG_METHOD: str = "__auto_option_init__"
     ATTRIBUTES: str = "__auto_option_attributes__"
@@ -34,7 +34,7 @@ class ConfigOption:
 
 @dataclass(frozen=True)
 class ConfigDecoratorArgs:
-    """Config Arguments Enums."""
+    """Config Arguments Arguments."""
 
     FILES: str = "files"
     SECTIONS: str = "sections"
@@ -46,13 +46,42 @@ class ConfigDecoratorArgs:
 
 
 @dataclass(frozen=True)
+class ConfigDecorator:
+    """Config Decorator Constants."""
+
+    FILES: str = "__config_files__"
+    SECTIONS: str = "__config_sections__"
+    USE_REGEX: str = "__multi_config__"
+    IS_LIST: str = "__config_list__"
+    DEFAULT_LOADER: str = "__default_loader__"
+    ALLOW_EMPTY: str = "__allow_empty_config__"
+    FILTER_FUNCTION: str = "__config_filter_function__"
+    CHAIN_FILES: str = "__chain_files__"
+
+    SECTION_NAME_KEY: str = "section_name"
+
+
+@dataclass(frozen=True)
+class DataclassDecorator:
+    """Dataclass Decorator Constants."""
+
+    FIELDS: str = "__dataclass_fields__"
+    DICT_FACTORY: str = "__dict_factory__"
+    TUPLE_FACTORY: str = "__tuple_factory__"
+    EVAL_ENV: str = "__eval_env__"
+    IGNORED_SLOTS: str = "__ignored_slots__"
+
+
+@dataclass(frozen=True)
 class Constants:
     """Constants."""
 
-    DEFAULT_LOADER: Loader = Loader.INI_LOADER
+    DEFAULT_LOADER: Loader = Loader.INI
     DEFAULT_CONFIG_FILE: str = "config.ini"
     config_option: ConfigOption = ConfigOption
-    config_decorator: ConfigDecoratorArgs = ConfigDecoratorArgs
+    config_decorator_args: ConfigDecoratorArgs = ConfigDecoratorArgs
+    config_decorator: ConfigDecorator = ConfigDecorator
+    dataclass_decorator: DataclassDecorator = DataclassDecorator
 
 
 ConfigArgument = Optional[Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]]

@@ -8,7 +8,7 @@ from cornflakes.decorator.config.ini import create_ini_file_loader
 from cornflakes.decorator.config.yaml import create_yaml_file_loader
 from cornflakes.decorator.dataclass import dataclass
 from cornflakes.decorator.dataclass.helper import get_default_loader
-from cornflakes.decorator.types import Config, ConfigGroup, Dataclass, Loader
+from cornflakes.decorator.types import Config, ConfigGroup, Constants, Dataclass, Loader
 
 
 def config(
@@ -52,7 +52,7 @@ def config(
             return cls
 
         # Check is config
-        if any([hasattr(slot, "__config_sections__") for slot in cls.__annotations__.values()]):
+        if any(hasattr(slot, Constants.config_decorator.SECTIONS) for slot in cls.__annotations__.values()):
             logging.warning(
                 "Wrapper config not working for a subset of config classes. "
                 f"Please use {config_group.__name__} instead."
@@ -64,19 +64,37 @@ def config(
             )(cls)
 
         cls = dataclass(cls, **kwargs)
-        cls.__config_sections__ = sections
-        cls.__config_files__ = files
-        cls.__multi_config__ = use_regex
-        cls.__config_list__ = is_list
-        cls.__chain_files__ = chain_files
-        cls.__allow_empty_config__ = allow_empty
-        cls.__config_filter_function__ = filter_function
-        cls.from_yaml = staticmethod(funcat(Index.reset, funcat_where="wrap")(create_yaml_file_loader(cls=cls)))
-        cls.from_ini = staticmethod(
-            funcat(Index.reset, funcat_where="wrap")(create_ini_file_loader(cls=cls))
-        )  # class not dependent method
-        cls.from_dict = staticmethod(funcat(Index.reset, funcat_where="wrap")(create_dict_file_loader(cls=cls)))
-        cls.from_file = funcat(Index.reset, funcat_where="wrap")(getattr(cls, str(default_loader.value), cls.from_dict))
+
+        setattr(cls, Constants.config_decorator.SECTIONS, sections)
+        setattr(cls, Constants.config_decorator.FILES, files)
+        setattr(cls, Constants.config_decorator.USE_REGEX, use_regex)
+        setattr(cls, Constants.config_decorator.IS_LIST, is_list)
+        setattr(cls, Constants.config_decorator.CHAIN_FILES, chain_files)
+        setattr(cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
+        setattr(cls, Constants.config_decorator.FILTER_FUNCTION, filter_function)
+
+        setattr(
+            cls,
+            Loader.YAML.value,
+            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_yaml_file_loader(cls=cls))),
+        )
+        setattr(
+            cls,
+            Loader.INI.value,
+            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_ini_file_loader(cls=cls))),
+        )
+        setattr(
+            cls,
+            Loader.DICT.value,
+            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_dict_file_loader(cls=cls))),
+        )
+        setattr(
+            cls,
+            Loader.FILE.value,
+            funcat(Index.reset, funcat_where="wrap")(
+                getattr(cls, str(default_loader.value), getattr(cls, Loader.DICT.value))
+            ),
+        )
 
         return cls
 

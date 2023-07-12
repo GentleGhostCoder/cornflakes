@@ -56,7 +56,7 @@ def check_type(type_hint: Any, key, value, skip=False, validate=False):
 
     # If the actual type is a list or tuple, we check each element of the value against the corresponding type in the type hint.
     if isinstance(actual_type, (list, tuple)):
-        return _check_list_or_tuple_type(actual_type, type_hint, key, value, skip, validate)
+        return _check_list_or_tuple_type(actual_type, key, value, skip, validate)
 
     # If the actual type is the list or tuple type itself, we check that the value is a list or tuple.
     if actual_type in [list, tuple]:
@@ -83,7 +83,7 @@ def get_actual_type(type_hint):
     )
 
 
-def _check_list_or_tuple_type(actual_type, type_hint, key, value, skip, validate):
+def _check_list_or_tuple_type(actual_type, key, value, skip, validate):
     actual_types = (
         [t for t in actual_type if t is not None]
         if value
@@ -116,10 +116,6 @@ def _check_list_or_tuple(actual_type, type_hint, key, value, skip, validate):
         raise TypeError(f"Expected type {type_hint!r} for attribute {key!r} but received type {type(value)!r}).")
     actual_types = [t for t in get_args(type_hint) if t is not None] or [str] if value else [type(None)]
     return actual_type(chain([check_type(t, key, val, validate=validate) for val in value for t in actual_types]))
-
-
-def _check_builtin_or_function(actual_type, type_hint, key, value):
-    return actual_type(value)
 
 
 def _check_class_type(actual_type, type_hint, key, value, skip, validate):

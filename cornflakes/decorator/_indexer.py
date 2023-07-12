@@ -30,7 +30,7 @@ class IndexCounter:
                 self.start = value - 1
                 self.index = self.start
             self.index += 1
-            return int.__new__(cls, int(self.index))
+            return int.__new__(cls, self.index)
 
         self.type.__new__ = new
         self.type.reset = lambda: self.reset()
@@ -38,7 +38,7 @@ class IndexCounter:
 
     def reset(self):
         """Resets the index."""
-        if not self.index == self.start:
+        if self.index != self.start:
             self.index = self.start
 
 

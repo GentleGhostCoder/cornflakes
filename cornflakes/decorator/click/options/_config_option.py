@@ -10,24 +10,26 @@ from cornflakes.decorator.click.helper import click_param_type_parser
 from cornflakes.decorator.click.options._auto_fill_option_groups import auto_fill_option_groups
 from cornflakes.decorator.click.rich import RichCommand, RichGroup
 from cornflakes.decorator.config import is_config
-from cornflakes.decorator.dataclass.helper import dc_slot_get_default, dc_slot_missing_default, is_group
+from cornflakes.decorator.dataclass.helper import config_files, dc_slot_get_default, dc_slot_missing_default, is_group
 from cornflakes.decorator.types import Config, Constants
 
 F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
 
 
-def _update_options_help(callback, config):
+def _update_options_help(callback, config, formatter=None):
     if (
         "__click_params__" in dir(callback)
         and getattr(callback, "__click_params__")
         and getattr(callback, "__click_params__")[0].name == Constants.config_option.CONFIG_FILE_OPTION_PARAM
     ):
-        getattr(callback, "__click_params__")[
-            0
-        ].help = f"{getattr(callback, '__click_params__')[0].help} {config.__name__}"
+        getattr(callback, "__click_params__")[0].help = (
+            formatter(getattr(callback, "__click_params__")[0].help)
+            if formatter
+            else f"{getattr(callback, '__click_params__')[0].help}, {config.__name__}"
+        )
         return callback
     else:
-        config_option_help_str = f"Config file-path for {config.__name__}"
+        config_option_help_str = formatter("") if formatter else f"{config.__name__}"
         return option(
             "-cfg",
             f"--{Constants.config_option.CONFIG_FILE_OPTION_PARAM.replace('_', '-')}",
@@ -36,7 +38,10 @@ def _update_options_help(callback, config):
 
 
 def config_option(  # noqa: C901
-    config: Union[Config, Any], add_config_file_option: bool = False, passing_key="config", **options
+    config: Union[Config, Any],
+    add_config_file_option: bool = False,
+    passing_key=Constants.config_option.PASSED_DECORATE_KEY,
+    **options,
 ) -> F:
     """Click Option Decorator to define a global option for cli decorator."""
     if not isclass(config):
@@ -55,8 +60,12 @@ def config_option(  # noqa: C901
         # Function to chain decorators
         def chain_decorators(func):
             new_func = reduce(lambda f, g: g(f), decorators, func)
+
+            def formatter(help_str):
+                return f"Add config files to [{config_files(config)}] for {config.__name__}[{help_str}]"
+
             if add_config_file_option:
-                new_func = _update_options_help(new_func, config)
+                new_func = _update_options_help(new_func, config, formatter)
             return new_func
 
         return chain_decorators  # Return the chain of decorators

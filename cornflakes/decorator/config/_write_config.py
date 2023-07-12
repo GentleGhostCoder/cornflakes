@@ -1,8 +1,8 @@
 from os import path
-from typing import Optional, Union
+from typing import Optional
 
 
-def write_config(config_bytes: bytearray, out_cfg: Optional[str] = None) -> Union[bytearray, None]:
+def write_config(config_bytes: bytearray, out_cfg: Optional[str] = None) -> Optional[bytearray]:
     """Method to write bytes into file."""
     if not out_cfg:
         return config_bytes

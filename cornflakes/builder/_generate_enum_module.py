@@ -57,8 +57,8 @@ def generate_enum_module(
 
     module = f'''{f"""{module_description}
 """ if module_description else ""}from enum import Enum
-{f"""import {sources.__name__}
-""" if not isinstance(sources, (list, dict)) else ""}
+{"" if isinstance(sources, (list, dict)) else f"""import {sources.__name__}
+ """}
 
 class {title}(Enum):
     {f"""{class_description}

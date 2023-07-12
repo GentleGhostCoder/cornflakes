@@ -18,7 +18,7 @@ def specific_yaml_loader(loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = S
     return _yaml_loader
 
 
-def to_yaml_bytes(self, *args, **kwargs) -> Optional[bytearray]:
+def to_yaml_bytes(self, *args, **kwargs) -> bytes:
     """Method to write an instance of the main config class of the module into a yaml bytearray."""
     return yaml.dump({self.__class__.__name__.lower(): self.to_dict()}, *args, **kwargs).encode("utf-8")
 

@@ -3,7 +3,7 @@ from typing import Callable, List, Optional, Union
 from cornflakes.decorator import Index, funcat
 from cornflakes.decorator.config._load_config_group import create_group_loader
 from cornflakes.decorator.dataclass import dataclass
-from cornflakes.decorator.types import ConfigGroup, Dataclass
+from cornflakes.decorator.types import ConfigGroup, Constants, Dataclass
 
 
 def config_group(
@@ -32,15 +32,12 @@ def config_group(
 
     def wrapper(cls) -> Union[Dataclass, ConfigGroup]:
         cls = dataclass(cls, **kwargs)
-        cls.__config_files__ = files
-        cls.__chain_files__ = chain_files
-        cls.__allow_empty_config__ = allow_empty
-        cls.__config_filter_function__ = filter_function
-
+        setattr(cls, Constants.config_decorator.FILES, files)
+        setattr(cls, Constants.config_decorator.CHAIN_FILES, chain_files)
+        setattr(cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
+        setattr(cls, Constants.config_decorator.FILTER_FUNCTION, filter_function)
         cls.from_file = staticmethod(funcat(Index.reset, funcat_where="wrap")(create_group_loader(cls=cls)))
 
         return cls
 
-    if config_cls:
-        return wrapper(config_cls)
-    return wrapper
+    return wrapper(config_cls) if config_cls else wrapper

@@ -42,7 +42,7 @@ def click_cli(  # noqa: C901
     callback: Optional[Callable] = None,
     config: Optional[Union[RichConfig, Config, Any]] = None,
     files: Optional[str] = None,
-    loader: Loader = Loader.DICT_LOADER,
+    loader: Loader = Loader.DICT,
     default_log_level: int = logging.INFO,
     as_command: bool = False,
     *args,
@@ -57,7 +57,7 @@ def click_cli(  # noqa: C901
     if not config:
         if not files:
             config = RichConfig(*args, **kwargs)
-        elif loader in [Loader.INI_LOADER, Loader.YAML_LOADER]:
+        elif loader in [Loader.INI, Loader.YAML]:
             config = getattr(RichConfig, str(loader.name))(*args, **kwargs).popitem()[1]
         elif ".ini" in files:
             config = RichConfig.from_ini(files, *args, **kwargs).popitem()[1]

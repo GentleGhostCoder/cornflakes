@@ -67,7 +67,7 @@ def _apply_auto_option_config(func, **kwargs):
     if Constants.config_option.CONFIG_FILE_OPTION_PARAM in kwargs and kwargs.get(
         Constants.config_option.CONFIG_FILE_OPTION_PARAM
     ):
-        config_kwargs[Constants.config_decorator.FILES] = list(
+        config_kwargs[Constants.config_decorator_args.FILES] = list(
             kwargs.pop(Constants.config_option.CONFIG_FILE_OPTION_PARAM, "")
         )
 

@@ -82,7 +82,7 @@ def setup_logging(  # noqa: C901
 class LoggerMetaClass(type):
     """LoggerMetaClass used for  metaclass."""
 
-    def __new__(mcs, classname, bases, class_dict):  # noqa: N804
+    def __new__(cls, classname, bases, class_dict):  # noqa: N804
         """Method __new__ for LoggerMetaClass."""
         new_class_dict = {}
         for attribute_name, attribute in class_dict.items():
@@ -90,8 +90,8 @@ class LoggerMetaClass(type):
                 # replace it with a wrapped version
                 attribute = attach_log(attribute)
             new_class_dict[attribute_name] = attribute
-        mcs.logger = logging.getLogger(classname)
-        return type.__new__(mcs, classname, bases, new_class_dict)
+        cls.logger = logging.getLogger(classname)
+        return type.__new__(cls, classname, bases, new_class_dict)
 
 
 class LoggerProtocol(Protocol):
@@ -169,11 +169,6 @@ def attach_log(
         if isclass(w_obj):
             return __wrap_class(w_obj, log_level)
 
-        if callable(w_obj):
-            return __wrap_function(w_obj, log_level)
+        return __wrap_function(w_obj, log_level) if callable(w_obj) else obj
 
-        return obj
-
-    if not obj:
-        return obj_wrapper
-    return obj_wrapper(obj)
+    return obj_wrapper(obj) if obj else obj_wrapper

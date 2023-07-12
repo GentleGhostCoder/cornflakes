@@ -9,7 +9,7 @@ from cornflakes import ini_load
 from cornflakes.decorator.dataclass.helper import (
     dataclass_fields,
     is_config_list,
-    is_multi_config,
+    is_use_regex,
     normalized_class_name,
     pass_section_name,
 )
@@ -124,7 +124,7 @@ def create_file_loader(  # noqa: C901
         def get_section_kwargs(section):
             return {**slot_kwargs, **({"section_name": section} if pass_sections else {})}
 
-        if not is_multi_config(cls) and isinstance(sections, str):
+        if not is_use_regex(cls) and isinstance(sections, str):
             logging.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
 
             if not config_dict:

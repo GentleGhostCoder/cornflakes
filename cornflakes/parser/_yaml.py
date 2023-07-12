@@ -11,8 +11,7 @@ from cornflakes.common import recursive_update
 def _get_updated_key(config: Dict, values: List[str], defaults: Dict):
     result = None
     for value in values:
-        key = config.get(value, defaults.get(value, None))
-        if key:
+        if key := config.get(value, defaults.get(value)):
             result = key
     return result
 

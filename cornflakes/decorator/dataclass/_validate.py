@@ -75,6 +75,6 @@ def validate_dataclass_kwargs(dc_cls, validate=False, **kwargs):
     kwargs.update(_process_validator(dc_cls, kwargs, _validators, **kwargs))
     kwargs.update(_process_type_checking(dc_cls, **kwargs, validate=validate))
     if missing_keys := [key for key in _required_keys if key not in kwargs.keys()]:
-        logging.warning(f"Missing required values for keys {missing_keys} for dataclass {dc_cls.__name__}!")
+        raise TypeError(f"Missing required values for keys {missing_keys} for dataclass {dc_cls.__name__}!")
 
     return kwargs

@@ -13,7 +13,7 @@ class GlobalOption(Protocol):
     params: List[Option]
 
 
-@config
+@config(init=True)
 class RichConfig:
     """DataClass for click config-values."""
 
