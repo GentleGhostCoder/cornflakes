@@ -38,7 +38,6 @@ def rich_global_option_wrapper(
                 _apply_global_options(click_cls, *args, **kwargs)
 
             kwargs = _apply_auto_option_config(func, **kwargs)
-
             return func(
                 *args, **{key: value for key, value in kwargs.items() if key in signature(func).parameters.keys()}
             )
@@ -60,8 +59,10 @@ def _apply_auto_option_config(func, **kwargs):
         return kwargs
 
     func_params = signature(func).parameters
-    passed_key = getattr(func, Constants.config_option.PASSED_DECORATE_KEY, [])
-    auto_option_attributes = getattr(func, Constants.config_option.PASSED_DECORATE_KEY, [])
+    passed_key = getattr(func, Constants.config_option.PASSED_DECORATE_KEY, None)
+    if passed_key not in func_params:
+        return kwargs
+    auto_option_attributes = getattr(func, Constants.config_option.ATTRIBUTES, [])
     config_kwargs = dict(filter(lambda kv: kv[0] in auto_option_attributes and kv[1], kwargs.items()))
 
     if Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR in kwargs and kwargs.get(
@@ -71,7 +72,7 @@ def _apply_auto_option_config(func, **kwargs):
             kwargs.pop(Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR, "")
         )
 
-    kwargs[passed_key] = getattr(func, Constants.config_option.READ_CONFIG_METHOD, {})(**config_kwargs)
+    kwargs[passed_key] = getattr(func, Constants.config_option.READ_CONFIG_METHOD)(**config_kwargs)
     config_type = get_actual_type(func_params[passed_key].annotation)
     config_name = normalized_class_name(func_params[passed_key].annotation)
 
@@ -104,7 +105,7 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
                 passed_key,
                 [
                     check_type(
-                        func_params["config"].annotation.__args__[0],
+                        func_params[passed_key].annotation.__args__[0],
                         passed_key,
                         kwargs[passed_key],
                         skip=False,

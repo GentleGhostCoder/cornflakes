@@ -31,19 +31,19 @@ def create_file_loader(  # noqa: C901
 
     keys = {key: getattr(f, "aliases", key) or key for key, f in dataclass_fields(cls).items()}
 
-    def create_config(config: dict, allow_empty=None, filter_function=None, **cls_kwargs) -> Optional[Config]:
+    def create_config(config_cls: dict, allow_empty=None, filter_function=None, **cls_kwargs) -> Optional[Config]:
         if not filter_function:
             filter_function = _default_filter_method
-        if not config and allow_empty:
+        if not config_cls and allow_empty:
             return None
-        config.update(cls_kwargs)
-        error_args = [key for key in config if key not in [*dataclass_fields(cls)]]
+        config_cls.update(cls_kwargs)
+        error_args = [key for key in config_cls if key not in [*dataclass_fields(cls)]]
         if error_args:
             logging.debug(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
             logging.debug(f"Please check Args: {error_args}")
 
         #  config_instance
-        config_instance = cls(**{key: value for key, value in config.items() if key in dataclass_fields(cls)})
+        config_instance = cls(**{key: value for key, value in config_cls.items() if key in dataclass_fields(cls)})
         return config_instance if filter_function(config_instance) else None
 
     def _check_required_fields(config_dict) -> dict:
@@ -125,6 +125,7 @@ def create_file_loader(  # noqa: C901
                 sections = config_dict.popitem()[0] or normalized_class_name(cls)
 
             config = _create_config(config_dict.get(sections, {}), **get_section_kwargs(sections))
+
             if not config:
                 return {sections: _create_config({}, **get_section_kwargs(sections))}
             return {sections: config}
@@ -150,6 +151,7 @@ def create_file_loader(  # noqa: C901
             for section, config in config_dict.items()
             if bool(re.match(regex, section.split(":", 1).pop() or ""))
         }
+
         if not is_config_list(cls):
             return {
                 section.split(":", 1).pop(): config
