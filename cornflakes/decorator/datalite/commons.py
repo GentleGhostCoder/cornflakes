@@ -11,7 +11,7 @@ import sqlite3 as sql
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Type, Union
 from uuid import UUID
 
-from cornflakes.decorator.dataclass.helper import dataclass_fields
+from cornflakes.decorator.dataclasses import dataclass_fields
 from cornflakes.decorator.datalite.constraints import Unique
 
 
@@ -38,7 +38,7 @@ def generator_formatter(_: "Generator") -> None:
 
 SpecialForm = type(Optional)
 
-type_table: Dict[Optional[type], str] = {
+type_table: Dict[Union[Optional[type], Any], str] = {
     None: "NULL",
     type(None): "NULL",
     int: "INTEGER",
@@ -79,10 +79,9 @@ type_table: Dict[Optional[type], str] = {
 
 type_table.update(
     {
-        Unique[key]
-        if not isinstance(key, SpecialForm)
-        else Unique[getattr(key, "__args__", type(None))]: f"{value}"
-        + (" NOT NULL UNIQUE" if not isinstance(key, SpecialForm) else "")
+        Unique[getattr(key, "__args__", type(None))]  # type: ignore
+        if isinstance(key, SpecialForm)
+        else Unique[key]: f"{value}" + ("" if isinstance(key, SpecialForm) else " NOT NULL UNIQUE")  # type: ignore
         for key, value in type_table.items()
     }
 )
@@ -99,7 +98,7 @@ validator_table: Dict[str, Union[Callable[[Any], Any], Type]] = {
     "NUMERIC": lambda x: Decimal(str(x)),
 }
 
-formatter_table: Dict[Type, Any] = {
+formatter_table: Dict[Union[Type, Any], Any] = {
     int: str,
     float: str,
     Decimal: str,

@@ -7,8 +7,8 @@ from os.path import exists
 import sqlite3 as sql
 from typing import Dict, List, Optional, Tuple, Union
 
-from cornflakes.decorator.dataclass import Field as CField
-from cornflakes.decorator.dataclass.helper import dataclass_fields
+from cornflakes.decorator.dataclasses import Field as CField
+from cornflakes.decorator.dataclasses import dataclass_fields
 from cornflakes.decorator.datalite.commons import _create_table, _get_table_cols
 
 
@@ -20,7 +20,7 @@ def _get_db_table(class_: type) -> Tuple[str, str]:
     :param class_: A datalite class.
     :return: A tuple of database and table names.
     """
-    database_name: str = getattr(class_, "db_path", None)
+    database_name = getattr(class_, "db_path", None)
     if not database_name:
         raise TypeError(f"{class_.__name__} is not a datalite class.")
     table_name: str = class_.__name__.lower()
@@ -35,7 +35,7 @@ def _get_db_table(class_: type) -> Tuple[str, str]:
     return database_name, table_name
 
 
-def _get_table_column_names(database_name: str, table_name: str) -> Tuple[str]:
+def _get_table_column_names(database_name: str, table_name: str) -> Tuple[str, ...]:
     """
     Get the column names of table.
 
@@ -46,7 +46,7 @@ def _get_table_column_names(database_name: str, table_name: str) -> Tuple[str]:
     """
     with sql.connect(database_name) as con:
         cur: sql.Cursor = con.cursor()
-        cols: List[str] = _get_table_cols(cur, table_name)
+        cols = _get_table_cols(cur, table_name)
     return tuple(cols)
 
 
@@ -83,7 +83,7 @@ def _drop_table(database_name: str, table_name: str) -> None:
 
 
 def _modify_records(
-    data, col_to_del: Tuple[str], col_to_add: Tuple[str], flow: Dict[str, str]
+    data, col_to_del: Tuple[str, ...], col_to_add: Tuple[str, ...], flow: Dict[str, str]
 ) -> List[Dict[str, Optional[str]]]:
     """
     Modify the asdict records in accordance
@@ -116,7 +116,12 @@ def _modify_records(
 
 
 def _migrate_records(
-    class_: type, database_name: str, data, col_to_del: Tuple[str], col_to_add: Tuple[str], flow: Dict[str, str]
+    class_: type,
+    database_name: str,
+    data,
+    col_to_del: Tuple[str, ...],
+    col_to_add: Tuple[str, ...],
+    flow: Dict[str, str],
 ) -> None:
     """
     Migrate the records into the modified table.
@@ -143,7 +148,7 @@ def _migrate_records(
         class_(**record).create_entry()
 
 
-def basic_migrate(cls: type, column_transfer: Optional[dict] = None) -> None:
+def basic_migrate(cls: type, column_transfer: Dict[str, str]) -> None:
     """
     Given a class, compare its previous table,
     delete the fields that no longer exist,
@@ -158,12 +163,16 @@ def basic_migrate(cls: type, column_transfer: Optional[dict] = None) -> None:
     :return: None.
     """
     database_name, table_name = _get_db_table(cls)
-    table_column_names: Tuple[str] = _get_table_column_names(database_name, table_name)
+    table_column_names: Tuple[str, ...] = _get_table_column_names(database_name, table_name)
     values = dataclass_fields(cls).values()
-    data_fields: Tuple[Union[Field, CField], ...] = tuple(field for field in values)
-    data_field_names: Tuple[str] = tuple(field.name for field in data_fields)
-    columns_to_be_deleted: Tuple[str] = tuple(column for column in table_column_names if column not in data_field_names)
-    columns_to_be_added: Tuple[str] = tuple(column for column in data_field_names if column not in table_column_names)
+    data_fields: Tuple[Union[Field, CField], ...] = tuple(values)
+    data_field_names: Tuple[str, ...] = tuple(field.name for field in data_fields)
+    columns_to_be_deleted: Tuple[str, ...] = tuple(
+        column for column in table_column_names if column not in data_field_names
+    )
+    columns_to_be_added: Tuple[str, ...] = tuple(
+        column for column in data_field_names if column not in table_column_names
+    )
     records = _copy_records(database_name, table_name)
     _drop_table(database_name, table_name)
     _migrate_records(cls, database_name, records, columns_to_be_deleted, columns_to_be_added, column_transfer)

@@ -5,8 +5,9 @@ from enum import Enum
 from ipaddress import IPv4Address, IPv6Address
 from typing import Optional
 
-from cornflakes import AnyUrl, config
 from cornflakes.decorator import Index, field
+from cornflakes.decorator.dataclasses import AnyUrl, config
+from cornflakes.decorator.dataclasses import dataclass as data
 
 
 class ExampleEnum(Enum):
@@ -17,7 +18,10 @@ class ExampleEnum(Enum):
 class SubConfigClass:
     """Test Config Class."""
 
-    init_config: InitVar[bool] = None
+    url: AnyUrl = field(
+        no_default=True,
+    )
+    init_config: InitVar[Optional[bool]] = field(default=None)
     idx_at5: Index = 5  # type: ignore
     idx_at_first_ini_or_0: Index["SubConfigClass"] = 0  # type: ignore
     test: Optional[str] = None
@@ -32,11 +36,8 @@ class SubConfigClass:
     ipv4: IPv4Address = IPv4Address("127.0.0.1")
     ipv6: IPv6Address = IPv6Address("684D:1111:222:3333:4444:5555:6:77")
     bool_val: bool = True
-    url: AnyUrl = field(
-        no_default=True,
-    )
     enum: ExampleEnum = ExampleEnum.sample
-    some_env: str = field(default="default_value", alias=["some_env"], ignore=True)
+    some_env: str = field(default="default_value", aliases=["some_env"], ignore=True)
     lineterminator: str = "\n"
     escapechar: str = "\\"
     quotechar: str = '"'

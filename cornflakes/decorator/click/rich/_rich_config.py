@@ -1,10 +1,10 @@
 from dataclasses import field
 from os import getenv
-from typing import Dict, List, Literal, Optional, Protocol, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Protocol, Tuple, Union
 
 from click import Option
 
-from cornflakes.decorator.config import config
+from cornflakes.decorator.dataclasses.config import config
 
 
 class GlobalOption(Protocol):
@@ -42,9 +42,11 @@ class RichConfig:
     STYLE_OPTIONS_TABLE_LEADING: int = 0
     STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
     STYLE_OPTIONS_TABLE_PADDING: Tuple[int, int] = (0, 1)
+    STYLE_OPTIONS_TABLE_SHOW_EDGE: bool = True
     STYLE_OPTIONS_TABLE_BOX: str = ""
-    STYLE_OPTIONS_TABLE_ROW_STYLES: List[str] = None
-    STYLE_OPTIONS_TABLE_BORDER_STYLE: str = None
+    STYLE_OPTIONS_TABLE_ROW_STYLES: Optional[List[str]] = None
+    STYLE_OPTIONS_TABLE_HEADER_STYLE: str = "table.header"
+    STYLE_OPTIONS_TABLE_BORDER_STYLE: Optional[str] = None
     STYLE_COMMANDS_PANEL_BORDER: str = "dim"
     ALIGN_COMMANDS_PANEL: str = "left"
     STYLE_COMMANDS_TABLE_SHOW_LINES: bool = False
@@ -52,16 +54,18 @@ class RichConfig:
     STYLE_COMMANDS_TABLE_PAD_EDGE: bool = False
     STYLE_COMMANDS_TABLE_PADDING: Tuple[int, int] = (0, 1)
     STYLE_COMMANDS_TABLE_BOX: str = ""
-    STYLE_COMMANDS_TABLE_ROW_STYLES: List[str] = None
-    STYLE_COMMANDS_TABLE_BORDER_STYLE: List[str] = None
+    STYLE_COMMANDS_TABLE_ROW_STYLES: Optional[List[str]] = None
+    STYLE_COMMANDS_TABLE_BORDER_STYLE: Optional[List[str]] = None
     STYLE_ERRORS_PANEL_BORDER: str = "red"
     ALIGN_ERRORS_PANEL: str = "left"
     STYLE_ERRORS_SUGGESTION: str = "dim"
     STYLE_ABORTED: str = "red"
-    MAX_WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore
+    MAX_WIDTH: Optional[int] = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore
     COLOR_SYSTEM: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = "auto"
     # Set to None to disable colors
-    FORCE_TERMINAL = True if getenv("GITHUB_ACTIONS") or getenv("FORCE_COLOR") or getenv("PY_COLORS") else None
+    FORCE_TERMINAL: Optional[bool] = (
+        True if getenv("GITHUB_ACTIONS") or getenv("FORCE_COLOR") or getenv("PY_COLORS") else None
+    )
 
     # Fixed strings
     HEADER_TEXT: Optional[str] = None
@@ -89,7 +93,7 @@ class RichConfig:
     APPEND_METAVARS_REQUIRED: bool = False  # Append metavar REQUIRED_LONG_STRING (eg. [required]) after the help text
     GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
     OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
-    USE_RST: bool = True  # Parse help strings as reStructuredText
+    USE_RST: bool = False  # Parse help strings as reStructuredText
     SHOW_RST_ERRORS: bool = False  # Show errors when parsing reStructuredText
     USE_MARKDOWN: bool = False  # Parse help strings as markdown
     USE_MARKDOWN_EMOJI: bool = True  # Parse emoji codes in markdown :smile:
@@ -107,3 +111,13 @@ class RichConfig:
     OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
     # Add basic global options (verbose)
     GLOBAL_OPTIONS: List[GlobalOption] = field(default_factory=list)
+
+    if TYPE_CHECKING:
+
+        @staticmethod
+        def from_ini(*args, **kwargs):
+            ...
+
+        @staticmethod
+        def from_yaml(*args, **kwargs):
+            ...

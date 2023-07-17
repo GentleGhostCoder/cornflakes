@@ -1,25 +1,25 @@
 from functools import wraps
 from inspect import signature
 import logging
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional, Type, TypeVar
 
 from click import get_current_context
 from click.core import Context
 
 from cornflakes.common import check_type, get_actual_type
-from cornflakes.decorator.click.rich._rich_argument import RichArg
-from cornflakes.decorator.click.rich._rich_command import RichCommand
 from cornflakes.decorator.click.rich._rich_group import RichGroup
-from cornflakes.decorator.dataclass.helper import is_config, is_group, normalized_class_name
-from cornflakes.decorator.types import Constants
+from cornflakes.decorator.dataclasses import is_config, is_group, normalized_class_name
+from cornflakes.types import Constants
 
-F = Callable[..., Union[RichCommand, RichGroup, RichArg, Any]]
+_T = TypeVar("_T")
 
 
-def rich_global_option_wrapper(click_func, *wrap_args, pass_context: Optional[bool] = None, **wrap_kwargs) -> F:
+def rich_global_option_wrapper(
+    click_func: Any, *wrap_args, pass_context: Optional[bool] = None, **wrap_kwargs
+) -> Callable[..., Type[_T]]:
     """Wrapper Method for rich command / group."""
 
-    def global_option_click_decorator(func):
+    def global_option_click_decorator(func) -> Type[_T]:
         """Decorator for rich command / group."""
         click_cls = click_func(*wrap_args, **wrap_kwargs)(func)
 
@@ -56,7 +56,7 @@ def _apply_global_options(click_cls, *args, **kwargs):
 
 
 def _apply_auto_option_config(func, **kwargs):
-    if not getattr(func, "__auto_option_enabled__", False):
+    if not getattr(func, Constants.config_option.ENABLED, False):
         return kwargs
 
     func_params = signature(func).parameters
@@ -64,11 +64,11 @@ def _apply_auto_option_config(func, **kwargs):
     auto_option_attributes = getattr(func, Constants.config_option.PASSED_DECORATE_KEY, [])
     config_kwargs = dict(filter(lambda kv: kv[0] in auto_option_attributes and kv[1], kwargs.items()))
 
-    if Constants.config_option.CONFIG_FILE_OPTION_PARAM in kwargs and kwargs.get(
-        Constants.config_option.CONFIG_FILE_OPTION_PARAM
+    if Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR in kwargs and kwargs.get(
+        Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR
     ):
         config_kwargs[Constants.config_decorator_args.FILES] = list(
-            kwargs.pop(Constants.config_option.CONFIG_FILE_OPTION_PARAM, "")
+            kwargs.pop(Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR, "")
         )
 
     kwargs[passed_key] = getattr(func, Constants.config_option.READ_CONFIG_METHOD, {})(**config_kwargs)

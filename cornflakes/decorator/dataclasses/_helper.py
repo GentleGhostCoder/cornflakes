@@ -1,19 +1,7 @@
 """Dataclass helper functions used by the custom dataclass decorator."""
-from dataclasses import Field
 import re
-from typing import Dict, Optional, Union
 
-from cornflakes.decorator.dataclass._field import Field as CField
-from cornflakes.decorator.types import (
-    MISSING_TYPE,
-    WITHOUT_DEFAULT,
-    Config,
-    ConfigArgument,
-    ConfigGroup,
-    Constants,
-    Dataclass,
-    Loader,
-)
+from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants
 
 
 def is_config(cls):
@@ -26,12 +14,12 @@ def is_group(cls):
     return not is_config(cls) and hasattr(cls, Constants.config_decorator.FILES)
 
 
-def config_files(cls) -> ConfigArgument:
+def config_files(cls):
     """Method to return class __config_files__."""
     return getattr(cls, Constants.config_decorator.FILES, [])
 
 
-def dataclass_fields(cls: Union[Config, ConfigGroup, Dataclass]) -> Dict[str, Union[Field, CField]]:
+def dataclass_fields(cls):
     """Method to return dataclass fields."""
     return getattr(cls, Constants.dataclass_decorator.FIELDS, {})
 
@@ -94,22 +82,9 @@ def pass_section_name(cls):
 
 def dc_slot_missing_default(slot):
     """Checks if the dataclass has a default / default_factory."""
-    return slot.default in (MISSING_TYPE, WITHOUT_DEFAULT) and slot.default_factory in (MISSING_TYPE, WITHOUT_DEFAULT)
+    return isinstance(slot.default, WITHOUT_DEFAULT_TYPE) or isinstance(slot.default_factory, WITHOUT_DEFAULT_TYPE)
 
 
-def dc_slot_get_default(slot):
+def default(slot):
     """Method to get the default value of the dataclass."""
-    return slot.default if slot.default not in (MISSING_TYPE, WITHOUT_DEFAULT) else slot.default_factory
-
-
-def get_default_loader(files: Optional[list] = None):
-    """Method to get the default loader from filenames."""
-    return (
-        Loader.DICT
-        if not files
-        else Loader.INI
-        if files[0][-3:] == "ini"
-        else Loader.YAML
-        if files[0][-3:] == "yaml"
-        else Loader.DICT
-    )
+    return slot.default_factory if isinstance(slot.default, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE)) else slot.default

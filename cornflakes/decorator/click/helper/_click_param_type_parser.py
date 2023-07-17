@@ -2,12 +2,12 @@ from dataclasses import is_dataclass
 from functools import partial
 from inspect import isclass
 
-from _cornflakes import eval_type
 from click import Choice, ParamType
 
+from cornflakes import eval_type
 from cornflakes.common import get_actual_type
-from cornflakes.decorator.dataclass import check_dataclass_kwargs
-from cornflakes.decorator.types import MISSING_TYPE, WITHOUT_DEFAULT
+from cornflakes.decorator.dataclasses import check_dataclass_kwargs
+from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE
 
 
 def click_param_type_parser(config):
@@ -32,7 +32,7 @@ def click_param_type_parser(config):
             name = type_class_name
 
             def convert(self, value, param, ctx):
-                if not isinstance(value, (MISSING_TYPE, WITHOUT_DEFAULT)):
+                if not isinstance(value, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE)):
                     return check_dataclass_kwargs(config, **{param.name: eval_type(str(value))}, validate=True)[
                         param.name
                     ]

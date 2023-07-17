@@ -1,5 +1,5 @@
 import sys
-from typing import Any, List
+from typing import Any, List, Optional
 
 from click import ClickException, Command, Context, HelpFormatter, Parameter, exceptions
 
@@ -22,11 +22,12 @@ class RichCommand(Command):
     name = ""
     context_settings: dict
     parent = None
+    config: RichConfig
 
     def callback(self):
         """Callback method with is wrapped over the command."""
 
-    def __init__(self, config: RichConfig = None, *args, **kwargs):
+    def __init__(self, config: Optional[RichConfig] = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""
         if not config:
             config = RichConfig()

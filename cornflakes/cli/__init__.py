@@ -4,6 +4,7 @@ from cornflakes.decorator.click import bg_process_option, verbose_option
 
 
 @click_cli(
+    config=None,
     OPTION_GROUPS={
         **{
             command: [

@@ -1,19 +1,19 @@
 import logging
-from typing import Any, Optional, Union
+from typing import Callable, Dict, List, Optional, Type, Union
 
 from cornflakes import ini_load
 from cornflakes.common import type_to_str
-from cornflakes.decorator.config._load_config import create_file_loader
-from cornflakes.decorator.config._write_config import write_config
-from cornflakes.decorator.dataclass.helper import get_not_ignored_slots, is_config
-from cornflakes.decorator.types import Config
+from cornflakes.decorator.dataclasses._helper import get_not_ignored_slots, is_config
+from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+from cornflakes.decorator.dataclasses.config._write_config import write_config
+from cornflakes.types import Config
 
 
 def _parse_config_list(cfg, cfg_name: str, title: str):
     _ini_bytes = bytearray()
     is_list = isinstance(cfg, list)
     if is_config(cfg) and not is_list:
-        return cfg.to_ini_bytes(cfg_name)
+        return to_ini_bytes(cfg, cfg_name)
     elif is_list:
         for n, sub_cfg in enumerate(cfg):
             sub_cfg_name = cfg_name
@@ -36,7 +36,7 @@ def _parse_config_list(cfg, cfg_name: str, title: str):
 
 
 def to_ini_bytes(
-    self, title: Optional[str] = None
+    self, title: str
 ) -> Optional[bytearray]:  # TODO: implement more type_to_str feature -> date format etc.
     """Method to write an instance of the main config class of the module into a ini bytearray."""
     _ini_bytes = bytearray()
@@ -73,15 +73,15 @@ def to_ini(self, out_cfg: Optional[str] = None) -> Optional[bytearray]:
     title = getattr(self, "section_name", getattr(self, "__config_sections__", self.__class__.__name__.lower()))
     if isinstance(title, (list, tuple)):
         title = title[0]
-    return write_config(self.to_ini_bytes(title), out_cfg)
+    return write_config(bytearray(to_ini_bytes(self, title) or b""), out_cfg)
 
 
 def create_ini_file_loader(
-    cls: Union[Config, Any],
-):
+    cls: Type[Config],
+) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
     """Method to create file loader for ini files."""
 
-    def from_ini(*args, **kwargs):
+    def from_ini(*args, **kwargs) -> Dict[str, Optional[Union[Config, List[Config]]]]:
         return create_file_loader(cls=cls, loader=ini_load)(*args, **kwargs)  # type: ignore
 
     return from_ini

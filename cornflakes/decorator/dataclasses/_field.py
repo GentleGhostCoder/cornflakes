@@ -1,10 +1,10 @@
 from dataclasses import Field as DataclassField
 from dataclasses import MISSING
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, List, Optional, TypeVar, Union, cast
 
-from cornflakes.decorator.types import MISSING_TYPE, WITHOUT_DEFAULT
+from cornflakes.types import _T, MISSING_TYPE, WITHOUT_DEFAULT, WITHOUT_DEFAULT_TYPE
 
-# TODO: add init_var_trigger -> like alias to call the validator method and pass the values
+DataclassFieldRootType = TypeVar("DataclassFieldRootType")
 
 
 class Field(DataclassField):
@@ -24,7 +24,7 @@ class Field(DataclassField):
         ),
         "validator",
         "ignore",
-        "alias",
+        "aliases",
         "title",
         "description",
         "exclude",
@@ -52,7 +52,7 @@ class Field(DataclassField):
     def __init__(
         self,
         default: Union[MISSING_TYPE, Any] = MISSING,
-        default_factory: Union[MISSING_TYPE, WITHOUT_DEFAULT, Callable[..., Any]] = MISSING,
+        default_factory: Union[MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Callable[..., Any]] = MISSING,
         init: Optional[bool] = True,
         repr: Optional[bool] = True,
         hash: Optional[Union[bool, MISSING_TYPE]] = None,
@@ -60,7 +60,7 @@ class Field(DataclassField):
         metadata: Any = None,
         kw_only: Union[MISSING_TYPE, bool] = MISSING,
         validator: Optional[Union[Callable[[str], Any], MISSING_TYPE]] = MISSING,
-        alias: Optional[Union[List[str], str]] = None,
+        aliases: Optional[Union[List[str], str]] = None,
         ignore: Optional[bool] = False,
         title: Optional[str] = None,
         description: Optional[str] = None,
@@ -96,7 +96,7 @@ class Field(DataclassField):
         :param metadata: Field will be included in metadata.
         :param kw_only: Field will be included in __init__ method as keyword only.
         :param validator: Validator for field.
-        :param alias: Aliases for config data (will be used to read from config files).
+        :param aliases: Aliases for config data (will be used to read from config files).
         :param ignore: Field will be ignored when writing to_ini etc.
         :param title: Can be any string, used in the schema.
         :param description: can be any string, used in the schema.
@@ -142,9 +142,17 @@ class Field(DataclassField):
 
         Returns: None
         """
-        self.validator = validator
+        if isinstance(validator, MISSING_TYPE) or not callable(validator):
+
+            def validator_decorator(func) -> Any:
+                self.validator = func
+                return func
+
+            self.validator = validator_decorator
+        else:
+            self.validator = validator
         self.ignore = ignore
-        self.alias = alias
+        self.aliases = aliases
         self.title = title
         self.description = description
         self.exclude = exclude
@@ -206,7 +214,7 @@ class Field(DataclassField):
         return self.__class__(
             **dc_field_args,
             validator=self.validator,
-            alias=self.alias,
+            aliases=self.aliases,
             ignore=self.ignore,
             title=self.title,
             description=self.description,
@@ -241,7 +249,7 @@ class Field(DataclassField):
             f"{DataclassField.__repr__(self)[:-1]}, "
             f"validator={self.validator!r}, "
             f"ignore={self.ignore!r}, "
-            f"alias={self.alias!r}, "
+            f"aliases={self.aliases!r}, "
             f"title={self.title!r}, "
             f"description={self.description!r}, "
             f"exclude={self.exclude!r}, "
@@ -267,9 +275,11 @@ class Field(DataclassField):
 
 
 def field(
+    attr: Optional[Union[Field, _T]] = None,
+    /,
     *,
-    default: Union[MISSING_TYPE, Any] = MISSING,
-    default_factory: Union[MISSING_TYPE, WITHOUT_DEFAULT, Callable[..., Any]] = MISSING,
+    default: Union["MISSING_TYPE", Any] = MISSING,
+    default_factory: Union[MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Callable[..., Any]] = MISSING,
     init: Optional[bool] = True,
     repr: Optional[bool] = True,
     hash: Optional[Union[bool, MISSING_TYPE]] = None,
@@ -277,7 +287,7 @@ def field(
     metadata: Any = None,
     kw_only: Union[MISSING_TYPE, bool] = MISSING,
     validator: Optional[Union[Callable[[str], Any], MISSING_TYPE]] = MISSING,
-    alias: Optional[Union[List[str], str]] = None,
+    aliases: Optional[Union[List[str], str]] = None,
     ignore: Optional[bool] = False,
     title: Optional[str] = None,
     description: Optional[str] = None,
@@ -302,7 +312,7 @@ def field(
     discriminator: Optional[str] = None,
     no_default: bool = False,
     **extra: Any,
-) -> Union[DataclassField, Any]:
+):
     """This function is used instead of exposing Field creation directly.
 
     So that a type checker can be told (via overloads) that this is a function whose type depends on its parameters.
@@ -319,7 +329,7 @@ def field(
     :param metadata: Field will be included in metadata.
     :param kw_only: Field will be included in __init__ method as keyword only.
     :param validator: Validator for field.
-    :param alias: Aliases for config data (will be used to read from config files).
+    :param aliases: Aliases for config data (will be used to read from config files).
     :param ignore: Field will be ignored when writing to_ini etc.
     :param title: Can be any string, used in the schema.
     :param description: can be any string, used in the schema.
@@ -372,7 +382,11 @@ def field(
 
     if default is MISSING and default_factory is MISSING and no_default:
         default_factory = WITHOUT_DEFAULT
-    new_field = Field(
+
+    if attr:
+        return cast(Field, attr)
+
+    return Field(
         default=default,
         default_factory=default_factory,
         init=init,
@@ -382,7 +396,7 @@ def field(
         metadata=metadata,
         kw_only=kw_only,
         validator=validator,
-        alias=alias,
+        aliases=aliases,
         ignore=ignore,
         title=title,
         description=description,
@@ -407,4 +421,3 @@ def field(
         discriminator=discriminator,
         **extra,
     )
-    return new_field

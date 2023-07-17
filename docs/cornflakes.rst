@@ -15,6 +15,17 @@ Subpackages
    cornflakes.packaging
    cornflakes.parser
 
+Submodules
+----------
+
+cornflakes.types module
+-----------------------
+
+.. automodule:: cornflakes.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

@@ -1,16 +1,11 @@
-from dataclasses import MISSING
-import inspect
 import logging
 from os import environ
-from typing import Any, Callable
+from typing import Any, Callable, Dict
 
-from _cornflakes import eval_type
-
+from cornflakes import eval_type
 from cornflakes.common import check_type, extract_var_names
-from cornflakes.decorator.dataclass.helper import dataclass_fields
-from cornflakes.decorator.types import WITHOUT_DEFAULT
-
-_empty = getattr(inspect, "_empty", None)
+from cornflakes.decorator.dataclasses._helper import dataclass_fields, dc_slot_missing_default
+from cornflakes.types import INSPECT_EMPTY
 
 
 def _get_env_vars(dc_cls):
@@ -23,7 +18,9 @@ def _validate(self, values, key, callback: Callable[..., Any]):
         kwargs = {}
         kwargs.update(co_varnames)
         kwargs.update({"self": self, "values": values, "key": key})
-        kwargs = {key: value for key, value in kwargs.items() if key in co_varnames.keys() and value is not _empty}
+        kwargs = {
+            key: value for key, value in kwargs.items() if key in co_varnames.keys() and value is not INSPECT_EMPTY
+        }
         kwargs.update({key: value for key, value in values.items() if key in co_varnames.keys()})
         if len(missing := [key for key in co_varnames.keys() if key not in kwargs.keys()]) > 1:
             raise TypeError(f"Argument not provided: {missing})")
@@ -46,7 +43,7 @@ def _process_type_checking(dc_cls, validate=False, **kwargs):
     }
 
 
-def check_dataclass_kwargs(dc_cls, validate=False, **kwargs):
+def check_dataclass_kwargs(dc_cls, validate=False, **kwargs) -> Dict[str, Any]:
     """Check dataclass types."""
     kwargs.update(_process_type_checking(dc_cls, **kwargs, validate=validate))
     return kwargs
@@ -65,11 +62,7 @@ def validate_dataclass_kwargs(dc_cls, validate=False, **kwargs):
             f"Validators are provided for attributes [{_validators.keys()}] in dataclass {dc_cls.__name__}, but validate is set to False!"
         )
 
-    _required_keys = [
-        key
-        for key, f in dataclass_fields(dc_cls).items()
-        if (f.default_factory == WITHOUT_DEFAULT) or (f.default_factory == MISSING and f.default == MISSING)
-    ]
+    _required_keys = [key for key, slot in dataclass_fields(dc_cls).items() if dc_slot_missing_default(slot)]
 
     if dc_cls.__eval_env__:
         kwargs.update(_get_env_vars(dc_cls))

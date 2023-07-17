@@ -1,8 +1,8 @@
 import sqlite3 as sql
 from typing import Any, List, Tuple
 
-from ..dataclass.helper import dataclass_fields
-from .commons import _convert_sql_format, _get_table_cols
+from cornflakes.decorator.dataclasses import dataclass_fields
+from cornflakes.decorator.datalite.commons import _convert_sql_format, _get_table_cols
 
 
 def _insert_pagination(query: str, page: int, element_count: int) -> str:
@@ -86,7 +86,7 @@ def _convert_record_to_object(class_: type, record: Tuple[Any], field_names: Lis
     :param field_names: Field names of the class.
     :return: the created object.
     """
-    kwargs = dict(zip(field_names, record[1:]))
+    kwargs = dict(zip(field_names, record[1:]))  # type: ignore
     field_types = {key: value.type for key, value in dataclass_fields(class_).items()}
     for key in kwargs:
         if field_types[key] == bytes:

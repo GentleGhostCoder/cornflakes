@@ -91,9 +91,9 @@ def datalite(db_path: str, type_overload: Optional[Dict[Optional[type], str]] = 
             _create_table(dataclass_, cur, types_table)
         setattr(dataclass_, "db_path", db_path)  # We add the path of the database to class itself.
         setattr(dataclass_, "types_table", types_table)  # We add the type table for migration.
-        dataclass_.create_entry = _create_entry
-        dataclass_.remove_entry = _remove_entry
-        dataclass_.update_entry = _update_entry
+        setattr(dataclass_, "create_entry", _create_entry)  # We add the path of the
+        setattr(dataclass_, "remove_entry", _remove_entry)  #
+        setattr(dataclass_, "update_entry", _update_entry)
         return dataclass_
 
     return decorator

@@ -1,7 +1,8 @@
 from dataclasses import fields
 from functools import reduce, wraps
 from inspect import isclass
-from typing import Any, Callable, Union
+from os.path import exists
+from typing import Any, Callable, Type, Union
 
 from click import Command, Group, option
 
@@ -9,9 +10,8 @@ from cornflakes.common import recursive_update
 from cornflakes.decorator.click.helper import click_param_type_parser
 from cornflakes.decorator.click.options._auto_fill_option_groups import auto_fill_option_groups
 from cornflakes.decorator.click.rich import RichCommand, RichGroup
-from cornflakes.decorator.config import is_config
-from cornflakes.decorator.dataclass.helper import config_files, dc_slot_get_default, dc_slot_missing_default, is_group
-from cornflakes.decorator.types import Config, Constants
+from cornflakes.decorator.dataclasses import config_files, dc_slot_missing_default, default, is_config, is_group
+from cornflakes.types import Config, ConfigGroup, Constants
 
 F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
 
@@ -20,7 +20,7 @@ def _update_options_help(callback, config, formatter=None):
     if (
         "__click_params__" in dir(callback)
         and getattr(callback, "__click_params__")
-        and getattr(callback, "__click_params__")[0].name == Constants.config_option.CONFIG_FILE_OPTION_PARAM
+        and getattr(callback, "__click_params__")[0].name == Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR
     ):
         getattr(callback, "__click_params__")[0].help = (
             formatter(getattr(callback, "__click_params__")[0].help)
@@ -31,15 +31,15 @@ def _update_options_help(callback, config, formatter=None):
     else:
         config_option_help_str = formatter("") if formatter else f"{config.__name__}"
         return option(
-            "-cfg",
-            f"--{Constants.config_option.CONFIG_FILE_OPTION_PARAM.replace('_', '-')}",
+            Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_SHORT,
+            Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM,
             **{"help": config_option_help_str, "type": str, "multiple": True},
         )(callback)
 
 
 def config_option(  # noqa: C901
-    config: Union[Config, Any],
-    add_config_file_option: bool = False,
+    config: Union[Type[Config], Type[ConfigGroup]],
+    add_config_file_options: bool = False,
     passing_key=Constants.config_option.PASSED_DECORATE_KEY,
     **options,
 ) -> F:
@@ -52,19 +52,22 @@ def config_option(  # noqa: C901
 
     if not is_config(config) and is_group(config):
         decorators = []  # List to hold all decorators
+        sub_configs = []
         for cfg in reversed(fields(config)):  # Reverse the order of fields
             sub_config = getattr(cfg.type, "__args__", [cfg.type])[0]
             if is_config(sub_config):
-                decorators.append(config_option(sub_config, add_config_file_option=add_config_file_option, **options))
+                sub_configs.append(sub_config)
+                decorators.append(config_option(sub_config, add_config_file_options=False, **options))
 
         # Function to chain decorators
         def chain_decorators(func):
             new_func = reduce(lambda f, g: g(f), decorators, func)
 
-            def formatter(help_str):
-                return f"Add config files to [{config_files(config)}] for {config.__name__}[{help_str}]"
+            def formatter(_):
+                help_str = " ".join([c.__name__ for c in sub_configs])
+                return f"""Add config files to init <{config.__name__}> by **DICT[{help_str}]\n\nFound default configs: {[f for f in config_files(config) if exists(f)]}"""
 
-            if add_config_file_option:
+            if add_config_file_options:
                 new_func = _update_options_help(new_func, config, formatter)
             return new_func
 
@@ -75,7 +78,7 @@ def config_option(  # noqa: C901
             raise TypeError("Wrapped object should be a function!")
 
         configs = {}
-        for line in config.__doc__.split("\n"):
+        for line in getattr(config, "__doc__", "").split("\n"):
             line = line.strip()
             if line[:5] == ":cvar":
                 line = line[6:].split(":")
@@ -85,7 +88,7 @@ def config_option(  # noqa: C901
 
         wrapper = callback
 
-        if add_config_file_option:
+        if add_config_file_options:
             wrapper = _update_options_help(wrapper, config)
 
         slot_options = {
@@ -98,24 +101,27 @@ def config_option(  # noqa: C901
                 option_args["help"] = f"value for {slot.name}"
             if "default" not in option_args:
                 if dc_slot_missing_default(slot):
-                    option_args["required"] = "True"
+                    # option_args["required"] = "True"
+                    pass
                 else:
-                    option_args["default"] = dc_slot_get_default(slot)
+                    option_args["default"] = default(slot)
+                    if not slot.repr:
+                        option_args["default"] = "***"
             if "type" not in option_args:
                 option_args["type"] = param_parser(slot.type)()
-            wrapper = option(option_name, **option_args)(wrapper)
+            option_args["show_default"] = True
+            wrapper = option(option_name, cls=None, **option_args)(wrapper)  # type: ignore
 
-        wrapper.__auto_option_enabled__ = True
+        setattr(wrapper, Constants.config_option.ENABLED, True)
 
         def wrap_read_config(func=None):
             """Wrap the read_config function to read config from file."""
 
-            @wraps(func)
             def read_config(files=None, **kwargs):
                 config_args = {k: v for k, v in kwargs.items() if k in [f.name for f in fields(config) if f.init]}
                 return config.from_file(files=files, **config_args)
 
-            return read_config
+            return wraps(func)(read_config) if func else read_config
 
         # retrieve existing function
         existing_func = getattr(wrapper, Constants.config_option.READ_CONFIG_METHOD, None)

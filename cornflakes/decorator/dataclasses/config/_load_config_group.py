@@ -1,12 +1,11 @@
-# from collections import OrderedDict
 import logging
-from typing import Any, Callable, Optional, Union
+from typing import Callable, Type
 
-from cornflakes.decorator.dataclass.helper import is_config, is_config_list
-from cornflakes.decorator.types import ConfigArgument, ConfigGroup
+from cornflakes.decorator.dataclasses._helper import is_config, is_config_list
+from cornflakes.types import ConfigGroup
 
 
-def create_group_loader(cls) -> Callable[..., Union[ConfigGroup, Any]]:
+def create_group_loader(cls: Type[ConfigGroup]) -> Callable[..., ConfigGroup]:
     """Config decorator to parse Ini Files and implements from_file method to config-group-classes.
 
     :param cls: Config class
@@ -15,15 +14,15 @@ def create_group_loader(cls) -> Callable[..., Union[ConfigGroup, Any]]:
     """
 
     def from_file(
-        files: ConfigArgument = None,
-        sections: ConfigArgument = None,
-        config_dict: ConfigArgument = None,
-        filter_function: ConfigArgument = None,
-        eval_env: Optional[bool] = None,
-        allow_empty: Optional[bool] = None,
+        files=None,
+        sections=None,
+        config_dict=None,
+        filter_function=None,
+        eval_env=None,
+        allow_empty=None,
         *slot_args,
         **slot_kwargs,
-    ) -> Union[ConfigGroup, Any]:
+    ) -> ConfigGroup:
         """Config parser from config files.
 
         :param files: Default config files

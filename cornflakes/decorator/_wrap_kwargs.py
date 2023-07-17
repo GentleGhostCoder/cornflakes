@@ -1,20 +1,17 @@
-import dataclasses
 from dataclasses import dataclass, field
 from functools import wraps
-import inspect
 from inspect import Parameter, Signature, signature
 from typing import Any, Callable, Dict, List, Optional
 
-_HAS_DEFAULT_FACTORY = getattr(dataclasses, "_HAS_DEFAULT_FACTORY", None)
-Empty = getattr(inspect, "_empty", None)
+from cornflakes.types import HAS_DEFAULT_FACTORY, INSPECT_EMPTY, WITHOUT_DEFAULT
 
 
 def _not_excluded(default):
-    return default != _HAS_DEFAULT_FACTORY
+    return default != HAS_DEFAULT_FACTORY
 
 
 def _not_empty(x):
-    return x != Empty
+    return x not in [INSPECT_EMPTY, WITHOUT_DEFAULT]
 
 
 def _check_default(default):
@@ -34,7 +31,7 @@ class KwargsWrapper:
     key_names: List[str] = field(default_factory=list, init=False)
     arg_names: List[str] = field(default_factory=list, init=False)
     kwarg_names: List[str] = field(default_factory=list, init=False)
-    wrapped: Optional[Callable[..., Any]] = field(default=None)
+    wrapped: Callable[..., object]
     key_params: List[Parameter] = field(default_factory=list)
     key_params_no_default: List[Parameter] = field(default_factory=list)
     arg_params: List[Parameter] = field(default_factory=list)

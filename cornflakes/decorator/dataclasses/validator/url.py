@@ -4,16 +4,16 @@ from urllib.parse import ParseResult, parse_qs, urlparse, urlunparse
 
 import validators
 
-from cornflakes.decorator.dataclass._dataclass import dataclass as data
-from cornflakes.decorator.dataclass._dataclass import to_tuple
-from cornflakes.decorator.dataclass._field import field
+from cornflakes.decorator.dataclasses._dataclass import dataclass as data
+from cornflakes.decorator.dataclasses._dataclass import to_tuple
+from cornflakes.decorator.dataclasses._field import field
 
 
-@data(
+@data(  # type: ignore
     slots=True,
     frozen=False,
-    tuple_factory=lambda self, x: urlunparse(x[:6]),  # unparse to string
     dict_factory=lambda self, x: str(self),  # to string -> tuple -> unparse to string
+    tuple_factory=lambda self, x: urlunparse(x[:6]),  # unparse to string
 )
 class AnyUrl:
     """Database URL.
@@ -34,7 +34,7 @@ class AnyUrl:
     :cvar valid: validators.url validation result
     """
 
-    url: InitVar[Optional[str]] = None
+    url: InitVar[Optional[str]] = field(default=None)
     scheme: str = field(default="", init=True)
     netloc: str = field(default="", init=True)
     path: str = field(default="", init=True)

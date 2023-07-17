@@ -5,8 +5,8 @@ from ipaddress import IPv4Address, IPv6Address
 from typing import Any, Dict, Generator, List, Tuple
 from uuid import UUID
 
-from cornflakes import field
-from cornflakes.decorator.dataclass import dataclass as data
+from cornflakes.decorator import field
+from cornflakes.decorator.dataclasses import dataclass as data
 from cornflakes.decorator.datalite.datalite_decorator import datalite
 
 

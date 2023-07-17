@@ -49,12 +49,10 @@ class DatetimeMS(datetime.datetime):
         if datetime_list[-1] == 0:
             del datetime_list[-1]
         datetime_str = f"datetime_ms({', '.join(map(str, datetime_list))})"
-        if self.tzinfo is not None:
-            if datetime_str[-1:] == ")":
-                datetime_str = datetime_str[:-1] + ", tzinfo=%r" % self.tzinfo + ")"
-        if self.fold:
-            if datetime_str[-1:] == ")":
-                datetime_str = datetime_str[:-1] + ", fold=1)"
+        if self.tzinfo is not None and datetime_str[-1:] == ")":
+            datetime_str = datetime_str[:-1] + ", tzinfo=%r" % self.tzinfo + ")"
+        if self.fold and datetime_str[-1:] == ")":
+            datetime_str = f"{datetime_str[:-1]}, fold=1)"
         return datetime_str
 
     @property
@@ -83,16 +81,3 @@ def datetime_ms(
 ) -> DatetimeMS:
     """Create Instance of :meth:`cornflakes.common.DatetimeMS`."""
     return cast(DatetimeMS, DatetimeMS(year, month, day, hour, minute, second, millisecond, tzinfo))  # camelcase
-
-
-class UnquotedString(str):
-    """String Wrapper with overwritten repr Function to not quote."""
-
-    def __repr__(self):
-        """String Wrapper with overwritten repr Function to not quote."""
-        return self
-
-
-def unquoted_string(x: str):
-    """Create Instance of :meth:`cornflakes.common.UnquotedString`."""
-    return UnquotedString(x)

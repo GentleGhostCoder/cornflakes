@@ -106,7 +106,6 @@ def __wrap_class(
 ):
     w_obj.logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__name__}")
     w_obj.logger.addHandler(logging.root.handlers[0])
-    w_obj.logger.__cornflakes__ = True
     w_obj.logger.setLevel(log_level or logging.root.level)
 
     if w_obj.logger.level == logging.DEBUG:
@@ -127,7 +126,6 @@ def __wrap_function(
 ):
     logger = logging.getLogger(f"{w_obj.__module__}.{w_obj.__qualname__}")
     logger.addHandler(logging.root.handlers[0])
-    logger.__cornflakes__ = True
     logger.setLevel(log_level or logging.root.level)
     if logger.level != logging.DEBUG:
         return w_obj

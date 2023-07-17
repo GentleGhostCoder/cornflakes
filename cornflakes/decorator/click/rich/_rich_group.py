@@ -28,6 +28,7 @@ class RichGroup(Group):
     name = ""
     context_settings: dict
     commands: Dict[str, Union[Command, RichCommand]]
+    config: RichConfig
 
     def callback(self):
         """Callback method with is wrapped over the command group."""
@@ -37,10 +38,10 @@ class RichGroup(Group):
 
         If the name is not provided, the name of the command is used.
         """
-        cmd.parent = self
+        setattr(cmd, "parent", self)
         Group.add_command(self, cmd, name)
 
-    def __init__(self, config: RichConfig = None, *args, **kwargs):
+    def __init__(self, config: Optional[RichConfig] = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""
         if not config:
             config = RichConfig()
