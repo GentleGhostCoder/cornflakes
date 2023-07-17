@@ -2,7 +2,7 @@ import dataclasses
 from dataclasses import dataclass
 from enum import Enum
 import inspect
-from typing import Any, Callable, ClassVar, Dict, List, Optional, Protocol, Type, Union
+from typing import Any, Callable, ClassVar, Dict, List, Optional, Protocol, Type, Union, runtime_checkable
 
 from typing_extensions import _T
 
@@ -107,6 +107,7 @@ class Constants:
 ConfigArgument = Optional[Optional[Union[Dict[Optional[str], Union[List[str], str]], List[str], str]]]
 
 
+@runtime_checkable
 class LoaderMethod(Protocol):
     """Config loader method protocol."""
 
@@ -131,6 +132,7 @@ class LoaderMethod(Protocol):
         ...
 
 
+@runtime_checkable
 class StandardDataclass(Protocol):
     __dataclass_fields__: ClassVar[Dict[str, Any]]
     __dataclass_params__: ClassVar[Any]  # in reality `dataclasses._DataclassParams`
@@ -140,6 +142,7 @@ class StandardDataclass(Protocol):
     __name__: ClassVar[str]
 
 
+@runtime_checkable
 class DataclassInstance(StandardDataclass, Protocol):
     def __int__(self, *args, **kwargs):
         ...
@@ -205,6 +208,7 @@ class DataclassInstance(StandardDataclass, Protocol):
         return check_dataclass_kwargs(self, validate=validate, **kwargs)
 
 
+@runtime_checkable
 class CornflakesDataclass(StandardDataclass, Protocol):
     """Dataclass instance protocol."""
 
@@ -289,6 +293,7 @@ class CornflakesDataclass(StandardDataclass, Protocol):
         return check_dataclass_kwargs(cls, validate=validate, **kwargs)
 
 
+@runtime_checkable
 class ConfigInstance(DataclassInstance, Protocol):
     """Config Protocol Type."""
 
@@ -339,6 +344,7 @@ class Config(CornflakesDataclass, Protocol):
     from_file: LoaderMethod
 
 
+@runtime_checkable
 class ConfigGroupInstance(DataclassInstance, Protocol):
     """ConfigGroup Protocol Type."""
 
@@ -357,6 +363,7 @@ class ConfigGroupInstance(DataclassInstance, Protocol):
     from_file: LoaderMethod
 
 
+@runtime_checkable
 class ConfigGroup(CornflakesDataclass, Protocol):
     """ConfigGroup Protocol Type."""
 
