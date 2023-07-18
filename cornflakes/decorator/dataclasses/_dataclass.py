@@ -79,17 +79,17 @@ def to_tuple(self) -> Any:  # noqa: C901
     return new_tuple
 
 
-def _zero_copy_asdict_inner(obj, factory):
+def _zero_copy_asdict_inner(obj):
     """Patched version of dataclasses._asdict_inner that does not copy the dataclass values."""
-    if hasattr(obj, "__dict__"):
-        return factory(obj.__dict__)
+    # if hasattr(obj, "__dict__"):
+    #     return obj.__dict__
 
     if is_dataclass(obj):
         result = []
         for f in fields(obj):
-            value = _zero_copy_asdict_inner(getattr(obj, f.name), factory)
+            value = _zero_copy_asdict_inner(getattr(obj, f.name))
             result.append((f.name, value))
-        return factory(result)
+        return result
     elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
         # obj is a namedtuple.  Recurse into it, but the returned
         # object is another namedtuple of the same type.  This is
@@ -109,26 +109,24 @@ def _zero_copy_asdict_inner(obj, factory):
         #   dict.  Note that if we returned dicts here instead of
         #   namedtuples, we could no longer call asdict() on a data
         #   structure where a namedtuple was used as a dict key.
-        return type(obj)(*[_zero_copy_asdict_inner(v, factory) for v in obj])
+        return type(obj)(*[_zero_copy_asdict_inner(v) for v in obj])
     elif isinstance(obj, (list, tuple)):
         # Assume we can create an object of this type by passing in a
         # generator (which is not true for namedtuples, handled
         # above).
-        return type(obj)(_zero_copy_asdict_inner(v, factory) for v in obj)
+        return type(obj)(_zero_copy_asdict_inner(v) for v in obj)
     elif isinstance(obj, dict):
-        return type(obj)(
-            (_zero_copy_asdict_inner(k, factory), _zero_copy_asdict_inner(v, factory)) for k, v in obj.items()
-        )
+        return type(obj)((_zero_copy_asdict_inner(k), _zero_copy_asdict_inner(v)) for k, v in obj.items())
     else:
         return obj
 
 
 # @profile
-def _to_dict(self) -> tuple | dict | Any:
+def _to_dict(self) -> Union[tuple, dict, Any]:
     """Method to convert Dataclass with slots to dict."""
     if not is_dataclass(self):
         return self
-    new_dict = _zero_copy_asdict_inner(self, d_factory(self))
+    new_dict = d_factory(self)(_zero_copy_asdict_inner(self))
     dc_fields = fields(self)
     if not (
         isinstance(new_dict, dict)
@@ -153,6 +151,25 @@ def _to_dict(self) -> tuple | dict | Any:
                     value[idx] = _to_dict(sub_value)
             new_dict.update({f.name: value})
     return new_dict
+
+
+def _new_getattr(self, key):
+    value = object.__getattribute__(self, key)
+    if is_index(value):
+        type(value).reset()
+        return value
+    if is_dataclass(value):
+        return _to_dict(value)
+    if isinstance(value, (list, tuple)):
+        value = list(value)  # if tuple cast  to list
+        for idx, sub_value in enumerate(value):
+            if is_index(sub_value):
+                type(sub_value).reset()
+                value[idx] = sub_value
+            if is_dataclass(sub_value):
+                value[idx] = _to_dict(sub_value)
+        return value
+    return value
 
 
 def to_dict(self) -> dict:
@@ -335,6 +352,14 @@ def dataclass(
         dc_cls.__module__ = w_cls.__module__
         dc_cls.__qualname__ = w_cls.__qualname__
         dc_cls.__init__.__doc__ = w_cls.__init__.__doc__
+        dc_cls.__getitem__ = _new_getattr
+
+        static_keys = [f.name for f in dataclasses.fields(dc_cls) if not getattr(f, "ignore", False)]
+
+        def keys(self):
+            return static_keys
+
+        dc_cls.keys = keys
 
         return dc_cls
 

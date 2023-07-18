@@ -89,30 +89,33 @@ class TestSpeed(unittest.TestCase):
         self.assertTrue(custom < pydantic_base_model)
         self.assertTrue(custom_config < pydantic_config)
 
+        def dict_passing(**kwargs):
+            pass
+
         s = perf_counter()
         for _ in range(10000):
-            asdict(CustomCornflakesDataclass(name="test", age=1))
+            dict_passing(**asdict(CustomCornflakesDataclass(name="test", age=1)))
         dc_builtin_as_dict = perf_counter() - s
 
         # compare pydantic-dict method with to_dict
         s = perf_counter()
         for _ in range(10000):
-            CustomCornflakesDataclass(name="test", age=1).to_dict()
+            dict_passing(**CustomCornflakesDataclass(name="test", age=1))
         custom_to_dict = perf_counter() - s
 
         s = perf_counter()
         for _ in range(10000):
-            CustomCornflakesConfig(name="test", age=1).to_dict()
+            dict_passing(**CustomCornflakesConfig(name="test", age=1))
         custom_config_to_dict = perf_counter() - s
 
         s = perf_counter()
         for _ in range(10000):
-            RootModel[PydanticDataclass](PydanticDataclass(name="test", age=1)).model_dump()
+            dict_passing(**RootModel[PydanticDataclass](PydanticDataclass(name="test", age=1)).model_dump())
         pydantic_dataclass_to_dict = perf_counter() - s
 
         s = perf_counter()
         for _ in range(10000):
-            PydanticBaseModel(name="test", age=1).model_dump()
+            dict_passing(**PydanticBaseModel(name="test", age=1).model_dump())
         pydantic_base_model_to_dict = perf_counter() - s
 
         self.assertTrue(custom_to_dict * 0.4 < dc_builtin_as_dict)

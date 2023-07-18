@@ -7,7 +7,6 @@ from typing import Optional
 
 from cornflakes.decorator import Index, field
 from cornflakes.decorator.dataclasses import AnyUrl, config
-from cornflakes.decorator.dataclasses import dataclass as data
 
 
 class ExampleEnum(Enum):
@@ -43,3 +42,12 @@ class SubConfigClass:
     quotechar: str = '"'
     sep: str = ","
     euro: str = "€"
+
+
+def some_func(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+
+some_func(**SubConfigClass(url="blub"))
+some_func(**SubConfigClass(url="blub").to_dict())

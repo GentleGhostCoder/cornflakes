@@ -42,6 +42,8 @@ class TestConfigGeneration(unittest.TestCase):
 
         from tests.configs.default import MainConfig
 
+        self.assertEqual(MainConfig.from_file().to_dict(), dict(**MainConfig.from_file()))
+
         self.assertEqual(
             MainConfig.from_file().to_dict(),
             {
