@@ -16,7 +16,7 @@ ci:
 repos:
     - repo: https://github.com/astral-sh/ruff-pre-commit
       # Ruff version. TODO: remove flake8 in future
-      rev: "v0.0.277"
+      rev: "v0.0.278"
       hooks:
           - id: ruff
             args: [--fix]
@@ -145,7 +145,7 @@ repos:
             types: [file]
             files: (\.cmake|CMakeLists.txt)(.in)?$
     - repo: https://github.com/sirosen/check-jsonschema
-      rev: 0.23.2
+      rev: 0.23.3
       hooks:
           - id: check-github-actions
           - id: check-github-workflows
