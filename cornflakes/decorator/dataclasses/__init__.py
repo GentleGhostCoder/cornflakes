@@ -3,7 +3,7 @@ from cornflakes.decorator.dataclasses.config import config_group, config, to_ini
 from cornflakes.decorator.dataclasses._add_dataclass_slots import add_slots
 
 # from dataclasses import *  # noqa: F401, F403
-from cornflakes.decorator.dataclasses._dataclass import dataclass, to_dict, to_tuple, fields
+from cornflakes.decorator.dataclasses._dataclass import dataclass, to_dict, to_tuple
 from cornflakes.decorator.dataclasses._field import Field, field
 from cornflakes.decorator.dataclasses._helper import (
     is_config,
@@ -13,6 +13,7 @@ from cornflakes.decorator.dataclasses._helper import (
     default,
     dc_slot_missing_default,
     dataclass_fields,
+    fields,
 )
 from cornflakes.decorator.dataclasses._validate import check_dataclass_kwargs, validate_dataclass_kwargs
 from cornflakes.decorator.dataclasses.validator import AnyUrl
@@ -39,4 +40,5 @@ __all__ = [
     "AnyUrl",
     "to_ini",
     "to_yaml",
+    "fields",
 ]

@@ -1,4 +1,6 @@
 """Dataclass helper functions used by the custom dataclass decorator."""
+import dataclasses
+from dataclasses import fields as dc_fields
 import re
 
 from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants
@@ -88,3 +90,11 @@ def dc_slot_missing_default(slot):
 def default(slot):
     """Method to get the default value of the dataclass."""
     return slot.default_factory if isinstance(slot.default, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE)) else slot.default
+
+
+def fields(class_or_instance):
+    """Patched method of the dataclasses fields method to ignore the custom dataclass."""
+    return dc_fields(class_or_instance)
+
+
+dataclasses.fields = fields

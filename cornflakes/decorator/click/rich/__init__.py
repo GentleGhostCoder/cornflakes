@@ -1,5 +1,5 @@
 """cornflakes.click.rich Module."""
-from typing import Callable, Optional, Union, Type, Any
+from typing import Callable, Optional, Union, Any
 
 from click import argument as click_argument
 from click import command as click_command
@@ -15,7 +15,7 @@ from cornflakes.decorator.click.rich._rich_group import RichGroup
 AnyCallable = Callable[..., Any]
 
 
-def group(*args, cls=RichGroup, **kwargs) -> Callable[[Union[AnyCallable, Type[RichGroup]]], Type[RichGroup]]:  # type: ignore
+def group(*args, cls=RichGroup, **kwargs) -> Callable[[Union[AnyCallable, RichGroup]], RichGroup]:  # type: ignore
     """Group decorator function.
 
     Defines the group() function so that it uses the RichGroup class by default.
@@ -23,7 +23,7 @@ def group(*args, cls=RichGroup, **kwargs) -> Callable[[Union[AnyCallable, Type[R
     return rich_global_option_wrapper(click_group, *args, cls=cls, **kwargs)
 
 
-def command(*args, cls=RichCommand, **kwargs) -> Callable[[Union[AnyCallable, Type[RichCommand]]], Type[RichCommand]]:  # type: ignore
+def command(*args, cls=RichCommand, **kwargs) -> Callable[[Union[AnyCallable, RichCommand]], RichCommand]:  # type: ignore
     """Command decorator function.
 
     Defines the command() function so that it uses the RichCommand class by default.
@@ -31,7 +31,7 @@ def command(*args, cls=RichCommand, **kwargs) -> Callable[[Union[AnyCallable, Ty
     return rich_global_option_wrapper(click_command, *args, cls=cls, **kwargs)
 
 
-def argument(*args, cls=RichArg, **kwargs) -> Callable[..., Union[Type[Argument], Type[RichArg]]]:  # type: ignore
+def argument(*args, cls=RichArg, **kwargs) -> Callable[..., Union[Argument, RichArg]]:  # type: ignore
     """Command decorator function.
 
     Defines the command() function so that it uses the RichCommand class by default.
@@ -39,9 +39,7 @@ def argument(*args, cls=RichArg, **kwargs) -> Callable[..., Union[Type[Argument]
     return click_argument(*args, cls=cls, **kwargs)
 
 
-def group_command(
-    self, name: Optional[str], cmd: Optional[Union[Type[BaseCommand], Type[Command], Type[RichCommand]]] = None
-):
+def group_command(self, name: Optional[str], cmd: Optional[Union[BaseCommand, Command, RichCommand]] = None):
     """Decorator to register a RichCommand with this group."""
 
     def wrapper(callback):
@@ -53,7 +51,7 @@ def group_command(
     return wrapper(cmd) if cmd else wrapper
 
 
-def group_group(self, name: Optional[str], cmd: Optional[Union[Type[Group], Type[RichGroup]]] = None):
+def group_group(self, name: Optional[str], cmd: Optional[Union[Group, RichGroup]] = None):
     """Decorator to register a RichGroup with this group."""
 
     def wrapper(callback):

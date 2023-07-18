@@ -17,7 +17,7 @@ from cornflakes.types import Config
 
 
 def create_file_loader(  # noqa: C901
-    cls: Type[Config],
+    cls,
     loader=ini_load,  # type: ignore
 ):
     """Config decorator to parse Ini Files and implements from_file method to config-classes.

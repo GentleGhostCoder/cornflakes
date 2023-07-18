@@ -1,11 +1,9 @@
 import logging
-from typing import Callable, Type
 
 from cornflakes.decorator.dataclasses._helper import is_config, is_config_list
-from cornflakes.types import ConfigGroup
 
 
-def create_group_loader(cls: Type[ConfigGroup]) -> Callable[..., ConfigGroup]:
+def create_group_loader(cls):
     """Config decorator to parse Ini Files and implements from_file method to config-group-classes.
 
     :param cls: Config class
@@ -22,7 +20,7 @@ def create_group_loader(cls: Type[ConfigGroup]) -> Callable[..., ConfigGroup]:
         allow_empty=None,
         *slot_args,
         **slot_kwargs,
-    ) -> ConfigGroup:
+    ):
         """Config parser from config files.
 
         :param files: Default config files

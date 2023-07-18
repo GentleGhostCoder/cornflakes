@@ -1,7 +1,7 @@
 from importlib.metadata import version
 from inspect import getfile
 import logging
-from typing import TYPE_CHECKING, Any, Callable, Optional, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Optional, TypeVar, Union, cast
 
 import click
 from click import style, version_option
@@ -81,12 +81,12 @@ def click_cli(  # noqa: C901
 
         module = module.replace("_", "-")
 
-        cli: Union[Type[RichCommand], Type[RichGroup]] = (
+        cli: Union[RichCommand, RichGroup] = (
             command(module, config=config)(w_callback) if as_command else group(module, config=config)(w_callback)
         )
 
         if TYPE_CHECKING:
-            cli = cast(Type[RichCommand], cli) if as_command else cast(Type[RichGroup], cli)
+            cli = cast(RichCommand, cli) if as_command else cast(RichGroup, cli)
 
         if cast(RichConfig, config).VERSION_INFO:
             name = w_callback.__qualname__

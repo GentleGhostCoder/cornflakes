@@ -1,4 +1,4 @@
-from typing import Callable, List, Optional, Type, Union, cast, overload
+from typing import Callable, List, Optional, Type, Union, overload
 
 from typing_extensions import dataclass_transform  # type: ignore
 
@@ -154,11 +154,7 @@ def config_group(
         setattr(
             config_group_cls,
             Loader.FILE.value,
-            staticmethod(
-                funcat(Index.reset, funcat_where="wrap")(
-                    create_group_loader(cls=cast(Type[ConfigGroup], config_group_cls))
-                )
-            ),
+            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_group_loader(cls=config_group_cls))),
         )
 
         # Set Writer

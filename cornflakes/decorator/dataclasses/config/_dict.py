@@ -1,12 +1,12 @@
 import os
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 from cornflakes.types import Config
 
 
 def create_dict_file_loader(
-    cls: Type[Config],
+    cls,
 ) -> Callable[..., Dict[str, Optional[Union[Config, List[Config], Any]]]]:
     """Method to create file loader for passed dict."""
 

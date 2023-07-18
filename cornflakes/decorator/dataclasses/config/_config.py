@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, List, Optional, Type, Union, cast, overload
+from typing import Any, Callable, List, Optional, Type, Union, overload
 
 from typing_extensions import dataclass_transform  # type: ignore
 
@@ -233,23 +233,17 @@ def config(
         setattr(
             config_cls,
             Loader.YAML.value,
-            staticmethod(
-                funcat(Index.reset, funcat_where="wrap")(create_yaml_file_loader(cls=cast(Type[Config], config_cls)))
-            ),
+            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_yaml_file_loader(cls=config_cls))),
         )
         setattr(
             config_cls,
             Loader.INI.value,
-            staticmethod(
-                funcat(Index.reset, funcat_where="wrap")(create_ini_file_loader(cls=cast(Type[Config], config_cls)))
-            ),
+            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_ini_file_loader(cls=config_cls))),
         )
         setattr(
             config_cls,
             Loader.DICT.value,
-            staticmethod(
-                funcat(Index.reset, funcat_where="wrap")(create_dict_file_loader(cls=cast(Type[Config], config_cls)))
-            ),
+            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_dict_file_loader(cls=config_cls))),
         )
         setattr(
             config_cls,

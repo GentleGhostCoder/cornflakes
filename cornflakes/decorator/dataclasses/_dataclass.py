@@ -124,7 +124,7 @@ def _zero_copy_asdict_inner(obj, factory):
 
 
 # @profile
-def to_dict(self) -> dict:
+def _to_dict(self) -> tuple | dict | Any:
     """Method to convert Dataclass with slots to dict."""
     if not is_dataclass(self):
         return self
@@ -136,13 +136,13 @@ def to_dict(self) -> dict:
         if dc_fields
         else True
     ):
-        return d_factory(self)(new_dict)
+        return new_dict
     for f in dc_fields:
         if is_index(value := getattr(self, f.name)):
             type(value).reset()
             new_dict.update({f.name: value})
         if is_dataclass(value):
-            new_dict.update({f.name: value.to_dict()})
+            new_dict.update({f.name: _to_dict(value)})
         if isinstance(value, (list, tuple)):
             value = list(value)  # if tuple cast  to list
             for idx, sub_value in enumerate(value):
@@ -150,9 +150,14 @@ def to_dict(self) -> dict:
                     type(sub_value).reset()
                     value[idx] = sub_value
                 if is_dataclass(sub_value):
-                    value[idx] = sub_value.to_dict()
+                    value[idx] = _to_dict(sub_value)
             new_dict.update({f.name: value})
     return new_dict
+
+
+def to_dict(self) -> dict:
+    """Method to convert Dataclass with slots to dict."""
+    return d_factory(self)(_to_dict(self))
 
 
 if sys.version_info >= (3, 10):

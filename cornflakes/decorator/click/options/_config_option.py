@@ -1,8 +1,7 @@
-from dataclasses import fields
 from functools import reduce, wraps
 from inspect import isclass, signature
 from os.path import exists
-from typing import Any, Callable, Type, Union
+from typing import Any, Callable, Type, Union, cast
 
 from click import Command, Group, option
 
@@ -14,6 +13,7 @@ from cornflakes.decorator.dataclasses import (
     config_files,
     dc_slot_missing_default,
     default,
+    fields,
     is_config,
     is_group,
     normalized_class_name,
@@ -39,7 +39,9 @@ def _set_passed_key(wrapper, config, passing_key):
 
     # Check if the passing_key is not provided in the params
     if passing_key not in params:
-        raise ValueError(f"Key {passing_key} is required but not provided in the parameters!")
+        raise ValueError(
+            f"Method parameter for {config.__name__} is required, when using config_option, but not provided in the parameters! You can pass the config with the key {passing_key} or by a custom parameter that has the provided config class annotation."
+        )
 
     if passing_key in fields(config):
         raise ValueError(
@@ -131,7 +133,8 @@ def _config_option(  # noqa: C901
             wrapper = _update_options_help(wrapper, config)
 
         slot_options = {
-            f"--{slot_name.replace('_', '-')}": slot for slot_name, slot in config.__dataclass_fields__.items()
+            f"--{slot_name.replace('_', '-')}": slot
+            for slot_name, slot in cast(Type[CornflakesDataclass], config).__dataclass_fields__.items()
         }
 
         for option_name, slot in slot_options.items():
