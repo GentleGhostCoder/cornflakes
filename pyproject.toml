@@ -172,6 +172,8 @@ requires = [
 ]
 #build-backend = "setuptools.build_meta"
 build-backend = "poetry.core.masonry.api"
+use-pep517 = false
+
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
