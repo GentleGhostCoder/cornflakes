@@ -57,6 +57,15 @@ lint: ## check style with flake8
 test: ## run tests quickly with the default Python
 	pytest -o log_cli=true
 
+test-mypy:
+	mypy cornflakes tests docs/conf.py
+
+test-xdoctest:
+	python -m xdoctest cornflakes all
+
+test-pytype:
+	pytype --disable=import-error cornflakes tests docs/conf.py
+
 test-all: ## run tests on every Python version with tox
 	nox
 

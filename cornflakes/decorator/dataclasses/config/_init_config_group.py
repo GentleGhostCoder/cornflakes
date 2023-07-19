@@ -24,10 +24,10 @@ def _load_config_kwargs(
 ):
     """Create default config arguments for a config-group class."""
     _files = files if isinstance(files, list) else [str(files)] if files else config_files(cls)
-    default_config = {}
+    default_config: dict = {}
 
     if not _files:
-        return default_config
+        return kwargs
 
     sections = sections if isinstance(sections, list) else [str(sections)] if sections else config_sections(cls)
     eval_env = eval_env or is_eval_env(cls)

@@ -56,7 +56,7 @@ class SubConfigClass:
 # SubConfigClass()
 # from cornflakes.decorator.dataclasses import fields
 # any(f.type == Index for f in fields(SubConfigClass))
-from cornflakes.decorator._indexer import IndexCounter, IndexInstance
+# from cornflakes.decorator._indexer import IndexCounter, IndexInstance
 
-SubConfigClass(url="blub").idx_at_first_ini_or_0.__class__
-isinstance(SubConfigClass(url="blub").idx_at_first_ini_or_0, IndexInstance)
+# SubConfigClass(url="blub").idx_at_first_ini_or_0.__class__
+# isinstance(SubConfigClass(url="blub").idx_at_first_ini_or_0, IndexInstance)
