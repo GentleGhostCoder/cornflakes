@@ -5,6 +5,7 @@ from os import environ
 import re
 
 from _cornflakes import eval_type
+
 from cornflakes.decorator._indexer import IndexInstance
 from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants
 
