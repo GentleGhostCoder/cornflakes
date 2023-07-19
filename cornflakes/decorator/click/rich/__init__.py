@@ -23,7 +23,7 @@ def group(*args, cls=RichGroup, **kwargs) -> Callable[[Union[AnyCallable, RichGr
     return rich_global_option_wrapper(click_group, *args, cls=cls, **kwargs)
 
 
-def command(*args, cls=RichCommand, **kwargs) -> Callable[[Union[AnyCallable, RichCommand]], RichCommand]:  # type: ignore
+def command(*args, cls=RichCommand, **kwargs) -> Callable[[Union[AnyCallable, Command, Group, RichCommand, RichGroup]], RichCommand]:  # type: ignore
     """Command decorator function.
 
     Defines the command() function so that it uses the RichCommand class by default.

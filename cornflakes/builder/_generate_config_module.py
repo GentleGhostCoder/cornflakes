@@ -8,7 +8,6 @@ import sysconfig
 from types import ModuleType
 from typing import Dict, List, Optional, Union
 
-from cornflakes.common import unquoted_string
 import cornflakes.decorator.dataclasses
 from cornflakes.decorator.dataclasses import config_files, field, is_config
 from cornflakes.decorator.dataclasses.config import config_group
@@ -76,11 +75,6 @@ def generate_config_module(  # noqa: C901
             ini_config_objects.update(cfg)
             imports.append(cfg_name)
             files.extend([file for file in config_files(cfg_class) if file and file not in files])
-
-    if Constants.config_decorator_args.FILTER_FUNCTION in kwargs:
-        filter_function = kwargs.pop(Constants.config_decorator_args.FILTER_FUNCTION)
-        kwargs[Constants.config_decorator_args.FILTER_FUNCTION] = unquoted_string(filter_function.__name__)
-        extra_imports.append(f"from {filter_function.__module__} import {filter_function.__name__}")
 
     logging.debug(f"Found configs: {imports}")
     declaration.extend(

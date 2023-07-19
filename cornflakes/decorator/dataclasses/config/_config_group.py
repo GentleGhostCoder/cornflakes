@@ -32,7 +32,6 @@ def config_group(
     files: Optional[Union[List[str], str]] = None,
     allow_empty: Optional[bool] = None,
     chain_files: Optional[bool] = False,
-    filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
 ) -> Callable[[Type[_T]], Union[Type[_T], Type[CornflakesDataclass], Type[ConfigGroup]]]:
     ...
@@ -61,7 +60,6 @@ def config_group(
     files: Optional[Union[str, List[str]]] = None,
     allow_empty: Optional[bool] = None,
     chain_files: Optional[bool] = False,
-    filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
 ) -> Union[Type[_T], Type[CornflakesDataclass], Type[ConfigGroup]]:
     ...
@@ -89,7 +87,6 @@ def config_group(
     files: Optional[Union[str, List[str]]] = None,
     allow_empty: Optional[bool] = None,
     chain_files: Optional[bool] = False,
-    filter_function: Optional[Callable[..., bool]] = None,
     **kwargs,
 ) -> Union[
     Callable[[Type[_T]], Union[Type[ConfigGroup], Type[CornflakesDataclass], Type[_T]]],
@@ -117,7 +114,6 @@ def config_group(
     :param files: Default config files
     :param allow_empty: Flag that allows empty config result
     :param chain_files: flag indicating whether to chain files in to single config.
-    :param filter_function: Optional filter method for config
     :param kwargs: Additional args for custom dataclass. (dict_factory, eval_env. ...).
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
@@ -149,7 +145,6 @@ def config_group(
         setattr(config_group_cls, Constants.config_decorator.FILES, files)
         setattr(config_group_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
         setattr(config_group_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
-        setattr(config_group_cls, Constants.config_decorator.FILTER_FUNCTION, filter_function)
 
         setattr(
             config_group_cls,

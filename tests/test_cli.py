@@ -26,7 +26,7 @@ def some_group():
 
 
 @command("test_command")
-@config_option(SomeConfig, config_file=True)
+@config_option(SomeConfig, add_config_file_options=True)
 @option("--test-arg", help="test arg", default="blub", required=False)
 def some_command(test_config: SomeConfig):
     """Test CLI Command."""

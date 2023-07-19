@@ -13,7 +13,16 @@ class ExampleEnum(Enum):
     sample = "abc"
 
 
-@config(sections="sub_config", use_regex=True, is_list=True, frozen=True, eval_env=True, validate=True)
+@config(
+    files="tests/configs/default.ini",
+    sections="sub_config",
+    use_regex=True,
+    is_list=True,
+    frozen=True,
+    eval_env=True,
+    validate=True,
+    chain_files=True,
+)
 class SubConfigClass:
     """Test Config Class."""
 
@@ -42,12 +51,3 @@ class SubConfigClass:
     quotechar: str = '"'
     sep: str = ","
     euro: str = "€"
-
-
-def some_func(**kwargs):
-    for key, value in kwargs.items():
-        print(f"{key}: {value}")
-
-
-some_func(**SubConfigClass(url="blub"))
-some_func(**SubConfigClass(url="blub").to_dict())

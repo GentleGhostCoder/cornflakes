@@ -40,7 +40,7 @@ class TestSpeed(unittest.TestCase):
             name: str
             age: int
 
-        @config
+        @config(files="tests/configs/name_age")
         class CustomCornflakesConfig:
             name: str
             age: int
@@ -67,7 +67,7 @@ class TestSpeed(unittest.TestCase):
 
         s = perf_counter()
         for _ in range(1000):
-            CustomCornflakesConfig.from_ini("tests/configs/name_age")
+            CustomCornflakesConfig()
         custom_config = perf_counter() - s
 
         s = perf_counter()
@@ -105,7 +105,7 @@ class TestSpeed(unittest.TestCase):
 
         s = perf_counter()
         for _ in range(10000):
-            dict_passing(**CustomCornflakesConfig(name="test", age=1))
+            dict_passing(**CustomCornflakesConfig())
         custom_config_to_dict = perf_counter() - s
 
         s = perf_counter()
@@ -118,12 +118,12 @@ class TestSpeed(unittest.TestCase):
             dict_passing(**PydanticBaseModel(name="test", age=1).model_dump())
         pydantic_base_model_to_dict = perf_counter() - s
 
-        self.assertTrue(custom_to_dict * 0.4 < dc_builtin_as_dict)
+        self.assertTrue(custom_to_dict < dc_builtin_as_dict)
         self.assertTrue(
-            custom_to_dict * 0.8 < pydantic_dataclass_to_dict
+            custom_to_dict < pydantic_dataclass_to_dict
         )  # pydantic model_dump is faster, so check only how much faster (<60%) .. can be optimized maybe
-        self.assertTrue(custom_config_to_dict * 0.8 < pydantic_dataclass_to_dict)
+        self.assertTrue(custom_config_to_dict < pydantic_dataclass_to_dict)
         self.assertTrue(
-            custom_to_dict * 0.3 < pydantic_base_model_to_dict
+            custom_to_dict * 0.9 < pydantic_base_model_to_dict
         )  # pydantic model_dump is faster, so check only how much faster (<60%) .. can be optimized maybe
-        self.assertTrue(custom_config_to_dict * 0.3 < pydantic_base_model_to_dict)
+        self.assertTrue(custom_config_to_dict * 0.4 < pydantic_base_model_to_dict)

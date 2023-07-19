@@ -1,16 +1,29 @@
 import logging
 from typing import Any, Callable, List, Optional, Type, Union, overload
 
+from docutils.nodes import field_name
 from typing_extensions import dataclass_transform  # type: ignore
 
 from cornflakes.decorator import Index, funcat
 from cornflakes.decorator.dataclasses._dataclass import dataclass
 from cornflakes.decorator.dataclasses._field import Field, field
+from cornflakes.decorator.dataclasses._helper import dataclass_fields, fields
 from cornflakes.decorator.dataclasses.config._config_group import config_group
 from cornflakes.decorator.dataclasses.config._dict import create_dict_file_loader
 from cornflakes.decorator.dataclasses.config._ini import create_ini_file_loader, to_ini
+from cornflakes.decorator.dataclasses.config._init_config import wrap_init_default_config
 from cornflakes.decorator.dataclasses.config._yaml import create_yaml_file_loader, to_yaml
-from cornflakes.types import _T, Config, ConfigGroup, Constants, CornflakesDataclass, Loader, Writer
+from cornflakes.types import (
+    _T,
+    Config,
+    ConfigDecoratorArgs,
+    ConfigGroup,
+    Constants,
+    CornflakesDataclass,
+    Loader,
+    MappingLike,
+    Writer,
+)
 
 
 @dataclass_transform(field_specifiers=(field, Field))
@@ -38,7 +51,6 @@ def config(
     default_loader: Optional[Loader] = None,
     allow_empty: Optional[bool] = False,
     chain_files: Optional[bool] = False,
-    filter_function: Optional[Callable[..., bool]] = None,
     **kwargs: Any,
 ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], Type[Config], Type[ConfigGroup], Type[_T]]]:
     ...
@@ -71,7 +83,6 @@ def config(
     default_loader: Optional[Loader] = None,
     allow_empty: Optional[bool] = False,
     chain_files: Optional[bool] = False,
-    filter_function: Optional[Callable[..., bool]] = None,
     **kwargs: Any,
 ) -> Union[Type[Config], Type[CornflakesDataclass], Type[ConfigGroup], Type[_T]]:
     ...
@@ -103,10 +114,11 @@ def config(
     default_loader: Optional[Loader] = None,
     allow_empty: Optional[bool] = False,
     chain_files: Optional[bool] = False,
-    filter_function: Optional[Callable[..., bool]] = None,
+    init_default_config: Optional[bool] = True,
     **kwargs: Any,
 ) -> Union[
-    Callable[[Type[_T]], Union[Type[Config], Type[CornflakesDataclass], Type[ConfigGroup], Type[_T]]],
+    Callable[[Type[_T]], Union[Type[Config], Type[CornflakesDataclass], Type[ConfigGroup], MappingLike, Type[_T]]],
+    MappingLike,
     Type[CornflakesDataclass],
     Type[Config],
     Type[ConfigGroup],
@@ -115,6 +127,7 @@ def config(
     """
     Config decorator to parse INI files and implement config loader methods to config-classes.
 
+    :param init_default_config:
     :param match_args:
     :param slots:
     :param kw_only:
@@ -156,8 +169,8 @@ def config(
     :type allow_empty: bool, optional
     :param chain_files: If set to True, multiple config files will be chained into a single config. Default is False.
     :type chain_files: bool, optional
-    :param filter_function: An optional filter function to filter out unwanted config entries.
-    :type filter_function: Callable[..., bool], optional
+    :param init_default_config: If set to True, will initialize the default config file(s) upon loading. Default is True.
+    :type init_default_config: bool, optional
 
     :returns: If a class is given as `config_cls`, a new decorated class is returned. If no class is given, the decorator itself is returned with the custom default arguments.
     :rtype: Union[Type[Config], Type[ConfigGroup], Type[_T]], Callable[..., Union[Type[Config], Type[ConfigGroup], Type[_T]]]
@@ -167,7 +180,9 @@ def config(
     if not default_loader:
         default_loader = get_default_loader(files)
 
-    def wrapper(w_cls: Type[_T]) -> Union[Type[Config], Type[ConfigGroup], Type[CornflakesDataclass], Type[_T]]:
+    def wrapper(
+        w_cls: Type[_T],
+    ) -> Union[Type[Config], Type[ConfigGroup], Type[CornflakesDataclass], MappingLike, Type[_T]]:
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(w_cls, "__annotations__"):
@@ -217,13 +232,16 @@ def config(
             **kwargs,
         )(w_cls)
 
+        # not allow field names that are in ConfigDecoratorArgs
+        if any(field_name in dataclass_fields(ConfigDecoratorArgs) for field_name.name in fields(config_cls)):
+            raise ValueError(f"Field name cannot be any of {dataclass_fields(ConfigDecoratorArgs).keys()}.")
+
         setattr(config_cls, Constants.config_decorator.SECTIONS, sections)
         setattr(config_cls, Constants.config_decorator.FILES, files)
         setattr(config_cls, Constants.config_decorator.USE_REGEX, use_regex)
         setattr(config_cls, Constants.config_decorator.IS_LIST, is_list)
         setattr(config_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
         setattr(config_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
-        setattr(config_cls, Constants.config_decorator.FILTER_FUNCTION, filter_function)
 
         # Set Writer
         setattr(config_cls, Writer.INI.value, to_ini)
@@ -252,6 +270,8 @@ def config(
                 getattr(config_cls, str(default_loader.value), getattr(config_cls, Loader.DICT.value))
             ),
         )
+        if init_default_config:
+            config_cls = wrap_init_default_config(config_cls)
 
         return config_cls
 

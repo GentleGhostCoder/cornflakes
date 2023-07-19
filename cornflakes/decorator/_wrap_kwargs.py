@@ -32,6 +32,7 @@ class KwargsWrapper:
     arg_names: List[str] = field(default_factory=list, init=False)
     kwarg_names: List[str] = field(default_factory=list, init=False)
     wrapped: Callable[..., object]
+    overwrites: Dict[str, Any] = field(default_factory=dict)
     key_params: List[Parameter] = field(default_factory=list)
     key_params_no_default: List[Parameter] = field(default_factory=list)
     arg_params: List[Parameter] = field(default_factory=list)
@@ -88,6 +89,17 @@ class KwargsWrapper:
     def _update_params(self, parameters):
         for name, param in parameters.items():
             if name not in self._names:
+                if _check_default(self.overwrites.get(param.name, INSPECT_EMPTY)):
+                    self.key_names.append(name)
+                    self.key_params.append(
+                        Parameter(
+                            param.name,
+                            kind=param.kind,
+                            default=self.overwrites.get(name),
+                            annotation=param.annotation,
+                        )
+                    )
+                    continue
                 if _check_default(param.default):
                     self.key_names.append(name)
                     self.key_params.append(param)
@@ -120,7 +132,13 @@ class KwargsWrapper:
             self._params[param_idx] = Parameter(
                 param.name,
                 kind=param.kind,
-                default=param.default if _check_default(param.default) else self._params[param_idx].default,
+                default=(
+                    param.default
+                    if _check_default(param.default)
+                    else
+                    # self.overwrites.get(param.name) if _check_default(self.overwrites.get(param.name, INSPECT_EMPTY)) else
+                    self._params[param_idx].default
+                ),
                 annotation=param.annotation
                 if _check_annotation(param.annotation)
                 else self._params[param_idx].annotation,
@@ -148,9 +166,9 @@ def wrap_kwargs({self._params_declaration}):
         return wraps(self.wrapped)(ldict["wrap_kwargs"])
 
 
-def wrap_kwargs(wrapped) -> Callable[..., Any]:
+def wrap_kwargs(wrapped, **overwrites) -> Callable[..., Any]:
     """Function Decorator that can update all passed arguments (that can be a variable) of function."""
-    kwargs_wrapper = KwargsWrapper(wrapped)
+    kwargs_wrapper = KwargsWrapper(wrapped=wrapped, overwrites=overwrites)
 
     def wrapper(func):
         return kwargs_wrapper.wrap(func)

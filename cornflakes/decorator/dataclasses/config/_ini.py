@@ -82,7 +82,7 @@ def create_ini_file_loader(
     """Method to create file loader for ini files."""
 
     def from_ini(*args, **kwargs) -> Dict[str, Optional[Union[Config, List[Config]]]]:
-        return create_file_loader(cls=cls, loader=ini_load)(*args, **kwargs)  # type: ignore
+        return create_file_loader(cls=cls, _loader_callback=ini_load, _instantiate=True)(*args, **kwargs)  # type: ignore
 
     return from_ini
 

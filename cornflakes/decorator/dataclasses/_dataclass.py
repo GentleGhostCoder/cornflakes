@@ -11,10 +11,11 @@ from cornflakes.decorator._indexer import is_index
 from cornflakes.decorator.dataclasses._add_dataclass_slots import add_slots
 from cornflakes.decorator.dataclasses._enforce_types import enforce_types
 from cornflakes.decorator.dataclasses._field import Field, field
+from cornflakes.decorator.dataclasses._helper import dc_slot_missing_default
 from cornflakes.decorator.dataclasses._helper import dict_factory as d_factory
 from cornflakes.decorator.dataclasses._helper import tuple_factory as t_factory
 from cornflakes.decorator.dataclasses._validate import check_dataclass_kwargs, validate_dataclass_kwargs
-from cornflakes.types import _T, CornflakesDataclass
+from cornflakes.types import _T, Constants, CornflakesDataclass
 
 
 def _zero_copy_astuple_inner(obj, factory):
@@ -324,11 +325,30 @@ def dataclass(
             dc_cls = add_slots(dc_cls)
 
         dc_cls.__dataclass_fields__.update(dataclass_fields)
-        dc_cls.__dict_factory__ = dict_factory or dict
-        dc_cls.__tuple_factory__ = tuple_factory or tuple
-        dc_cls.__eval_env__ = eval_env
-
-        dc_cls.__ignored_slots__ = [f.name for f in dataclasses.fields(dc_cls) if getattr(f, "ignore", False)]
+        # dc_cls.__dict_factory__ = dict_factory or dict
+        # dc_cls.__tuple_factory__ = tuple_factory or tuple
+        setattr(dc_cls, Constants.dataclass_decorator.EVAL_ENV, eval_env)
+        setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, dict_factory or dict)
+        setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, tuple_factory or tuple)
+        setattr(
+            dc_cls,
+            Constants.dataclass_decorator.IGNORED_SLOTS,
+            [f.name for f in dataclasses.fields(dc_cls) if getattr(f, "ignore", False)],
+        )
+        setattr(
+            dc_cls,
+            Constants.dataclass_decorator.VALIDATORS,
+            {
+                key: validator
+                for key, value in dc_cls.__dataclass_fields__.items()
+                if callable(validator := getattr(value, "validator", key))
+            },
+        )
+        setattr(
+            dc_cls,
+            Constants.dataclass_decorator.REQUIRED_KEYS,
+            [key for key, slot in dataclass_fields.items() if dc_slot_missing_default(slot)],
+        )
 
         dc_cls.to_dict = to_dict
         dc_cls.to_tuple = to_tuple

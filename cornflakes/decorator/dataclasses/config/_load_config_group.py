@@ -15,7 +15,6 @@ def create_group_loader(cls):
         files=None,
         sections=None,
         config_dict=None,
-        filter_function=None,
         eval_env=None,
         allow_empty=None,
         *slot_args,
@@ -27,7 +26,6 @@ def create_group_loader(cls):
         :param sections: Default config sections
         :param config_dict: Config dictionary to pass already loaded configs
         :param slot_kwargs: Default configs to overwrite passed class
-        :param filter_function: Optional filter method for config
         :param eval_env: Flag to evaluate environment variables into default values.
         :param allow_empty: Flag that allows empty config result -> e.g. emtpy list
         :param slot_args: Default configs to overwrite passed class
@@ -48,11 +46,11 @@ def create_group_loader(cls):
                         files=files,
                         sections=sections,
                         config_dict=config_dict,
-                        filter_function=filter_function or cls.__config_filter_function__,
                         eval_env=eval_env,
                         allow_empty=allow_empty or cls.__allow_empty_config__,
                     )
                 )
+
         error_args = [key for key in slot_kwargs if key not in cls.__dataclass_fields__]
         if error_args:
             logging.debug(f"The variables {error_args} in **{cls.__name__}** are not defined!")

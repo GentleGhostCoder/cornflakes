@@ -1,15 +1,15 @@
 import logging
-from os import environ
 from typing import Any, Callable, Dict
 
-from cornflakes import eval_type
 from cornflakes.common import check_type, extract_var_names
-from cornflakes.decorator.dataclasses._helper import dataclass_fields, dc_slot_missing_default
+from cornflakes.decorator.dataclasses._helper import (
+    dataclass_fields,
+    dataclass_required_keys,
+    dataclass_validators,
+    get_env_vars,
+    is_eval_env,
+)
 from cornflakes.types import INSPECT_EMPTY
-
-
-def _get_env_vars(dc_cls):
-    return {key: eval_type(environ[key]) for key in dc_cls.__dataclass_fields__.keys() if key in environ.keys()}
 
 
 def _validate(self, values, key, callback: Callable[..., Any]):
@@ -52,21 +52,17 @@ def check_dataclass_kwargs(dc_cls, validate=False, **kwargs) -> Dict[str, Any]:
 
 def validate_dataclass_kwargs(dc_cls, validate=False, **kwargs):
     """Validate dataclass (includes type checks + validators)."""
-    _validators = {
-        key: validator
-        for key, value in dc_cls.__dataclass_fields__.items()
-        if callable(validator := getattr(value, "validator", key))
-    }
+    _validators = dataclass_validators(dc_cls)
 
     if _validators and not validate:
         logging.warning(
             f"Validators are provided for attributes [{_validators.keys()}] in dataclass {dc_cls.__name__}, but validate is set to False!"
         )
 
-    _required_keys = [key for key, slot in dataclass_fields(dc_cls).items() if dc_slot_missing_default(slot)]
+    _required_keys = dataclass_required_keys(dc_cls)
 
-    if dc_cls.__eval_env__:
-        kwargs.update(_get_env_vars(dc_cls))
+    if is_eval_env(dc_cls):
+        kwargs.update(get_env_vars(dc_cls))
     kwargs.update(_process_validator(dc_cls, kwargs, _validators, **kwargs))
     kwargs.update(_process_type_checking(dc_cls, **kwargs, validate=validate))
     if missing_keys := [key for key in _required_keys if key not in kwargs.keys()]:

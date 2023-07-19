@@ -1,14 +1,13 @@
 from functools import reduce, wraps
 from inspect import isclass, signature
 from os.path import exists
-from typing import Any, Callable, Type, Union, cast
+from typing import Any, Callable, Dict, Type, Union, cast
 
 from click import Command, Group, option
 
 from cornflakes.common import recursive_update
 from cornflakes.decorator.click.helper import click_param_type_parser
 from cornflakes.decorator.click.options._auto_fill_option_groups import auto_fill_option_groups
-from cornflakes.decorator.click.rich import RichCommand, RichGroup
 from cornflakes.decorator.dataclasses import (
     config_files,
     dc_slot_missing_default,
@@ -19,8 +18,6 @@ from cornflakes.decorator.dataclasses import (
     normalized_class_name,
 )
 from cornflakes.types import _T, Config, ConfigGroup, Constants, CornflakesDataclass
-
-F = Callable[[Union[Command, Group, Callable[..., Any]]], Union[Command, Group, Callable[..., Any], Callable]]
 
 
 def _set_passed_key(wrapper, config, passing_key):
@@ -72,14 +69,24 @@ def _update_options_help(callback, config, formatter=None):
         )(callback)
 
 
-def _config_group_option(config, add_config_file_options: bool = False, passing_key=None, **options):
-    decorators = []  # List to hold all decorators
+def _config_group_option(
+    config, add_config_file_options: bool = False, passing_key=None, is_sub_config=False, **options
+):
+    decorators: list = []  # List to hold all decorators
     sub_configs = []
     for cfg in reversed(fields(config)):  # Reverse the order of fields
         sub_config = getattr(cfg.type, "__args__", [cfg.type])[0]
         if is_config(sub_config):
             sub_configs.append(sub_config)
-            decorators.append(_config_option(sub_config, add_config_file_options=False, **options))
+            decorators.append(
+                _config_option(
+                    config=sub_config,
+                    add_config_file_options=add_config_file_options,
+                    passing_key=passing_key,
+                    is_sub_config=is_sub_config,
+                    **options,
+                )
+            )
 
     # Function to chain decorators
     def chain_decorators(func):
@@ -99,33 +106,46 @@ def _config_group_option(config, add_config_file_options: bool = False, passing_
     return chain_decorators  # Return the chain of decorators
 
 
+AnyCallable = Callable[..., Any]
+
+
 def _config_option(  # noqa: C901
     config: Union[Type[_T], Type[CornflakesDataclass], Type[Config], Type[ConfigGroup]],
     add_config_file_options: bool = False,
     passing_key=None,
     is_sub_config: bool = False,
     **options,
-) -> F:
+) -> Callable[[Union[Command, Group, Type[_T], AnyCallable]], Union[Command, Group, Type[_T], AnyCallable]]:
     """Click Option Decorator to define a global option for cli decorator."""
 
     # parser to get click parm types for specific config
     param_parser = click_param_type_parser(config)
 
-    if not is_config(config) and is_group(config):
-        return _config_group_option(config, add_config_file_options, passing_key, is_sub_config=True, **options)
+    # check if options are valid dict of dicts
+    if not all(isinstance(v, dict) for v in options.values()):
+        raise ValueError("Options should be a dict of dicts with option arguments!")
 
-    def auto_option_decorator(callback: Union[Union[Command, Group, RichCommand, RichGroup], Callable[..., None]]):
+    if not is_config(config) and is_group(config):
+        return _config_group_option(
+            config=config,
+            add_config_file_options=add_config_file_options,
+            passing_key=passing_key,
+            is_sub_config=True,
+            **options,
+        )
+
+    def auto_option_decorator(callback):
         if not callable(callback):
             raise TypeError("Wrapped object should be a function!")
 
-        configs = {}
+        configs: Dict[str, Dict[str, Any]] = {}
         for line in getattr(config, "__doc__", "").split("\n"):
             line = line.strip()
             if line[:5] == ":cvar":
                 line = line[6:].split(":")
                 configs[line[0]] = {"help": line[1].strip()}
 
-        configs.update(options)
+        recursive_update(configs, options)
 
         wrapper = callback
 
@@ -148,7 +168,7 @@ def _config_option(  # noqa: C901
             if "type" not in option_args:
                 option_args["type"] = param_parser(slot.type)()
             option_args["show_default"] = True
-            wrapper = option(option_name, cls=None, **option_args)(wrapper)  # type: ignore
+            wrapper = option(option_name, cls=None, **option_args)(wrapper)
 
         setattr(wrapper, Constants.config_option.ENABLED, True)
 
@@ -197,10 +217,10 @@ def config_option(  # noqa: C901
     add_config_file_options: bool = False,
     passing_key=None,
     **options,
-) -> F:
+) -> Callable[[Union[Command, Group, Type[_T], AnyCallable]], Union[Command, Group, Type[_T], AnyCallable]]:
     """Click Option Decorator to define a global option for cli decorator."""
     if not isclass(config):
         raise TypeError("config should be a class!")
 
     options.pop("is_sub_config", None)  # Remove is_sub_config if exists not passed by user
-    return _config_option(config, add_config_file_options, passing_key, is_sub_group=False, **options)
+    return _config_option(config, add_config_file_options, passing_key, is_sub_config=False, **options)

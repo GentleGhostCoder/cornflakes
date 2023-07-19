@@ -1,8 +1,10 @@
 """Dataclass helper functions used by the custom dataclass decorator."""
 import dataclasses
 from dataclasses import fields as dc_fields
+from os import environ
 import re
 
+from _cornflakes import eval_type
 from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants
 
 
@@ -21,9 +23,29 @@ def config_files(cls):
     return getattr(cls, Constants.config_decorator.FILES, [])
 
 
+def config_sections(cls):
+    """Method to return class __config_sections__."""
+    return getattr(cls, Constants.config_decorator.SECTIONS, [])
+
+
 def dataclass_fields(cls):
     """Method to return dataclass fields."""
     return getattr(cls, Constants.dataclass_decorator.FIELDS, {})
+
+
+def dataclass_validators(cls):
+    """Method to return dataclass validators."""
+    return getattr(cls, Constants.dataclass_decorator.VALIDATORS, {})
+
+
+def dataclass_required_keys(cls):
+    """Method to return dataclass required keys."""
+    return getattr(cls, Constants.dataclass_decorator.REQUIRED_KEYS, {})
+
+
+def is_eval_env(cls):
+    """Method to return flag that class is a eval env class."""
+    return getattr(cls, Constants.dataclass_decorator.EVAL_ENV, False)
 
 
 def dict_factory(cls):
@@ -90,6 +112,11 @@ def dc_slot_missing_default(slot):
 def default(slot):
     """Method to get the default value of the dataclass."""
     return slot.default_factory if isinstance(slot.default, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE)) else slot.default
+
+
+def get_env_vars(dc_cls):
+    """Method to get the environment variables for the dataclass."""
+    return {key: eval_type(environ[key]) for key in dc_cls.__dataclass_fields__.keys() if key in environ.keys()}
 
 
 def fields(class_or_instance):

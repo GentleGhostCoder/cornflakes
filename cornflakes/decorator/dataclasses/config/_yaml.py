@@ -37,7 +37,7 @@ def create_yaml_file_loader(
     def from_yaml(
         *args, loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader, **kwargs
     ) -> Dict[str, Optional[Union[Config, List[Config]]]]:
-        _from_yaml = create_file_loader(cls=cls, loader=specific_yaml_loader(loader=loader))  # type: ignore
+        _from_yaml = create_file_loader(cls=cls, _loader_callback=specific_yaml_loader(loader=loader))  # type: ignore
         return _from_yaml(*args, **kwargs)
 
     return from_yaml

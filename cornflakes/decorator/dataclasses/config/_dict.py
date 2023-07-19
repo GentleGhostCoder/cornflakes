@@ -19,6 +19,6 @@ def create_dict_file_loader(
                 {key: os.environ[key] for key in cls.__dataclass_fields__.keys() if key in os.environ}
             )
         default_kwargs.update(kwargs)
-        return create_file_loader(cls=cls)(*args, config_dict=config_dict, **default_kwargs)
+        return create_file_loader(cls=cls, _instantiate=True)(*args, config_dict=config_dict, **default_kwargs)
 
     return from_dict

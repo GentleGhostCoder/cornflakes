@@ -2,7 +2,20 @@ import dataclasses
 from dataclasses import dataclass
 from enum import Enum
 import inspect
-from typing import Any, Callable, ClassVar, Dict, List, Optional, Protocol, Type, Union, runtime_checkable
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Protocol,
+    Type,
+    Union,
+    runtime_checkable,
+)
 
 from typing_extensions import _T
 
@@ -62,7 +75,6 @@ class ConfigDecoratorArgs:
     IS_LIST: str = "is_list"
     DEFAULT_LOADER: str = "default_loader"
     ALLOW_EMPTY: str = "allow_empty"
-    FILTER_FUNCTION: str = "filter_function"
 
 
 @dataclass(frozen=True)
@@ -75,7 +87,6 @@ class ConfigDecorator:
     IS_LIST: str = "__config_list__"
     DEFAULT_LOADER: str = "__default_loader__"
     ALLOW_EMPTY: str = "__allow_empty_config__"
-    FILTER_FUNCTION: str = "__config_filter_function__"
     CHAIN_FILES: str = "__chain_files__"
 
     SECTION_NAME_KEY: str = "section_name"
@@ -90,6 +101,8 @@ class DataclassDecorator:
     TUPLE_FACTORY: str = "__tuple_factory__"
     EVAL_ENV: str = "__eval_env__"
     IGNORED_SLOTS: str = "__ignored_slots__"
+    VALIDATORS: str = "__cornflakes_validators__"
+    REQUIRED_KEYS: str = "__cornflakes_required_keys__"
 
 
 @dataclass(frozen=True)
@@ -129,6 +142,20 @@ class LoaderMethod(Protocol):
         from_ini -> :meth:`cornflakes.decorator.config.ini.create_ini_file_loader`
         from_dict -> :meth:`cornflakes.decorator.config.dict.create_dict_file_loader`
         """
+        ...
+
+
+class MappingLike(Protocol):
+    def __getitem__(self, key: str) -> Any:
+        ...
+
+    def keys(self) -> Iterable[str]:
+        ...
+
+    def __iter__(self) -> Iterator[str]:
+        ...
+
+    def __len__(self) -> int:
         ...
 
 
@@ -306,7 +333,6 @@ class ConfigInstance(DataclassInstance, Protocol):
     __config_list__: ClassVar[bool]
     __default_loader__: ClassVar[Loader]
     __allow_empty_config__: ClassVar[bool]
-    __config_filter_function__: ClassVar[Optional[Callable[[Type[Any]], bool]]]
     __chain_files__: ClassVar[bool]
 
     from_ini: LoaderMethod
@@ -335,7 +361,6 @@ class Config(CornflakesDataclass, Protocol):
     __config_list__: ClassVar[bool]
     __default_loader__: ClassVar[Loader]
     __allow_empty_config__: ClassVar[bool]
-    __config_filter_function__: ClassVar[Optional[Callable[[Type[Any]], bool]]]
     __chain_files__: ClassVar[bool]
 
     from_ini: LoaderMethod
@@ -357,7 +382,6 @@ class ConfigGroupInstance(DataclassInstance, Protocol):
     __config_list__: ClassVar[bool]
     __default_loader__: ClassVar[Loader]
     __allow_empty_config__: ClassVar[bool]
-    __config_filter_function__: ClassVar[Optional[Callable[[Type[Any]], bool]]]
     __chain_files__: ClassVar[bool]
 
     from_file: LoaderMethod
@@ -384,7 +408,6 @@ class ConfigGroup(CornflakesDataclass, Protocol):
     __config_list__: ClassVar[bool]
     __default_loader__: ClassVar[Loader]
     __allow_empty_config__: ClassVar[bool]
-    __config_filter_function__: ClassVar[Optional[Callable[[Type[Any]], bool]]]
     __chain_files__: ClassVar[bool]
 
     from_file: LoaderMethod
