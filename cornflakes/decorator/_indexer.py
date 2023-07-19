@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Type, TypeVar
+from typing import Callable, Dict, Optional, Protocol, Type, TypeVar, runtime_checkable
 
 T = TypeVar("T")
 
@@ -7,6 +7,13 @@ T = TypeVar("T")
 def is_index(obj):
     """Returns True if the given object is an index type."""
     return getattr(getattr(obj, "__class__", {}), "__name__", "")[-6:] == "_Index"
+
+
+@runtime_checkable
+class IndexInstance(Protocol):
+    """Protocol for Index instances."""
+
+    reset: Callable[[], None]
 
 
 @dataclass
@@ -20,7 +27,14 @@ class IndexCounter:
 
     def __post_init__(self):
         """Initialize the dataclass object."""
-        self.type = type(f"{self.name}_Index", (int,), {})
+        self.type = type(
+            f"{IndexInstance.__name__}.{self.name}_Index",
+            (
+                IndexInstance,
+                int,
+            ),
+            {},
+        )
 
         self.start = self.start - 1
         self.index = self.start
@@ -33,7 +47,7 @@ class IndexCounter:
             return int.__new__(cls, self.index)
 
         self.type.__new__ = new
-        self.type.reset = lambda: self.reset()
+        self.type.reset = lambda x=self: self.reset()
         self.is_index = True
 
     def reset(self):
@@ -46,6 +60,7 @@ class Index(int):
     """Indexer Class."""
 
     indices: Dict[str, IndexCounter] = {}
+    is_group_indexing: bool = False
 
     def __new__(cls, start=None, *args, **kwds):
         """Constructor.
@@ -78,7 +93,16 @@ class Index(int):
         return cls.get_index(key)
 
     @classmethod
+    def group_indexing(cls):
+        """Set group indexing."""
+        Index.reset()
+        # print(f"Switch group indexing from {cls.is_group_indexing} to {not cls.is_group_indexing}")
+        cls.is_group_indexing = not cls.is_group_indexing
+        Index.reset()
+
+    @classmethod
     def reset(cls):
         """Reset all indices to their initial values."""
-        for index in cls.indices.values():
-            index.reset()
+        if not cls.is_group_indexing:
+            for index in cls.indices.values():
+                index.reset()

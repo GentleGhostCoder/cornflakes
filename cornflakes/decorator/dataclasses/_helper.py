@@ -5,7 +5,7 @@ from os import environ
 import re
 
 from _cornflakes import eval_type
-
+from cornflakes.decorator._indexer import IndexInstance
 from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants
 
 
@@ -62,6 +62,22 @@ def dict_factory(cls):
     #
     #     return dict_factory_wrapper
     return getattr(cls, Constants.dataclass_decorator.DICT_FACTORY, dict)
+
+
+def evaluate_default_configs(cls, config):
+    """Method to evaluate default configs."""
+    # if is_validated(cls):
+    #     return config
+
+    for key, field in dataclass_fields(cls).items():
+        if isinstance(field.type, IndexInstance):
+            config.pop(key, None)
+    return config
+
+
+def is_validated(cls):
+    """Method to return flag that class is a validated class."""
+    return getattr(cls, Constants.config_decorator.VALIDATE, False)
 
 
 def normalized_class_name(cls):

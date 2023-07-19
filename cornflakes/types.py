@@ -31,6 +31,12 @@ HAS_DEFAULT_FACTORY = getattr(dataclasses, "_HAS_DEFAULT_FACTORY", None)
 INSPECT_EMPTY = getattr(inspect, "_empty", None)
 
 
+class FuncatTypes(Enum):
+    WRAP = "wrap"
+    BEFORE = "before"
+    AFTER = "after"
+
+
 class Loader(Enum):
     """Config Loader Enums."""
 
@@ -88,6 +94,7 @@ class ConfigDecorator:
     DEFAULT_LOADER: str = "__default_loader__"
     ALLOW_EMPTY: str = "__allow_empty_config__"
     CHAIN_FILES: str = "__chain_files__"
+    VALIDATE: str = "__validate__"
 
     SECTION_NAME_KEY: str = "section_name"
 

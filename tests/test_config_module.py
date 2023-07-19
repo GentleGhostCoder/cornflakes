@@ -10,6 +10,7 @@ from cornflakes.builder import generate_config_module
 from cornflakes.decorator.dataclasses import AnyUrl
 from cornflakes.types import Loader
 from tests import configs
+from tests.configs.default import MainConfig
 
 
 class TestConfigGeneration(unittest.TestCase):
@@ -40,15 +41,14 @@ class TestConfigGeneration(unittest.TestCase):
         defined_config_module = pathlib.Path(test_file).read_text()
         self.assertEqual(generated_config_module, defined_config_module)
 
-        from tests.configs.default import MainConfig
-
-        self.assertEqual(MainConfig.from_file().to_dict(), dict(**MainConfig.from_file()))
+        self.assertEqual(MainConfig().to_dict(), dict(**MainConfig()))
 
         self.assertEqual(
-            MainConfig.from_file().to_dict(),
+            MainConfig().to_dict(),
             {
                 "sub_config_class": [
                     {
+                        "url": "https://localhost:8080",
                         "idx_at5": 5,
                         "idx_at_first_ini_or_0": 5,
                         "test": None,
@@ -63,7 +63,6 @@ class TestConfigGeneration(unittest.TestCase):
                         "ipv4": IPv4Address("127.0.0.1"),
                         "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                         "bool_val": True,
-                        "url": "https://localhost:8080",
                         "enum": configs.sub_config.ExampleEnum.sample,
                         "some_env": "default_value",
                         "lineterminator": "\n",
@@ -73,6 +72,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "euro": "€",
                     },
                     {
+                        "url": "https://localhost:8080",
                         "idx_at5": 6,
                         "idx_at_first_ini_or_0": 6,
                         "test": None,
@@ -87,7 +87,6 @@ class TestConfigGeneration(unittest.TestCase):
                         "ipv4": IPv4Address("127.0.0.1"),
                         "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                         "bool_val": False,
-                        "url": "https://localhost:8080",
                         "enum": configs.sub_config.ExampleEnum.sample,
                         "some_env": "default_value",
                         "lineterminator": "\n",
@@ -97,6 +96,7 @@ class TestConfigGeneration(unittest.TestCase):
                         "euro": "€",
                     },
                     {
+                        "url": "https://localhost:8080",
                         "idx_at5": 7,
                         "idx_at_first_ini_or_0": 7,
                         "test": None,
@@ -111,7 +111,6 @@ class TestConfigGeneration(unittest.TestCase):
                         "ipv4": IPv4Address("127.0.0.1"),
                         "ipv6": IPv6Address("684d:1111:222:3333:4444:5555:6:77"),
                         "bool_val": False,
-                        "url": "https://localhost:8080",
                         "enum": configs.sub_config.ExampleEnum.sample,
                         "some_env": "default_value",
                         "lineterminator": "\n",
@@ -125,7 +124,7 @@ class TestConfigGeneration(unittest.TestCase):
         )
 
         self.assertEqual(
-            MainConfig.from_file().to_tuple(),
+            MainConfig().to_tuple(),
             (
                 [
                     (
@@ -205,13 +204,13 @@ class TestConfigGeneration(unittest.TestCase):
         )
 
         # list(MainConfig.from_ini(filter_function=lambda x: x.string == "bla0").sub_config)
-        MainConfig.from_file().to_ini("tests/configs/default_auto_created.ini")
+        MainConfig().to_ini("tests/configs/default_auto_created.ini")
 
         time.sleep(1)
 
         self.assertEqual(
-            repr(MainConfig.from_file("tests/configs/default_auto_created.ini")),
-            repr(MainConfig.from_file("tests/configs/default.ini")),
+            repr(MainConfig(files="tests/configs/default_auto_created.ini")),
+            repr(MainConfig(files="tests/configs/default.ini")),
         )
 
         environ["some_env"] = "test123"
@@ -321,7 +320,7 @@ class TestConfigGeneration(unittest.TestCase):
         )
 
         self.assertEqual(
-            repr(MainConfig.from_file()),
+            repr(MainConfig()),
             repr(
                 MainConfig(
                     sub_config_class=[

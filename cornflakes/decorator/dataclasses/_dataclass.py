@@ -376,10 +376,10 @@ def dataclass(
 
         static_keys = [f.name for f in dataclasses.fields(dc_cls) if not getattr(f, "ignore", False)]
 
-        def keys(self):
+        def keys(cls):
             return static_keys
 
-        dc_cls.keys = keys
+        dc_cls.keys = classmethod(keys)
 
         return dc_cls
 

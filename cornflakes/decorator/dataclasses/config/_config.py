@@ -3,7 +3,8 @@ from typing import Any, Callable, List, Optional, Type, Union, overload
 
 from typing_extensions import dataclass_transform  # type: ignore
 
-from cornflakes.decorator import Index, funcat
+from cornflakes.decorator._funcat import funcat
+from cornflakes.decorator._indexer import Index
 from cornflakes.decorator.dataclasses._dataclass import dataclass
 from cornflakes.decorator.dataclasses._field import Field, field
 from cornflakes.decorator.dataclasses._helper import dataclass_fields, fields
@@ -19,6 +20,7 @@ from cornflakes.types import (
     ConfigGroup,
     Constants,
     CornflakesDataclass,
+    FuncatTypes,
     Loader,
     MappingLike,
     Writer,
@@ -241,6 +243,7 @@ def config(
         setattr(config_cls, Constants.config_decorator.IS_LIST, is_list)
         setattr(config_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
         setattr(config_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
+        setattr(config_cls, Constants.config_decorator.VALIDATE, validate)
 
         # Set Writer
         setattr(config_cls, Writer.INI.value, to_ini)
@@ -250,27 +253,30 @@ def config(
         setattr(
             config_cls,
             Loader.YAML.value,
-            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_yaml_file_loader(cls=config_cls))),
+            staticmethod(create_yaml_file_loader(cls=config_cls)),
         )
         setattr(
             config_cls,
             Loader.INI.value,
-            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_ini_file_loader(cls=config_cls))),
+            staticmethod(create_ini_file_loader(cls=config_cls)),
         )
         setattr(
             config_cls,
             Loader.DICT.value,
-            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_dict_file_loader(cls=config_cls))),
+            staticmethod(create_dict_file_loader(cls=config_cls)),
         )
         setattr(
             config_cls,
             Loader.FILE.value,
-            funcat(Index.reset, funcat_where="wrap")(
-                getattr(config_cls, str(default_loader.value), getattr(config_cls, Loader.DICT.value))
-            ),
+            getattr(config_cls, str(default_loader.value), getattr(config_cls, Loader.DICT.value)),
         )
+
         if init_default_config:
             config_cls = wrap_init_default_config(config_cls)
+
+        # check if any field type is type of Index and wrap Index reset over __init__
+        if any(f.type == Index for f in fields(config_cls)):
+            setattr(config_cls, "__init__", funcat(Index.reset, where=FuncatTypes.WRAP)(config_cls.__init__))
 
         return config_cls
 

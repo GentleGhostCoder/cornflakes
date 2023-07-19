@@ -2,13 +2,14 @@ from typing import Callable, List, Optional, Type, Union, overload
 
 from typing_extensions import dataclass_transform  # type: ignore
 
-from cornflakes.decorator import Index, funcat
+from cornflakes.decorator._funcat import funcat
+from cornflakes.decorator._indexer import Index
 from cornflakes.decorator.dataclasses._dataclass import dataclass
 from cornflakes.decorator.dataclasses._field import Field, field
 from cornflakes.decorator.dataclasses.config._ini import to_ini
-from cornflakes.decorator.dataclasses.config._load_config_group import create_group_loader
+from cornflakes.decorator.dataclasses.config._init_config_group import wrap_init_config_group
 from cornflakes.decorator.dataclasses.config._yaml import to_yaml
-from cornflakes.types import _T, ConfigGroup, Constants, CornflakesDataclass, Loader, Writer
+from cornflakes.types import _T, ConfigGroup, Constants, CornflakesDataclass, FuncatTypes, Writer
 
 
 @dataclass_transform(field_specifiers=(field, Field))
@@ -146,11 +147,17 @@ def config_group(
         setattr(config_group_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
         setattr(config_group_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
 
+        config_group_cls = wrap_init_config_group(config_group_cls)
+
+        # check if any field type is type of Index and wrap Index reset over __init__
         setattr(
             config_group_cls,
-            Loader.FILE.value,
-            staticmethod(funcat(Index.reset, funcat_where="wrap")(create_group_loader(cls=config_group_cls))),
+            "__init__",
+            funcat(Index.group_indexing, where=FuncatTypes.WRAP)(config_group_cls.__init__),
         )
+
+        # if any(f.type == Index for f in fields(config_group_cls)):
+        #     setattr(config_group_cls, "__init__", funcat(Index.reset(), where=FuncatTypes.WRAP)(config_group_cls.__init__))
 
         # Set Writer
         setattr(config_group_cls, Writer.INI.value, to_ini)
