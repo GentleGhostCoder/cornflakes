@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Callable, List, Optional, Type, Union, overload
 
-from docutils.nodes import field_name
 from typing_extensions import dataclass_transform  # type: ignore
 
 from cornflakes.decorator import Index, funcat
@@ -233,7 +232,7 @@ def config(
         )(w_cls)
 
         # not allow field names that are in ConfigDecoratorArgs
-        if any(field_name in dataclass_fields(ConfigDecoratorArgs) for field_name.name in fields(config_cls)):
+        if any(f.name in dataclass_fields(ConfigDecoratorArgs) for f in fields(config_cls)):
             raise ValueError(f"Field name cannot be any of {dataclass_fields(ConfigDecoratorArgs).keys()}.")
 
         setattr(config_cls, Constants.config_decorator.SECTIONS, sections)

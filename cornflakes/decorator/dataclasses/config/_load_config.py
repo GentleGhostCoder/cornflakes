@@ -111,25 +111,23 @@ def create_file_loader(  # noqa: C901
             return {**slot_kwargs, **({"section_name": section} if pass_sections else {})}
 
         if not is_use_regex(cls) and sections and len(sections) == 1:
-            sections = sections[0]
-            logging.debug(f"Load ini from file: {files} - section: {sections} for config {cls.__name__}")
+            section = sections[0]
+            logging.debug(f"Load ini from file: {files} - section: {section} for config {cls.__name__}")
 
             if not config_dict:
                 config_dict = OrderedDict(
-                    _loader_callback(
-                        files={None: files}, sections=sections, keys=keys, defaults=None, eval_env=eval_env
-                    )
+                    _loader_callback(files={None: files}, sections=section, keys=keys, defaults=None, eval_env=eval_env)
                 )
                 config_dict = _check_config_dict(config_dict)
 
-            if not sections and config_dict.keys():
-                sections = config_dict.popitem()[0] or normalized_class_name(cls)
+            if not section and config_dict.keys():
+                section = config_dict.popitem()[0] or normalized_class_name(cls)
 
-            config = create_config(config_dict.get(sections, {}), **get_section_kwargs(sections))
+            config = create_config(config_dict.get(section, {}), **get_section_kwargs(section))
 
             if not config:
-                return {sections: create_config({}, **get_section_kwargs(sections))}
-            return {sections: config}
+                return {section: create_config({}, **get_section_kwargs(section))}
+            return {section: config}
 
         if not config_dict:
             if cls.__chain_files__:

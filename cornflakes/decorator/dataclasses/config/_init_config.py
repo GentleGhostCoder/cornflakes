@@ -3,7 +3,15 @@ from typing import List, Optional
 
 from cornflakes import ini_load
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
-from cornflakes.decorator.dataclasses._helper import dataclass_required_keys, get_env_vars, is_config_list, is_eval_env
+from cornflakes.decorator.dataclasses._helper import (
+    config_files,
+    config_sections,
+    dataclass_required_keys,
+    get_env_vars,
+    is_allow_empty,
+    is_config_list,
+    is_eval_env,
+)
 from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 from cornflakes.types import Constants
 
@@ -69,24 +77,10 @@ def wrap_init_default_config(cls):
                 # If no kwargs are changed, we can use the default config
                 return init(self, **kwargs)
 
-            files = (
-                files
-                if isinstance(files, list)
-                else [files]
-                if files
-                else getattr(cls, Constants.config_decorator.FILES, [])
-            )
-            sections = (
-                sections
-                if isinstance(sections, list)
-                else [sections]
-                if sections
-                else getattr(cls, Constants.config_decorator.SECTIONS, [])
-            )
-            eval_env = eval_env if eval_env is not None else getattr(cls, Constants.dataclass_decorator.EVAL_ENV, None)
-            allow_empty = (
-                allow_empty if allow_empty is not None else getattr(cls, Constants.config_decorator.ALLOW_EMPTY, False)
-            )
+            sections = sections if isinstance(sections, list) else [str(sections)] if sections else config_sections(cls)
+            files = files if isinstance(files, list) else [str(files)] if files else config_files(cls)
+            eval_env = eval_env or is_eval_env(cls)
+            allow_empty = allow_empty or is_allow_empty(cls)
 
             if not files:
                 return init(self, **kwargs)
