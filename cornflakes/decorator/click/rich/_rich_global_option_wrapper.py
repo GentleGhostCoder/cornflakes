@@ -1,7 +1,7 @@
 from functools import wraps
 from inspect import signature
 import logging
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, Callable, Optional
 
 from click import get_current_context
 from click.core import Context
@@ -11,12 +11,10 @@ from cornflakes.decorator.click.rich._rich_group import RichGroup
 from cornflakes.decorator.dataclasses import is_config, is_group, normalized_class_name
 from cornflakes.types import Constants
 
-_T = TypeVar("_T")
-
 
 def rich_global_option_wrapper(
     click_func: Callable[..., Any], *wrap_args, pass_context: Optional[bool] = None, **wrap_kwargs
-) -> Callable[..., _T]:
+):
     """Wrapper Method for rich command / group."""
 
     def global_option_click_decorator(func):

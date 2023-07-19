@@ -110,7 +110,7 @@ AnyCallable = Callable[..., Any]
 
 
 def _config_option(  # noqa: C901
-    config: Union[Type[_T], Type[CornflakesDataclass], Type[Config], Type[ConfigGroup]],
+    config: Union[Type[_T], Type[Config], Type[ConfigGroup]],
     add_config_file_options: bool = False,
     passing_key=None,
     is_sub_config: bool = False,

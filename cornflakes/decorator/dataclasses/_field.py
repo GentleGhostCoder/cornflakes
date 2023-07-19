@@ -1,10 +1,8 @@
 from dataclasses import Field as DataclassField
 from dataclasses import MISSING
-from typing import Any, Callable, List, Optional, TypeVar, Union, cast
+from typing import Any, Callable, List, Optional, Union, cast
 
-from cornflakes.types import _T, MISSING_TYPE, WITHOUT_DEFAULT, WITHOUT_DEFAULT_TYPE
-
-DataclassFieldRootType = TypeVar("DataclassFieldRootType")
+from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT, WITHOUT_DEFAULT_TYPE
 
 
 class Field(DataclassField):
@@ -275,7 +273,7 @@ class Field(DataclassField):
 
 
 def field(
-    attr: Optional[Union[Field, _T]] = None,
+    attr: Optional[Union[Field, Any]] = None,
     /,
     *,
     default: Union["MISSING_TYPE", Any] = MISSING,
@@ -320,6 +318,7 @@ def field(
     so that a type checker can be told (via overloads) that this is a
     function whose type depends on its parameters.
 
+    :param attr: Attribute name on the class to be used to store the field.
     :param default: Default value for field.
     :param default_factory: Default factory for field.
     :param init: Field will be included in __init__ method.
