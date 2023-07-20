@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Information &mdash; cornflakes 3.3.7 documentation</title>
+  <title>Information &mdash; cornflakes 3.3.8 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -40,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.7
+                3.3.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -64,6 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributor Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Contributor Covenant Code of Conduct</a></li>
@@ -102,6 +103,11 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">semmjon</span><span class="o">/</span><span class="n">cornflakes</span>
 </pre></div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please be careful when using this Python module. Currently it is only developed / tested by me, which is why it has a high update / change rate. I’m actually trying to be compatible with implementations, but I can’t guarantee this at the moment. The module is currently still in a beta state and is not recommended for productive use.</p>
+<p>In the near future I plan to revise the documentation / examples and write an introductory blog article, as I find implemented features and planned ideas to be quite cool and useful (and don’t see them in any other package or find them to be quite user-friendly).</p>
+</div>
 <section id="information">
 <h1>Information<a class="headerlink" href="#information" title="Permalink to this heading"></a></h1>
 <p>The Python module “cornflakes” was started as a hobby project and offers an alternative to Pydantic for managing configurations and data structures. It allows creating generic and easy to manage configurations for your project. Unlike Pydantic, which is based on inheritance, “cornflakes” uses a decorator (similar to dataclass) to map data structures.</p>
@@ -111,8 +117,16 @@
 <section id="short-term-roadmap">
 <h2>Short Term RoadMap:<a class="headerlink" href="#short-term-roadmap" title="Permalink to this heading"></a></h2>
 <ul class="simple">
+<li><dl class="simple">
+<dt>Change Code Annotations</dt><dd><ul>
+<li><p>remove Any annotations if possible</p></li>
+<li><p>change Protocol Annotations to specific type classes</p></li>
+</ul>
+</dd>
+</dl>
+</li>
 <li><p>Enrich json methods</p></li>
-<li><p>Fix / Test the to_&lt;file-format&gt; Methods</p></li>
+<li><p>Fix / Test the to_&lt;file-format&gt; Methods (specially yaml)</p></li>
 </ul>
 </section>
 </section>

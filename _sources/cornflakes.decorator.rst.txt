@@ -8,17 +8,16 @@ Subpackages
    :maxdepth: 4
 
    cornflakes.decorator.click
-   cornflakes.decorator.config
-   cornflakes.decorator.dataclass
+   cornflakes.decorator.dataclasses
    cornflakes.decorator.datalite
 
 Submodules
 ----------
 
-cornflakes.decorator.types module
----------------------------------
+cornflakes.decorator.string\_builder module
+-------------------------------------------
 
-.. automodule:: cornflakes.decorator.types
+.. automodule:: cornflakes.decorator.string_builder
    :members:
    :undoc-members:
    :show-inheritance:

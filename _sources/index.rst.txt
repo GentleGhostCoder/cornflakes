@@ -11,6 +11,7 @@ Welcome to cornflakes's documentation!
    installation
    examples
    reference
+   usage
    contributing
    authors
    code_of_conduct
