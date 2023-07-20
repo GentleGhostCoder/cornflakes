@@ -8,13 +8,12 @@ import sysconfig
 from types import ModuleType
 from typing import Dict, List, Optional, Union
 
-import cornflakes.decorator.dataclasses
 from cornflakes.decorator.dataclasses import config_files, field, is_config
 from cornflakes.decorator.dataclasses.config import config_group
 from cornflakes.types import Constants, Loader
 
 TEMPLATE = f'''"""Template Module."""
-from {cornflakes.decorator.dataclasses.__name__} import config_group
+from {import_module("cornflakes.decorator.dataclasses").__name__} import config_group
 
 
 @config_group

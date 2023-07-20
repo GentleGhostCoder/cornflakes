@@ -152,6 +152,7 @@ class LoaderMethod(Protocol):
         ...
 
 
+@runtime_checkable
 class MappingLike(Protocol):
     def __getitem__(self, key: str) -> Any:
         ...

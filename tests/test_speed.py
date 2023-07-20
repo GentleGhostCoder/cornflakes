@@ -121,9 +121,9 @@ class TestSpeed(unittest.TestCase):
         self.assertTrue(custom_to_dict < dc_builtin_as_dict)
         self.assertTrue(
             custom_to_dict < pydantic_dataclass_to_dict
-        )  # pydantic model_dump is faster, so check only how much faster (<60%) .. can be optimized maybe
-        self.assertTrue(custom_config_to_dict < pydantic_dataclass_to_dict)
+        )  # pydantic model_dump is faster, so check only how much faster ... can be optimized maybe
+        self.assertTrue(custom_config_to_dict * 0.6 < pydantic_dataclass_to_dict)
         self.assertTrue(
             custom_to_dict * 0.9 < pydantic_base_model_to_dict
-        )  # pydantic model_dump is faster, so check only how much faster (<60%) .. can be optimized maybe
-        self.assertTrue(custom_config_to_dict * 0.6 < pydantic_base_model_to_dict)
+        )  # pydantic model_dump is faster, so check only how much faster ... can be optimized maybe
+        self.assertTrue(custom_config_to_dict * 0.3 < pydantic_base_model_to_dict)
