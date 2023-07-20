@@ -172,7 +172,7 @@ requires = [
 ]
 #build-backend = "setuptools.build_meta"
 build-backend = "poetry.core.masonry.api"
-use-pep517 = false
+use-pep517 = true
 
 
 [tool.pytest.ini_options]
