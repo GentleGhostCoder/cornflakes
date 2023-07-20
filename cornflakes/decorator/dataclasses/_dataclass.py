@@ -15,7 +15,7 @@ from cornflakes.decorator.dataclasses._helper import dc_slot_missing_default
 from cornflakes.decorator.dataclasses._helper import dict_factory as d_factory
 from cornflakes.decorator.dataclasses._helper import tuple_factory as t_factory
 from cornflakes.decorator.dataclasses._validate import check_dataclass_kwargs, validate_dataclass_kwargs
-from cornflakes.types import _T, Constants, CornflakesDataclass
+from cornflakes.types import _T, Constants, CornflakesDataclass, MappingWrapper
 
 
 def _zero_copy_astuple_inner(obj, factory):
@@ -199,7 +199,7 @@ if sys.version_info >= (3, 10):
         validate: bool = False,
         updatable: bool = False,
         **kwargs: Any,
-    ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], Type[_T]]]:
+    ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]]:
         ...
 
     @dataclass_transform(field_specifiers=(field, Field))
@@ -223,7 +223,7 @@ if sys.version_info >= (3, 10):
         validate: bool = False,
         updatable: bool = False,
         **kwargs: Any,
-    ) -> Union[Type[CornflakesDataclass], Type[_T]]:
+    ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
         ...
 
 else:
@@ -244,7 +244,7 @@ else:
         validate: bool = False,
         updatable: bool = False,
         **kwargs: Any,
-    ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], Type[_T]]]:
+    ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]]:
         ...
 
     @dataclass_transform(field_specifiers=(field, Field))
@@ -265,7 +265,7 @@ else:
         validate: bool = False,
         updatable: bool = False,
         **kwargs: Any,
-    ) -> Union[Type[CornflakesDataclass], Type[_T]]:
+    ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
         ...
 
 
@@ -289,14 +289,18 @@ def dataclass(
     validate: bool = False,
     updatable: bool = False,
     **kwargs: Any,
-) -> Union[Callable[[Type[_T]], Union[Type[CornflakesDataclass], Type[_T]]], Type[CornflakesDataclass], Type[_T]]:
+) -> Union[
+    Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]],
+    Type[CornflakesDataclass],
+    MappingWrapper[_T],
+]:
     """Wrapper around built-in dataclasses dataclass."""
     if sys.version_info >= (3, 10):
         kwargs = dict(kw_only=kw_only, slots=slots, match_args=match_args)
     else:
         kwargs: dict = {}
 
-    def create_dataclass(w_cls: Type[_T]) -> Union[Type[CornflakesDataclass], Type[_T]]:
+    def create_dataclass(w_cls: Type[_T]) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
         """
         Create a Cornflakes dataclass from a regular dataclass.
 

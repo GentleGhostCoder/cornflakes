@@ -53,7 +53,6 @@ class SubConfigClass:
     euro: str = "€"
 
 
-# SubConfigClass()
 # from cornflakes.decorator.dataclasses import fields
 # any(f.type == Index for f in fields(SubConfigClass))
 # from cornflakes.decorator._indexer import IndexCounter, IndexInstance

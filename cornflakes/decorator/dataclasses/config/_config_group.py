@@ -9,7 +9,7 @@ from cornflakes.decorator.dataclasses._field import Field, field
 from cornflakes.decorator.dataclasses.config._ini import to_ini
 from cornflakes.decorator.dataclasses.config._init_config_group import wrap_init_config_group
 from cornflakes.decorator.dataclasses.config._yaml import to_yaml
-from cornflakes.types import _T, ConfigGroup, Constants, CornflakesDataclass, FuncatTypes, Writer
+from cornflakes.types import _T, ConfigGroup, Constants, CornflakesDataclass, FuncatTypes, MappingWrapper, Writer
 
 
 @dataclass_transform(field_specifiers=(field, Field))
@@ -34,7 +34,7 @@ def config_group(
     allow_empty: Optional[bool] = None,
     chain_files: Optional[bool] = False,
     **kwargs,
-) -> Callable[[Type[_T]], Union[Type[_T], Type[CornflakesDataclass], Type[ConfigGroup]]]:
+) -> Callable[[Type[_T]], Union[Type[ConfigGroup], Type[CornflakesDataclass], MappingWrapper[_T]]]:
     ...
 
 
@@ -62,7 +62,7 @@ def config_group(
     allow_empty: Optional[bool] = None,
     chain_files: Optional[bool] = False,
     **kwargs,
-) -> Union[Type[_T], Type[CornflakesDataclass], Type[ConfigGroup]]:
+) -> Union[Type[ConfigGroup], Type[CornflakesDataclass], MappingWrapper[_T]]:
     ...
 
 
@@ -90,10 +90,10 @@ def config_group(
     chain_files: Optional[bool] = False,
     **kwargs,
 ) -> Union[
-    Callable[[Type[_T]], Union[Type[ConfigGroup], Type[CornflakesDataclass], Type[_T]]],
-    Type[CornflakesDataclass],
+    Callable[[Type[_T]], Union[Type[ConfigGroup], Type[CornflakesDataclass], MappingWrapper[_T]]],
     Type[ConfigGroup],
-    Type[_T],
+    Type[CornflakesDataclass],
+    MappingWrapper[_T],
 ]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
@@ -124,7 +124,7 @@ def config_group(
 
     kwargs.pop("validate", None)  # no validation for group but all sub configs if provided
 
-    def wrapper(w_cls: Type[_T]) -> Union[Type[ConfigGroup], Type[CornflakesDataclass], Type[_T]]:
+    def wrapper(w_cls: Type[_T]) -> Union[Type[ConfigGroup], Type[CornflakesDataclass], MappingWrapper[_T]]:
         config_group_cls = dataclass(
             init=init,
             repr=repr,
@@ -153,7 +153,7 @@ def config_group(
         setattr(
             config_group_cls,
             "__init__",
-            funcat(Index.group_indexing, where=FuncatTypes.WRAP)(config_group_cls.__init__),
+            funcat(Index.group_indexing, where=FuncatTypes.WRAP)(getattr(config_group_cls, "__init__")),
         )
 
         # if any(f.type == Index for f in fields(config_group_cls)):

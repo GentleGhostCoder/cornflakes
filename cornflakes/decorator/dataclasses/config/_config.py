@@ -22,7 +22,7 @@ from cornflakes.types import (
     CornflakesDataclass,
     FuncatTypes,
     Loader,
-    MappingLike,
+    MappingWrapper,
     Writer,
 )
 
@@ -53,7 +53,7 @@ def config(
     allow_empty: Optional[bool] = False,
     chain_files: Optional[bool] = False,
     **kwargs: Any,
-) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], Type[Config], Type[ConfigGroup], Type[_T]]]:
+) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], Type[Config], Type[ConfigGroup], MappingWrapper[_T]]]:
     ...
 
 
@@ -85,7 +85,7 @@ def config(
     allow_empty: Optional[bool] = False,
     chain_files: Optional[bool] = False,
     **kwargs: Any,
-) -> Union[Type[Config], Type[CornflakesDataclass], Type[ConfigGroup], Type[_T]]:
+) -> Union[Type[Config], Type[CornflakesDataclass], Type[ConfigGroup], MappingWrapper[_T]]:
     ...
 
 
@@ -118,12 +118,11 @@ def config(
     init_default_config: Optional[bool] = True,
     **kwargs: Any,
 ) -> Union[
-    Callable[[Type[_T]], Union[Type[Config], Type[CornflakesDataclass], Type[ConfigGroup], MappingLike, Type[_T]]],
-    MappingLike,
+    Callable[[Type[_T]], Union[Type[Config], Type[CornflakesDataclass], Type[ConfigGroup], MappingWrapper[_T]]],
     Type[CornflakesDataclass],
     Type[Config],
     Type[ConfigGroup],
-    Type[_T],
+    MappingWrapper[_T],
 ]:
     """
     Config decorator to parse INI files and implement config loader methods to config-classes.
@@ -183,12 +182,11 @@ def config(
 
     def wrapper(
         w_cls: Type[_T],
-    ) -> Union[Type[Config], Type[ConfigGroup], Type[CornflakesDataclass], MappingLike, Type[_T]]:
+    ) -> Union[Type[Config], Type[ConfigGroup], Type[CornflakesDataclass], MappingWrapper[_T]]:
         """Wrapper function for the config decorator config_decorator."""
         # Check __annotations__
         if not hasattr(w_cls, "__annotations__"):
-            logging.warning(f"{w_cls.__name__} missing annotations for values!")
-            return w_cls
+            raise TypeError("The __annotations__ attribute is required in wrapped class")
 
         # Check is config
         if any(hasattr(slot, Constants.config_decorator.SECTIONS) for slot in w_cls.__annotations__.values()):
@@ -276,7 +274,9 @@ def config(
 
         # check if any field type is type of Index and wrap Index reset over __init__
         if any(f.type == Index for f in fields(config_cls)):
-            setattr(config_cls, "__init__", funcat(Index.reset, where=FuncatTypes.WRAP)(config_cls.__init__))
+            setattr(
+                config_cls, "__init__", funcat(Index.reset, where=FuncatTypes.WRAP)(getattr(config_cls, "__init__"))
+            )
 
         return config_cls
 

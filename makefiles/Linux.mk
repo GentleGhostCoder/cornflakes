@@ -66,6 +66,9 @@ test-xdoctest:
 test-pytype:
 	pytype --disable=import-error cornflakes tests docs/conf.py
 
+test-typeguard:
+	 pytest --typeguard-packages=cornflakes
+
 test-all: ## run tests on every Python version with tox
 	nox
 

@@ -8,16 +8,16 @@ from typing import (
     ClassVar,
     Dict,
     Iterable,
-    Iterator,
     List,
     Optional,
     Protocol,
     Type,
+    TypeVar,
     Union,
     runtime_checkable,
 )
 
-from typing_extensions import _T
+_T = TypeVar("_T")
 
 
 class _WithoutDefault:
@@ -153,17 +153,23 @@ class LoaderMethod(Protocol):
 
 
 @runtime_checkable
-class MappingLike(Protocol):
-    def __getitem__(self, key: str) -> Any:
+class MappingWrapper(Protocol[_T]):
+    def __getitem__(self, key: str) -> _T:
         ...
 
     def keys(self) -> Iterable[str]:
         ...
 
-    def __iter__(self) -> Iterator[str]:
+    @classmethod
+    def __new__(cls: Type[_T], *args, **kwargs) -> "MappingWrapper[_T]":
+        """Create and return a new object."""
         ...
 
-    def __len__(self) -> int:
+    def __call__(self, *args, **kwargs) -> _T:
+        """Return a new descriptor object."""
+        ...
+
+    def __init__(self, *args, **kwargs) -> None:
         ...
 
 
@@ -178,8 +184,66 @@ class StandardDataclass(Protocol):
 
 
 @runtime_checkable
-class DataclassInstance(StandardDataclass, Protocol):
+class StandardCornflakesDataclass(StandardDataclass, Protocol[_T]):
+    # @classmethod
+    # def __new__(cls: Type[_T], *args, **kwargs) -> _T:
+    #     ...
+    def __int__(self, *args, **kwargs) -> None:
+        ...
+
+    @classmethod
+    def validate_kwargs(cls, validate=False, **kwargs) -> Dict[str, Any]:
+        """Validate kwargs.
+
+        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.validate_dataclass_kwargs`.
+        """
+        ...
+        from cornflakes.decorator.dataclasses import validate_dataclass_kwargs
+
+        return validate_dataclass_kwargs(cls, validate=validate, **kwargs)
+
+    @classmethod
+    def check_kwargs(cls, validate=False, **kwargs) -> Dict[str, Any]:
+        """Check dataclass kwargs.
+
+        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.check_dataclass_kwargs`.
+
+        """
+        from cornflakes.decorator.dataclasses import check_dataclass_kwargs
+
+        return check_dataclass_kwargs(cls, validate=validate, **kwargs)
+
+
+@runtime_checkable
+class DataclassInstance(StandardCornflakesDataclass, Protocol[_T]):
     def __int__(self, *args, **kwargs):
+        ...
+
+    def __call__(self, *args, **kwargs) -> _T:
+        ...
+
+    def __getitem__(self, key: str) -> _T:
+        """Get the value associated with the given key."""
+        ...
+
+    def keys(self) -> Iterable[str]:
+        """Return an iterable of all the keys."""
+        ...
+
+    def __contains__(self, *args, **kwargs):
+        """True if the dictionary has the specified key, else False."""
+        ...
+
+    def __iter__(self, *args, **kwargs):
+        """Implement iter(self)."""
+        ...
+
+    def __len__(self, *args, **kwargs):
+        """Return len(self)."""
+
+    @classmethod
+    def __new__(cls: Type[_T], *args, **kwargs) -> "DataclassInstance[_T]":
+        """Create and return a new object.  See help(type) for accurate signature."""
         ...
 
     def to_dict(self) -> dict:
@@ -222,119 +286,23 @@ class DataclassInstance(StandardDataclass, Protocol):
 
         return to_yaml(self, out_cfg=out_cfg, *args, **kwargs)
 
-    def validate_kwargs(self, validate=False, **kwargs) -> Dict[str, Any]:
-        """Validate kwargs.
-
-        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.validate_dataclass_kwargs`.
-        """
-        ...
-        from cornflakes.decorator.dataclasses import validate_dataclass_kwargs
-
-        return validate_dataclass_kwargs(self, validate=validate, **kwargs)
-
-    def check_kwargs(self, validate=False, **kwargs) -> Dict[str, Any]:
-        """Check dataclass kwargs.
-
-        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.check_dataclass_kwargs`.
-
-        """
-        from cornflakes.decorator.dataclasses import check_dataclass_kwargs
-
-        return check_dataclass_kwargs(self, validate=validate, **kwargs)
-
 
 @runtime_checkable
-class CornflakesDataclass(StandardDataclass, Protocol):
+class CornflakesDataclass(StandardCornflakesDataclass, Protocol[_T]):
     """Dataclass instance protocol."""
 
     __eval_env__: bool
 
-    def __init__(self, *args, **kwargs) -> None:
-        ...
-
     @classmethod
-    def __call__(cls: Type[_T], *args, **kwargs) -> Union[_T, DataclassInstance]:
+    def __call__(cls: Type[_T], *args, **kwargs) -> DataclassInstance[_T]:
         ...
 
-    @classmethod
-    def __new__(cls: Type[_T], *args, **kwargs) -> _T:
+    def __int__(self, *args, **kwargs) -> None:
         ...
-
-    @classmethod
-    def to_dict(cls) -> dict:
-        """Parse config to dict.
-
-        Method implemented in :meth:`cornflakes.decorator.dataclass._dataclass.to_dict`.
-        """
-        ...
-        from cornflakes.decorator.dataclasses import to_dict
-
-        return to_dict(cls)
-
-    @classmethod
-    def to_tuple(cls) -> tuple:
-        """Parse config to tuple.
-
-        Method implemented in :meth:`cornflakes.decorator.dataclass._dataclass.to_tuple`.
-        """
-        ...
-        from cornflakes.decorator.dataclasses import to_tuple
-
-        return to_tuple(cls)
-
-    @classmethod
-    def to_ini(cls, out_cfg: Optional[str] = None) -> Optional[bytearray]:
-        """Parse config to ini file / bytes.
-
-        Method implemented in :meth:`cornflakes.decorator.config.ini.to_ini`.
-        """
-        ...
-        from cornflakes.decorator.dataclasses import to_ini
-
-        return to_ini(cls, out_cfg=out_cfg)
-
-    @classmethod
-    def to_yaml(cls, out_cfg: Optional[str] = None, *args, **kwargs) -> Optional[bytearray]:
-        """Parse config to yaml file / bytes.
-
-        Method implemented in :meth:`cornflakes.decorator.config.yaml.to_yaml`.
-        """
-        ...
-        from cornflakes.decorator.dataclasses import to_yaml
-
-        return to_yaml(cls, out_cfg=out_cfg, *args, **kwargs)
-
-    @classmethod
-    def validate_kwargs(cls, validate=False, **kwargs) -> Dict[str, Any]:
-        """Validate kwargs.
-
-        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.validate_dataclass_kwargs`.
-        """
-        ...
-        from cornflakes.decorator.dataclasses import validate_dataclass_kwargs
-
-        return validate_dataclass_kwargs(cls, validate=validate, **kwargs)
-
-    @classmethod
-    def check_kwargs(cls, validate=False, **kwargs) -> Dict[str, Any]:
-        """Check dataclass kwargs.
-
-        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.check_dataclass_kwargs`.
-
-        """
-        ...
-        from cornflakes.decorator.dataclasses import check_dataclass_kwargs
-
-        return check_dataclass_kwargs(cls, validate=validate, **kwargs)
 
 
 @runtime_checkable
-class ConfigInstance(DataclassInstance, Protocol):
-    """Config Protocol Type."""
-
-    # def __int__(self, *args, **kwargs):
-    #     ...
-
+class StandardConfigArgs(Protocol):
     __config_files__: ClassVar[Optional[Union[List[str], str]]]
     __config_sections__: ClassVar[Optional[Union[List[str], str]]]
     __multi_config__: ClassVar[bool]
@@ -343,34 +311,9 @@ class ConfigInstance(DataclassInstance, Protocol):
     __allow_empty_config__: ClassVar[bool]
     __chain_files__: ClassVar[bool]
 
-    from_ini: LoaderMethod
-    from_yaml: LoaderMethod
-    from_dict: LoaderMethod
-    from_file: LoaderMethod
 
-
-class Config(CornflakesDataclass, Protocol):
-    """Config Protocol Type."""
-
-    # def __int__(self, *args, **kwargs) -> None:
-    #     ...
-
-    @classmethod
-    def __call__(cls: Type[_T], *args, **kwargs) -> Union[_T, ConfigInstance]:
-        ...
-
-    @classmethod
-    def __new__(cls: Type[_T], *args, **kwargs) -> _T:
-        ...
-
-    __config_files__: ClassVar[Optional[Union[List[str], str]]]
-    __config_sections__: ClassVar[Optional[Union[List[str], str]]]
-    __multi_config__: ClassVar[bool]
-    __config_list__: ClassVar[bool]
-    __default_loader__: ClassVar[Loader]
-    __allow_empty_config__: ClassVar[bool]
-    __chain_files__: ClassVar[bool]
-
+@runtime_checkable
+class StandardConfigMethods(Protocol):
     from_ini: LoaderMethod
     from_yaml: LoaderMethod
     from_dict: LoaderMethod
@@ -378,44 +321,41 @@ class Config(CornflakesDataclass, Protocol):
 
 
 @runtime_checkable
-class ConfigGroupInstance(DataclassInstance, Protocol):
-    """ConfigGroup Protocol Type."""
-
-    # def __int__(self, *args, **kwargs):
-    #     ...
-
-    __config_files__: ClassVar[Optional[Union[List[str], str]]]
-    __config_sections__: ClassVar[Optional[Union[List[str], str]]]
-    __multi_config__: ClassVar[bool]
-    __config_list__: ClassVar[bool]
-    __default_loader__: ClassVar[Loader]
+class StandardConfigGroupArgs(Protocol):
     __allow_empty_config__: ClassVar[bool]
+    __config_files__: ClassVar[Optional[Union[List[str], str]]]
     __chain_files__: ClassVar[bool]
 
+
+@runtime_checkable
+class StandardConfigGroupMethods(Protocol):
     from_file: LoaderMethod
 
 
 @runtime_checkable
-class ConfigGroup(CornflakesDataclass, Protocol):
+class ConfigInstance(StandardConfigMethods, StandardConfigArgs, DataclassInstance, Protocol[_T]):
+    """Config Protocol Type."""
+
+    ...
+
+
+class Config(StandardConfigMethods, StandardConfigArgs, CornflakesDataclass, Protocol[_T]):
+    """Config Protocol Type."""
+
+    @classmethod
+    def __new__(cls: Type[_T], *args, **kwargs) -> ConfigInstance[_T]:  # type: ignore
+        ...
+
+
+@runtime_checkable
+class ConfigGroupInstance(StandardConfigGroupMethods, StandardConfigArgs, DataclassInstance, Protocol[_T]):
     """ConfigGroup Protocol Type."""
 
-    # def __int__(self, *args, **kwargs) -> None:
-    #     ...
+
+@runtime_checkable
+class ConfigGroup(StandardConfigGroupMethods, StandardConfigGroupArgs, CornflakesDataclass, Protocol[_T]):
+    """ConfigGroup Protocol Type."""
 
     @classmethod
-    def __call__(cls: Type[_T], *args, **kwargs) -> Union[_T, ConfigGroupInstance]:
+    def __new__(cls: _T, *args, **kwargs) -> ConfigGroupInstance[_T]:  # type: ignore
         ...
-
-    @classmethod
-    def __new__(cls: Type[_T], *args, **kwargs) -> _T:
-        ...
-
-    __config_files__: ClassVar[Optional[Union[List[str], str]]]
-    __config_sections__: ClassVar[Optional[Union[List[str], str]]]
-    __multi_config__: ClassVar[bool]
-    __config_list__: ClassVar[bool]
-    __default_loader__: ClassVar[Loader]
-    __allow_empty_config__: ClassVar[bool]
-    __chain_files__: ClassVar[bool]
-
-    from_file: LoaderMethod

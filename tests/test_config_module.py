@@ -10,7 +10,6 @@ from cornflakes.builder import generate_config_module
 from cornflakes.decorator.dataclasses import AnyUrl
 from cornflakes.types import Loader
 from tests import configs
-from tests.configs.default import MainConfig
 
 
 class TestConfigGeneration(unittest.TestCase):
@@ -41,7 +40,18 @@ class TestConfigGeneration(unittest.TestCase):
         defined_config_module = pathlib.Path(test_file).read_text()
         self.assertEqual(generated_config_module, defined_config_module)
 
-        self.assertEqual(MainConfig().to_dict(), dict(**MainConfig()))
+        from typing import TypeVar
+
+        from tests.configs.default import MainConfig
+
+        TypeVar("_T")
+
+        def pass_dict(**kwargs):
+            return kwargs
+
+        pass_dict(**MainConfig())
+
+        self.assertEqual(MainConfig().to_dict(), {**MainConfig()})
 
         self.assertEqual(
             MainConfig().to_dict(),
