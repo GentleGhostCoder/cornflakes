@@ -43,6 +43,4 @@ def string_builder(callback=None, *args, **kwargs):
     def wrapper(c):
         return _StringMethodConcatenation(c, *args, **kwargs)
 
-    if callback:
-        return wrapper(callback)
-    return wrapper
+    return wrapper(callback) if callback else wrapper

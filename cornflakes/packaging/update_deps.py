@@ -1,3 +1,5 @@
+import pathlib
+import re
 import subprocess
 from typing import Dict, cast
 
@@ -7,21 +9,41 @@ import toml
 from cornflakes.cli import cli
 
 
-def _update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:
-    def update(deps: Dict, content: str) -> str:
-        for key in deps:
-            v = deps[key]
-            if isinstance(v, str) and name.lower() == key.lower() and v[0] in ("~", "^"):
-                current_version = v[1:]
-                if version.parse(current_version) < version.parse(latest_version):
-                    updated_version_str = f"{v[0]}{latest_version}"
-                    content = content.replace(current_version, latest_version)
-                    print(f"Updating {name} from {v} to {updated_version_str}")
-                    deps[key] = updated_version_str
-        return content
+def _parse_version_dependency(version_str):
+    if match := re.match(r"(>=|<=|>|<|\^)(\d+.*)", version_str):
+        return match[1], match[2]
+    else:
+        return None, None
 
-    c = update(t["tool"]["poetry"]["dependencies"], c)
-    c = update(t["tool"]["poetry"]["dev-dependencies"], c)
+
+def _update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:  # noqa: C901
+    def update(deps: Dict, content_lines: list) -> str:
+        for d in deps:
+            v = deps[d]
+            if isinstance(v, dict):
+                v = v.get("version", None)
+            if isinstance(v, str) and name.lower().replace("-", "_") == d.lower().replace("-", "_"):
+                parsed_version = _parse_version_dependency(v)
+                if parsed_version:
+                    operator, current_version = parsed_version
+                    if not current_version or latest_version:
+                        continue
+                    if version.parse(current_version) < version.parse(latest_version):
+                        updated_version_str = f"{operator}{latest_version}"
+
+                        def _replace_version(line):
+                            if d in line and "<<SKIP_UPDATE>>" not in line:
+                                line = line.replace(current_version, latest_version)
+                            return line
+
+                        content_lines = list(map(_replace_version, content_lines))
+                        print(f"Updating {name} from {v} to {updated_version_str}")
+                        deps[d] = updated_version_str
+        return "\n".join(content_lines)
+
+    for key in t["tool"]["poetry"].keys():
+        if key.endswith("dependencies"):
+            c = update(t["tool"]["poetry"][key], c.split("\n"))
 
     return c
 
@@ -29,8 +51,7 @@ def _update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:
 @cli.command("update")
 def update_deps() -> None:
     """Update dependencies to latest version."""
-    with open("./pyproject.toml") as fr:
-        content = fr.read()
+    content = pathlib.Path("./pyproject.toml").read_text()
     toml_dict = cast(Dict, toml.loads(content))
     subprocess.run(["poetry", "update"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     output = subprocess.run(["pip", "list"], capture_output=True)

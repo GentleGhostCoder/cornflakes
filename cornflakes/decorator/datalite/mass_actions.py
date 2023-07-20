@@ -5,7 +5,7 @@ of the database file.
 """
 from dataclasses import asdict
 import sqlite3 as sql
-from typing import List, Tuple, TypeVar, Union
+from typing import Any, List, Tuple, TypeVar, Union
 from warnings import warn
 
 from cornflakes.decorator.datalite.commons import _convert_sql_format, _create_table
@@ -52,7 +52,7 @@ def _toggle_memory_protection(cur: sql.Cursor, protect_memory: bool) -> None:
         cur.execute("PRAGMA journal_mode = MEMORY")
 
 
-def _mass_insert(objects: Union[List[T], Tuple[T]], db_name: str, protect_memory: bool = True) -> None:
+def _mass_insert(objects: Union[List[Any], Tuple[Any]], db_name: str, protect_memory: bool = True) -> None:
     """
     Insert multiple records into an SQLite3 database.
 
@@ -73,7 +73,7 @@ def _mass_insert(objects: Union[List[T], Tuple[T]], db_name: str, protect_memory
         sql_queries.append(
             f"INSERT INTO {table_name}("
             + f"{', '.join(item[0] for item in kv_pairs)})"
-            + f" VALUES ({', '.join(_convert_sql_format(item[1]) for item in kv_pairs)});"
+            + f" VALUES ({', '.join(str(_convert_sql_format(item[1])) for item in kv_pairs)});"
         )
     with sql.connect(db_name) as con:
         cur: sql.Cursor = con.cursor()

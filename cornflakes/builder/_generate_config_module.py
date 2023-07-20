@@ -8,13 +8,12 @@ import sysconfig
 from types import ModuleType
 from typing import Dict, List, Optional, Union
 
-from cornflakes.common import unquoted_string
-from cornflakes.decorator import field
-from cornflakes.decorator.config import config_files, config_group, is_config
-from cornflakes.decorator.types import ConfigArguments, Loader
+from cornflakes.decorator.dataclasses import config_files, field, is_config
+from cornflakes.decorator.dataclasses.config import config_group
+from cornflakes.types import Constants, Loader
 
-TEMPLATE = '''"""Template Module."""
-from cornflakes import config_group
+TEMPLATE = f'''"""Template Module."""
+from {import_module("cornflakes.decorator.dataclasses").__name__} import config_group
 
 
 @config_group
@@ -33,7 +32,7 @@ def generate_config_module(  # noqa: C901
     source_config: Optional[Union[Dict[str, Union[List[str], str]], List[str], str]] = None,
     target_module_file: Optional[str] = None,
     class_name: Optional[str] = None,
-    loader: Loader = Loader.FILE_LOADER,
+    loader: Loader = Loader.FILE,
     module_description: str = "Automatically generated Default Config.",
     class_description: str = "Main config class of the module.",
     *args,
@@ -44,15 +43,12 @@ def generate_config_module(  # noqa: C901
     ini_config_objects = {}
     imports = []
     extra_imports = []
-    files = kwargs.get(ConfigArguments.files.name, [])
+    files = kwargs.get(Constants.config_decorator_args.FILES, [])
     files = files if isinstance(files, list) else [files]
     os.environ["CORNFLAKES_GENERATING_CONFIG_MODULE"] = "True"
 
-    if ConfigArguments.files.name not in kwargs:
-        kwargs.update({ConfigArguments.files.name: source_config})
-
-    if not target_module_file:
-        target_module_file = f'{source_module.__name__.replace(".", "/")}/default.py'
+    if Constants.config_decorator_args.FILES not in kwargs:
+        kwargs.update({Constants.config_decorator_args.FILES: source_config})
 
     template = TEMPLATE  # create copy of template
 
@@ -62,12 +58,15 @@ def generate_config_module(  # noqa: C901
     template = template.replace("Template Module.", module_description)
     template = template.replace("Template Class.", class_description)
 
+    if isinstance(source_module, str):
+        source_module = import_module(source_module)
+
+    if not target_module_file:
+        target_module_file = f'{source_module.__name__.replace(".", "/")}/default.py'
+
     # Write Template to prevent import errors
     with open(target_module_file, "w") as file:
         file.write(template)
-
-    if isinstance(source_module, str):
-        source_module = import_module(source_module)
 
     for cfg_name, cfg_class in inspect.getmembers(source_module):
         if is_dataclass(cfg_class) and inspect.isclass(cfg_class) and is_config(cfg_class):
@@ -76,13 +75,7 @@ def generate_config_module(  # noqa: C901
             imports.append(cfg_name)
             files.extend([file for file in config_files(cfg_class) if file and file not in files])
 
-    if ConfigArguments.filter_function.name in kwargs:
-        filter_function = kwargs.pop(ConfigArguments.filter_function.name)
-        kwargs[ConfigArguments.filter_function.name] = unquoted_string(filter_function.__name__)
-        extra_imports.append(f"from {filter_function.__module__} import {filter_function.__name__}")
-
     logging.debug(f"Found configs: {imports}")
-
     declaration.extend(
         [
             (

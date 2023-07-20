@@ -21,7 +21,12 @@ def isclassmethod(method):
     return False
 
 
-def _patch_module(m):
+patch_modules: list = []
+
+
+def _patch_module(
+    m,
+):
     """Method to overwrite module variables in a generic way.
 
     1. Overwrite names from submodules declared in __all__ to parent module.
@@ -33,6 +38,9 @@ def _patch_module(m):
         if ismodule(obj):
             _patch_module(obj)
             for sub_m in iter_modules(getattr(obj, "__path__", [])):
+                if f"{obj.__name__}.{sub_m.name}" in patch_modules:
+                    continue
+                patch_modules.append(f"{obj.__name__}.{sub_m.name}")
                 _patch_module(import_module(f"{obj.__name__}.{sub_m.name}"))
             return
         if not isclassmethod(obj):
@@ -64,5 +72,8 @@ def patch_module(module: str):
     __pached_modules.append(module)
     m = import_module(module)
     for sub_m in iter_modules(getattr(m, "__path__", [])):
+        if f"{m.__name__}.{sub_m.name}" in patch_modules:
+            continue
+        patch_modules.append(f"{m.__name__}.{sub_m.name}")
         _patch_module(import_module(f"{m.__name__}.{sub_m.name}"))
     _patch_module(m)

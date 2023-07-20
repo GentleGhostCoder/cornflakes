@@ -36,7 +36,7 @@ def ca_path_validation(ca_path: str):
     frozen=True,  # make the config immutable
     validate=True,  # activate validation and type checking
     eval_env=True,  # evaluate environment variables
-    default_loader=Loader.INI_LOADER,  # use the ini loader as default
+    default_loader=Loader.INI,  # use the ini loader as default
 )
 class Boto3ClientConfig:
     """Config class for the boto3 client.

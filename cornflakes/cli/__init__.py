@@ -4,6 +4,7 @@ from cornflakes.decorator.click import bg_process_option, verbose_option
 
 
 @click_cli(
+    config=None,
     OPTION_GROUPS={
         **{
             command: [
@@ -25,14 +26,7 @@ from cornflakes.decorator.click import bg_process_option, verbose_option
             for command in ["cornflakes", "cornflakes create"]
         },
     },
-    COMMAND_GROUPS={
-        "cornflakes": [
-            {
-                "name": "Test Commands",
-                "commands": ["print"],
-            },
-        ]
-    },
+    COMMAND_GROUPS={},
     CONTEXT_SETTINGS={"help_option_names": ["-h", "--help"]},
     HEADER_LOGO="""[blue]
  ██████╗ ██████╗ ██████╗ ███╗   ██╗███████╗██╗      █████╗ ██╗  ██╗███████╗ ███████╗

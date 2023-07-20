@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional, Union
 def generate_enum_module(
     title: Optional[str],
     sources: Union[str, List[str], Dict[str, Any], ModuleType],
-    target_module_file: Optional[str],
+    target_module_file: str,
     module_description: Optional[str] = None,
     class_description: Optional[str] = None,
     comments: Optional[Union[Dict[str, str], List[str]]] = None,
@@ -46,10 +46,10 @@ def generate_enum_module(
             for key, comment in comments.items():
                 enum[key] = f"{enum[key]}  # {comment}"
 
-    enum = [f"{key} = {value}" for key, value in enum.items()]
-    enum = """
+    enum_list = [f"{key} = {value}" for key, value in enum.items()]
+    enum_str = """
     """.join(
-        enum
+        enum_list
     )
 
     module_description = f'''"""{module_description}"""''' if module_description else ""  # noqa: B907
@@ -57,12 +57,12 @@ def generate_enum_module(
 
     module = f'''{f"""{module_description}
 """ if module_description else ""}from enum import Enum
-{f"""import {sources.__name__}
-""" if not isinstance(sources, (list, dict)) else ""}
+{"" if isinstance(sources, (list, dict)) else f"""import {sources.__name__}
+ """}
 
 class {title}(Enum):
     {f"""{class_description}
-    """ if class_description else ""}{enum}
+    """ if class_description else ""}{enum_str}
 '''
 
     with open(target_module_file, "w") as f:

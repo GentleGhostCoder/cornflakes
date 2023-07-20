@@ -1,7 +1,8 @@
 """Automatically generated Default Config."""
 from typing import List
 
-from cornflakes import config_group, field
+from cornflakes.decorator import field
+from cornflakes.decorator.dataclasses import config_group
 from tests.configs.sub_config import SubConfigClass
 
 

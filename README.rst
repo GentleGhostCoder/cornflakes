@@ -41,6 +41,11 @@
 
     pip install git+https://github.com/semmjon/cornflakes
 
+.. warning::
+    Please be careful when using this Python module. Currently it is only developed / tested by me, which is why it has a high update / change rate. I'm actually trying to be compatible with implementations, but I can't guarantee this at the moment. The module is currently still in a beta state and is not recommended for productive use.
+
+    In the near future I plan to revise the documentation / examples and write an introductory blog article, as I find implemented features and planned ideas to be quite cool and useful (and don't see them in any other package or find them to be quite user-friendly).
+
 Information
 -----------
 
@@ -55,8 +60,11 @@ There are other useful methods in the base of the module that are generally usef
 Short Term RoadMap:
 ~~~~~~~~~~~~~~~~~~~~
 
+- Change Code Annotations
+    - remove Any annotations if possible
+    - change Protocol Annotations to specific type classes
 - Enrich json methods
-- Fix / Test the to_<file-format> Methods
+- Fix / Test the to_<file-format> Methods (specially yaml)
 
 Development
 -----------

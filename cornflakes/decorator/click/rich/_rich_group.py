@@ -3,6 +3,8 @@ from typing import Any, Dict, List, Optional, Union
 
 from click import ClickException, Command, Context, Group, HelpFormatter, Parameter, exceptions
 
+from cornflakes.common import recursive_update
+from cornflakes.decorator.click.helper import get_command_name
 from cornflakes.decorator.click.rich._rich_click import (
     get_rich_console,
     rich_abort_error,
@@ -26,6 +28,7 @@ class RichGroup(Group):
     name = ""
     context_settings: dict
     commands: Dict[str, Union[Command, RichCommand]]
+    config: RichConfig
 
     def callback(self):
         """Callback method with is wrapped over the command group."""
@@ -35,9 +38,10 @@ class RichGroup(Group):
 
         If the name is not provided, the name of the command is used.
         """
+        setattr(cmd, "parent", self)
         Group.add_command(self, cmd, name)
 
-    def __init__(self, config: RichConfig = None, *args, **kwargs):
+    def __init__(self, config: Optional[RichConfig] = None, *args, **kwargs):
         """Init function of RichGroup with extra config argument."""
         if not config:
             config = RichConfig()
@@ -46,15 +50,23 @@ class RichGroup(Group):
         self.console = get_rich_console(config=self.config)
 
     def __pass_config(self, config=None, console=None):
-        if config:
-            for _group in self.commands.values():
-                if isinstance(_group, RichGroup) and _group:
-                    _group.__pass_config(config, console)
-                _group.config = config
-                _group.console = console if console else get_rich_console(_group.config)
-                if _group.config.GLOBAL_OPTIONS:
-                    for option_obj in _group.config.GLOBAL_OPTIONS:
-                        _group.params.extend(option_obj.params)
+        if not config:
+            return
+        for _group in self.commands.values():
+            _group.parent = self
+            if isinstance(_group, RichGroup) and _group:
+                _group.__pass_config(config, console)
+            _group.config = config
+            _group.console = console or get_rich_console(_group.config)
+            if _group.config.GLOBAL_OPTIONS:
+                for option_obj in _group.config.GLOBAL_OPTIONS:
+                    _group.params.extend(option_obj.params)
+
+            # fill the auto-options if exists
+            command = get_command_name(_group)
+            if hasattr(_group, "__option_groups__") and len(getattr(_group, "__option_groups__", {})):
+                update_dict = {command: _group.__option_groups__}
+                recursive_update(_group.config.OPTION_GROUPS, update_dict, merge_lists=True)
 
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:  # noqa: C901
         """Main function of RichGroup."""

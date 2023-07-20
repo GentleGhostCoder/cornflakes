@@ -76,7 +76,7 @@ std::string path_exanduser(std::string value) {
     char *home = std::getenv("HOME");
     if (home != NULL) {
       value.erase(0, 1);
-      value.insert(0, std::string(home) + "/");
+      value.insert(0, std::string(home));
     }
   }
   return value;

@@ -5,22 +5,34 @@ from enum import Enum
 from ipaddress import IPv4Address, IPv6Address
 from typing import Optional
 
-from cornflakes import AnyUrl, config
 from cornflakes.decorator import Index, field
+from cornflakes.decorator.dataclasses import AnyUrl, config
 
 
 class ExampleEnum(Enum):
     sample = "abc"
 
 
-@config(sections="sub_config", use_regex=True, is_list=True, frozen=True, eval_env=True, validate=True)
+@config(
+    files="tests/configs/default.ini",
+    sections="sub_config",
+    use_regex=True,
+    is_list=True,
+    frozen=True,
+    eval_env=True,
+    validate=True,
+    chain_files=True,
+)
 class SubConfigClass:
     """Test Config Class."""
 
+    url: AnyUrl = field(
+        no_default=True,
+    )
+    init_config: InitVar[Optional[bool]] = field(default=None)
     idx_at5: Index = 5  # type: ignore
     idx_at_first_ini_or_0: Index["SubConfigClass"] = 0  # type: ignore
     test: Optional[str] = None
-    init_config: InitVar[bool] = True
     section_name: str = ""
     string: str = "bla123"
     empty_string: str = ""
@@ -32,13 +44,18 @@ class SubConfigClass:
     ipv4: IPv4Address = IPv4Address("127.0.0.1")
     ipv6: IPv6Address = IPv6Address("684D:1111:222:3333:4444:5555:6:77")
     bool_val: bool = True
-    url: AnyUrl = field(
-        no_default=True,
-    )
     enum: ExampleEnum = ExampleEnum.sample
-    some_env: str = field(default="default_value", alias=["some_env"], ignore=True)
+    some_env: str = field(default="default_value", aliases=["some_env"], ignore=True)
     lineterminator: str = "\n"
     escapechar: str = "\\"
     quotechar: str = '"'
     sep: str = ","
     euro: str = "€"
+
+
+# from cornflakes.decorator.dataclasses import fields
+# any(f.type == Index for f in fields(SubConfigClass))
+# from cornflakes.decorator._indexer import IndexCounter, IndexInstance
+
+# SubConfigClass(url="blub").idx_at_first_ini_or_0.__class__
+# isinstance(SubConfigClass(url="blub").idx_at_first_ini_or_0, IndexInstance)

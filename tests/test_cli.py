@@ -1,11 +1,13 @@
 """Test cases for the cli decorator."""
-from click import command, group, option
+from typing import cast
+
+from click import BaseCommand, command, group, option
 from click.testing import CliRunner
 import pytest
 
-from cornflakes import config
 from cornflakes.cli import cli
-from cornflakes.decorator.click import auto_option
+from cornflakes.decorator.click import config_option
+from cornflakes.decorator.dataclasses import config
 
 
 @config
@@ -24,15 +26,11 @@ def some_group():
 
 
 @command("test_command")
-@auto_option(SomeConfig, config_file=True)
+@config_option(SomeConfig, add_config_file_options=True)
 @option("--test-arg", help="test arg", default="blub", required=False)
-def some_command(config, test_option, test_arg):
+def some_command(test_config: SomeConfig):
     """Test CLI Command."""
-    # print(args)
-    # print(kwargs)
-    print(config)
-    print(test_option)
-    print(test_arg)
+    print(test_config)
 
 
 some_group.add_command(some_command)
@@ -48,6 +46,6 @@ def runner() -> CliRunner:
 
 def test_main_succeeds(runner: CliRunner) -> None:
     """It exits with a status code of zero."""
-    result = runner.invoke(cli, ["test", "test_command"])
+    result = runner.invoke(cast(BaseCommand, cli), ["test", "test_command"])
     if result.exc_info:
         assert result.exc_info[0] == TypeError or result.exc_info[0] == DeprecationWarning or result.exit_code == 0

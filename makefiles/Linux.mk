@@ -57,6 +57,18 @@ lint: ## check style with flake8
 test: ## run tests quickly with the default Python
 	pytest -o log_cli=true
 
+test-mypy:
+	mypy cornflakes tests docs/conf.py
+
+test-xdoctest:
+	python -m xdoctest cornflakes all
+
+test-pytype:
+	pytype --disable=import-error cornflakes tests docs/conf.py
+
+test-typeguard:
+	 pytest --typeguard-packages=cornflakes
+
 test-all: ## run tests on every Python version with tox
 	nox
 
@@ -75,8 +87,6 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	sphinx-apidoc -o docs cornflakes
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-
-preview: docs
 	$(BROWSER) docs/_build/html/index.html
 
 servedocs: docs ## compile the docs watching for changes

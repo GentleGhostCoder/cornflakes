@@ -216,16 +216,12 @@ def _get_parameter_help(
 
     # Default value
     if getattr(param, "show_default", None):
-        # param.default is the value, but click is a bit clever in choosing what to show here
-        # eg. --debug/--no-debug, default=False will show up as [default: no-debug] instead of [default: False]
-        # To avoid duplicating loads of code, let's just pull out the string from click with a regex
-        # Example outputs from param.get_help_record(ctx)[-1] are:
-        #     [default: foo]
-        #     [env var: EMAIL, EMAIL_ADDRESS; default: foo]
-        default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", typing.cast(list, param.get_help_record(ctx))[-1])
-        if default_str_match:
+        if default_str_match := re.search(
+            r"\[(?:.+; )?default: (.*)\]",
+            typing.cast(list, param.get_help_record(ctx))[-1],
+        ):
             # Don't show the required string, as we show that afterwards anyway
-            default_str = default_str_match.group(1).replace("; required", "")
+            default_str = default_str_match[1].replace("; required", "")
             items.append(
                 Text(
                     config.DEFAULT_STRING.format(default_str),
@@ -275,7 +271,7 @@ def rich_format_help(
     ctx: click.Context,
     formatter: click.HelpFormatter,
     config: RichConfig,
-    console: Console = None,
+    console: typing.Optional[Console] = None,
 ) -> None:
     """Print nicely formatted help text using rich.
 
@@ -442,9 +438,11 @@ def rich_format_help(
                 "show_lines": config.STYLE_OPTIONS_TABLE_SHOW_LINES,
                 "leading": config.STYLE_OPTIONS_TABLE_LEADING,
                 "box": config.STYLE_OPTIONS_TABLE_BOX,
+                "header_style": config.STYLE_OPTIONS_TABLE_HEADER_STYLE,
                 "border_style": config.STYLE_OPTIONS_TABLE_BORDER_STYLE,
                 "row_styles": config.STYLE_OPTIONS_TABLE_ROW_STYLES,
                 "pad_edge": config.STYLE_OPTIONS_TABLE_PAD_EDGE,
+                "show_edge": config.STYLE_OPTIONS_TABLE_SHOW_EDGE,
                 "padding": config.STYLE_OPTIONS_TABLE_PADDING,
             }
             t_styles.update(option_group.get("table_styles", {}))  # type: ignore
@@ -452,6 +450,7 @@ def rich_format_help(
             options_table = Table(
                 highlight=True,
                 show_header=False,
+                show_footer=False,
                 expand=True,
                 box=box_style,
                 **t_styles,  # type: ignore
@@ -548,7 +547,7 @@ def rich_format_help(
         )
 
 
-def rich_format_error(self: click.ClickException, config: RichConfig, console: Console = None):
+def rich_format_error(self: click.ClickException, config: RichConfig, console: typing.Optional[Console] = None):
     """Print richly formatted click errors.
 
     Called by custom exception handler to print richly formatted click errors.
@@ -587,7 +586,7 @@ def rich_format_error(self: click.ClickException, config: RichConfig, console: C
         console.print(config.ERRORS_EPILOGUE)
 
 
-def rich_abort_error(config: RichConfig, console: Console = None) -> None:
+def rich_abort_error(config: RichConfig, console: typing.Optional[Console] = None) -> None:
     """Print richly formatted abort error."""
     if not console:
         console = get_rich_console(config=config)

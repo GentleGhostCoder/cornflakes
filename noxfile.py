@@ -23,7 +23,7 @@ nox.options.sessions = (
     "pre-commit",
     "safety",
     "pytype",
-    # "mypy",
+    "mypy",
     "tests",
     "xdoctest",
     "docs-build",
@@ -138,19 +138,17 @@ def safety(session: Session) -> None:
     session.run("safety", "check", "--full-report", f"--file={requirements}")
 
 
-# @session(python=python_versions)
-# def mypy(session: Session) -> None:
-#     """Type-check using mypy."""
-#     args = session.posargs or ["cornflakes", "tests", "docs/conf.py"]
-#     session.run("pip", "install", "ninja")
-#     session.run("pip", "install", "poetry")
-#     session.run("poetry", "build")
-#     version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
-#     search = f"*cp{version}*.whl"
-#     file = list(Path("dist").glob(search))[0].name
-#     session.run("pip", "install", f"dist/{file}", "--force-reinstall")
-#     session.install("mypy", "pytest", "types-pkg-resources", "types-requests", "types-attrs")
-#     session.run("mypy", *args)
+@session(python=python_versions)
+def mypy(session: Session) -> None:
+    """Type-check using mypy."""
+    args = session.posargs or ["cornflakes", "tests", "docs/conf.py"]
+    session.run("pip", "install", "ninja")
+    session.run("pip", "install", "poetry")
+    session.run("pip", "install", "pydantic[dotenv]")
+    session.run("pip", "install", "pydantic-settings")
+    session.run("poetry", "install")
+    session.install("mypy", "pytest", "types-pkg-resources", "types-requests", "types-attrs")
+    session.run("mypy", *args)
 
 
 @session(python=python_versions[:-1])  # current py3.11 not supported -> https://github.com/google/pytype/issues/1308
@@ -167,11 +165,6 @@ def pytype(session):
     session.run("pip", "install", "pydantic[dotenv]")
     session.run("pip", "install", "pydantic-settings")
     session.run("poetry", "install")
-    # session.run("poetry", "build")
-    # version = re.sub(".*-", "", session.name.replace("pytype-", "")).replace(".", "")
-    # search = f"*cp{version}*.whl"
-    # file = list(Path("dist").glob(search))[0].name
-    # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("pytype")
     session.run("pytype", *args)
 
@@ -182,18 +175,11 @@ def tests(session: Session) -> None:
     session.run("pip", "install", "black")
     session.run("pip", "install", "isort")
     session.run("pip", "install", "pydantic[dotenv]")
+    session.run("pip", "install", "pydantic-settings")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("pip", "install", "virtualenv", "--upgrade")  # fix bug for windows tests
     session.run("poetry", "install")
-    # if os.path.exists("build"):
-    #     shutil.rmtree("build")
-    # session.install(".")  # not working with so builds
-    # session.run("poetry", "build", "-v")
-    # version = session.name.replace("tests-", "").replace(".", "")
-    # search = f"*cp{version}*.whl"
-    # file = list(Path("dist").glob(search))[0].name
-    # session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("coverage[toml]", "pytest", "pygments")
     try:
         session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs, env={"NOX_RUNNING": "True"})
