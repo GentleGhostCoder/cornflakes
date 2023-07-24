@@ -1,6 +1,6 @@
 import logging
 
-from cornflakes.decorator.dataclasses._helper import is_config, is_config_list
+from cornflakes.decorator.dataclasses._helper import is_config, is_config_list, is_group
 
 
 def create_group_loader(cls):
@@ -10,6 +10,8 @@ def create_group_loader(cls):
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config group class is not
     """
+    if not is_group(cls):
+        raise TypeError(f"Class {cls.__name__} is not a config group class!")
 
     def from_file(
         files=None,
@@ -41,6 +43,7 @@ def create_group_loader(cls):
             if is_config_list(slot_class):
                 slot_class = slot_class.__args__[0]
             if is_config(slot_class):
+                setattr(slot_class, "__config_files__", [*getattr(slot_class, "__config_files__", []), *files])
                 slot_kwargs.update(
                     slot_class.from_file(
                         files=files,

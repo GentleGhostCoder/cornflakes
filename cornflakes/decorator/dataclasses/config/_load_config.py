@@ -7,7 +7,8 @@ from typing import Any, Dict, List, Optional, Union
 from cornflakes import ini_load
 from cornflakes.decorator.dataclasses._helper import (
     dataclass_fields,
-    dc_slot_missing_default,
+    dataclass_required_keys,
+    is_config,
     is_config_list,
     is_use_regex,
     normalized_class_name,
@@ -28,7 +29,12 @@ def create_file_loader(  # noqa: C901
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
     """
-    required_keys = [key for key, f in dataclass_fields(cls).items() if dc_slot_missing_default(f)]  # type: ignore
+    if not is_config(cls):
+        raise TypeError(f"Class {cls.__name__} is not a config class!")
+
+    required_keys = dataclass_required_keys(
+        cls
+    )  # [key for key, f in dataclass_fields(cls).items() if dc_slot_missing_default(f)]  # type: ignore
 
     keys = {key: getattr(f, "aliases", key) or key for key, f in dataclass_fields(cls).items()}
 
