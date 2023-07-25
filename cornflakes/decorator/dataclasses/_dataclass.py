@@ -96,7 +96,7 @@ def _zero_copy_asdict_inner(obj, value_factory=None):
 
 
 # @profile
-def _to_dict(self) -> Union[tuple, dict, Any]:
+def to_dict(self) -> Union[tuple, dict, Any]:
     """Method to convert Dataclass with slots to dict."""
     return _zero_copy_asdict_inner(self)
 
@@ -114,11 +114,6 @@ def _new_getattr(self, index):
         return _new_getattr_tuple(self, index)
 
     return _new_getattr_dict(self, index)
-
-
-def to_dict(self) -> dict:
-    """Method to convert Dataclass with slots to dict."""
-    return d_factory(self)(_to_dict(self))
 
 
 if sys.version_info >= (3, 10):
@@ -280,9 +275,9 @@ def dataclass(
         # dc_cls.__dict_factory__ = dict_factory or dict
         # dc_cls.__tuple_factory__ = tuple_factory or tuple
         setattr(dc_cls, Constants.dataclass_decorator.EVAL_ENV, eval_env)
-        setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, dict_factory or dict)
-        setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, tuple_factory or tuple)
-        setattr(dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, value_factory or None)
+        setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, staticmethod(dict_factory or dict))
+        setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, staticmethod(tuple_factory or tuple))
+        setattr(dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, staticmethod(value_factory or None))
         setattr(
             dc_cls,
             Constants.dataclass_decorator.IGNORED_SLOTS,
