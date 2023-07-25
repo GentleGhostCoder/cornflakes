@@ -32,7 +32,7 @@ def click_param_type_parser(config):
             name = type_class_name
 
             def convert(self, value, param, ctx):
-                if isinstance(type_class, HIDDEN_DEFAULT_TYPE):
+                if isinstance(value, HIDDEN_DEFAULT_TYPE):
                     return value
                 if not isinstance(value, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE)):
                     return check_dataclass_kwargs(config, **{param.name: eval_type(str(value))}, validate=True)[
