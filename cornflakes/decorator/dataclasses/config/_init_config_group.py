@@ -56,13 +56,6 @@ def _load_config_kwargs(
 
 
 def wrap_init_config_group(cls):
-    # Index.reset()
-    # Index.group_indexing()
-    # default_config = _load_config_kwargs(cls)
-    # Index.group_indexing()
-    # Index.reset()
-    # prepare special slot types (e.g. Index)
-    # default_config = evaluate_default_configs(cls, default_config)
     def pre_init_wrapper(init):
         @wrap_kwargs(init)
         def wrapper(

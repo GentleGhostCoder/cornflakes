@@ -17,7 +17,7 @@ from cornflakes.decorator.dataclasses import (
     is_group,
     normalized_class_name,
 )
-from cornflakes.types import _T, Config, ConfigGroup, Constants, CornflakesDataclass
+from cornflakes.types import _T, HIDDEN_DEFAULT, Config, ConfigGroup, Constants, CornflakesDataclass
 
 
 def _set_passed_key(wrapper, config, passing_key):
@@ -164,7 +164,7 @@ def _config_option(  # noqa: C901
             if "default" not in option_args and not dc_slot_missing_default(slot):
                 option_args["default"] = default(slot)
                 if not slot.repr:
-                    option_args["default"] = "***"
+                    option_args["default"] = HIDDEN_DEFAULT
             if "type" not in option_args:
                 option_args["type"] = param_parser(slot.type)()
             option_args["show_default"] = True

@@ -1,21 +1,21 @@
 from dataclasses import dataclass, field
-from functools import wraps
 from inspect import Parameter, Signature, signature
+import traceback
 from typing import Any, Callable, Dict, List, Optional
 
-from cornflakes.types import HAS_DEFAULT_FACTORY, INSPECT_EMPTY, WITHOUT_DEFAULT
+from cornflakes.types import HAS_DEFAULT_FACTORY, INSPECT_EMPTY_TYPE, MISSING, WITHOUT_DEFAULT, WITHOUT_DEFAULT_TYPE
 
 
-def _not_excluded(default):
+def _not_default_factory(default):
     return default != HAS_DEFAULT_FACTORY
 
 
 def _not_empty(x):
-    return x not in [INSPECT_EMPTY, WITHOUT_DEFAULT]
+    return x not in [INSPECT_EMPTY_TYPE, MISSING, WITHOUT_DEFAULT, WITHOUT_DEFAULT_TYPE]
 
 
 def _check_default(default):
-    return _not_empty(default) and _not_excluded(default)
+    return _not_empty(default) and _not_default_factory(default)
 
 
 def _check_annotation(annotation):
@@ -33,6 +33,7 @@ class KwargsWrapper:
     kwarg_names: List[str] = field(default_factory=list, init=False)
     wrapped: Callable[..., object]
     overwrites: Dict[str, Any] = field(default_factory=dict)
+    excluded: List[str] = field(default_factory=list)
     key_params: List[Parameter] = field(default_factory=list)
     key_params_no_default: List[Parameter] = field(default_factory=list)
     arg_params: List[Parameter] = field(default_factory=list)
@@ -41,6 +42,14 @@ class KwargsWrapper:
     @property
     def _names(self):
         return [*self.key_names_no_default, *self.key_names, *self.arg_names, *self.kwarg_names]
+
+    @property
+    def _args_patch(self):
+        return (
+            f"{self.arg_names[0]} = {self.arg_names[0]}[{len(self.key_names_no_default)}: ]"
+            if len(self.arg_names)
+            else ""
+        )
 
     @property
     def _passed_names(self):
@@ -63,7 +72,7 @@ class KwargsWrapper:
             [
                 (
                     f'{str(param).split(":", 1)[0].split("=", 1)[0]}'
-                    f'{f": wrapped_type_{idx} " * _check_annotation(param.annotation)}'
+                    f'{f": wrapped_type_{idx}" * _check_annotation(param.annotation)}'
                     f'{f"=wrapped_default_value_{idx}" * _check_default(param.default)}'
                 )
                 for idx, param in enumerate(self._params)
@@ -89,7 +98,9 @@ class KwargsWrapper:
     def _update_params(self, parameters):
         for name, param in parameters.items():
             if name not in self._names:
-                if _check_default(self.overwrites.get(param.name, INSPECT_EMPTY)):
+                if name in self.excluded:
+                    continue
+                if _check_default(self.overwrites.get(param.name, INSPECT_EMPTY_TYPE)):
                     self.key_names.append(name)
                     self.key_params.append(
                         Parameter(
@@ -104,22 +115,24 @@ class KwargsWrapper:
                     self.key_names.append(name)
                     self.key_params.append(param)
                     continue
-                if param.kind == Parameter.VAR_POSITIONAL:
+                if param.kind == Parameter.VAR_POSITIONAL and not self.arg_names:
                     self.arg_names.append(name)
                     self.arg_params.append(param)
                     continue
-                if param.kind == Parameter.VAR_KEYWORD:
+                if param.kind == Parameter.VAR_KEYWORD and not self.kwarg_names:
                     self.kwarg_names.append(name)
                     self.kwarg_params.append(param)
                     continue
-                if _not_excluded(param.default):
+                if _not_default_factory(param.default) and param.kind not in [
+                    Parameter.VAR_KEYWORD,
+                    Parameter.VAR_POSITIONAL,
+                ]:
                     self.key_names_no_default.append(name)
                     self.key_params_no_default.append(param)
                 continue
 
             is_variadic = Parameter.VAR_POSITIONAL or Parameter.VAR_KEYWORD
             param_idx = self._names.index(name)
-            # print(f"overwrite {self.params[param_idx].name} at {param_idx} with {name} of {self.names}")
             if is_variadic:
                 self._params[param_idx] = Parameter(
                     param.name,
@@ -132,13 +145,7 @@ class KwargsWrapper:
             self._params[param_idx] = Parameter(
                 param.name,
                 kind=param.kind,
-                default=(
-                    param.default
-                    if _check_default(param.default)
-                    else
-                    # self.overwrites.get(param.name) if _check_default(self.overwrites.get(param.name, INSPECT_EMPTY)) else
-                    self._params[param_idx].default
-                ),
+                default=(param.default if _check_default(param.default) else self._params[param_idx].default),
                 annotation=param.annotation
                 if _check_annotation(param.annotation)
                 else self._params[param_idx].annotation,
@@ -156,19 +163,29 @@ class KwargsWrapper:
         ldict: Dict[str, Any] = {**self._defaults_dict, **self._annotations_dict}
         wrapper_str = f"""
 def wrap_kwargs({self._params_declaration}):
+    {self._args_patch}
     return wrapper({self._passed_names})
 """
-        exec(  # noqa: S102
-            wrapper_str,
-            locals(),
-            ldict,
-        )
-        return wraps(self.wrapped)(ldict["wrap_kwargs"])
+        try:
+            exec(  # noqa: S102
+                wrapper_str,
+                locals(),
+                ldict,
+            )
+        except Exception as exc:
+            raise SyntaxError(
+                f"Failed to wrap {self.wrapped} over {wrapper} by exec: {wrapper_str}\n{traceback.format_exc()}"
+            ) from exc
+        ldict["wrap_kwargs"].__qualname__ = wrapper.__qualname__
+        ldict["wrap_kwargs"].__module__ = wrapper.__module__
+        ldict["wrap_kwargs"].__name__ = wrapper.__name__
+        ldict["wrap_kwargs"].__doc__ = wrapper.__doc__
+        return ldict["wrap_kwargs"]
 
 
-def wrap_kwargs(wrapped, **overwrites) -> Callable[..., Any]:
+def wrap_kwargs(wrapped, exclude: Optional[List[str]] = None, **overwrites):
     """Function Decorator that can update all passed arguments (that can be a variable) of function."""
-    kwargs_wrapper = KwargsWrapper(wrapped=wrapped, overwrites=overwrites)
+    kwargs_wrapper = KwargsWrapper(wrapped=wrapped, overwrites=overwrites, excluded=exclude or [])
 
     def wrapper(func):
         return kwargs_wrapper.wrap(func)

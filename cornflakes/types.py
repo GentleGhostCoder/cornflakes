@@ -17,7 +17,12 @@ from typing import (
     runtime_checkable,
 )
 
-_T = TypeVar("_T")
+_T = TypeVar("_T", covariant=True)  # type: ignore
+
+
+class _HiddenDefault(str):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls, "***")
 
 
 class _WithoutDefault:
@@ -27,8 +32,11 @@ class _WithoutDefault:
 WITHOUT_DEFAULT = _WithoutDefault()
 WITHOUT_DEFAULT_TYPE = _WithoutDefault
 MISSING_TYPE = dataclasses._MISSING_TYPE
+MISSING = dataclasses.MISSING
 HAS_DEFAULT_FACTORY = getattr(dataclasses, "_HAS_DEFAULT_FACTORY", None)
-INSPECT_EMPTY = getattr(inspect, "_empty", None)
+INSPECT_EMPTY_TYPE = getattr(inspect, "_empty", None)
+HIDDEN_DEFAULT = _HiddenDefault()
+HIDDEN_DEFAULT_TYPE = type(HIDDEN_DEFAULT)
 
 
 class FuncatTypes(Enum):

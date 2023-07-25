@@ -7,14 +7,11 @@ from click import get_current_context
 from click.core import Context
 
 from cornflakes.common import check_type, get_actual_type
-from cornflakes.decorator.click.rich._rich_group import RichGroup
 from cornflakes.decorator.dataclasses import is_config, is_group, normalized_class_name
 from cornflakes.types import Constants
 
 
-def rich_global_option_wrapper(
-    click_func: Callable[..., Any], *wrap_args, pass_context: Optional[bool] = None, **wrap_kwargs
-):
+def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wrap_kwargs):
     """Wrapper Method for rich command / group."""
 
     def global_option_click_decorator(func):
@@ -28,9 +25,8 @@ def rich_global_option_wrapper(
 
         @wraps(func)
         def click_callback(*args, **kwargs):
-            kwargs["self"]: RichGroup = func
-            kwargs["parent"]: RichGroup = click_cls
-            if pass_context:
+            kwargs["self"] = click_cls
+            if click_cls.pass_context:
                 kwargs["ctx"]: Optional["Context"] = get_current_context()
             if click_cls.config and click_cls.config.GLOBAL_OPTIONS and func.__module__ != "cornflakes.click":
                 _apply_global_options(click_cls, *args, **kwargs)
