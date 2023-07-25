@@ -1,5 +1,6 @@
 import datetime
 from decimal import Decimal
+from importlib import import_module
 from ipaddress import IPv4Address, IPv6Address
 from os import environ
 import pathlib
@@ -40,7 +41,7 @@ class TestConfigGeneration(unittest.TestCase):
         defined_config_module = pathlib.Path(test_file).read_text()
         self.assertEqual(generated_config_module, defined_config_module)
 
-        from tests.configs.default import MainConfig
+        MainConfig = import_module("tests.configs.default").MainConfig
 
         main_config = MainConfig()
 

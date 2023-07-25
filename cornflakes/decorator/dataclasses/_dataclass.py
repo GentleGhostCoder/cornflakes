@@ -14,15 +14,16 @@ from cornflakes.decorator.dataclasses._field import Field, field
 from cornflakes.decorator.dataclasses._helper import dc_slot_missing_default
 from cornflakes.decorator.dataclasses._helper import dict_factory as d_factory
 from cornflakes.decorator.dataclasses._helper import tuple_factory as t_factory
+from cornflakes.decorator.dataclasses._helper import value_factory as v_factory
 from cornflakes.decorator.dataclasses._validate import check_dataclass_kwargs, validate_dataclass_kwargs
 from cornflakes.types import _T, Constants, CornflakesDataclass, MappingWrapper
 
 
-def _zero_copy_astuple_inner(obj):
+def _zero_copy_astuple_inner(obj, value_factory=None):
     if is_dataclass(obj):
         result = []
         for f in fields(obj):
-            value = _zero_copy_astuple_inner(getattr(obj, f.name))
+            value = _zero_copy_astuple_inner(getattr(obj, f.name), v_factory(obj))
             result.append(value)
         return t_factory(obj)(result)
     if is_index(obj):
@@ -44,20 +45,20 @@ def _zero_copy_astuple_inner(obj):
     elif isinstance(obj, dict):
         return type(obj)((_zero_copy_astuple_inner(k), _zero_copy_astuple_inner(v)) for k, v in obj.items())
     else:
-        return obj
+        return value_factory(obj) if value_factory else obj
 
 
 def to_tuple(self) -> Any:  # noqa: C901
     """Method to convert Dataclass with slots to dict."""
-    return _zero_copy_astuple_inner(self) if is_dataclass(self) else self
+    return _zero_copy_astuple_inner(self)
 
 
-def _zero_copy_asdict_inner(obj):
+def _zero_copy_asdict_inner(obj, value_factory=None):
     """Patched version of dataclasses._asdict_inner that does not copy the dataclass values."""
     if is_dataclass(obj):
         result = []
         for f in fields(obj):
-            value = _zero_copy_asdict_inner(getattr(obj, f.name))
+            value = _zero_copy_asdict_inner(getattr(obj, f.name), v_factory(obj))
             result.append((f.name, value))
         return d_factory(obj)(result)
     if is_index(obj):
@@ -91,21 +92,21 @@ def _zero_copy_asdict_inner(obj):
     elif isinstance(obj, dict):
         return type(obj)((_zero_copy_asdict_inner(k), _zero_copy_asdict_inner(v)) for k, v in obj.items())
     else:
-        return obj
+        return value_factory(obj) if value_factory else obj
 
 
 # @profile
 def _to_dict(self) -> Union[tuple, dict, Any]:
     """Method to convert Dataclass with slots to dict."""
-    return _zero_copy_asdict_inner(self) if is_dataclass(self) else self
+    return _zero_copy_asdict_inner(self)
 
 
 def _new_getattr_dict(self, key: str):
-    return _zero_copy_asdict_inner(object.__getattribute__(self, key))
+    return _zero_copy_asdict_inner(object.__getattribute__(self, key), v_factory(self))
 
 
 def _new_getattr_tuple(self, index: int):
-    return _zero_copy_astuple_inner(object.__getattribute__(self, self.keys()[index]))
+    return _zero_copy_astuple_inner(object.__getattribute__(self, self.keys()[index]), v_factory(self))
 
 
 def _new_getattr(self, index):
@@ -137,6 +138,7 @@ if sys.version_info >= (3, 10):
         match_args: bool = True,
         dict_factory: Optional[Callable] = None,
         tuple_factory: Optional[Callable] = None,
+        value_factory: Optional[Callable] = None,
         eval_env: bool = False,
         validate: bool = False,
         updatable: bool = False,
@@ -161,6 +163,7 @@ if sys.version_info >= (3, 10):
         match_args: bool = True,
         dict_factory: Optional[Callable] = None,
         tuple_factory: Optional[Callable] = None,
+        value_factory: Optional[Callable] = None,
         eval_env: bool = False,
         validate: bool = False,
         updatable: bool = False,
@@ -182,6 +185,7 @@ else:
         frozen: bool = False,
         dict_factory: Optional[Callable] = None,
         tuple_factory: Optional[Callable] = None,
+        value_factory: Optional[Callable] = None,
         eval_env: bool = False,
         validate: bool = False,
         updatable: bool = False,
@@ -203,6 +207,7 @@ else:
         frozen: bool = False,
         dict_factory: Optional[Callable] = None,
         tuple_factory: Optional[Callable] = None,
+        value_factory: Optional[Callable] = None,
         eval_env: bool = False,
         validate: bool = False,
         updatable: bool = False,
@@ -227,6 +232,7 @@ def dataclass(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -276,6 +282,7 @@ def dataclass(
         setattr(dc_cls, Constants.dataclass_decorator.EVAL_ENV, eval_env)
         setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, dict_factory or dict)
         setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, tuple_factory or tuple)
+        setattr(dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, value_factory or None)
         setattr(
             dc_cls,
             Constants.dataclass_decorator.IGNORED_SLOTS,

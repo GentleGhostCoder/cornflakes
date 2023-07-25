@@ -119,6 +119,7 @@ class DataclassDecorator:
     FIELDS: str = "__dataclass_fields__"
     DICT_FACTORY: str = "__dict_factory__"
     TUPLE_FACTORY: str = "__tuple_factory__"
+    VALUE_FACTORY: str = "__value_factory__"
     EVAL_ENV: str = "__eval_env__"
     IGNORED_SLOTS: str = "__ignored_slots__"
     VALIDATORS: str = "__cornflakes_validators__"

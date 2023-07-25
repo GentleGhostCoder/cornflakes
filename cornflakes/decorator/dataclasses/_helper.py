@@ -64,6 +64,11 @@ def dict_factory(cls):
     return getattr(cls, Constants.dataclass_decorator.DICT_FACTORY, dict)
 
 
+def value_factory(cls):
+    """Method to return class __value_factory__."""
+    return getattr(cls, Constants.dataclass_decorator.VALUE_FACTORY, None)
+
+
 def evaluate_default_configs(cls, config):
     """Method to evaluate default configs."""
     # if is_validated(cls):
