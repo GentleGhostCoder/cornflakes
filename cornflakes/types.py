@@ -299,6 +299,7 @@ class DataclassInstance(StandardCornflakesDataclass, Protocol[_T]):
 class CornflakesDataclass(StandardCornflakesDataclass, Protocol[_T]):
     """Dataclass instance protocol."""
 
+    T: Type  # better type annotation that is a MappingWrapper also -> implementation in decorator: cornflakes.decorator.dataclasses.dataclass
     __eval_env__: bool
 
     @classmethod

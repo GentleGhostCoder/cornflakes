@@ -377,10 +377,11 @@ def dataclass(
         dc_cls.__qualname__ = w_cls.__qualname__
         dc_cls.__init__.__doc__ = w_cls.__init__.__doc__
         dc_cls.__getitem__ = _new_getattr
+        dc_cls.T = Union[Type[CornflakesDataclass], MappingWrapper[_T]]
 
         static_keys = [f.name for f in dataclasses.fields(dc_cls) if not getattr(f, "ignore", False)]
 
-        def keys(cls):
+        def keys(_):
             return static_keys
 
         dc_cls.keys = classmethod(keys)
