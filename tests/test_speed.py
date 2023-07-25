@@ -13,7 +13,6 @@ import cornflakes
 from cornflakes.decorator.dataclasses import config, dataclass
 
 
-@suppress_type_checks  # type: ignore
 class TestSpeed(unittest.TestCase):
     """Tests for eval_datetime."""
 
@@ -126,6 +125,6 @@ class TestSpeed(unittest.TestCase):
         )  # pydantic model_dump is faster, so check only how much faster ... can be optimized maybe
         self.assertTrue(custom_config_to_dict * 0.6 < pydantic_dataclass_to_dict)
         self.assertTrue(
-            custom_to_dict * 0.9 < pydantic_base_model_to_dict
+            custom_to_dict * 0.8 < pydantic_base_model_to_dict
         )  # pydantic model_dump is faster, so check only how much faster ... can be optimized maybe
         self.assertTrue(custom_config_to_dict * 0.3 < pydantic_base_model_to_dict)

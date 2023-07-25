@@ -18,13 +18,16 @@ from cornflakes.decorator.dataclasses._validate import check_dataclass_kwargs, v
 from cornflakes.types import _T, Constants, CornflakesDataclass, MappingWrapper
 
 
-def _zero_copy_astuple_inner(obj, factory):
+def _zero_copy_astuple_inner(obj):
     if is_dataclass(obj):
         result = []
         for f in fields(obj):
-            value = _zero_copy_astuple_inner(getattr(obj, f.name), factory)
+            value = _zero_copy_astuple_inner(getattr(obj, f.name))
             result.append(value)
-        return factory(result)
+        return t_factory(obj)(result)
+    if is_index(obj):
+        type(obj).reset()
+        return obj
     elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
         # obj is a namedtuple.  Recurse into it, but the returned
         # object is another namedtuple of the same type.  This is
@@ -32,65 +35,34 @@ def _zero_copy_astuple_inner(obj, factory):
         # treated (see below), but we just need to create them
         # differently because a namedtuple's __init__ needs to be
         # called differently (see bpo-34363).
-        return type(obj)(*[_zero_copy_astuple_inner(v, factory) for v in obj])
+        return type(obj)(*[_zero_copy_astuple_inner(v) for v in obj])
     elif isinstance(obj, (list, tuple)):
         # Assume we can create an object of this type by passing in a
         # generator (which is not true for namedtuples, handled
         # above).
-        return type(obj)(_zero_copy_astuple_inner(v, factory) for v in obj)
+        return type(obj)(_zero_copy_astuple_inner(v) for v in obj)
     elif isinstance(obj, dict):
-        return type(obj)(
-            (_zero_copy_astuple_inner(k, factory), _zero_copy_astuple_inner(v, factory)) for k, v in obj.items()
-        )
+        return type(obj)((_zero_copy_astuple_inner(k), _zero_copy_astuple_inner(v)) for k, v in obj.items())
     else:
         return obj
 
 
 def to_tuple(self) -> Any:  # noqa: C901
     """Method to convert Dataclass with slots to dict."""
-    if not is_dataclass(self):
-        return self
-    new_tuple = _zero_copy_astuple_inner(self, t_factory(self))
-    dc_fields = fields(self)
-    if not (
-        isinstance(new_tuple, (list, tuple))
-        or any(is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields)
-        if dc_fields
-        else True
-    ):
-        return new_tuple
-    if isinstance(new_tuple, tuple):
-        new_tuple = list(new_tuple)
-    for idx, f in enumerate(dc_fields):
-        if is_index(value := getattr(self, f.name)):
-            type(value).reset()
-            new_tuple[idx] = value
-        if is_dataclass(value):
-            new_tuple[idx] = to_tuple(value)
-        if isinstance(value, list):
-            for sub_idx, sub_value in enumerate(value):
-                if is_index(sub_value):
-                    type(sub_value).reset()
-                    value[sub_idx] = sub_value
-                if is_dataclass(sub_value):
-                    value[sub_idx] = to_tuple(sub_value)
-            new_tuple[idx] = value
-    if isinstance(new_tuple, list):
-        new_tuple = tuple(new_tuple)  # cast to tuple
-    return new_tuple
+    return _zero_copy_astuple_inner(self) if is_dataclass(self) else self
 
 
 def _zero_copy_asdict_inner(obj):
     """Patched version of dataclasses._asdict_inner that does not copy the dataclass values."""
-    # if hasattr(obj, "__dict__"):
-    #     return obj.__dict__
-
     if is_dataclass(obj):
         result = []
         for f in fields(obj):
             value = _zero_copy_asdict_inner(getattr(obj, f.name))
             result.append((f.name, value))
-        return result
+        return d_factory(obj)(result)
+    if is_index(obj):
+        type(obj).reset()
+        return obj
     elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
         # obj is a namedtuple.  Recurse into it, but the returned
         # object is another namedtuple of the same type.  This is
@@ -125,71 +97,15 @@ def _zero_copy_asdict_inner(obj):
 # @profile
 def _to_dict(self) -> Union[tuple, dict, Any]:
     """Method to convert Dataclass with slots to dict."""
-    if not is_dataclass(self):
-        return self
-    new_dict = d_factory(self)(_zero_copy_asdict_inner(self))
-    dc_fields = fields(self)
-    if not (
-        isinstance(new_dict, dict)
-        or any(is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields)
-        if dc_fields
-        else True
-    ):
-        return new_dict
-    for f in dc_fields:
-        if is_index(value := getattr(self, f.name)):
-            type(value).reset()
-            new_dict.update({f.name: value})
-        if is_dataclass(value):
-            new_dict.update({f.name: _to_dict(value)})
-        if isinstance(value, (list, tuple)):
-            value = list(value)  # if tuple cast  to list
-            for idx, sub_value in enumerate(value):
-                if is_index(sub_value):
-                    type(sub_value).reset()
-                    value[idx] = sub_value
-                if is_dataclass(sub_value):
-                    value[idx] = _to_dict(sub_value)
-            new_dict.update({f.name: value})
-    return new_dict
+    return _zero_copy_asdict_inner(self) if is_dataclass(self) else self
 
 
 def _new_getattr_dict(self, key: str):
-    value = object.__getattribute__(self, key)
-    if is_index(value):
-        type(value).reset()
-        return value
-    if is_dataclass(value):
-        return _to_dict(value)
-    if isinstance(value, (list, tuple)):
-        value = list(value)  # if tuple cast  to list
-        for idx, sub_value in enumerate(value):
-            if is_index(sub_value):
-                type(sub_value).reset()
-                value[idx] = sub_value
-            if is_dataclass(sub_value):
-                value[idx] = _to_dict(sub_value)
-        return value
-    return value
+    return _zero_copy_asdict_inner(object.__getattribute__(self, key))
 
 
 def _new_getattr_tuple(self, index: int):
-    value = object.__getattribute__(self, self.keys()[index])
-    if is_index(value):
-        type(value).reset()
-        return value
-    if is_dataclass(value):
-        return to_tuple(value)
-    if isinstance(value, list):
-        value = value.copy()  # copy the list
-        for sub_idx, sub_value in enumerate(value):
-            if is_index(sub_value):
-                type(sub_value).reset()
-                value[sub_idx] = sub_value
-            if is_dataclass(sub_value):
-                value[sub_idx] = to_tuple(sub_value)
-        return value
-    return value
+    return _zero_copy_astuple_inner(object.__getattribute__(self, self.keys()[index]))
 
 
 def _new_getattr(self, index):
