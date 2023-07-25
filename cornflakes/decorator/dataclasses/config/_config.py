@@ -42,6 +42,7 @@ def config(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -74,6 +75,7 @@ def config(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -105,6 +107,7 @@ def config(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -127,6 +130,7 @@ def config(
     """
     Config decorator to parse INI files and implement config loader methods to config-classes.
 
+    :param value_factory:
     :param init_default_config:
     :param match_args:
     :param slots:
@@ -207,6 +211,7 @@ def config(
                 match_args=match_args,
                 dict_factory=dict_factory,
                 tuple_factory=tuple_factory,
+                value_factory=value_factory,
                 eval_env=eval_env,
                 validate=validate,
                 updatable=updatable,
@@ -225,6 +230,7 @@ def config(
             match_args=match_args,
             dict_factory=dict_factory,
             tuple_factory=tuple_factory,
+            value_factory=value_factory,
             eval_env=eval_env,
             validate=validate,
             updatable=updatable,

@@ -27,6 +27,7 @@ def config_group(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -55,6 +56,7 @@ def config_group(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -82,6 +84,7 @@ def config_group(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -97,6 +100,7 @@ def config_group(
 ]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
+    :param value_factory:
     :param updatable:
     :param validate:
     :param eval_env:
@@ -137,6 +141,7 @@ def config_group(
             match_args=match_args,
             dict_factory=dict_factory,
             tuple_factory=tuple_factory,
+            value_factory=value_factory,
             eval_env=eval_env,
             validate=validate,
             updatable=updatable,
