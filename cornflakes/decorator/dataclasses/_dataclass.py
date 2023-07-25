@@ -66,14 +66,14 @@ def to_tuple(self) -> Any:  # noqa: C901
             type(value).reset()
             new_tuple[idx] = value
         if is_dataclass(value):
-            new_tuple[idx] = value.to_tuple()
+            new_tuple[idx] = to_tuple(value)
         if isinstance(value, list):
             for sub_idx, sub_value in enumerate(value):
                 if is_index(sub_value):
                     type(sub_value).reset()
                     value[sub_idx] = sub_value
                 if is_dataclass(sub_value):
-                    value[sub_idx] = sub_value.to_tuple()
+                    value[sub_idx] = to_tuple(sub_value)
             new_tuple[idx] = value
     if isinstance(new_tuple, list):
         new_tuple = tuple(new_tuple)  # cast to tuple
@@ -154,7 +154,7 @@ def _to_dict(self) -> Union[tuple, dict, Any]:
     return new_dict
 
 
-def _new_getattr(self, key):
+def _new_getattr_dict(self, key: str):
     value = object.__getattribute__(self, key)
     if is_index(value):
         type(value).reset()
@@ -171,6 +171,31 @@ def _new_getattr(self, key):
                 value[idx] = _to_dict(sub_value)
         return value
     return value
+
+
+def _new_getattr_tuple(self, index: int):
+    value = object.__getattribute__(self, self.keys()[index])
+    if is_index(value):
+        type(value).reset()
+        return value
+    if is_dataclass(value):
+        return to_tuple(value)
+    if isinstance(value, list):
+        for sub_idx, sub_value in enumerate(value):
+            if is_index(sub_value):
+                type(sub_value).reset()
+                value[sub_idx] = sub_value
+            if is_dataclass(sub_value):
+                value[sub_idx] = to_tuple(sub_value)
+        return value
+    return value
+
+
+def _new_getattr(self, index):
+    if isinstance(index, int):
+        return _new_getattr_tuple(self, index)
+
+    return _new_getattr_dict(self, index)
 
 
 def to_dict(self) -> dict:
@@ -377,14 +402,17 @@ def dataclass(
         dc_cls.__qualname__ = w_cls.__qualname__
         dc_cls.__init__.__doc__ = w_cls.__init__.__doc__
         dc_cls.__getitem__ = _new_getattr
-        dc_cls.T = Union[Type[CornflakesDataclass], MappingWrapper[_T]]
 
         static_keys = [f.name for f in dataclasses.fields(dc_cls) if not getattr(f, "ignore", False)]
 
         def keys(_):
             return static_keys
 
+        def _len(_):
+            return len(static_keys)
+
         dc_cls.keys = classmethod(keys)
+        dc_cls.__len__ = _len
 
         return dc_cls
 

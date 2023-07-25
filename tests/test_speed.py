@@ -7,11 +7,13 @@ from pydantic import BaseModel, RootModel
 from pydantic.dataclasses import dataclass as pd_dataclass
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import pytest
+from typeguard import suppress_type_checks
 
 import cornflakes
 from cornflakes.decorator.dataclasses import config, dataclass
 
 
+@suppress_type_checks  # type: ignore
 class TestSpeed(unittest.TestCase):
     """Tests for eval_datetime."""
 

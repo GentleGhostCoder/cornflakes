@@ -173,6 +173,9 @@ class MappingWrapper(Protocol[_T]):
     def keys(self) -> Iterable[str]:
         ...
 
+    def __len__(self) -> int:
+        ...
+
     @classmethod
     def __new__(cls: Type[_T], *args, **kwargs) -> "MappingWrapper[_T]":
         """Create and return a new object."""
@@ -298,6 +301,11 @@ class DataclassInstance(StandardCornflakesDataclass, Protocol[_T]):
         from cornflakes.decorator.dataclasses import to_yaml
 
         return to_yaml(self, out_cfg=out_cfg, *args, **kwargs)
+
+
+class CornflakesType:
+    def __getitem__(self, key):
+        return type(key)
 
 
 @runtime_checkable

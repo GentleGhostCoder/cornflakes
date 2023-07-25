@@ -8,7 +8,7 @@ import unittest
 
 from cornflakes.builder import generate_config_module
 from cornflakes.decorator.dataclasses import AnyUrl
-from cornflakes.types import Loader
+from cornflakes.types import _T, Loader, MappingWrapper
 from tests import configs
 
 
@@ -42,11 +42,12 @@ class TestConfigGeneration(unittest.TestCase):
 
         from tests.configs.default import MainConfig
 
-        main_config: type[MainConfig] = MainConfig()
+        main_config = MainConfig()
 
         def main_config_passing(config: MainConfig):
-            print(config)
             return config
+
+        main_config_passing(main_config)
 
         def dict_passing(**kwargs):
             return kwargs
@@ -132,6 +133,8 @@ class TestConfigGeneration(unittest.TestCase):
                 ]
             },
         )
+
+        self.assertEqual(MainConfig().to_tuple(), (*MainConfig(),))
 
         self.assertEqual(
             MainConfig().to_tuple(),
