@@ -66,7 +66,7 @@ def config_group(
     ...
 
 
-@dataclass_transform(field_specifiers=(field, Field))
+# @dataclass_transform(field_specifiers=(field, Field))  # TODO: Fix dataclass_transform -> breaking attribute completion in pycharm
 def config_group(
     cls: Optional[Type[_T]] = None,
     /,

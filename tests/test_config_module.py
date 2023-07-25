@@ -8,7 +8,7 @@ import unittest
 
 from cornflakes.builder import generate_config_module
 from cornflakes.decorator.dataclasses import AnyUrl
-from cornflakes.types import _T, Loader, MappingWrapper
+from cornflakes.types import Loader
 from tests import configs
 
 

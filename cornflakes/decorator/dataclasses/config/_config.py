@@ -89,7 +89,7 @@ def config(
     ...
 
 
-@dataclass_transform(field_specifiers=(field, Field))
+# @dataclass_transform(field_specifiers=(field, Field))
 def config(
     cls: Optional[Type[_T]] = None,
     /,

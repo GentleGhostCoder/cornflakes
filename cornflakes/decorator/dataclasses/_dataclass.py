@@ -181,6 +181,7 @@ def _new_getattr_tuple(self, index: int):
     if is_dataclass(value):
         return to_tuple(value)
     if isinstance(value, list):
+        value = value.copy()  # copy the list
         for sub_idx, sub_value in enumerate(value):
             if is_index(sub_value):
                 type(sub_value).reset()
@@ -294,7 +295,7 @@ else:
         ...
 
 
-@dataclass_transform(field_specifiers=(field, Field))
+# @dataclass_transform(field_specifiers=(field, Field))
 def dataclass(
     cls: Optional[Type[_T]] = None,
     /,
