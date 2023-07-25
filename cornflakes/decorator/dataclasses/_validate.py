@@ -28,8 +28,8 @@ def _validate(self, values, key, callback: Callable[..., Any]):
         if len(missing) == 1:
             return callback(values.pop(key), **kwargs)
         return callback(**kwargs)
-    except Exception as exc:
-        raise ValueError(f"Failed to validate {key} with {callback}!") from exc
+    except TypeError as e:
+        raise TypeError(f"Error while validating {key} for {self.__class__.__name__}: {e}")
 
 
 def _process_validator(self, values, validators: dict, **kwargs):
