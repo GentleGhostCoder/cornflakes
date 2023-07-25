@@ -4,18 +4,18 @@ from dataclasses import fields, is_dataclass
 import sys
 from typing import Any, Callable, Optional, Type, Union, overload
 
-from typing_extensions import dataclass_transform  # type: ignore
-
 from cornflakes.common import recursive_update
 from cornflakes.decorator._indexer import is_index
 from cornflakes.decorator.dataclasses._add_dataclass_slots import add_slots
 from cornflakes.decorator.dataclasses._enforce_types import enforce_types
-from cornflakes.decorator.dataclasses._field import Field, field
+from cornflakes.decorator.dataclasses._field import Field  # field
 from cornflakes.decorator.dataclasses._helper import dc_slot_missing_default
 from cornflakes.decorator.dataclasses._helper import dict_factory as d_factory
 from cornflakes.decorator.dataclasses._helper import tuple_factory as t_factory
 from cornflakes.decorator.dataclasses._validate import check_dataclass_kwargs, validate_dataclass_kwargs
 from cornflakes.types import _T, Constants, CornflakesDataclass, MappingWrapper
+
+# from typing_extensions import dataclass_transform  # type: ignore
 
 
 def _zero_copy_astuple_inner(obj, factory):
@@ -179,8 +179,7 @@ def to_dict(self) -> dict:
 
 
 if sys.version_info >= (3, 10):
-
-    @dataclass_transform(field_specifiers=(field, Field))
+    # @dataclass_transform(field_specifiers=(field, Field))
     @overload
     def dataclass(
         *,
@@ -202,7 +201,7 @@ if sys.version_info >= (3, 10):
     ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]]:
         ...
 
-    @dataclass_transform(field_specifiers=(field, Field))
+    # @dataclass_transform(field_specifiers=(field, Field))
     @overload
     def dataclass(
         _cls: Type[_T],
@@ -227,8 +226,7 @@ if sys.version_info >= (3, 10):
         ...
 
 else:
-
-    @dataclass_transform(field_specifiers=(field, Field))
+    # @dataclass_transform(field_specifiers=(field, Field))
     @overload
     def dataclass(
         *,
@@ -247,7 +245,7 @@ else:
     ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]]:
         ...
 
-    @dataclass_transform(field_specifiers=(field, Field))
+    # @dataclass_transform(field_specifiers=(field, Field))
     @overload
     def dataclass(
         _cls: Type[_T],  # type: ignore
@@ -269,7 +267,7 @@ else:
         ...
 
 
-@dataclass_transform(field_specifiers=(field, Field))
+# @dataclass_transform(field_specifiers=(field, Field))
 def dataclass(
     cls: Optional[Type[_T]] = None,
     /,
@@ -389,3 +387,6 @@ def dataclass(
         return dc_cls
 
     return create_dataclass(cls) if cls else create_dataclass  # type: ignore
+
+
+# INFO: I'm not using dataclass_transform because it does not work with custom annotations

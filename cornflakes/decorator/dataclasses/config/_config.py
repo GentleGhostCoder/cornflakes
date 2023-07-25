@@ -1,12 +1,11 @@
 import logging
 from typing import Any, Callable, List, Optional, Type, Union, overload
 
-from typing_extensions import dataclass_transform  # type: ignore
-
 from cornflakes.decorator._funcat import funcat
 from cornflakes.decorator._indexer import Index
 from cornflakes.decorator.dataclasses._dataclass import dataclass
-from cornflakes.decorator.dataclasses._field import Field, field
+
+# from cornflakes.decorator.dataclasses._field import Field, field
 from cornflakes.decorator.dataclasses._helper import dataclass_fields, fields
 from cornflakes.decorator.dataclasses.config._config_group import config_group
 from cornflakes.decorator.dataclasses.config._dict import create_dict_file_loader
@@ -26,8 +25,10 @@ from cornflakes.types import (
     Writer,
 )
 
+# from typing_extensions import dataclass_transform  # type: ignore
 
-@dataclass_transform(field_specifiers=(field, Field))
+
+# @dataclass_transform(field_specifiers=(field, Field))
 @overload
 def config(
     *,
@@ -57,7 +58,7 @@ def config(
     ...
 
 
-@dataclass_transform(field_specifiers=(field, Field))
+# @dataclass_transform(field_specifiers=(field, Field))
 @overload
 def config(
     cls: Type[_T],
@@ -89,7 +90,7 @@ def config(
     ...
 
 
-@dataclass_transform(field_specifiers=(field, Field))
+# @dataclass_transform(field_specifiers=(field, Field))
 def config(
     cls: Optional[Type[_T]] = None,
     /,
