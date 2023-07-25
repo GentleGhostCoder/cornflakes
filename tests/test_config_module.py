@@ -42,10 +42,16 @@ class TestConfigGeneration(unittest.TestCase):
 
         from tests.configs.default import MainConfig
 
-        def pass_dict(**kwargs):
+        main_config: type[MainConfig] = MainConfig()
+
+        def main_config_passing(config: MainConfig):
+            print(config)
+            return config
+
+        def dict_passing(**kwargs):
             return kwargs
 
-        self.assertEqual(MainConfig().to_dict(), {**MainConfig()})
+        self.assertEqual(MainConfig().to_dict(), dict_passing(**main_config))
 
         self.assertEqual(
             MainConfig().to_dict(),

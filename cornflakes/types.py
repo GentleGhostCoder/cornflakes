@@ -7,6 +7,7 @@ from typing import (
     Callable,
     ClassVar,
     Dict,
+    Generic,
     Iterable,
     List,
     Optional,
@@ -18,6 +19,10 @@ from typing import (
 )
 
 _T = TypeVar("_T", covariant=True)  # type: ignore
+
+
+class GenericType(Generic[_T]):
+    ...
 
 
 class _HiddenDefault(str):
@@ -299,7 +304,6 @@ class DataclassInstance(StandardCornflakesDataclass, Protocol[_T]):
 class CornflakesDataclass(StandardCornflakesDataclass, Protocol[_T]):
     """Dataclass instance protocol."""
 
-    T: Type  # better type annotation that is a MappingWrapper also -> implementation in decorator: cornflakes.decorator.dataclasses.dataclass
     __eval_env__: bool
 
     @classmethod
