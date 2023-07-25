@@ -26,7 +26,7 @@ def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wra
         @wraps(func)
         def click_callback(*args, **kwargs):
             kwargs["self"] = click_cls
-            if click_cls.pass_context:
+            if getattr(click_cls, "pass_context", False):
                 kwargs["ctx"]: Optional["Context"] = get_current_context()
             if click_cls.config and click_cls.config.GLOBAL_OPTIONS and func.__module__ != "cornflakes.click":
                 _apply_global_options(click_cls, *args, **kwargs)
