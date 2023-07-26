@@ -104,11 +104,15 @@ def is_config_list(cls):
 
 def get_not_ignored_slots(cls):
     """Method to return slots that are not ignored fields."""
-    return [
-        slot
-        for slot in getattr(cls, Constants.dataclass_decorator.FIELDS, {}).keys()
-        if slot not in cls.__ignored_slots__
-    ]
+    return (
+        cls.keys()
+        if hasattr(cls, "keys")
+        else [
+            slot
+            for slot in getattr(cls, Constants.dataclass_decorator.FIELDS, {}).keys()
+            if slot not in getattr(cls, Constants.dataclass_decorator.IGNORED_SLOTS, [])
+        ]
+    )
 
 
 def is_use_regex(cls):

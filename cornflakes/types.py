@@ -122,6 +122,7 @@ class DataclassDecorator:
     VALUE_FACTORY: str = "__value_factory__"
     EVAL_ENV: str = "__eval_env__"
     IGNORED_SLOTS: str = "__ignored_slots__"
+    IGNORE_NONE: str = "__ignore_none__"
     VALIDATORS: str = "__cornflakes_validators__"
     REQUIRED_KEYS: str = "__cornflakes_required_keys__"
 

@@ -22,6 +22,7 @@ class ExampleEnum(Enum):
     eval_env=True,
     validate=True,
     chain_files=True,
+    ignore_none=True,
 )
 class SubConfigClass:
     """Test Config Class."""

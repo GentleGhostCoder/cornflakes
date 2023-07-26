@@ -46,6 +46,7 @@ def config(
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    ignore_none: bool = False,
     files: Optional[Union[List[str], str]] = None,
     sections: Optional[Union[List[str], str]] = None,
     use_regex: Optional[bool] = False,
@@ -79,6 +80,7 @@ def config(
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    ignore_none: bool = False,
     files: Optional[Union[List[str], str]] = None,
     sections: Optional[Union[List[str], str]] = None,
     use_regex: Optional[bool] = False,
@@ -111,6 +113,7 @@ def config(
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    ignore_none: bool = False,
     files: Optional[Union[List[str], str]] = None,
     sections: Optional[Union[List[str], str]] = None,
     use_regex: Optional[bool] = False,
@@ -215,6 +218,7 @@ def config(
                 eval_env=eval_env,
                 validate=validate,
                 updatable=updatable,
+                ignore_none=ignore_none,
                 **kwargs,
             )(w_cls)
 
@@ -234,6 +238,7 @@ def config(
             eval_env=eval_env,
             validate=validate,
             updatable=updatable,
+            ignore_none=ignore_none,
             **kwargs,
         )(w_cls)
 
