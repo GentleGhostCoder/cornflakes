@@ -167,13 +167,15 @@ def dataclass(
             order=order,
             unsafe_hash=unsafe_hash,
             frozen=frozen,
-            slots=slots,
             dict_factory=dict_factory,
             tuple_factory=tuple_factory,
             value_factory=value_factory,
             eval_env=eval_env,
             **kwargs,
         )
+
+        if slots and sys.version_info < (3, 10):
+            dc_cls = add_slots(dc_cls)
 
         if updatable and not kwargs.get("frozen", False):
 
@@ -304,7 +306,6 @@ def _wrap_custom_dataclass(
     order: bool = False,
     unsafe_hash: bool = False,
     frozen: bool = False,
-    slots: bool = False,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
     value_factory: Optional[Callable] = None,
@@ -321,9 +322,6 @@ def _wrap_custom_dataclass(
         frozen=frozen,
         **kwargs,
     )
-
-    if slots and sys.version_info < (3, 10):
-        dc_cls = add_slots(dc_cls)
 
     dataclass_fields = {
         obj_name: getattr(w_cls, obj_name)
