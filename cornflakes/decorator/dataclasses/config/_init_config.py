@@ -43,16 +43,13 @@ def _load_config_kwargs(
         **kwargs,
     ).popitem()[1]
 
-    if is_config_list(cls):
-        default_config = {**default_config[0]}
-        # When the config generates a list (with the `is_list` parameter), we use the first config only and log a warning that the user should use the `config_group` decorator that includes the config-list or to call the from_file method instead.
+    if is_config_list(cls) and len(default_config):
         logging.debug(
             f"Config class **{cls.__name__}** generates a list of configs."
             f"You can use the `config_group` decorator that includes the config-list or to call the from_file method to load the configs."
             f"The normal instantiation of the config class will only use the first config in the list."
         )
-        default_config.update(kwargs)
-
+        default_config = {**default_config[0]} | kwargs
     _required_keys = dataclass_required_keys(cls)
 
     if is_eval_env(cls):

@@ -253,6 +253,7 @@ def config(
         setattr(config_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
         setattr(config_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
         setattr(config_cls, Constants.config_decorator.VALIDATE, validate)
+        setattr(config_cls, Constants.config_decorator.DEFAULT_LOADER, default_loader)
 
         # Set Writer
         setattr(config_cls, Writer.INI.value, to_ini)
