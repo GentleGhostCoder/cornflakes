@@ -57,6 +57,7 @@ class Loader(Enum):
     YAML = "from_yaml"
     DICT = "from_dict"
     FILE = "from_file"
+    CUSTOM = "from_custom"
 
 
 class Writer(Enum):
@@ -66,6 +67,7 @@ class Writer(Enum):
     YAML = "to_yaml"
     DICT = "to_dict"
     FILE = "to_file"
+    CUSTOM = "to_custom"
 
 
 @dataclass(frozen=True)
@@ -105,6 +107,7 @@ class ConfigDecorator:
     USE_REGEX: str = "__multi_config__"
     IS_LIST: str = "__config_list__"
     DEFAULT_LOADER: str = "__default_loader__"
+    CUSTOM_LOADER: str = "__custom_loader__"
     ALLOW_EMPTY: str = "__allow_empty_config__"
     CHAIN_FILES: str = "__chain_files__"
     VALIDATE: str = "__validate__"

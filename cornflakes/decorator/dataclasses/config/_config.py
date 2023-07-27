@@ -184,6 +184,10 @@ def config(
     """
     sections = sections if isinstance(sections, list) else [sections] if sections else []
     files = files if isinstance(files, list) else [files] if files else []
+    custom_loader: Optional[Callable] = None
+    if not isinstance(default_loader, Loader) and callable(default_loader):
+        custom_loader = default_loader
+        default_loader = Loader.CUSTOM
     if not default_loader:
         default_loader = get_default_loader(files)
 
@@ -275,6 +279,10 @@ def config(
             Loader.DICT.value,
             staticmethod(create_dict_file_loader(cls=config_cls)),
         )
+
+        if custom_loader:
+            setattr(config_cls, Loader.CUSTOM.value, custom_loader)
+
         setattr(
             config_cls,
             Loader.FILE.value,
