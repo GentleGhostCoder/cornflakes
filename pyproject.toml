@@ -36,7 +36,7 @@ validators = "^0.20.0"
 typing-extensions = "^4.7.1"
 
 [tool.poetry.dev-dependencies]
-pytype = { version = "^2023.7.21", python = "<3.11" }
+pytype = { version = "^2023.7.28", python = "<3.11" }
 autoflake = "^2.2.0"
 pytest = ">= 7.3.1"
 coverage = {extras = ["toml"], version = ">=5.3"}
