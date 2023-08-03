@@ -3,10 +3,12 @@ import dataclasses
 from dataclasses import fields as dc_fields
 from os import environ
 import re
+from typing import Callable, Optional
 
-from cornflakes import eval_type
+from cornflakes import eval_type, ini_load
 from cornflakes.decorator._indexer import IndexInstance
-from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants
+from cornflakes.parser import yaml_load
+from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants, Loader
 
 
 def is_config(cls):
@@ -47,6 +49,11 @@ def dataclass_required_keys(cls):
 def is_eval_env(cls):
     """Method to return flag that class is a eval env class."""
     return getattr(cls, Constants.dataclass_decorator.EVAL_ENV, False)
+
+
+def is_chain_files(cls):
+    """Method to return flag that class is a chain files class."""
+    return getattr(cls, Constants.config_decorator.CHAIN_FILES, False)
 
 
 def dict_factory(cls):
@@ -151,3 +158,21 @@ def fields(class_or_instance):
 
 
 dataclasses.fields = fields
+
+
+def get_default_loader(files: Optional[list] = None) -> Loader:
+    """Method to get the default loader from filenames."""
+    return (
+        Loader.DICT
+        if not files
+        else Loader.INI
+        if files[0][-3:] == "ini"
+        else Loader.YAML
+        if files[0][-3:] == "yaml"
+        else Loader.DICT
+    )
+
+
+def get_loader_callback(loader: Loader) -> Optional[Callable]:
+    """Method to get the loader callback."""
+    return yaml_load if loader == Loader.YAML else ini_load

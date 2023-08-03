@@ -3,17 +3,17 @@ from typing import Callable, Dict, List, Optional, Type, Union
 import yaml
 from yaml import SafeLoader, UnsafeLoader
 
+from cornflakes.decorator.dataclasses._helper import get_loader_callback
 from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 from cornflakes.decorator.dataclasses.config._write_config import write_config
-from cornflakes.parser import yaml_load
-from cornflakes.types import Config
+from cornflakes.types import Config, Loader
 
 
 def specific_yaml_loader(loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader):
     """Wrapper method to predefine yaml loader parameter."""
 
     def _yaml_loader(*args, **kwargs):
-        return yaml_load(*args, loader=loader, **kwargs)
+        return get_loader_callback(Loader.YAML)(*args, loader=loader, **kwargs)
 
     return _yaml_loader
 

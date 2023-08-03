@@ -8,6 +8,7 @@ from cornflakes import ini_load
 from cornflakes.decorator.dataclasses._helper import (
     dataclass_fields,
     dataclass_required_keys,
+    is_chain_files,
     is_config,
     is_config_list,
     is_use_regex,
@@ -121,6 +122,7 @@ def create_file_loader(  # noqa: C901
             logging.debug(f"Load ini from file: {files} - section: {section} for config {cls.__name__}")
 
             if not config_dict:
+                print(_loader_callback)
                 config_dict = OrderedDict(
                     _loader_callback(files={None: files}, sections=section, keys=keys, defaults=None, eval_env=eval_env)
                 )
@@ -136,9 +138,11 @@ def create_file_loader(  # noqa: C901
             return {section: config}
 
         if not config_dict:
-            if cls.__chain_files__:
+            if is_chain_files(cls):
                 config_dict = OrderedDict(
-                    _loader_callback(files={None: files}, sections=None, keys=keys, eval_env=eval_env)
+                    _loader_callback(
+                        files={None: files}, sections={normalized_class_name(cls): None}, keys=keys, eval_env=eval_env
+                    )
                 )
             else:
                 raw_config_dict = OrderedDict(

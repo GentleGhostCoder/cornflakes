@@ -7,7 +7,7 @@ from cornflakes.decorator._funcat import funcat
 from cornflakes.decorator._indexer import Index
 from cornflakes.decorator.dataclasses._dataclass import dataclass
 from cornflakes.decorator.dataclasses._field import Field, field
-from cornflakes.decorator.dataclasses._helper import dataclass_fields, fields
+from cornflakes.decorator.dataclasses._helper import dataclass_fields, fields, get_default_loader
 from cornflakes.decorator.dataclasses.config._config_group import config_group
 from cornflakes.decorator.dataclasses.config._dict import create_dict_file_loader
 from cornflakes.decorator.dataclasses.config._ini import create_ini_file_loader, to_ini
@@ -301,16 +301,3 @@ def config(
         return config_cls
 
     return wrapper(cls) if cls else wrapper  # type: ignore
-
-
-def get_default_loader(files: Optional[list] = None) -> Loader:
-    """Method to get the default loader from filenames."""
-    return (
-        Loader.DICT
-        if not files
-        else Loader.INI
-        if files[0][-3:] == "ini"
-        else Loader.YAML
-        if files[0][-3:] == "yaml"
-        else Loader.DICT
-    )

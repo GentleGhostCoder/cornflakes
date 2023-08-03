@@ -340,10 +340,83 @@ class StandardConfigArgs(Protocol):
 
 @runtime_checkable
 class StandardConfigMethods(Protocol):
-    from_ini: LoaderMethod
-    from_yaml: LoaderMethod
-    from_dict: LoaderMethod
-    from_file: LoaderMethod
+    def from_ini(
+        self,
+        files: ConfigArgument = None,
+        sections: ConfigArgument = None,
+        keys: ConfigArgument = None,
+        defaults: ConfigArgument = None,
+        eval_env: bool = False,
+        *args,
+        **kwargs
+    ):
+        """Method to load a config from ini files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(cls=self, _loader_callback=get_loader_callback(Loader.INI), _instantiate=True)(
+            files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
+        )
+
+    def from_yaml(
+        self,
+        files: ConfigArgument = None,
+        sections: ConfigArgument = None,
+        keys: ConfigArgument = None,
+        defaults: ConfigArgument = None,
+        eval_env: bool = False,
+        *args,
+        **kwargs
+    ):
+        """Method to load a config from yaml files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(cls=self, _loader_callback=get_loader_callback(Loader.YAML), _instantiate=True)(
+            files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
+        )
+
+    def from_dict(
+        self,
+        files: ConfigArgument = None,
+        sections: ConfigArgument = None,
+        keys: ConfigArgument = None,
+        defaults: ConfigArgument = None,
+        eval_env: bool = False,
+        *args,
+        **kwargs
+    ):
+        """Method to load a config from dict files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(cls=self, _loader_callback=get_loader_callback(Loader.DICT), _instantiate=True)(
+            files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
+        )
+
+    def from_file(
+        self,
+        files: ConfigArgument = None,
+        sections: ConfigArgument = None,
+        keys: ConfigArgument = None,
+        defaults: ConfigArgument = None,
+        eval_env: bool = False,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Method to load a config from files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import config_files, get_default_loader, get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(
+            cls=self,
+            _loader_callback=get_loader_callback(get_default_loader(files or config_files(self))),
+            _instantiate=True,
+        )(files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs)
 
 
 @runtime_checkable
@@ -355,7 +428,26 @@ class StandardConfigGroupArgs(Protocol):
 
 @runtime_checkable
 class StandardConfigGroupMethods(Protocol):
-    from_file: LoaderMethod
+    def from_file(
+        self,
+        files: ConfigArgument = None,
+        sections: ConfigArgument = None,
+        keys: ConfigArgument = None,
+        defaults: ConfigArgument = None,
+        eval_env: bool = False,
+        *args,
+        **kwargs
+    ) -> Any:
+        """Method to load a config from files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import config_files, get_default_loader, get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(
+            cls=self,
+            _loader_callback=get_loader_callback(get_default_loader(files or config_files(self))),
+            _instantiate=True,
+        )(files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs)
 
 
 @runtime_checkable

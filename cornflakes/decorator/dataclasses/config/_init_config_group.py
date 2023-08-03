@@ -12,6 +12,7 @@ from cornflakes.decorator.dataclasses._helper import (
     is_config_list,
     is_eval_env,
 )
+from cornflakes.types import Config
 
 
 def _load_config_kwargs(
@@ -34,7 +35,7 @@ def _load_config_kwargs(
     allow_empty = allow_empty or is_allow_empty(cls)
 
     for slot in fields(cls):
-        slot_class = slot.type
+        slot_class: Config = slot.type
         if is_config_list(slot_class):
             slot_class = slot.type.__args__[0]
 

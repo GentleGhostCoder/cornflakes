@@ -21,7 +21,7 @@ class ExampleEnum(Enum):
     frozen=True,
     eval_env=True,
     validate=True,
-    chain_files=True,
+    chain_files=False,
     ignore_none=True,
 )
 class SubConfigClass:
