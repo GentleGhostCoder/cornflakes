@@ -6,7 +6,7 @@ from typing import Any, Callable, Optional
 from click import get_current_context
 from click.core import Context
 
-from cornflakes.common import check_type, get_actual_type
+from cornflakes.common import check_type, get_actual_type, recursive_update
 from cornflakes.decorator.dataclasses import is_config, is_group, normalized_class_name
 from cornflakes.types import Constants
 
@@ -19,9 +19,12 @@ def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wra
         click_cls = click_func(*wrap_args, **wrap_kwargs)(func)
 
         # pass __auto_options_groups__ if
-        if not hasattr(click_cls, "__option_groups__"):
-            click_cls.__option_groups__ = []
-        click_cls.__option_groups__.extend(getattr(func, "__option_groups__", []))
+        if not hasattr(click_cls, Constants.config_option.OPTION_GROUPS):
+            setattr(click_cls, Constants.config_option.OPTION_GROUPS, [])
+
+        getattr(click_cls, Constants.config_option.OPTION_GROUPS).extend(
+            getattr(func, Constants.config_option.OPTION_GROUPS, [])
+        )
 
         @wraps(func)
         def click_callback(*args, **kwargs):
@@ -30,6 +33,7 @@ def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wra
                 kwargs["ctx"]: Optional["Context"] = get_current_context()
             if click_cls.config and click_cls.config.GLOBAL_OPTIONS and func.__module__ != "cornflakes.click":
                 _apply_global_options(click_cls, *args, **kwargs)
+                _apply_option_groups(click_cls)
 
             kwargs = _apply_auto_option_config(func, **kwargs)
             return func(
@@ -46,6 +50,12 @@ def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wra
 def _apply_global_options(click_cls, *args, **kwargs):
     for option_obj in click_cls.config.GLOBAL_OPTIONS:
         option_obj(*args, **dict(filter(lambda kv: kv[0] in signature(option_obj).parameters.keys(), kwargs.items())))
+
+
+def _apply_option_groups(click_cls):
+    if hasattr(click_cls, Constants.config_option.OPTION_GROUPS) and hasattr(click_cls, "config"):
+        for option_group_obj in getattr(click_cls, Constants.config_option.OPTION_GROUPS, []):
+            recursive_update(click_cls.config.OPTION_GROUPS, option_group_obj, merge_lists=True)
 
 
 def _apply_auto_option_config(func, **kwargs):

@@ -28,6 +28,7 @@ def config_group(
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
     value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -58,6 +59,7 @@ def config_group(
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
     value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -87,6 +89,7 @@ def config_group(
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
     value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -103,6 +106,8 @@ def config_group(
 ]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
+    :param ignore_none:
+    :param alias_generator:
     :param value_factory:
     :param updatable:
     :param validate:
@@ -155,6 +160,7 @@ def config_group(
         setattr(config_group_cls, Constants.config_decorator.FILES, files)
         setattr(config_group_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
         setattr(config_group_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
+        setattr(config_group_cls, Constants.config_decorator.ALIAS_GENERATOR, alias_generator)
 
         config_group_cls = wrap_init_config_group(config_group_cls)
 

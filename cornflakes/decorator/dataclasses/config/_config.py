@@ -43,6 +43,7 @@ def config(
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
     value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -77,6 +78,7 @@ def config(
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
     value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -110,6 +112,7 @@ def config(
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
     value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
@@ -133,6 +136,8 @@ def config(
     """
     Config decorator to parse INI files and implement config loader methods to config-classes.
 
+    :param alias_generator:
+    :param ignore_none:
     :param value_factory:
     :param init_default_config:
     :param match_args:
@@ -258,6 +263,7 @@ def config(
         setattr(config_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
         setattr(config_cls, Constants.config_decorator.VALIDATE, validate)
         setattr(config_cls, Constants.config_decorator.DEFAULT_LOADER, default_loader)
+        setattr(config_cls, Constants.config_decorator.ALIAS_GENERATOR, alias_generator)
 
         # Set Writer
         setattr(config_cls, Writer.INI.value, to_ini)

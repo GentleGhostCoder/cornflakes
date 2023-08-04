@@ -76,6 +76,11 @@ def value_factory(cls):
     return getattr(cls, Constants.dataclass_decorator.VALUE_FACTORY, None)
 
 
+def alias_generator(cls):
+    """Method to return class __alias_generator__."""
+    return getattr(cls, Constants.config_decorator.ALIAS_GENERATOR, None)
+
+
 def evaluate_default_configs(cls, config):
     """Method to evaluate default configs."""
     # if is_validated(cls):

@@ -78,6 +78,7 @@ class ConfigOption:
     READ_CONFIG_METHOD: str = "__auto_option_init__"
     ATTRIBUTES: str = "__auto_option_attributes__"
     PASSED_DECORATE_KEY: str = "__auto_option_key__"
+    OPTION_GROUPS: str = "__option_groups__"
     ADD_CONFIG_FILE_OPTION_PARAM_VAR: str = "config_file"
     ADD_CONFIG_FILE_OPTION_PARAM: str = "--config-file"
     ADD_CONFIG_FILE_OPTION_PARAM_SHORT: str = "-cfg"
@@ -111,6 +112,7 @@ class ConfigDecorator:
     ALLOW_EMPTY: str = "__allow_empty_config__"
     CHAIN_FILES: str = "__chain_files__"
     VALIDATE: str = "__validate__"
+    ALIAS_GENERATOR: str = "__alias_generator__"
 
     SECTION_NAME_KEY: str = "section_name"
 

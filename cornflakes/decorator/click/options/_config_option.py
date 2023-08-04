@@ -34,8 +34,11 @@ def _set_passed_key(wrapper, config, passing_key):
         if passing_key is None:
             passing_key = normalized_class_name(config)
 
-    # Check if the passing_key is not provided in the params
-    if passing_key not in params:
+    # Check if the passing_key is not provided in the params or not any param is *args or **kwargs
+    if (
+        all(param.kind not in [param.VAR_KEYWORD, param.VAR_POSITIONAL] for param in params.values())
+        and passing_key not in params
+    ):
         raise ValueError(
             f"Method parameter for {config.__name__} is required, when using config_option, but not provided in the parameters! You can pass the config with the key {passing_key} or by a custom parameter that has the provided config class annotation."
         )
@@ -150,7 +153,14 @@ def _config_option(  # noqa: C901
         wrapper = callback
 
         if not is_sub_config and add_config_file_options:
-            wrapper = _update_options_help(wrapper, config)
+
+            def formatter(help_str):
+                help_str = f"{help_str}, {config.__name__}"
+                if "Add config files for: " not in help_str:
+                    help_str = f"Add config files for:{help_str.replace(',', ' ')}"
+                return help_str
+
+            wrapper = _update_options_help(wrapper, config, formatter)
 
         slot_options = {
             f"--{slot_name.replace('_', '-')}": slot
@@ -177,6 +187,8 @@ def _config_option(  # noqa: C901
 
             def read_config(files=None, **kwargs):
                 config_args = {k: v for k, v in kwargs.items() if k in [f.name for f in fields(config) if f.init]}
+                if not add_config_file_options:
+                    files = config_files(config)
                 return config.from_file(files=files, **config_args)
 
             return wraps(func)(read_config) if func else read_config

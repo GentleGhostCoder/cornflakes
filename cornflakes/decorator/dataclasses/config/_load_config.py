@@ -2,10 +2,11 @@ from collections import OrderedDict
 from functools import partial
 import logging
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
 from cornflakes.decorator.dataclasses._helper import (
+    alias_generator,
     dataclass_fields,
     dataclass_required_keys,
     is_chain_files,
@@ -36,8 +37,13 @@ def create_file_loader(  # noqa: C901
     required_keys = dataclass_required_keys(
         cls
     )  # [key for key, f in dataclass_fields(cls).items() if dc_slot_missing_default(f)]  # type: ignore
-
-    keys = {key: getattr(f, "aliases", key) or key for key, f in dataclass_fields(cls).items()}
+    _alias_generator: Callable[[str], str] = alias_generator(cls)
+    if _alias_generator and callable(_alias_generator):
+        keys = {
+            key: (getattr(f, "aliases", key), _alias_generator(key)) or key for key, f in dataclass_fields(cls).items()
+        }
+    else:
+        keys = {key: getattr(f, "aliases", key) or key for key, f in dataclass_fields(cls).items()}
 
     def _create_config(config_args: dict, allow_empty=None, **cls_kwargs) -> Optional[Union[dict, Any]]:
         if not config_args and allow_empty:
@@ -122,7 +128,6 @@ def create_file_loader(  # noqa: C901
             logging.debug(f"Load ini from file: {files} - section: {section} for config {cls.__name__}")
 
             if not config_dict:
-                print(_loader_callback)
                 config_dict = OrderedDict(
                     _loader_callback(files={None: files}, sections=section, keys=keys, defaults=None, eval_env=eval_env)
                 )

@@ -177,12 +177,15 @@ def dataclass(
         if slots and sys.version_info < (3, 10):
             dc_cls = add_slots(dc_cls)
 
-        if updatable and not kwargs.get("frozen", False):
+        if updatable:
+            if kwargs.get("frozen", False):
+                raise TypeError("Cannot set both frozen=True and updatable=True")
 
             def _update(self, new, merge_lists=False):
-                for key, value in new.items():
-                    with contextlib.suppress(AttributeError):
-                        recursive_update(getattr(self, key), value, merge_lists=merge_lists)
+                current = {**self}
+                with contextlib.suppress(AttributeError):
+                    recursive_update(current, new, merge_lists=merge_lists)
+                return type(self)(**current)
 
             dc_cls.update = _update
 

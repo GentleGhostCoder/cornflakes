@@ -6,8 +6,6 @@ from cornflakes.decorator.click.rich import RichGroup
 
 
 @group(
-    name="blub",
-    config=None,
     OPTION_GROUPS={
         **{
             command: [

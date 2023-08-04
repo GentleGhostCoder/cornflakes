@@ -3,7 +3,7 @@ from inspect import getfile
 import logging
 from typing import TYPE_CHECKING, Any, Callable, Optional, TypeVar, Union, cast
 
-from click import style, version_option
+from click import Command, Group, MultiCommand, style, version_option
 
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
 from cornflakes.decorator.click._patch_click import patch_click
@@ -19,6 +19,7 @@ AnyCallable = Callable[..., Any]
 
 @wrap_kwargs(RichConfig)
 def click_cli(  # noqa: C901
+    *args,
     callback: Optional[Any] = None,
     config: Optional[RichConfig] = None,
     files: Optional[str] = None,
@@ -56,18 +57,33 @@ def click_cli(  # noqa: C901
 
         module = module.replace("_", "-")
 
-        if "name" not in kwargs:
+        if ("name" not in kwargs or not kwargs["name"]) and not (args and isinstance(args[0], str)):
             kwargs["name"] = module
 
         cli: Union[RichCommand, RichGroup] = (
             command(
+                *args,
                 config=config,
-                **{key: value for key, value in kwargs.items() if key in RichCommand.__init__.__code__.co_varnames},
+                **{
+                    key: value
+                    for key, value in kwargs.items()
+                    if key in [*RichCommand.__init__.__code__.co_varnames, Command.__init__.__code__.co_varnames]
+                },
             )(w_callback)
             if as_command
             else group(
+                *args,
                 config=config,
-                **{key: value for key, value in kwargs.items() if key in RichGroup.__init__.__code__.co_varnames},
+                **{
+                    key: value
+                    for key, value in kwargs.items()
+                    if key
+                    in [
+                        *RichGroup.__init__.__code__.co_varnames,
+                        *Group.__init__.__code__.co_varnames,
+                        *MultiCommand.__init__.__code__.co_varnames,
+                    ]
+                },
             )(w_callback)
         )
 
