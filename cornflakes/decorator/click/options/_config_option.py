@@ -51,25 +51,33 @@ def _set_passed_key(wrapper, config, passing_key):
     setattr(wrapper, Constants.config_option.PASSED_DECORATE_KEY, passing_key)
 
 
+def _update_options_help_default(callback, config, formatter=None):
+    config_option_help_str = formatter("") if formatter else f"{config.__name__}"
+    return option(
+        Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_SHORT,
+        Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM,
+        **{"help": config_option_help_str, "type": str, "multiple": True},
+    )(callback)
+
+
 def _update_options_help(callback, config, formatter=None):
-    if (
-        "__click_params__" in dir(callback)
-        and getattr(callback, "__click_params__")
-        and getattr(callback, "__click_params__")[0].name == Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR
-    ):
-        getattr(callback, "__click_params__")[0].help = (
-            formatter(getattr(callback, "__click_params__")[0].help)
-            if formatter
-            else f"{getattr(callback, '__click_params__')[0].help}, {config.__name__}"
-        )
-        return callback
-    else:
-        config_option_help_str = formatter("") if formatter else f"{config.__name__}"
-        return option(
-            Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_SHORT,
-            Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM,
-            **{"help": config_option_help_str, "type": str, "multiple": True},
-        )(callback)
+    # get the click param with the name Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR
+    if "__click_params__" not in dir(callback):
+        return _update_options_help_default(callback, config, formatter)
+
+    help_params = [
+        p
+        for p in getattr(callback, "__click_params__", [])
+        if getattr(p, "name", "") == Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR
+    ]
+
+    if not help_params:
+        return _update_options_help_default(callback, config, formatter)
+
+    help_params[-1].help = (
+        formatter(help_params[-1].help) if formatter else f"{help_params[-1].help}, {config.__name__}"
+    )
+    return callback
 
 
 def _config_group_option(
@@ -152,16 +160,6 @@ def _config_option(  # noqa: C901
 
         wrapper = callback
 
-        if not is_sub_config and add_config_file_options:
-
-            def formatter(help_str):
-                help_str = f"{help_str}, {config.__name__}"
-                if "Add config files for: " not in help_str:
-                    help_str = f"Add config files for:{help_str.replace(',', ' ')}"
-                return help_str
-
-            wrapper = _update_options_help(wrapper, config, formatter)
-
         slot_options = {
             f"--{slot_name.replace('_', '-')}": slot
             for slot_name, slot in cast(Type[CornflakesDataclass], config).__dataclass_fields__.items()
@@ -179,6 +177,16 @@ def _config_option(  # noqa: C901
                 option_args["type"] = param_parser(slot.type)()
             option_args["show_default"] = True
             wrapper = option(option_name, cls=None, **option_args)(wrapper)
+
+        if not is_sub_config and add_config_file_options:
+
+            def formatter(help_str):
+                help_str = f"{help_str}, {config.__name__}"
+                if "Add config files for: " not in help_str:
+                    help_str = f"Add config files for:{help_str.replace(',', ' ')}"
+                return help_str
+
+            wrapper = _update_options_help(wrapper, config, formatter)
 
         setattr(wrapper, Constants.config_option.ENABLED, True)
 
