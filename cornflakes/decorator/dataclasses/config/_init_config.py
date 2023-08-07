@@ -88,11 +88,13 @@ def wrap_init_default_config(cls):
             if not _load_default:
                 return init(self, **kwargs.copy())
 
-            changed_kwargs = {
-                key: value for key, value in kwargs.items() if repr(value) != repr(default_config.get(key))
-            }
+            changed_kwargs = (
+                {key: value for key, value in kwargs.items() if repr(value) != repr(default_config.get(key))}
+                if default_config
+                else {}
+            )
 
-            if not changed_kwargs:
+            if not changed_kwargs and not files:
                 # If no kwargs are changed, we can use the default config
                 config_result = init(self, **kwargs.copy())
                 return config_result
