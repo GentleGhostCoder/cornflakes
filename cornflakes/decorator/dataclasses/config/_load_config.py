@@ -37,7 +37,7 @@ def create_file_loader(  # noqa: C901
     required_keys = dataclass_required_keys(
         cls
     )  # [key for key, f in dataclass_fields(cls).items() if dc_slot_missing_default(f)]  # type: ignore
-    _alias_generator: Callable[[str], str] = alias_generator(cls)
+    _alias_generator: Optional[Callable[[str], str]] = alias_generator(cls)
     if _alias_generator and callable(_alias_generator):
         keys = {
             key: (getattr(f, "aliases", key), _alias_generator(key)) or key for key, f in dataclass_fields(cls).items()
