@@ -1,10 +1,11 @@
 """Command-line interface."""
-from cornflakes.decorator import click_cli
-from cornflakes.decorator.click import bg_process_option, verbose_option
+from click import Context
+
+from cornflakes.decorator.click import group, bg_process_option, verbose_option
+from cornflakes.decorator.click.rich import RichGroup
 
 
-@click_cli(
-    config=None,
+@group(
     OPTION_GROUPS={
         **{
             command: [
@@ -20,6 +21,7 @@ from cornflakes.decorator.click import bg_process_option, verbose_option
                         "--verbose",
                         "--silent",
                         "--background-process",
+                        "--install-completion",
                     ],
                 },
             ]
@@ -39,9 +41,14 @@ from cornflakes.decorator.click import bg_process_option, verbose_option
     HEADER_TEXT="Create generic any easy to manage Configs for your Project.",
     GLOBAL_OPTIONS=[verbose_option, bg_process_option],
     VERSION_INFO=True,
+    pass_context=True,
+    invoke_without_command=True,
 )
-def cli():
+def cli(self: RichGroup, ctx: Context):
     """"""
+    if ctx.invoked_subcommand is None:
+        print(ctx)
+        self.main(["--help"])
 
 
 __all__ = ["cli"]

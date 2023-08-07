@@ -13,6 +13,7 @@ from cornflakes.decorator.click.rich._rich_click import (
 )
 from cornflakes.decorator.click.rich._rich_command import RichCommand
 from cornflakes.decorator.click.rich._rich_config import RichConfig as RichConfig
+from cornflakes.types import Constants
 
 
 class RichGroup(Group):
@@ -29,6 +30,7 @@ class RichGroup(Group):
     context_settings: dict
     commands: Dict[str, Union[Command, RichCommand]]
     config: RichConfig
+    pass_context: Optional[bool] = False
 
     def callback(self):
         """Callback method with is wrapped over the command group."""
@@ -39,14 +41,16 @@ class RichGroup(Group):
         If the name is not provided, the name of the command is used.
         """
         setattr(cmd, "parent", self)
+        # pass __auto_options_groups__ if
         Group.add_command(self, cmd, name)
 
-    def __init__(self, config: Optional[RichConfig] = None, *args, **kwargs):
+    def __init__(self, *args, pass_context: Optional[bool] = None, config: Optional[RichConfig] = None, **kwargs):
         """Init function of RichGroup with extra config argument."""
         if not config:
             config = RichConfig()
         super().__init__(*args, **kwargs)
         self.config = config
+        self.pass_context = pass_context
         self.console = get_rich_console(config=self.config)
 
     def __pass_config(self, config=None, console=None):
@@ -64,8 +68,10 @@ class RichGroup(Group):
 
             # fill the auto-options if exists
             command = get_command_name(_group)
-            if hasattr(_group, "__option_groups__") and len(getattr(_group, "__option_groups__", {})):
-                update_dict = {command: _group.__option_groups__}
+            if hasattr(_group, Constants.config_option.OPTION_GROUPS) and len(
+                getattr(_group, Constants.config_option.OPTION_GROUPS, {})
+            ):
+                update_dict = {command: getattr(_group, Constants.config_option.OPTION_GROUPS, {})}
                 recursive_update(_group.config.OPTION_GROUPS, update_dict, merge_lists=True)
 
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:  # noqa: C901

@@ -9,7 +9,7 @@ from cornflakes.decorator.dataclasses._helper import (
     get_env_vars,
     is_eval_env,
 )
-from cornflakes.types import INSPECT_EMPTY
+from cornflakes.types import INSPECT_EMPTY_TYPE
 
 
 def _validate(self, values, key, callback: Callable[..., Any]):
@@ -20,7 +20,7 @@ def _validate(self, values, key, callback: Callable[..., Any]):
         kwargs.update(co_varnames)
         kwargs.update({"self": self, "values": values, "key": key})
         kwargs = {
-            key: value for key, value in kwargs.items() if key in co_varnames.keys() and value is not INSPECT_EMPTY
+            key: value for key, value in kwargs.items() if key in co_varnames.keys() and value is not INSPECT_EMPTY_TYPE
         }
         kwargs.update({key: value for key, value in values.items() if key in co_varnames.keys()})
         if len(missing := [key for key in co_varnames.keys() if key not in kwargs.keys()]) > 1:
@@ -28,8 +28,8 @@ def _validate(self, values, key, callback: Callable[..., Any]):
         if len(missing) == 1:
             return callback(values.pop(key), **kwargs)
         return callback(**kwargs)
-    except Exception as exc:
-        raise ValueError(f"Failed to validate {key} with {callback}!") from exc
+    except TypeError as e:
+        raise TypeError(f"Error while validating {key} for {self.__class__.__name__}: {e}")
 
 
 def _process_validator(self, values, validators: dict, **kwargs):

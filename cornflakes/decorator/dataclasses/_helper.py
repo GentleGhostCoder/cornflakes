@@ -3,11 +3,16 @@ import dataclasses
 from dataclasses import fields as dc_fields
 from os import environ
 import re
+from typing import List, Optional
 
-from _cornflakes import eval_type
+from cornflakes import eval_type, ini_load
+from cornflakes.parser import yaml_load
+from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants, IndexInstance, Loader
 
-from cornflakes.decorator._indexer import IndexInstance
-from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants
+
+def is_index(obj):
+    """Returns True if the given object is an index type."""
+    return getattr(getattr(obj, "__class__", {}), "__name__", "")[-6:] == "_Index"
 
 
 def is_config(cls):
@@ -50,6 +55,11 @@ def is_eval_env(cls):
     return getattr(cls, Constants.dataclass_decorator.EVAL_ENV, False)
 
 
+def is_chain_files(cls):
+    """Method to return flag that class is a chain files class."""
+    return getattr(cls, Constants.config_decorator.CHAIN_FILES, False)
+
+
 def dict_factory(cls):
     """Method to return class __dict_factory__."""
     # dict_factory_method = getattr(cls, "__dict_factory__", dict)
@@ -63,6 +73,16 @@ def dict_factory(cls):
     #
     #     return dict_factory_wrapper
     return getattr(cls, Constants.dataclass_decorator.DICT_FACTORY, dict)
+
+
+def value_factory(cls):
+    """Method to return class __value_factory__."""
+    return getattr(cls, Constants.dataclass_decorator.VALUE_FACTORY, None)
+
+
+def alias_generator(cls):
+    """Method to return class __alias_generator__."""
+    return getattr(cls, Constants.config_decorator.ALIAS_GENERATOR, None)
 
 
 def evaluate_default_configs(cls, config):
@@ -100,11 +120,15 @@ def is_config_list(cls):
 
 def get_not_ignored_slots(cls):
     """Method to return slots that are not ignored fields."""
-    return [
-        slot
-        for slot in getattr(cls, Constants.dataclass_decorator.FIELDS, {}).keys()
-        if slot not in cls.__ignored_slots__
-    ]
+    return (
+        cls.keys()
+        if hasattr(cls, "keys")
+        else [
+            slot
+            for slot in getattr(cls, Constants.dataclass_decorator.FIELDS, {}).keys()
+            if slot not in getattr(cls, Constants.dataclass_decorator.IGNORED_SLOTS, [])
+        ]
+    )
 
 
 def is_use_regex(cls):
@@ -143,3 +167,21 @@ def fields(class_or_instance):
 
 
 dataclasses.fields = fields
+
+
+def get_default_loader(files: Optional[List[str]] = None) -> Loader:
+    """Method to get the default loader from filenames."""
+    return (
+        Loader.DICT
+        if not files
+        else Loader.INI
+        if files[0][-3:] == "ini"
+        else Loader.YAML
+        if files[0][-3:] == "yaml"
+        else Loader.DICT
+    )
+
+
+def get_loader_callback(loader):
+    """Method to get the loader callback."""
+    return yaml_load if loader == Loader.YAML else ini_load

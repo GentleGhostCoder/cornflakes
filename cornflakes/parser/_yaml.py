@@ -71,8 +71,6 @@ def _yaml_read(
         if not sections:
             if not keys:
                 return config
-            if not defaults:
-                defaults = keys
             return _get_all_sections(config, _to_map(list(config.keys())), keys, defaults)
         return _get_all_sections(config, sections, keys, defaults)
 
@@ -89,7 +87,7 @@ def _to_map(obj: Optional[Union[dict, list, tuple, str]]) -> dict:
 
 
 def yaml_load(
-    files: Union[str, List[str], Dict[Optional[str], Union[str, List[str]]]],
+    files: Union[str, List[str], Dict[str, Union[str, List[str]]]],
     sections: Optional[Union[str, List[str], Dict[Optional[str], Union[str, List[str]]]]] = None,
     keys: Optional[Union[str, List[str], Dict[str, Union[str, List[str]]]]] = None,
     defaults: Optional[Union[str, List[str], Dict[str, Any]]] = None,

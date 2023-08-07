@@ -1,12 +1,11 @@
 import logging
-from typing import Callable, Dict, List, Optional, Union
+from typing import Optional
 
-from cornflakes import ini_load
 from cornflakes.common import type_to_str
-from cornflakes.decorator.dataclasses._helper import get_not_ignored_slots, is_config
+from cornflakes.decorator.dataclasses._helper import get_loader_callback, get_not_ignored_slots, is_config
 from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 from cornflakes.decorator.dataclasses.config._write_config import write_config
-from cornflakes.types import Config
+from cornflakes.types import Loader
 
 
 def _parse_config_list(cfg, cfg_name: str, title: str):
@@ -78,11 +77,11 @@ def to_ini(self, out_cfg: Optional[str] = None) -> Optional[bytearray]:
 
 def create_ini_file_loader(
     cls,
-) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
+):
     """Method to create file loader for ini files."""
 
-    def from_ini(*args, **kwargs) -> Dict[str, Optional[Union[Config, List[Config]]]]:
-        return create_file_loader(cls=cls, _loader_callback=ini_load, _instantiate=True)(*args, **kwargs)  # type: ignore
+    def from_ini(*args, **kwargs):
+        return create_file_loader(cls=cls, _loader_callback=get_loader_callback(Loader.INI), _instantiate=True)(*args, **kwargs)  # type: ignore
 
     return from_ini
 

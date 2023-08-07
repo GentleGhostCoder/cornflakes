@@ -154,3 +154,7 @@ dmypy.json
 
 # Ruff linting
 /.ruff_cache/
+
+
+# vscode
+.vscode*

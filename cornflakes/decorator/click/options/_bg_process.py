@@ -3,9 +3,10 @@ import logging
 from os.path import abspath
 import subprocess  # noqa: S404
 import sys
-from typing import Callable
+from typing import Any, Union
 
 from cornflakes.decorator.click.options._global import global_option
+from cornflakes.decorator.click.rich import RichCommand, RichGroup
 
 
 @global_option(
@@ -13,13 +14,13 @@ from cornflakes.decorator.click.options._global import global_option
     is_flag=True,
     help="Run in Background without console logger.",
 )
-def bg_process_option(self: Callable[..., None], background_process: bool, *func_args, **func_kwargs):
+def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_process: bool, *func_args, **func_kwargs):
     """Default Option for running in background."""
     if background_process:
-        stdout_file = f"{self.__name__}.log"
-        stderr_file = f"{self.__name__}_error.log"
+        stdout_file = f"{self.callback.__name__}.log"
+        stderr_file = f"{self.callback.__name__}_error.log"
         logging.debug(
-            f"Method {self.__name__} is running in background. "
+            f"Method {self.callback.__name__} is running in background. "
             f"See logs at stdout: {stdout_file}, stderr: {stderr_file}."
         )
         stdout = open(stdout_file, "w")
@@ -27,8 +28,8 @@ def bg_process_option(self: Callable[..., None], background_process: bool, *func
 
         command = (
             f"import sys; exec(open("
-            f"{abspath(getfile(self))!r}).read());"
-            f"{self.__name__}(*{func_args},**{func_kwargs});"
+            f"{abspath(getfile(self.callback))!r}).read());"
+            f"{self.callback.__name__}(*{func_args},**{func_kwargs});"
         )
 
         logging.debug(f"Python Command: {command}")

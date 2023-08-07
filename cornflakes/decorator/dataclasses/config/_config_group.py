@@ -27,9 +27,12 @@ def config_group(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    ignore_none: bool = False,
     files: Optional[Union[List[str], str]] = None,
     allow_empty: Optional[bool] = None,
     chain_files: Optional[bool] = False,
@@ -55,9 +58,12 @@ def config_group(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    ignore_none: bool = False,
     files: Optional[Union[str, List[str]]] = None,
     allow_empty: Optional[bool] = None,
     chain_files: Optional[bool] = False,
@@ -66,7 +72,7 @@ def config_group(
     ...
 
 
-@dataclass_transform(field_specifiers=(field, Field))
+# @dataclass_transform(field_specifiers=(field, Field))  # TODO: Fix dataclass_transform -> breaking attribute completion in pycharm
 def config_group(
     cls: Optional[Type[_T]] = None,
     /,
@@ -82,9 +88,12 @@ def config_group(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    ignore_none: bool = False,
     files: Optional[Union[str, List[str]]] = None,
     allow_empty: Optional[bool] = None,
     chain_files: Optional[bool] = False,
@@ -97,6 +106,9 @@ def config_group(
 ]:
     """Config decorator with a Subset of configs to parse Ini Files.
 
+    :param ignore_none:
+    :param alias_generator:
+    :param value_factory:
     :param updatable:
     :param validate:
     :param eval_env:
@@ -137,15 +149,18 @@ def config_group(
             match_args=match_args,
             dict_factory=dict_factory,
             tuple_factory=tuple_factory,
+            value_factory=value_factory,
             eval_env=eval_env,
             validate=validate,
             updatable=updatable,
+            ignore_none=ignore_none,
             **kwargs,
         )(w_cls)
 
         setattr(config_group_cls, Constants.config_decorator.FILES, files)
         setattr(config_group_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
         setattr(config_group_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
+        setattr(config_group_cls, Constants.config_decorator.ALIAS_GENERATOR, alias_generator)
 
         config_group_cls = wrap_init_config_group(config_group_cls)
 

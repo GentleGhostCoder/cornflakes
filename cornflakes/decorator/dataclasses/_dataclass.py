@@ -7,24 +7,213 @@ from typing import Any, Callable, Optional, Type, Union, overload
 from typing_extensions import dataclass_transform  # type: ignore
 
 from cornflakes.common import recursive_update
-from cornflakes.decorator._indexer import is_index
 from cornflakes.decorator.dataclasses._add_dataclass_slots import add_slots
 from cornflakes.decorator.dataclasses._enforce_types import enforce_types
 from cornflakes.decorator.dataclasses._field import Field, field
 from cornflakes.decorator.dataclasses._helper import dc_slot_missing_default
 from cornflakes.decorator.dataclasses._helper import dict_factory as d_factory
+from cornflakes.decorator.dataclasses._helper import is_index
 from cornflakes.decorator.dataclasses._helper import tuple_factory as t_factory
+from cornflakes.decorator.dataclasses._helper import value_factory as v_factory
 from cornflakes.decorator.dataclasses._validate import check_dataclass_kwargs, validate_dataclass_kwargs
 from cornflakes.types import _T, Constants, CornflakesDataclass, MappingWrapper
 
+if sys.version_info >= (3, 10):
 
-def _zero_copy_astuple_inner(obj, factory):
+    @dataclass_transform(field_specifiers=(field, Field))
+    @overload
+    def dataclass(
+        *,
+        init: bool = True,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        kw_only: bool = False,
+        slots: bool = False,
+        match_args: bool = True,
+        dict_factory: Optional[Callable] = None,
+        tuple_factory: Optional[Callable] = None,
+        value_factory: Optional[Callable] = None,
+        eval_env: bool = False,
+        validate: bool = False,
+        updatable: bool = False,
+        ignore_none: bool = False,
+        **kwargs: Any,
+    ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]]:
+        ...
+
+    @dataclass_transform(field_specifiers=(field, Field))
+    @overload
+    def dataclass(
+        _cls: Type[_T],
+        /,
+        *,
+        init: bool = True,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        kw_only: bool = False,
+        slots: bool = False,
+        match_args: bool = True,
+        dict_factory: Optional[Callable] = None,
+        tuple_factory: Optional[Callable] = None,
+        value_factory: Optional[Callable] = None,
+        eval_env: bool = False,
+        validate: bool = False,
+        updatable: bool = False,
+        ignore_none: bool = False,
+        **kwargs: Any,
+    ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
+        ...
+
+else:
+
+    @dataclass_transform(field_specifiers=(field, Field))
+    @overload
+    def dataclass(
+        *,
+        init: bool = True,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        dict_factory: Optional[Callable] = None,
+        tuple_factory: Optional[Callable] = None,
+        value_factory: Optional[Callable] = None,
+        eval_env: bool = False,
+        validate: bool = False,
+        updatable: bool = False,
+        ignore_none: bool = False,
+        **kwargs: Any,
+    ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]]:
+        ...
+
+    @dataclass_transform(field_specifiers=(field, Field))
+    @overload
+    def dataclass(
+        _cls: Type[_T],  # type: ignore
+        /,
+        *,
+        init: bool = True,
+        repr: bool = True,
+        eq: bool = True,
+        order: bool = False,
+        unsafe_hash: bool = False,
+        frozen: bool = False,
+        dict_factory: Optional[Callable] = None,
+        tuple_factory: Optional[Callable] = None,
+        value_factory: Optional[Callable] = None,
+        eval_env: bool = False,
+        validate: bool = False,
+        updatable: bool = False,
+        ignore_none: bool = False,
+        **kwargs: Any,
+    ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
+        ...
+
+
+# @dataclass_transform(field_specifiers=(field, Field))
+def dataclass(
+    cls: Optional[Type[_T]] = None,
+    /,
+    *,
+    init: bool = True,
+    repr: bool = True,
+    eq: bool = True,
+    order: bool = False,
+    unsafe_hash: bool = False,
+    frozen: bool = False,
+    kw_only: bool = False,
+    slots: bool = False,
+    match_args: bool = True,
+    dict_factory: Optional[Callable] = None,
+    tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
+    eval_env: bool = False,
+    validate: bool = False,
+    updatable: bool = False,
+    ignore_none: bool = False,
+    **kwargs: Any,
+) -> Union[
+    Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]],
+    Type[CornflakesDataclass],
+    MappingWrapper[_T],
+]:
+    """Wrapper around built-in dataclasses dataclass."""
+    if sys.version_info >= (3, 10):
+        kwargs = dict(kw_only=kw_only, slots=slots, match_args=match_args)
+    else:
+        kwargs: dict = {}
+
+    def create_dataclass(w_cls: Type[_T]) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
+        """
+        Create a Cornflakes dataclass from a regular dataclass.
+
+        :param w_cls: The class to create the Cornflakes dataclass from.
+        :type w_cls: type
+        :returns: A Cornflakes dataclass.
+        :rtype: type
+        """
+        dc_cls = _wrap_custom_dataclass(
+            w_cls,
+            init=init,
+            repr=repr,
+            eq=eq,
+            order=order,
+            unsafe_hash=unsafe_hash,
+            frozen=frozen,
+            dict_factory=dict_factory,
+            tuple_factory=tuple_factory,
+            value_factory=value_factory,
+            eval_env=eval_env,
+            **kwargs,
+        )
+
+        if slots and sys.version_info < (3, 10):
+            dc_cls = add_slots(dc_cls)
+
+        if updatable:
+            if kwargs.get("frozen", False):
+                raise TypeError("Cannot set both frozen=True and updatable=True")
+
+            def _update(self, new, merge_lists=False):
+                current = {**self}
+                with contextlib.suppress(AttributeError):
+                    recursive_update(current, new, merge_lists=merge_lists)
+                return type(self)(**current)
+
+            dc_cls.update = _update
+
+        if validate:
+            dc_cls = enforce_types(dc_cls, validate=validate)
+
+        dc_cls.__doc__ = w_cls.__doc__
+        dc_cls.__module__ = w_cls.__module__
+        dc_cls.__qualname__ = w_cls.__qualname__
+        dc_cls.__init__.__doc__ = w_cls.__init__.__doc__
+
+        dc_cls = _wrap_mapping(dc_cls, ignore_none)
+
+        return dc_cls
+
+    return create_dataclass(cls) if cls else create_dataclass  # type: ignore
+
+
+def _zero_copy_astuple_inner(obj, value_factory=None):
     if is_dataclass(obj):
         result = []
         for f in fields(obj):
-            value = _zero_copy_astuple_inner(getattr(obj, f.name), factory)
+            value = _zero_copy_astuple_inner(getattr(obj, f.name), v_factory(obj))
             result.append(value)
-        return factory(result)
+        return t_factory(obj)(result)
+    if is_index(obj):
+        type(obj).reset()
+        return obj
     elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
         # obj is a namedtuple.  Recurse into it, but the returned
         # object is another namedtuple of the same type.  This is
@@ -32,65 +221,34 @@ def _zero_copy_astuple_inner(obj, factory):
         # treated (see below), but we just need to create them
         # differently because a namedtuple's __init__ needs to be
         # called differently (see bpo-34363).
-        return type(obj)(*[_zero_copy_astuple_inner(v, factory) for v in obj])
+        return type(obj)(*[_zero_copy_astuple_inner(v) for v in obj])
     elif isinstance(obj, (list, tuple)):
         # Assume we can create an object of this type by passing in a
         # generator (which is not true for namedtuples, handled
         # above).
-        return type(obj)(_zero_copy_astuple_inner(v, factory) for v in obj)
+        return type(obj)(_zero_copy_astuple_inner(v) for v in obj)
     elif isinstance(obj, dict):
-        return type(obj)(
-            (_zero_copy_astuple_inner(k, factory), _zero_copy_astuple_inner(v, factory)) for k, v in obj.items()
-        )
+        return type(obj)((_zero_copy_astuple_inner(k), _zero_copy_astuple_inner(v)) for k, v in obj.items())
     else:
-        return obj
+        return value_factory(obj) if value_factory else obj
 
 
 def to_tuple(self) -> Any:  # noqa: C901
     """Method to convert Dataclass with slots to dict."""
-    if not is_dataclass(self):
-        return self
-    new_tuple = _zero_copy_astuple_inner(self, t_factory(self))
-    dc_fields = fields(self)
-    if not (
-        isinstance(new_tuple, (list, tuple))
-        or any(is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields)
-        if dc_fields
-        else True
-    ):
-        return new_tuple
-    if isinstance(new_tuple, tuple):
-        new_tuple = list(new_tuple)
-    for idx, f in enumerate(dc_fields):
-        if is_index(value := getattr(self, f.name)):
-            type(value).reset()
-            new_tuple[idx] = value
-        if is_dataclass(value):
-            new_tuple[idx] = value.to_tuple()
-        if isinstance(value, list):
-            for sub_idx, sub_value in enumerate(value):
-                if is_index(sub_value):
-                    type(sub_value).reset()
-                    value[sub_idx] = sub_value
-                if is_dataclass(sub_value):
-                    value[sub_idx] = sub_value.to_tuple()
-            new_tuple[idx] = value
-    if isinstance(new_tuple, list):
-        new_tuple = tuple(new_tuple)  # cast to tuple
-    return new_tuple
+    return _zero_copy_astuple_inner(self)
 
 
-def _zero_copy_asdict_inner(obj):
+def _zero_copy_asdict_inner(obj, value_factory=None):
     """Patched version of dataclasses._asdict_inner that does not copy the dataclass values."""
-    # if hasattr(obj, "__dict__"):
-    #     return obj.__dict__
-
     if is_dataclass(obj):
         result = []
         for f in fields(obj):
-            value = _zero_copy_asdict_inner(getattr(obj, f.name))
+            value = _zero_copy_asdict_inner(getattr(obj, f.name), v_factory(obj))
             result.append((f.name, value))
-        return result
+        return d_factory(obj)(result)
+    if is_index(obj):
+        type(obj).reset()
+        return obj
     elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
         # obj is a namedtuple.  Recurse into it, but the returned
         # object is another namedtuple of the same type.  This is
@@ -119,272 +277,120 @@ def _zero_copy_asdict_inner(obj):
     elif isinstance(obj, dict):
         return type(obj)((_zero_copy_asdict_inner(k), _zero_copy_asdict_inner(v)) for k, v in obj.items())
     else:
-        return obj
+        return value_factory(obj) if value_factory else obj
 
 
 # @profile
-def _to_dict(self) -> Union[tuple, dict, Any]:
-    """Method to convert Dataclass with slots to dict."""
-    if not is_dataclass(self):
-        return self
-    new_dict = d_factory(self)(_zero_copy_asdict_inner(self))
-    dc_fields = fields(self)
-    if not (
-        isinstance(new_dict, dict)
-        or any(is_dataclass(f.type) or f.default_factory == list or isinstance(f.default, list) for f in dc_fields)
-        if dc_fields
-        else True
-    ):
-        return new_dict
-    for f in dc_fields:
-        if is_index(value := getattr(self, f.name)):
-            type(value).reset()
-            new_dict.update({f.name: value})
-        if is_dataclass(value):
-            new_dict.update({f.name: _to_dict(value)})
-        if isinstance(value, (list, tuple)):
-            value = list(value)  # if tuple cast  to list
-            for idx, sub_value in enumerate(value):
-                if is_index(sub_value):
-                    type(sub_value).reset()
-                    value[idx] = sub_value
-                if is_dataclass(sub_value):
-                    value[idx] = _to_dict(sub_value)
-            new_dict.update({f.name: value})
-    return new_dict
-
-
-def _new_getattr(self, key):
-    value = object.__getattribute__(self, key)
-    if is_index(value):
-        type(value).reset()
-        return value
-    if is_dataclass(value):
-        return _to_dict(value)
-    if isinstance(value, (list, tuple)):
-        value = list(value)  # if tuple cast  to list
-        for idx, sub_value in enumerate(value):
-            if is_index(sub_value):
-                type(sub_value).reset()
-                value[idx] = sub_value
-            if is_dataclass(sub_value):
-                value[idx] = _to_dict(sub_value)
-        return value
-    return value
-
-
 def to_dict(self) -> dict:
     """Method to convert Dataclass with slots to dict."""
-    return d_factory(self)(_to_dict(self))
+    return _zero_copy_asdict_inner(self)
 
 
-if sys.version_info >= (3, 10):
-
-    @dataclass_transform(field_specifiers=(field, Field))
-    @overload
-    def dataclass(
-        *,
-        init: bool = True,
-        repr: bool = True,
-        eq: bool = True,
-        order: bool = False,
-        unsafe_hash: bool = False,
-        frozen: bool = False,
-        kw_only: bool = False,
-        slots: bool = False,
-        match_args: bool = True,
-        dict_factory: Optional[Callable] = None,
-        tuple_factory: Optional[Callable] = None,
-        eval_env: bool = False,
-        validate: bool = False,
-        updatable: bool = False,
-        **kwargs: Any,
-    ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]]:
-        ...
-
-    @dataclass_transform(field_specifiers=(field, Field))
-    @overload
-    def dataclass(
-        _cls: Type[_T],
-        /,
-        *,
-        init: bool = True,
-        repr: bool = True,
-        eq: bool = True,
-        order: bool = False,
-        unsafe_hash: bool = False,
-        frozen: bool = False,
-        kw_only: bool = False,
-        slots: bool = False,
-        match_args: bool = True,
-        dict_factory: Optional[Callable] = None,
-        tuple_factory: Optional[Callable] = None,
-        eval_env: bool = False,
-        validate: bool = False,
-        updatable: bool = False,
-        **kwargs: Any,
-    ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
-        ...
-
-else:
-
-    @dataclass_transform(field_specifiers=(field, Field))
-    @overload
-    def dataclass(
-        *,
-        init: bool = True,
-        repr: bool = True,
-        eq: bool = True,
-        order: bool = False,
-        unsafe_hash: bool = False,
-        frozen: bool = False,
-        dict_factory: Optional[Callable] = None,
-        tuple_factory: Optional[Callable] = None,
-        eval_env: bool = False,
-        validate: bool = False,
-        updatable: bool = False,
-        **kwargs: Any,
-    ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]]:
-        ...
-
-    @dataclass_transform(field_specifiers=(field, Field))
-    @overload
-    def dataclass(
-        _cls: Type[_T],  # type: ignore
-        /,
-        *,
-        init: bool = True,
-        repr: bool = True,
-        eq: bool = True,
-        order: bool = False,
-        unsafe_hash: bool = False,
-        frozen: bool = False,
-        dict_factory: Optional[Callable] = None,
-        tuple_factory: Optional[Callable] = None,
-        eval_env: bool = False,
-        validate: bool = False,
-        updatable: bool = False,
-        **kwargs: Any,
-    ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
-        ...
+def _new_getattr_dict(self, key: str):
+    return _zero_copy_asdict_inner(getattr(self, key), v_factory(self))
 
 
-@dataclass_transform(field_specifiers=(field, Field))
-def dataclass(
-    cls: Optional[Type[_T]] = None,
-    /,
-    *,
+def _new_getattr_tuple(self, index: int):
+    return _zero_copy_astuple_inner(getattr(self, self.keys()[index]), v_factory(self))
+
+
+def _new_getattr(self, index):
+    if isinstance(index, int):
+        return _new_getattr_tuple(self, index)
+
+    return _new_getattr_dict(self, index)
+
+
+def _wrap_custom_dataclass(
+    w_cls,
     init: bool = True,
     repr: bool = True,
     eq: bool = True,
     order: bool = False,
     unsafe_hash: bool = False,
     frozen: bool = False,
-    kw_only: bool = False,
-    slots: bool = False,
-    match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
     eval_env: bool = False,
-    validate: bool = False,
-    updatable: bool = False,
     **kwargs: Any,
-) -> Union[
-    Callable[[Type[_T]], Union[Type[CornflakesDataclass], MappingWrapper[_T]]],
-    Type[CornflakesDataclass],
-    MappingWrapper[_T],
-]:
-    """Wrapper around built-in dataclasses dataclass."""
-    if sys.version_info >= (3, 10):
-        kwargs = dict(kw_only=kw_only, slots=slots, match_args=match_args)
-    else:
-        kwargs: dict = {}
+):
+    dc_cls = dataclasses.dataclass(  # type: ignore[call-overload]
+        w_cls,
+        init=init,
+        repr=repr,
+        eq=eq,
+        order=order,
+        unsafe_hash=unsafe_hash,
+        frozen=frozen,
+        **kwargs,
+    )
 
-    def create_dataclass(w_cls: Type[_T]) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
-        """
-        Create a Cornflakes dataclass from a regular dataclass.
+    dataclass_fields = {
+        obj_name: getattr(w_cls, obj_name)
+        for obj_name in dir(w_cls)
+        if isinstance(getattr(w_cls, obj_name), Field) and hasattr(getattr(w_cls, obj_name), "aliases")
+    }
 
-        :param w_cls: The class to create the Cornflakes dataclass from.
-        :type w_cls: type
-        :returns: A Cornflakes dataclass.
-        :rtype: type
-        """
-        dataclass_fields = {
-            obj_name: getattr(w_cls, obj_name)
-            for obj_name in dir(w_cls)
-            if isinstance(getattr(w_cls, obj_name), Field) and hasattr(getattr(w_cls, obj_name), "aliases")
-        }
-        dc_cls = dataclasses.dataclass(  # type: ignore[call-overload]
-            w_cls,
-            init=init,
-            repr=repr,
-            eq=eq,
-            order=order,
-            unsafe_hash=unsafe_hash,
-            frozen=frozen,
-            **kwargs,
-        )
+    dc_cls.__dataclass_fields__.update(dataclass_fields)
+    setattr(dc_cls, Constants.dataclass_decorator.EVAL_ENV, eval_env)
+    setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, staticmethod(dict_factory) if dict_factory else dict)  # type: ignore
+    setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, staticmethod(tuple_factory) if tuple_factory else tuple)  # type: ignore
+    setattr(dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, staticmethod(value_factory) if value_factory else None)  # type: ignore
+    setattr(
+        dc_cls,
+        Constants.dataclass_decorator.IGNORED_SLOTS,
+        [f.name for f in dataclasses.fields(dc_cls) if getattr(f, "ignore", False)],
+    )
+    # setattr(dc_cls, Constants.dataclass_decorator.IGNORE_NONE, ignore_none)
+    setattr(
+        dc_cls,
+        Constants.dataclass_decorator.VALIDATORS,
+        {
+            key: validator
+            for key, value in dc_cls.__dataclass_fields__.items()
+            if callable(validator := getattr(value, "validator", key))
+        },
+    )
+    setattr(
+        dc_cls,
+        Constants.dataclass_decorator.REQUIRED_KEYS,
+        [key for key, slot in dataclass_fields.items() if dc_slot_missing_default(slot)],
+    )
 
-        if slots and sys.version_info < (3, 10):
-            dc_cls = add_slots(dc_cls)
+    dc_cls.to_dict = to_dict
+    dc_cls.to_tuple = to_tuple
 
-        dc_cls.__dataclass_fields__.update(dataclass_fields)
-        # dc_cls.__dict_factory__ = dict_factory or dict
-        # dc_cls.__tuple_factory__ = tuple_factory or tuple
-        setattr(dc_cls, Constants.dataclass_decorator.EVAL_ENV, eval_env)
-        setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, dict_factory or dict)
-        setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, tuple_factory or tuple)
-        setattr(
-            dc_cls,
-            Constants.dataclass_decorator.IGNORED_SLOTS,
-            [f.name for f in dataclasses.fields(dc_cls) if getattr(f, "ignore", False)],
-        )
-        setattr(
-            dc_cls,
-            Constants.dataclass_decorator.VALIDATORS,
-            {
-                key: validator
-                for key, value in dc_cls.__dataclass_fields__.items()
-                if callable(validator := getattr(value, "validator", key))
-            },
-        )
-        setattr(
-            dc_cls,
-            Constants.dataclass_decorator.REQUIRED_KEYS,
-            [key for key, slot in dataclass_fields.items() if dc_slot_missing_default(slot)],
-        )
+    dc_cls.validate_kwargs = classmethod(validate_dataclass_kwargs)
+    dc_cls.check_kwargs = classmethod(check_dataclass_kwargs)
 
-        dc_cls.to_dict = to_dict
-        dc_cls.to_tuple = to_tuple
+    return dc_cls
 
-        dc_cls.validate_kwargs = classmethod(validate_dataclass_kwargs)
-        dc_cls.check_kwargs = classmethod(check_dataclass_kwargs)
 
-        if updatable and not kwargs.get("frozen", False):
+def _wrap_mapping(dc_cls, ignore_none):
+    """Wrap a mapping class."""
 
-            def _update(self, new, merge_lists=False):
-                for key, value in new.items():
-                    with contextlib.suppress(AttributeError):
-                        recursive_update(getattr(self, key), value, merge_lists=merge_lists)
+    dc_cls.__getitem__ = _new_getattr
+    static_keys = [f.name for f in dataclasses.fields(dc_cls) if not getattr(f, "ignore", False)]
+    if not ignore_none:
 
-            dc_cls.update = _update
+        def keys(_):
+            return static_keys  #
 
-        if validate:
-            dc_cls = enforce_types(dc_cls, validate=validate)
+        def _len(_):
+            return len(static_keys)
 
-        dc_cls.__doc__ = w_cls.__doc__
-        dc_cls.__module__ = w_cls.__module__
-        dc_cls.__qualname__ = w_cls.__qualname__
-        dc_cls.__init__.__doc__ = w_cls.__init__.__doc__
-        dc_cls.__getitem__ = _new_getattr
-
-        static_keys = [f.name for f in dataclasses.fields(dc_cls) if not getattr(f, "ignore", False)]
-
-        def keys(cls):
-            return static_keys
-
+        dc_cls.__len__ = classmethod(_len)
         dc_cls.keys = classmethod(keys)
+    else:
 
-        return dc_cls
+        def keys(self):
+            return [key for key in static_keys if getattr(self, key) is not None]
 
-    return create_dataclass(cls) if cls else create_dataclass  # type: ignore
+        def _len(self):
+            return len(keys(self))
+
+        dc_cls.keys = keys  # not classmethod
+        dc_cls.__len__ = _len
+
+    return dc_cls

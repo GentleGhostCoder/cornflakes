@@ -12,8 +12,8 @@ from cornflakes.decorator.dataclasses._field import field
 @data(  # type: ignore
     slots=True,
     frozen=False,
-    dict_factory=lambda self, x: str(self),  # to string -> tuple -> unparse to string
-    tuple_factory=lambda self, x: urlunparse(x[:6]),  # unparse to string
+    dict_factory=lambda x: urlunparse([value for _, value in x][:6]),  # to string -> tuple -> unparse to string
+    tuple_factory=lambda x: urlunparse(x[:6]),  # unparse to string
 )
 class AnyUrl:
     """Database URL.

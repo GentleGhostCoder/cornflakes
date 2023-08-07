@@ -7,6 +7,7 @@ from typing import (
     Callable,
     ClassVar,
     Dict,
+    Generic,
     Iterable,
     List,
     Optional,
@@ -17,7 +18,16 @@ from typing import (
     runtime_checkable,
 )
 
-_T = TypeVar("_T")
+_T = TypeVar("_T", covariant=True)  # type: ignore
+
+
+class GenericType(Generic[_T]):
+    ...
+
+
+class _HiddenDefault(str):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls, "***")
 
 
 class _WithoutDefault:
@@ -27,8 +37,11 @@ class _WithoutDefault:
 WITHOUT_DEFAULT = _WithoutDefault()
 WITHOUT_DEFAULT_TYPE = _WithoutDefault
 MISSING_TYPE = dataclasses._MISSING_TYPE
+MISSING = dataclasses.MISSING
 HAS_DEFAULT_FACTORY = getattr(dataclasses, "_HAS_DEFAULT_FACTORY", None)
-INSPECT_EMPTY = getattr(inspect, "_empty", None)
+INSPECT_EMPTY_TYPE = getattr(inspect, "_empty", None)
+HIDDEN_DEFAULT = _HiddenDefault()
+HIDDEN_DEFAULT_TYPE = type(HIDDEN_DEFAULT)
 
 
 class FuncatTypes(Enum):
@@ -44,6 +57,7 @@ class Loader(Enum):
     YAML = "from_yaml"
     DICT = "from_dict"
     FILE = "from_file"
+    CUSTOM = "from_custom"
 
 
 class Writer(Enum):
@@ -53,6 +67,7 @@ class Writer(Enum):
     YAML = "to_yaml"
     DICT = "to_dict"
     FILE = "to_file"
+    CUSTOM = "to_custom"
 
 
 @dataclass(frozen=True)
@@ -63,6 +78,7 @@ class ConfigOption:
     READ_CONFIG_METHOD: str = "__auto_option_init__"
     ATTRIBUTES: str = "__auto_option_attributes__"
     PASSED_DECORATE_KEY: str = "__auto_option_key__"
+    OPTION_GROUPS: str = "__option_groups__"
     ADD_CONFIG_FILE_OPTION_PARAM_VAR: str = "config_file"
     ADD_CONFIG_FILE_OPTION_PARAM: str = "--config-file"
     ADD_CONFIG_FILE_OPTION_PARAM_SHORT: str = "-cfg"
@@ -92,9 +108,11 @@ class ConfigDecorator:
     USE_REGEX: str = "__multi_config__"
     IS_LIST: str = "__config_list__"
     DEFAULT_LOADER: str = "__default_loader__"
+    CUSTOM_LOADER: str = "__custom_loader__"
     ALLOW_EMPTY: str = "__allow_empty_config__"
     CHAIN_FILES: str = "__chain_files__"
     VALIDATE: str = "__validate__"
+    ALIAS_GENERATOR: str = "__alias_generator__"
 
     SECTION_NAME_KEY: str = "section_name"
 
@@ -106,8 +124,10 @@ class DataclassDecorator:
     FIELDS: str = "__dataclass_fields__"
     DICT_FACTORY: str = "__dict_factory__"
     TUPLE_FACTORY: str = "__tuple_factory__"
+    VALUE_FACTORY: str = "__value_factory__"
     EVAL_ENV: str = "__eval_env__"
     IGNORED_SLOTS: str = "__ignored_slots__"
+    IGNORE_NONE: str = "__ignore_none__"
     VALIDATORS: str = "__cornflakes_validators__"
     REQUIRED_KEYS: str = "__cornflakes_required_keys__"
 
@@ -133,14 +153,7 @@ class LoaderMethod(Protocol):
 
     @classmethod
     def __call__(
-        cls,
-        files: ConfigArgument = None,
-        sections: ConfigArgument = None,
-        keys: ConfigArgument = None,
-        defaults: ConfigArgument = None,
-        eval_env: bool = False,
-        *args,
-        **kwargs
+        cls, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs
     ) -> Any:
         """Config loader method protocol.
 
@@ -153,11 +166,21 @@ class LoaderMethod(Protocol):
 
 
 @runtime_checkable
+class IndexInstance(Protocol):
+    """Protocol for Index instances."""
+
+    reset: Callable[[], None]
+
+
+@runtime_checkable
 class MappingWrapper(Protocol[_T]):
     def __getitem__(self, key: str) -> _T:
         ...
 
     def keys(self) -> Iterable[str]:
+        ...
+
+    def __len__(self) -> int:
         ...
 
     @classmethod
@@ -287,6 +310,11 @@ class DataclassInstance(StandardCornflakesDataclass, Protocol[_T]):
         return to_yaml(self, out_cfg=out_cfg, *args, **kwargs)
 
 
+class CornflakesType:
+    def __getitem__(self, key):
+        return type(key)
+
+
 @runtime_checkable
 class CornflakesDataclass(StandardCornflakesDataclass, Protocol[_T]):
     """Dataclass instance protocol."""
@@ -314,10 +342,49 @@ class StandardConfigArgs(Protocol):
 
 @runtime_checkable
 class StandardConfigMethods(Protocol):
-    from_ini: LoaderMethod
-    from_yaml: LoaderMethod
-    from_dict: LoaderMethod
-    from_file: LoaderMethod
+    def from_ini(self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs):
+        """Method to load a config from ini files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(cls=self, _loader_callback=get_loader_callback(Loader.INI), _instantiate=True)(
+            files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
+        )
+
+    def from_yaml(self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs):
+        """Method to load a config from yaml files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(cls=self, _loader_callback=get_loader_callback(Loader.YAML), _instantiate=True)(
+            files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
+        )
+
+    def from_dict(self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs):
+        """Method to load a config from dict files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(cls=self, _loader_callback=get_loader_callback(Loader.DICT), _instantiate=True)(
+            files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
+        )
+
+    def from_file(
+        self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs
+    ) -> Any:
+        """Method to load a config from files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import config_files, get_default_loader, get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(
+            cls=self,
+            _loader_callback=get_loader_callback(get_default_loader(files or config_files(self))),
+            _instantiate=True,
+        )(files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs)
 
 
 @runtime_checkable
@@ -329,7 +396,19 @@ class StandardConfigGroupArgs(Protocol):
 
 @runtime_checkable
 class StandardConfigGroupMethods(Protocol):
-    from_file: LoaderMethod
+    def from_file(
+        self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs
+    ) -> Any:
+        """Method to load a config from files."""
+        ...
+        from cornflakes.decorator.dataclasses._helper import config_files, get_default_loader, get_loader_callback
+        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+
+        return create_file_loader(
+            cls=self,
+            _loader_callback=get_loader_callback(get_default_loader(files or config_files(self))),
+            _instantiate=True,
+        )(files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs)
 
 
 @runtime_checkable

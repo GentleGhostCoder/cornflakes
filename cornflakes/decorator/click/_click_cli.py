@@ -3,70 +3,46 @@ from inspect import getfile
 import logging
 from typing import TYPE_CHECKING, Any, Callable, Optional, TypeVar, Union, cast
 
-import click
-from click import style, version_option
+from click import Command, Group, MultiCommand, style, version_option
 
-from cornflakes.decorator.click.rich import (
-    RichArg,
-    RichCommand,
-    RichConfig,
-    RichGroup,
-    argument,
-    command,
-    group,
-    group_command,
-    group_group,
-)
+from cornflakes.decorator._wrap_kwargs import wrap_kwargs
+from cornflakes.decorator.click._patch_click import patch_click
+from cornflakes.decorator.click.rich import RichCommand, RichConfig, RichGroup, command, group
+from cornflakes.decorator.dataclasses import dataclass_fields
 from cornflakes.logging.logger import setup_logging
 from cornflakes.types import Loader
-
-RICH_CLICK_PATCHED = False
-
-
-def patch_click():
-    """Patch click to use rich extensions."""
-    global RICH_CLICK_PATCHED
-    if not RICH_CLICK_PATCHED:
-        click.argument = argument
-        click.group = group
-        click.command = command
-        click.Group = RichGroup
-        click.Command = RichCommand
-        click.Argument = RichArg
-        click.Group.command = group_command
-        click.Group.group = group_group
-        RICH_CLICK_PATCHED = True
-
 
 _T = TypeVar("_T")
 
 AnyCallable = Callable[..., Any]
 
 
+@wrap_kwargs(RichConfig)
 def click_cli(  # noqa: C901
+    *args,
     callback: Optional[Any] = None,
     config: Optional[RichConfig] = None,
     files: Optional[str] = None,
     loader: Loader = Loader.DICT,
     default_log_level: int = logging.INFO,
     as_command: bool = False,
-    *args,
     **kwargs,
 ):
     """Function that creates generic click CLI Object."""
     patch_click()
     setup_logging(default_level=default_log_level)
     if not config:
+        config_args = {key: value for key, value in kwargs.items() if key in dataclass_fields(RichConfig)}
         if not files:
-            config = RichConfig(*args, **kwargs)
+            config = RichConfig(**config_args)
         elif loader in [Loader.INI, Loader.YAML]:
-            config = getattr(RichConfig, str(loader.name))(*args, **kwargs).popitem()[1]
+            config = getattr(RichConfig, str(loader.name))(**config_args).popitem()[1]
         elif ".ini" in files:
-            config = RichConfig.from_ini(files, *args, **kwargs).popitem()[1]
+            config = RichConfig.from_ini(files, **config_args).popitem()[1]
         elif ".yaml" in files:
-            config = RichConfig.from_yaml(files, *args, **kwargs).popitem()[1]
+            config = RichConfig.from_yaml(files, **config_args).popitem()[1]
         else:
-            config = RichConfig(*args, **kwargs)
+            config = RichConfig(**config_args)
 
     def cli_wrapper(w_callback: Any):
         if not callable(w_callback):
@@ -81,8 +57,34 @@ def click_cli(  # noqa: C901
 
         module = module.replace("_", "-")
 
+        if ("name" not in kwargs or not kwargs["name"]) and not (args and isinstance(args[0], str)):
+            kwargs["name"] = module
+
         cli: Union[RichCommand, RichGroup] = (
-            command(module, config=config)(w_callback) if as_command else group(module, config=config)(w_callback)
+            command(
+                *args,
+                config=config,
+                **{
+                    key: value
+                    for key, value in kwargs.items()
+                    if key in [*RichCommand.__init__.__code__.co_varnames, Command.__init__.__code__.co_varnames]
+                },
+            )(w_callback)
+            if as_command
+            else group(
+                *args,
+                config=config,
+                **{
+                    key: value
+                    for key, value in kwargs.items()
+                    if key
+                    in [
+                        *RichGroup.__init__.__code__.co_varnames,
+                        *Group.__init__.__code__.co_varnames,
+                        *MultiCommand.__init__.__code__.co_varnames,
+                    ]
+                },
+            )(w_callback)
         )
 
         if TYPE_CHECKING:

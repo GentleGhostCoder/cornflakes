@@ -9,8 +9,19 @@ set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/inst/ext)
 
 add_subdirectory(${EXT_DIR}/pybind11)
 
-# include_directories(${CMAKE_CURRENT_SOURCE_DIR}/.venv/lib/python3.10/site-packages/pybind11/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/${PYTHON_SITE}/pybind11/include)
+set(VENV_PATH "${CMAKE_CURRENT_SOURCE_DIR}/.venv")
+
+# Set the path to the Python interpreter in the virtual environment
+set(PYTHON_EXECUTABLE "${VENV_PATH}/bin/python")
+
+execute_process(
+  COMMAND
+    ${PYTHON_EXECUTABLE} -c
+    "import pkg_resources; print(f'{pkg_resources.get_distribution(\"pybind11\").location}/pybind11/share/cmake')"
+  OUTPUT_VARIABLE pybind11_DIR
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+find_package(pybind11 REQUIRED PATHS ${pybind11_DIR} NO_DEFAULT_PATH)
+
 include_directories(${EXT_DIR})
 include_directories(${EXT_DIR}/rapidjson/include/rapidjson)
 include_directories(${CMAKE_SOURCE_DIR}/inst/_cornflakes)

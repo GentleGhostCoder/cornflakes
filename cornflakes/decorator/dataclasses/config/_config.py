@@ -7,7 +7,7 @@ from cornflakes.decorator._funcat import funcat
 from cornflakes.decorator._indexer import Index
 from cornflakes.decorator.dataclasses._dataclass import dataclass
 from cornflakes.decorator.dataclasses._field import Field, field
-from cornflakes.decorator.dataclasses._helper import dataclass_fields, fields
+from cornflakes.decorator.dataclasses._helper import dataclass_fields, fields, get_default_loader
 from cornflakes.decorator.dataclasses.config._config_group import config_group
 from cornflakes.decorator.dataclasses.config._dict import create_dict_file_loader
 from cornflakes.decorator.dataclasses.config._ini import create_ini_file_loader, to_ini
@@ -42,9 +42,12 @@ def config(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    ignore_none: bool = False,
     files: Optional[Union[List[str], str]] = None,
     sections: Optional[Union[List[str], str]] = None,
     use_regex: Optional[bool] = False,
@@ -74,9 +77,12 @@ def config(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    ignore_none: bool = False,
     files: Optional[Union[List[str], str]] = None,
     sections: Optional[Union[List[str], str]] = None,
     use_regex: Optional[bool] = False,
@@ -89,7 +95,7 @@ def config(
     ...
 
 
-@dataclass_transform(field_specifiers=(field, Field))
+# @dataclass_transform(field_specifiers=(field, Field))
 def config(
     cls: Optional[Type[_T]] = None,
     /,
@@ -105,9 +111,12 @@ def config(
     match_args: bool = True,
     dict_factory: Optional[Callable] = None,
     tuple_factory: Optional[Callable] = None,
+    value_factory: Optional[Callable] = None,
+    alias_generator: Optional[Callable[[str], str]] = None,
     eval_env: bool = False,
     validate: bool = False,
     updatable: bool = False,
+    ignore_none: bool = False,
     files: Optional[Union[List[str], str]] = None,
     sections: Optional[Union[List[str], str]] = None,
     use_regex: Optional[bool] = False,
@@ -127,6 +136,9 @@ def config(
     """
     Config decorator to parse INI files and implement config loader methods to config-classes.
 
+    :param alias_generator:
+    :param ignore_none:
+    :param value_factory:
     :param init_default_config:
     :param match_args:
     :param slots:
@@ -177,6 +189,10 @@ def config(
     """
     sections = sections if isinstance(sections, list) else [sections] if sections else []
     files = files if isinstance(files, list) else [files] if files else []
+    custom_loader: Optional[Callable] = None
+    if not isinstance(default_loader, Loader) and callable(default_loader):
+        custom_loader = default_loader
+        default_loader = Loader.CUSTOM
     if not default_loader:
         default_loader = get_default_loader(files)
 
@@ -207,9 +223,11 @@ def config(
                 match_args=match_args,
                 dict_factory=dict_factory,
                 tuple_factory=tuple_factory,
+                value_factory=value_factory,
                 eval_env=eval_env,
                 validate=validate,
                 updatable=updatable,
+                ignore_none=ignore_none,
                 **kwargs,
             )(w_cls)
 
@@ -225,9 +243,11 @@ def config(
             match_args=match_args,
             dict_factory=dict_factory,
             tuple_factory=tuple_factory,
+            value_factory=value_factory,
             eval_env=eval_env,
             validate=validate,
             updatable=updatable,
+            ignore_none=ignore_none,
             **kwargs,
         )(w_cls)
 
@@ -242,6 +262,8 @@ def config(
         setattr(config_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
         setattr(config_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
         setattr(config_cls, Constants.config_decorator.VALIDATE, validate)
+        setattr(config_cls, Constants.config_decorator.DEFAULT_LOADER, default_loader)
+        setattr(config_cls, Constants.config_decorator.ALIAS_GENERATOR, alias_generator)
 
         # Set Writer
         setattr(config_cls, Writer.INI.value, to_ini)
@@ -263,6 +285,10 @@ def config(
             Loader.DICT.value,
             staticmethod(create_dict_file_loader(cls=config_cls)),
         )
+
+        if custom_loader:
+            setattr(config_cls, Loader.CUSTOM.value, custom_loader)
+
         setattr(
             config_cls,
             Loader.FILE.value,
@@ -281,16 +307,3 @@ def config(
         return config_cls
 
     return wrapper(cls) if cls else wrapper  # type: ignore
-
-
-def get_default_loader(files: Optional[list] = None) -> Loader:
-    """Method to get the default loader from filenames."""
-    return (
-        Loader.DICT
-        if not files
-        else Loader.INI
-        if files[0][-3:] == "ini"
-        else Loader.YAML
-        if files[0][-3:] == "yaml"
-        else Loader.DICT
-    )

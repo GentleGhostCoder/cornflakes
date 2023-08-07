@@ -1,24 +1,24 @@
 import logging
 from typing import List, Optional
 
-from cornflakes import ini_load
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
 from cornflakes.decorator.dataclasses._helper import (
     config_files,
     config_sections,
     dataclass_required_keys,
     get_env_vars,
+    get_loader_callback,
     is_allow_empty,
     is_config_list,
     is_eval_env,
 )
 from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
-from cornflakes.types import Constants
+from cornflakes.types import Constants, Loader
 
 
 def _load_config_kwargs(
     cls,
-    default_loader,
+    file_loader,
     files: Optional[List[str]] = None,
     sections: Optional[List[str]] = None,
     eval_env: Optional[bool] = None,
@@ -35,7 +35,7 @@ def _load_config_kwargs(
     eval_env = eval_env or is_eval_env(cls)
     allow_empty = allow_empty or is_allow_empty(cls)
 
-    default_config = default_loader(
+    default_config = file_loader(
         files=_files,
         sections=sections,
         eval_env=eval_env,
@@ -43,16 +43,14 @@ def _load_config_kwargs(
         **kwargs,
     ).popitem()[1]
 
-    if is_config_list(cls):
-        default_config = {**default_config[0]}
-        # When the config generates a list (with the `is_list` parameter), we use the first config only and log a warning that the user should use the `config_group` decorator that includes the config-list or to call the from_file method instead.
+    if is_config_list(cls) and len(default_config):
         logging.debug(
             f"Config class **{cls.__name__}** generates a list of configs."
             f"You can use the `config_group` decorator that includes the config-list or to call the from_file method to load the configs."
             f"The normal instantiation of the config class will only use the first config in the list."
         )
+        default_config = default_config[0]
         default_config.update(kwargs)
-
     _required_keys = dataclass_required_keys(cls)
 
     if is_eval_env(cls):
@@ -69,14 +67,12 @@ def _load_config_kwargs(
 
 def wrap_init_default_config(cls):
     """Decorator to initialize a Config class from a file directly (without from_file or config_group)."""
-
-    default_loader = create_file_loader(
-        cls, _loader_callback=getattr(cls, Constants.config_decorator.DEFAULT_LOADER, ini_load), _instantiate=False
+    file_loader = create_file_loader(
+        cls,
+        _loader_callback=get_loader_callback(getattr(cls, Constants.config_decorator.DEFAULT_LOADER, Loader.INI)),
+        _instantiate=False,
     )
-    default_config = _load_config_kwargs(cls, default_loader)
-
-    # prepare special slot types (e.g. Index)
-    # default_config = evaluate_default_configs(cls, default_config)
+    default_config = _load_config_kwargs(cls, file_loader)
 
     def pre_init_wrapper(init):
         @wrap_kwargs(init, **default_config)
@@ -92,11 +88,13 @@ def wrap_init_default_config(cls):
             if not _load_default:
                 return init(self, **kwargs.copy())
 
-            changed_kwargs = {
-                key: value for key, value in kwargs.items() if repr(value) != repr(default_config.get(key))
-            }
+            changed_kwargs = (
+                {key: value for key, value in kwargs.items() if repr(value) != repr(default_config.get(key))}
+                if default_config
+                else {}
+            )
 
-            if not changed_kwargs:
+            if not changed_kwargs and not files:
                 # If no kwargs are changed, we can use the default config
                 config_result = init(self, **kwargs.copy())
                 return config_result
@@ -105,7 +103,7 @@ def wrap_init_default_config(cls):
                 self,
                 **_load_config_kwargs(
                     cls,
-                    default_loader,
+                    file_loader,
                     files=files,
                     sections=sections,
                     eval_env=eval_env,

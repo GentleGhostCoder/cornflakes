@@ -1,5 +1,6 @@
 from cornflakes.common import recursive_update
 from cornflakes.decorator.click.helper import get_command_name
+from cornflakes.types import Constants
 
 
 def auto_fill_option_groups(callback, name, *slot_options):
@@ -26,9 +27,9 @@ def auto_fill_option_groups(callback, name, *slot_options):
         "name": name,
         "options": slot_options,
     }
-    if hasattr(callback, "__option_groups__"):
-        callback.__option_groups__.append(new_option)
+    if hasattr(callback, Constants.config_option.OPTION_GROUPS):
+        getattr(callback, Constants.config_option.OPTION_GROUPS).append(new_option)
         return callback
 
-    callback.__option_groups__ = [new_option]
+    setattr(callback, Constants.config_option.OPTION_GROUPS, [new_option])
     return callback

@@ -1,12 +1,13 @@
 import datetime
 from decimal import Decimal
+from importlib import import_module
 from ipaddress import IPv4Address, IPv6Address
 from os import environ
 import pathlib
 import time
 import unittest
 
-from cornflakes.builder import generate_config_module
+from cornflakes.builder import generate_config_group_module
 from cornflakes.decorator.dataclasses import AnyUrl
 from cornflakes.types import Loader
 from tests import configs
@@ -27,7 +28,7 @@ class TestConfigGeneration(unittest.TestCase):
         test_file = "tests/configs/default.py.txt"
         ini_group_args = {"files": "tests/configs/default.ini", "eval_env": True}
 
-        generate_config_module(
+        generate_config_group_module(
             class_name="MainConfig",
             source_module=configs.sub_config,
             source_config=source_config,
@@ -40,12 +41,85 @@ class TestConfigGeneration(unittest.TestCase):
         defined_config_module = pathlib.Path(test_file).read_text()
         self.assertEqual(generated_config_module, defined_config_module)
 
-        from tests.configs.default import MainConfig
+        MainConfig = import_module("tests.configs.default").MainConfig
 
-        def pass_dict(**kwargs):
+        main_config = MainConfig()
+
+        # config_dict = {
+        #     'bootstrap_servers': 'localhost',
+        #     'client_id': 'kafka-python-' + "1.0.0",
+        #     'group_id': None,
+        #     'key_deserializer': None,
+        #     'value_deserializer': None,
+        #     'fetch_max_wait_ms': 500,
+        #     'fetch_min_bytes': 1,
+        #     'fetch_max_bytes': 52428800,
+        #     'max_partition_fetch_bytes': 1 * 1024 * 1024,
+        #     'request_timeout_ms': 305000, # chosen to be higher than the default of max_poll_interval_ms
+        #     'retry_backoff_ms': 100,
+        #     'reconnect_backoff_ms': 50,
+        #     'reconnect_backoff_max_ms': 1000,
+        #     'max_in_flight_requests_per_connection': 5,
+        #     'auto_offset_reset': 'latest',
+        #     'enable_auto_commit': True,
+        #     'auto_commit_interval_ms': 5000,
+        #     'default_offset_commit_callback': lambda offsets, response: True,
+        #     'check_crcs': True,
+        #     'metadata_max_age_ms': 5 * 60 * 1000,
+        #     'max_poll_records': 500,
+        #     'max_poll_interval_ms': 300000,
+        #     'session_timeout_ms': 10000,
+        #     'heartbeat_interval_ms': 3000,
+        #     'receive_buffer_bytes': None,
+        #     'send_buffer_bytes': None,
+        #     'socket_options': [(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)],
+        #     'sock_chunk_bytes': 4096,  # undocumented experimental option
+        #     'sock_chunk_buffer_count': 1000,  # undocumented experimental option
+        #     'consumer_timeout_ms': float('inf'),
+        #     'security_protocol': 'PLAINTEXT',
+        #     'ssl_context': None,
+        #     'ssl_check_hostname': True,
+        #     'ssl_cafile': None,
+        #     'ssl_certfile': None,
+        #     'ssl_keyfile': None,
+        #     'ssl_crlfile': None,
+        #     'ssl_password': None,
+        #     'ssl_ciphers': None,
+        #     'api_version': None,
+        #     'api_version_auto_timeout_ms': 2000,
+        #     'connections_max_idle_ms': 9 * 60 * 1000,
+        #     'metric_reporters': [],
+        #     'metrics_num_samples': 2,
+        #     'metrics_sample_window_ms': 30000,
+        #     'metric_group_prefix': 'consumer',
+        #     'selector': selectors.DefaultSelector,
+        #     'exclude_internal_topics': True,
+        #     'sasl_mechanism': None,
+        #     'sasl_plain_username': None,
+        #     'sasl_plain_password': None,
+        #     'sasl_kerberos_service_name': 'kafka',
+        #     'sasl_kerberos_domain_name': None,
+        #     'sasl_oauth_token_provider': None,
+        #     'legacy_iterator': False, # enable to revert to < 1.4.7 iterator
+        # }
+        # generate_config_module(
+        #     "KafkaConsumerConfig",
+        #     config_dict,
+        #     target_module_file="test_config_module.py",
+        #     module_description="Auto generated KafkaConsumerConfig Class from kafka module.",
+        #     class_description="KafkaConsumerConfig class for kafka module.",
+        #     frozen=True,
+        # )
+
+        def main_config_passing(config: MainConfig):
+            return config
+
+        main_config_passing(main_config)
+
+        def dict_passing(**kwargs):
             return kwargs
 
-        self.assertEqual(MainConfig().to_dict(), {**MainConfig()})
+        self.assertEqual(MainConfig().to_dict(), dict_passing(**main_config))
 
         self.assertEqual(
             MainConfig().to_dict(),
@@ -126,6 +200,8 @@ class TestConfigGeneration(unittest.TestCase):
                 ]
             },
         )
+
+        self.assertEqual(MainConfig().to_tuple(), (*MainConfig(),))
 
         self.assertEqual(
             MainConfig().to_tuple(),

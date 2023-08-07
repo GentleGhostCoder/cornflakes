@@ -60,6 +60,7 @@ There are other useful methods in the base of the module that are generally usef
 Short Term RoadMap:
 ~~~~~~~~~~~~~~~~~~~~
 
+- Add autocompletion support for click CLI (automatically)
 - Change Code Annotations
     - remove Any annotations if possible
     - change Protocol Annotations to specific type classes

@@ -9,6 +9,8 @@ from cornflakes.common._recursive_update import recursive_update
 from cornflakes.common._type_to_str import type_to_str
 from cornflakes.common._datetime_ms import datetime_ms
 from cornflakes.common._unquoted_string import unquoted_string
+from cornflakes.common._get_method_definition import get_method_definition
+from cornflakes.common._get_method_type_hint import get_method_type_hint
 
 __all__ = [
     "default_ca_path",
@@ -20,4 +22,6 @@ __all__ = [
     "recursive_update",
     "datetime_ms",
     "unquoted_string",
+    "get_method_definition",
+    "get_method_type_hint",
 ]
