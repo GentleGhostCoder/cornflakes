@@ -7,12 +7,12 @@ from typing import Any, Callable, Optional, Type, Union, overload
 from typing_extensions import dataclass_transform  # type: ignore
 
 from cornflakes.common import recursive_update
-from cornflakes.decorator._indexer import is_index
 from cornflakes.decorator.dataclasses._add_dataclass_slots import add_slots
 from cornflakes.decorator.dataclasses._enforce_types import enforce_types
 from cornflakes.decorator.dataclasses._field import Field, field
 from cornflakes.decorator.dataclasses._helper import dc_slot_missing_default
 from cornflakes.decorator.dataclasses._helper import dict_factory as d_factory
+from cornflakes.decorator.dataclasses._helper import is_index
 from cornflakes.decorator.dataclasses._helper import tuple_factory as t_factory
 from cornflakes.decorator.dataclasses._helper import value_factory as v_factory
 from cornflakes.decorator.dataclasses._validate import check_dataclass_kwargs, validate_dataclass_kwargs
@@ -281,7 +281,7 @@ def _zero_copy_asdict_inner(obj, value_factory=None):
 
 
 # @profile
-def to_dict(self) -> Union[tuple, dict, Any]:
+def to_dict(self) -> dict:
     """Method to convert Dataclass with slots to dict."""
     return _zero_copy_asdict_inner(self)
 
@@ -302,7 +302,7 @@ def _new_getattr(self, index):
 
 
 def _wrap_custom_dataclass(
-    w_cls: Type[_T],
+    w_cls,
     init: bool = True,
     repr: bool = True,
     eq: bool = True,
@@ -334,9 +334,9 @@ def _wrap_custom_dataclass(
 
     dc_cls.__dataclass_fields__.update(dataclass_fields)
     setattr(dc_cls, Constants.dataclass_decorator.EVAL_ENV, eval_env)
-    setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, staticmethod(dict_factory or dict))
-    setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, staticmethod(tuple_factory or tuple))
-    setattr(dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, staticmethod(value_factory or None))
+    setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, staticmethod(dict_factory) if dict_factory else dict)  # type: ignore
+    setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, staticmethod(tuple_factory) if tuple_factory else tuple)  # type: ignore
+    setattr(dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, staticmethod(value_factory) if value_factory else None)  # type: ignore
     setattr(
         dc_cls,
         Constants.dataclass_decorator.IGNORED_SLOTS,
@@ -367,7 +367,7 @@ def _wrap_custom_dataclass(
     return dc_cls
 
 
-def _wrap_mapping(dc_cls: Type[_T], ignore_none):
+def _wrap_mapping(dc_cls, ignore_none):
     """Wrap a mapping class."""
 
     dc_cls.__getitem__ = _new_getattr

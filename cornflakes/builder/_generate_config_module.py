@@ -235,7 +235,7 @@ class {self.title}{self.inherit_str}:
 
 @wrap_kwargs(config)
 def generate_config_module(
-    title: Optional[str],
+    title: str,
     sources: Union[str, List[str], Dict[str, Any], ModuleType],
     target_module_file: str,
     module_description: Optional[str] = None,

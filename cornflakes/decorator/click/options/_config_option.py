@@ -1,7 +1,7 @@
 from functools import reduce, wraps
 from inspect import isclass, signature
 from os.path import exists
-from typing import Any, Callable, Dict, Type, Union, cast
+from typing import Any, Callable, Type, Union, cast
 
 from click import Command, Group, option
 
@@ -149,7 +149,7 @@ def _config_option(  # noqa: C901
         if not callable(callback):
             raise TypeError("Wrapped object should be a function!")
 
-        configs: Dict[str, Dict[str, Any]] = {}
+        configs = {}
         for line in getattr(config, "__doc__", "").split("\n"):
             line = line.strip()
             if line[:5] == ":cvar":

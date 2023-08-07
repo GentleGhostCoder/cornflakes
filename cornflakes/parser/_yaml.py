@@ -87,7 +87,7 @@ def _to_map(obj: Optional[Union[dict, list, tuple, str]]) -> dict:
 
 
 def yaml_load(
-    files: Union[str, List[str], Dict[Optional[str], Union[str, List[str]]]],
+    files: Union[str, List[str], Dict[str, Union[str, List[str]]]],
     sections: Optional[Union[str, List[str], Dict[Optional[str], Union[str, List[str]]]]] = None,
     keys: Optional[Union[str, List[str], Dict[str, Union[str, List[str]]]]] = None,
     defaults: Optional[Union[str, List[str], Dict[str, Any]]] = None,

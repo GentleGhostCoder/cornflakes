@@ -1,5 +1,5 @@
 import logging
-from typing import Callable, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from cornflakes.common import type_to_str
 from cornflakes.decorator.dataclasses._helper import get_loader_callback, get_not_ignored_slots, is_config
@@ -77,7 +77,7 @@ def to_ini(self, out_cfg: Optional[str] = None) -> Optional[bytearray]:
 
 def create_ini_file_loader(
     cls,
-) -> Callable[..., Dict[str, Optional[Union[Config, List[Config]]]]]:
+):
     """Method to create file loader for ini files."""
 
     def from_ini(*args, **kwargs) -> Dict[str, Optional[Union[Config, List[Config]]]]:

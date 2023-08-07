@@ -1,19 +1,7 @@
 from dataclasses import dataclass, field
-from typing import Callable, Dict, Optional, Protocol, Type, TypeVar, runtime_checkable
+from typing import Dict, Optional, Type
 
-T = TypeVar("T")
-
-
-def is_index(obj):
-    """Returns True if the given object is an index type."""
-    return getattr(getattr(obj, "__class__", {}), "__name__", "")[-6:] == "_Index"
-
-
-@runtime_checkable
-class IndexInstance(Protocol):
-    """Protocol for Index instances."""
-
-    reset: Callable[[], None]
+from cornflakes.types import IndexInstance
 
 
 @dataclass
@@ -39,7 +27,7 @@ class IndexCounter:
         self.start = self.start - 1
         self.index = self.start
 
-        def new(cls, value=None):
+        def new(cls, value=0, *args, **kwargs):
             if isinstance(value, int) and self.index == self.start:
                 self.start = value - 1
                 self.index = self.start

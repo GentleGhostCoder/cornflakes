@@ -153,14 +153,7 @@ class LoaderMethod(Protocol):
 
     @classmethod
     def __call__(
-        cls,
-        files: ConfigArgument = None,
-        sections: ConfigArgument = None,
-        keys: ConfigArgument = None,
-        defaults: ConfigArgument = None,
-        eval_env: bool = False,
-        *args,
-        **kwargs
+        cls, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs
     ) -> Any:
         """Config loader method protocol.
 
@@ -170,6 +163,13 @@ class LoaderMethod(Protocol):
         from_dict -> :meth:`cornflakes.decorator.config.dict.create_dict_file_loader`
         """
         ...
+
+
+@runtime_checkable
+class IndexInstance(Protocol):
+    """Protocol for Index instances."""
+
+    reset: Callable[[], None]
 
 
 @runtime_checkable
@@ -342,16 +342,7 @@ class StandardConfigArgs(Protocol):
 
 @runtime_checkable
 class StandardConfigMethods(Protocol):
-    def from_ini(
-        self,
-        files: ConfigArgument = None,
-        sections: ConfigArgument = None,
-        keys: ConfigArgument = None,
-        defaults: ConfigArgument = None,
-        eval_env: bool = False,
-        *args,
-        **kwargs
-    ):
+    def from_ini(self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs):
         """Method to load a config from ini files."""
         ...
         from cornflakes.decorator.dataclasses._helper import get_loader_callback
@@ -361,16 +352,7 @@ class StandardConfigMethods(Protocol):
             files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
         )
 
-    def from_yaml(
-        self,
-        files: ConfigArgument = None,
-        sections: ConfigArgument = None,
-        keys: ConfigArgument = None,
-        defaults: ConfigArgument = None,
-        eval_env: bool = False,
-        *args,
-        **kwargs
-    ):
+    def from_yaml(self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs):
         """Method to load a config from yaml files."""
         ...
         from cornflakes.decorator.dataclasses._helper import get_loader_callback
@@ -380,16 +362,7 @@ class StandardConfigMethods(Protocol):
             files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
         )
 
-    def from_dict(
-        self,
-        files: ConfigArgument = None,
-        sections: ConfigArgument = None,
-        keys: ConfigArgument = None,
-        defaults: ConfigArgument = None,
-        eval_env: bool = False,
-        *args,
-        **kwargs
-    ):
+    def from_dict(self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs):
         """Method to load a config from dict files."""
         ...
         from cornflakes.decorator.dataclasses._helper import get_loader_callback
@@ -400,14 +373,7 @@ class StandardConfigMethods(Protocol):
         )
 
     def from_file(
-        self,
-        files: ConfigArgument = None,
-        sections: ConfigArgument = None,
-        keys: ConfigArgument = None,
-        defaults: ConfigArgument = None,
-        eval_env: bool = False,
-        *args,
-        **kwargs
+        self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs
     ) -> Any:
         """Method to load a config from files."""
         ...
@@ -431,14 +397,7 @@ class StandardConfigGroupArgs(Protocol):
 @runtime_checkable
 class StandardConfigGroupMethods(Protocol):
     def from_file(
-        self,
-        files: ConfigArgument = None,
-        sections: ConfigArgument = None,
-        keys: ConfigArgument = None,
-        defaults: ConfigArgument = None,
-        eval_env: bool = False,
-        *args,
-        **kwargs
+        self, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs
     ) -> Any:
         """Method to load a config from files."""
         ...

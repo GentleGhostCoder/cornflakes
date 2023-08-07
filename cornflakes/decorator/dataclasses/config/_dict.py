@@ -1,16 +1,14 @@
 import os
-from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
-from cornflakes.types import Config
 
 
 def create_dict_file_loader(
     cls,
-) -> Callable[..., Dict[str, Optional[Union[Config, List[Config], Any]]]]:
+):
     """Method to create file loader for passed dict."""
 
-    def from_dict(*args, config_dict=None, **kwargs) -> Dict[str, Optional[Union[Config, List[Config], Any]]]:
+    def from_dict(*args, config_dict=None, **kwargs):
         if not config_dict:
             config_dict = {}
         default_kwargs = {}

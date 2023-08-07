@@ -69,7 +69,7 @@ def wrap_init_default_config(cls):
     """Decorator to initialize a Config class from a file directly (without from_file or config_group)."""
     file_loader = create_file_loader(
         cls,
-        _loader_callback=get_loader_callback(getattr(cls, Constants.config_decorator.DEFAULT_LOADER, Loader.DICT)),
+        _loader_callback=get_loader_callback(getattr(cls, Constants.config_decorator.DEFAULT_LOADER, Loader.INI)),
         _instantiate=False,
     )
     default_config = _load_config_kwargs(cls, file_loader)

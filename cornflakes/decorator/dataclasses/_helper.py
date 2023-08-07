@@ -3,12 +3,16 @@ import dataclasses
 from dataclasses import fields as dc_fields
 from os import environ
 import re
-from typing import Callable, Optional
+from typing import List, Optional
 
 from cornflakes import eval_type, ini_load
-from cornflakes.decorator._indexer import IndexInstance
 from cornflakes.parser import yaml_load
-from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants, Loader
+from cornflakes.types import MISSING_TYPE, WITHOUT_DEFAULT_TYPE, Constants, IndexInstance, Loader
+
+
+def is_index(obj):
+    """Returns True if the given object is an index type."""
+    return getattr(getattr(obj, "__class__", {}), "__name__", "")[-6:] == "_Index"
 
 
 def is_config(cls):
@@ -165,7 +169,7 @@ def fields(class_or_instance):
 dataclasses.fields = fields
 
 
-def get_default_loader(files: Optional[list] = None) -> Loader:
+def get_default_loader(files: Optional[List[str]] = None) -> Loader:
     """Method to get the default loader from filenames."""
     return (
         Loader.DICT
@@ -178,6 +182,6 @@ def get_default_loader(files: Optional[list] = None) -> Loader:
     )
 
 
-def get_loader_callback(loader: Loader) -> Optional[Callable]:
+def get_loader_callback(loader):
     """Method to get the loader callback."""
     return yaml_load if loader == Loader.YAML else ini_load
