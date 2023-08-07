@@ -1,5 +1,5 @@
 from inspect import Parameter, signature
-from typing import Any, get_type_hints
+from typing import get_type_hints
 
 from cornflakes.types import INSPECT_EMPTY_TYPE
 
@@ -43,16 +43,16 @@ def get_method_type_hint(method):
         args_str_list = []
         for param in sig.parameters.values():
             if param.annotation is INSPECT_EMPTY_TYPE:
-                annotation = Any.__name__
+                annotation = "Any"
             else:
                 annotation = param.annotation.__name__
-            args_str_list.append(str(annotation).replace("typing.", ""))
+            args_str_list.append(str(annotation))
         args_str = ", ".join(args_str_list)
 
     type_hints = get_type_hints(method)
     if "return" in type_hints:
-        return_str = str(type_hints["return"].__name__).replace("typing.", "")
+        return_str = str(type_hints["return"].__name__)
     else:
-        return_str = str(Any.__name__).replace("typing.", "")
+        return_str = "Any"
 
     return f"Callable[[{args_str}], {return_str}]"
