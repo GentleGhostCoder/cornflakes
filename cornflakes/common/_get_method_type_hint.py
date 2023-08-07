@@ -43,16 +43,16 @@ def get_method_type_hint(method):
         args_str_list = []
         for param in sig.parameters.values():
             if param.annotation is INSPECT_EMPTY_TYPE:
-                annotation = Any
+                annotation = Any.__name__
             else:
-                annotation = param.annotation
+                annotation = param.annotation.__name__
             args_str_list.append(str(annotation).replace("typing.", ""))
         args_str = ", ".join(args_str_list)
 
     type_hints = get_type_hints(method)
     if "return" in type_hints:
-        return_str = str(type_hints["return"]).replace("typing.", "")
+        return_str = str(type_hints["return"].__name__).replace("typing.", "")
     else:
-        return_str = str(Any).replace("typing.", "")
+        return_str = str(Any.__name__).replace("typing.", "")
 
     return f"Callable[[{args_str}], {return_str}]"
