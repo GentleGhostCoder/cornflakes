@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import Any, List, Optional, Union
 
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
 from cornflakes.decorator.dataclasses._helper import (
@@ -37,7 +37,7 @@ def _load_config_kwargs(
     allow_empty = allow_empty or is_allow_empty(cls)
 
     for slot in fields(cls):
-        slot_class: Config = slot.type
+        slot_class: Union[Config, Any] = slot.type
         if is_config_list(slot_class):
             slot_class = slot.type.__args__[0]
 

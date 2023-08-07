@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Type, Union
+from typing import Optional, Type, Union
 
 import yaml
 from yaml import SafeLoader, UnsafeLoader
@@ -6,7 +6,7 @@ from yaml import SafeLoader, UnsafeLoader
 from cornflakes.decorator.dataclasses._helper import get_loader_callback
 from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 from cornflakes.decorator.dataclasses.config._write_config import write_config
-from cornflakes.types import Config, Loader
+from cornflakes.types import Loader
 
 
 def specific_yaml_loader(loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader):
@@ -34,9 +34,7 @@ def create_yaml_file_loader(
 ):
     """Method to create file loader for yaml files."""
 
-    def from_yaml(
-        *args, loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader, **kwargs
-    ) -> Dict[str, Optional[Union[Config, List[Config]]]]:
+    def from_yaml(*args, loader: Union[Type[SafeLoader], Type[UnsafeLoader]] = SafeLoader, **kwargs):
         _from_yaml = create_file_loader(cls=cls, _loader_callback=specific_yaml_loader(loader=loader))  # type: ignore
         return _from_yaml(*args, **kwargs)
 

@@ -7,7 +7,7 @@ import pathlib
 import time
 import unittest
 
-from cornflakes.builder import generate_config_group_module, generate_config_module
+from cornflakes.builder import generate_config_group_module
 from cornflakes.decorator.dataclasses import AnyUrl
 from cornflakes.types import Loader
 from tests import configs
