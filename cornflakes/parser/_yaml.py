@@ -71,8 +71,6 @@ def _yaml_read(
         if not sections:
             if not keys:
                 return config
-            if not defaults:
-                defaults = keys
             return _get_all_sections(config, _to_map(list(config.keys())), keys, defaults)
         return _get_all_sections(config, sections, keys, defaults)
 

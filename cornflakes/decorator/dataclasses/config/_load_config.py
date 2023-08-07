@@ -123,7 +123,7 @@ def create_file_loader(  # noqa: C901
         def get_section_kwargs(section):
             return {**slot_kwargs, **({"section_name": section} if pass_sections else {})}
 
-        if not is_use_regex(cls) and sections and len(sections) == 1:
+        if not is_use_regex(cls) and not is_config_list(cls) and sections and len(sections) == 1:
             section = sections[0]
             logging.debug(f"Load ini from file: {files} - section: {section} for config {cls.__name__}")
 
