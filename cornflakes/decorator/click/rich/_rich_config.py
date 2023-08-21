@@ -99,6 +99,8 @@ class RichConfig:
 
     VERBOSE_OPTION: bool = False
 
+    VERBOSE_LOGGER: List[str] = field(default_factory=list)
+
     BG_PROCESS_OPTION: bool = False
 
     CONTEXT_SETTINGS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
