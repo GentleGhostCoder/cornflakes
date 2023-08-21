@@ -1,16 +1,9 @@
 from dataclasses import field
 from os import getenv
-from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Protocol, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Tuple, Union
 
-from click import Option
-
+from cornflakes.decorator.click.types import GlobalOption
 from cornflakes.decorator.dataclasses.config import config
-
-
-class GlobalOption(Protocol):
-    """GlobalOption Protocol which requires params."""
-
-    params: List[Option]
 
 
 @config(init=True, slots=True, updatable=True)
@@ -103,6 +96,10 @@ class RichConfig:
     USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 
     VERSION_INFO: bool = False
+
+    VERBOSE_OPTION: bool = False
+
+    BG_PROCESS_OPTION: bool = False
 
     CONTEXT_SETTINGS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = field(default_factory=dict)
 

@@ -17,7 +17,17 @@ from cornflakes.decorator.dataclasses import (
     is_group,
     normalized_class_name,
 )
-from cornflakes.types import _T, HIDDEN_DEFAULT, Config, ConfigGroup, Constants, CornflakesDataclass
+from cornflakes.types import (
+    _T,
+    HIDDEN_DEFAULT,
+    HIDDEN_DEFAULT_TYPE,
+    MISSING_TYPE,
+    WITHOUT_DEFAULT_TYPE,
+    Config,
+    ConfigGroup,
+    Constants,
+    CornflakesDataclass,
+)
 
 
 def _set_passed_key(wrapper, config, passing_key):
@@ -198,6 +208,12 @@ def _config_option(  # noqa: C901
 
             def read_config(files=None, **kwargs):
                 config_args = {k: v for k, v in kwargs.items() if k in [f.name for f in fields(config) if f.init]}
+                # exclude values that are of type Missing, WithoutDefault or HiddenDefault
+                config_args = {
+                    k: v
+                    for k, v in config_args.items()
+                    if not isinstance(v, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE, HIDDEN_DEFAULT_TYPE))
+                }
                 if not add_config_file_options:
                     files = config_files(config)
                 return config.from_file(files=files, **config_args)

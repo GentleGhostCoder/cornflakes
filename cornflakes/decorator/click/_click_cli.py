@@ -7,6 +7,7 @@ from click import Command, Group, MultiCommand, style, version_option
 
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
 from cornflakes.decorator.click._patch_click import patch_click
+from cornflakes.decorator.click.options import bg_process_option, verbose_option
 from cornflakes.decorator.click.rich import RichCommand, RichConfig, RichGroup, command, group
 from cornflakes.decorator.dataclasses import dataclass_fields
 from cornflakes.logging.logger import setup_logging
@@ -92,7 +93,7 @@ def click_cli(  # noqa: C901
 
         if cast(RichConfig, config).VERSION_INFO:
             name = w_callback.__qualname__
-            __version = "0.0.1"
+            __version = version(module)
 
             version_args = {
                 "prog_name": name,
@@ -102,6 +103,12 @@ def click_cli(  # noqa: C901
                 ),
             }
             cli = version_option(**version_args)(cli)  # type: ignore
+
+        if cast(RichConfig, config).VERBOSE_OPTION and verbose_option not in cli.config.GLOBAL_OPTIONS:
+            cli.config.GLOBAL_OPTIONS.append(verbose_option)
+
+        if cast(RichConfig, config).BG_PROCESS_OPTION and bg_process_option not in cli.config.GLOBAL_OPTIONS:
+            cli.config.GLOBAL_OPTIONS.append(bg_process_option)
 
         if cli.config.GLOBAL_OPTIONS:
             for option_obj in cli.config.GLOBAL_OPTIONS:
