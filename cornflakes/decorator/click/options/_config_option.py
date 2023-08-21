@@ -48,7 +48,10 @@ def _set_passed_key(wrapper, config, passing_key):
             f"Key {passing_key} is part of the attributes in the config {config.__name__} use another passed_key!"
         )
 
-    setattr(wrapper, Constants.config_option.PASSED_DECORATE_KEY, passing_key)
+    if hasattr(wrapper, Constants.config_option.PASSED_DECORATE_KEYS):
+        getattr(wrapper, Constants.config_option.PASSED_DECORATE_KEYS).append(passing_key)
+    else:
+        setattr(wrapper, Constants.config_option.PASSED_DECORATE_KEYS, [passing_key])
 
 
 def _update_options_help_default(callback, config, formatter=None):

@@ -63,27 +63,29 @@ def _apply_auto_option_config(func, **kwargs):
         return kwargs
 
     func_params = signature(func).parameters
-    passed_key = getattr(func, Constants.config_option.PASSED_DECORATE_KEY, None)
-    if passed_key not in func_params:
-        return kwargs
-    auto_option_attributes = getattr(func, Constants.config_option.ATTRIBUTES, [])
-    config_kwargs = dict(filter(lambda kv: kv[0] in auto_option_attributes and kv[1], kwargs.items()))
+    passed_keys = getattr(func, Constants.config_option.PASSED_DECORATE_KEYS, None)
+    for passed_key in passed_keys or []:
+        if passed_key not in func_params:
+            return kwargs
+        auto_option_attributes = getattr(func, Constants.config_option.ATTRIBUTES, [])
+        config_kwargs = dict(filter(lambda kv: kv[0] in auto_option_attributes and kv[1], kwargs.items()))
 
-    if Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR in kwargs and kwargs.get(
-        Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR
-    ):
-        config_kwargs[Constants.config_decorator_args.FILES] = list(
-            kwargs.pop(Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR, "")
-        )
+        if Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR in kwargs and kwargs.get(
+            Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR
+        ):
+            config_kwargs[Constants.config_decorator_args.FILES] = list(
+                kwargs.pop(Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR, "")
+            )
 
-    kwargs[passed_key] = getattr(func, Constants.config_option.READ_CONFIG_METHOD)(**config_kwargs)
-    config_type = get_actual_type(func_params[passed_key].annotation)
-    config_name = normalized_class_name(func_params[passed_key].annotation)
+        kwargs[passed_key] = getattr(func, Constants.config_option.READ_CONFIG_METHOD)(**config_kwargs)
+        config_type = get_actual_type(func_params[passed_key].annotation)
+        config_name = normalized_class_name(func_params[passed_key].annotation)
 
-    if config_name in ("list", "tuple"):
-        config_name = normalized_class_name(func_params[passed_key].annotation.__args__[0])
+        if config_name in ("list", "tuple"):
+            config_name = normalized_class_name(func_params[passed_key].annotation.__args__[0])
 
-    return _validate_and_set_config(func_params, passed_key, config_type, config_name, **kwargs)
+        kwargs = _validate_and_set_config(func_params, passed_key, config_type, config_name, **kwargs)
+    return kwargs
 
 
 def _validate_and_set_config(func_params, passed_key, config_type, config_name, **kwargs):
@@ -96,22 +98,22 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
         return _handle_config_type_validation(func_params, passed_key, config_type, config_name, **kwargs)
     elif config_type in (list, tuple):
         if config_name not in ("list", "tuple"):
-            warning_msg = (
-                f"For {config_name}, the is_list parameter is currently set to False, "
-                "resulting in a single config where multiple configs are considered. To "
-                "properly support multiple files, either change the config annotation to "
-                f"<List[{func_params['config'].annotation.__args__[0].__name__}]> or modify the "
-                "(...,'is_list'=True) parameter in the config decorator method."
-            )
-            logging.warning(warning_msg)
+            # warning_msg = (
+            #     f"For {config_name}, the is_list parameter is currently set to False, "
+            #     "resulting in a single config where multiple configs are considered. To "
+            #     "properly support multiple files, either change the config annotation to "
+            #     f"<List[{func_params[passed_key].annotation.__args__[0].__name__}]> or modify the "
+            #     "(...,'is_list'=True) parameter in the config decorator method."
+            # )
+            # logging.warning(warning_msg)
             kwargs[passed_key] = check_type(
                 config_type,
                 passed_key,
                 [
                     check_type(
-                        func_params[passed_key].annotation.__args__[0],
+                        func_params[passed_key].annotation,
                         passed_key,
-                        kwargs[passed_key],
+                        kwargs[passed_key][config_name],
                         skip=False,
                         validate=True,
                     )
@@ -134,7 +136,7 @@ def _handle_config_type_validation(func_params, passed_key, config_type, config_
             f"For {config_name}, the `is_list` parameter is currently set to True, "
             "resulting in a list of configs where only the first file is considered. To "
             "properly support multiple files, either change the config annotation to "
-            f"<List[{func_params['config'].annotation.__name__}]> or modify the "
+            f"<List[{func_params[passed_key].annotation.__name__}]> or modify the "
             "(...,'is_list'=False) parameter in the config decorator method."
         )
         logging.warning(warning_msg)
