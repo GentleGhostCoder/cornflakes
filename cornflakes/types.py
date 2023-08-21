@@ -77,7 +77,7 @@ class ConfigOption:
     ENABLED: str = "__auto_option_enabled__"
     READ_CONFIG_METHOD: str = "__auto_option_init__"
     ATTRIBUTES: str = "__auto_option_attributes__"
-    PASSED_DECORATE_KEY: str = "__auto_option_key__"
+    PASSED_DECORATE_KEYS: str = "__auto_option_keys__"
     OPTION_GROUPS: str = "__option_groups__"
     ADD_CONFIG_FILE_OPTION_PARAM_VAR: str = "config_file"
     ADD_CONFIG_FILE_OPTION_PARAM: str = "--config-file"
