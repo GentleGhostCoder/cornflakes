@@ -355,7 +355,7 @@ def _wrap_custom_dataclass(
     setattr(
         dc_cls,
         Constants.dataclass_decorator.REQUIRED_KEYS,
-        [key for key, slot in dataclass_fields.items() if dc_slot_missing_default(slot)],
+        [key for key, slot in dc_cls.__dataclass_fields__.items() if dc_slot_missing_default(slot)],
     )
 
     dc_cls.to_dict = to_dict

@@ -107,17 +107,9 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
             # )
             # logging.warning(warning_msg)
             kwargs[passed_key] = check_type(
-                config_type,
+                func_params[passed_key].annotation,
                 passed_key,
-                [
-                    check_type(
-                        func_params[passed_key].annotation,
-                        passed_key,
-                        kwargs[passed_key][config_name],
-                        skip=False,
-                        validate=True,
-                    )
-                ],
+                kwargs[passed_key][config_name],
                 skip=False,
                 validate=True,
             )
