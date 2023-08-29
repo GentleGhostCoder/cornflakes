@@ -6,10 +6,11 @@ from typing import Any, Callable, Type, Union, cast
 from click import Command, Group, option
 
 from cornflakes.common import recursive_update
+from cornflakes.decorator.click._fill_option_groups import fill_option_groups
 from cornflakes.decorator.click.helper import click_param_type_parser
-from cornflakes.decorator.click.options._auto_fill_option_groups import auto_fill_option_groups
 from cornflakes.decorator.dataclasses import (
     config_files,
+    dataclass_fields,
     dc_slot_missing_default,
     default,
     fields,
@@ -206,16 +207,24 @@ def _config_option(  # noqa: C901
         def wrap_read_config(func=None):
             """Wrap the read_config function to read config from file."""
 
-            def read_config(files=None, **kwargs):
-                config_args = {k: v for k, v in kwargs.items() if k in [f.name for f in fields(config) if f.init]}
+            def read_config(**kwargs):
+                config_fields = dataclass_fields(config)
+                config_args = {
+                    k: v
+                    for k, v in kwargs.items()
+                    if k in config_fields and config_fields[k].init and v != default(config_fields[k])
+                }
                 # exclude values that are of type Missing, WithoutDefault or HiddenDefault
                 config_args = {
                     k: v
                     for k, v in config_args.items()
                     if not isinstance(v, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE, HIDDEN_DEFAULT_TYPE))
                 }
-                if not add_config_file_options:
-                    files = config_files(config)
+                files = (
+                    kwargs.get(Constants.config_decorator_args.FILES, None)
+                    if add_config_file_options
+                    else config_files(config)
+                )
                 return config.from_file(files=files, **config_args)
 
             return wraps(func)(read_config) if func else read_config
@@ -241,7 +250,7 @@ def _config_option(  # noqa: C901
             setattr(wrapper, Constants.config_option.READ_CONFIG_METHOD, new_func)
 
         setattr(wrapper, Constants.config_option.ATTRIBUTES, {f.name for f in fields(config) if f.init})
-        wrapper = auto_fill_option_groups(wrapper, config.__name__, *slot_options.keys())
+        wrapper = fill_option_groups(wrapper, config.__name__, *slot_options.keys())
 
         if not is_sub_config:
             _set_passed_key(wrapper, config, passing_key)

@@ -65,14 +65,14 @@ def _load_config_kwargs(
     return default_config
 
 
-def wrap_init_default_config(cls):
+def wrap_init_default_config(cls, init_default_config=True):
     """Decorator to initialize a Config class from a file directly (without from_file or config_group)."""
     file_loader = create_file_loader(
         cls,
         _loader_callback=get_loader_callback(getattr(cls, Constants.config_decorator.DEFAULT_LOADER, Loader.INI)),
         _instantiate=False,
     )
-    default_config = _load_config_kwargs(cls, file_loader)
+    default_config = _load_config_kwargs(cls, file_loader) if init_default_config else {}
 
     def pre_init_wrapper(init):
         @wrap_kwargs(init, **default_config)
@@ -82,10 +82,10 @@ def wrap_init_default_config(cls):
             sections: Optional[List[str]] = None,
             eval_env: Optional[bool] = None,
             allow_empty: Optional[bool] = False,
-            _load_default: bool = True,
+            init_from_default_cache: bool = False,
             **kwargs,
         ):
-            if not _load_default:
+            if init_from_default_cache:
                 return init(self, **kwargs.copy())
 
             changed_kwargs = (

@@ -3,7 +3,7 @@ from cornflakes.decorator.click.helper import get_command_name
 from cornflakes.types import Constants
 
 
-def auto_fill_option_groups(callback, name, *slot_options):
+def fill_option_groups(callback, name, *slot_options):
     """Automatically fill option groups for click callback."""
     if hasattr(callback, "name"):
         option_groups_obj = callback.config.OPTION_GROUPS

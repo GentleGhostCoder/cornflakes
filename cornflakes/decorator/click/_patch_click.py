@@ -9,6 +9,7 @@ from cornflakes.decorator.click.rich import (
     group,
     group_command,
     group_group,
+    option,
 )
 
 RICH_CLICK_PATCHED = False
@@ -20,6 +21,7 @@ def patch_click():
     if not RICH_CLICK_PATCHED:
         click.argument = argument
         click.group = group
+        click.option = option
         click.command = command
         click.Group = RichGroup
         click.Command = RichCommand

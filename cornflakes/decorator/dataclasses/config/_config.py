@@ -295,8 +295,7 @@ def config(
             getattr(config_cls, str(default_loader.value), getattr(config_cls, Loader.DICT.value)),
         )
 
-        if init_default_config:
-            config_cls = wrap_init_default_config(config_cls)
+        config_cls = wrap_init_default_config(config_cls, init_default_config=init_default_config)
 
         # check if any field type is type of Index and wrap Index reset over __init__
         if any(f.type == Index for f in fields(config_cls)):

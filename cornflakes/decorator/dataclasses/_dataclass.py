@@ -159,6 +159,10 @@ def dataclass(
         :returns: A Cornflakes dataclass.
         :rtype: type
         """
+        if not init and slots:
+            # this is not supported by dataclasses
+            raise AttributeError("Cannot specify both init=False and slots=True")
+
         dc_cls = _wrap_custom_dataclass(
             w_cls,
             init=init,
@@ -179,7 +183,7 @@ def dataclass(
 
         if updatable:
             if kwargs.get("frozen", False):
-                raise TypeError("Cannot set both frozen=True and updatable=True")
+                raise AttributeError("Cannot set both frozen=True and updatable=True")
 
             def _update(self, new, merge_lists=False):
                 current = {**self}
@@ -195,7 +199,6 @@ def dataclass(
         dc_cls.__doc__ = w_cls.__doc__
         dc_cls.__module__ = w_cls.__module__
         dc_cls.__qualname__ = w_cls.__qualname__
-        dc_cls.__init__.__doc__ = w_cls.__init__.__doc__
 
         dc_cls = _wrap_mapping(dc_cls, ignore_none)
 
