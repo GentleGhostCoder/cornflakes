@@ -12,6 +12,7 @@ from cornflakes.decorator.click.rich import RichCommand, RichGroup
 @global_option(
     ["-b", "--background-process"],
     is_flag=True,
+    # option_group="Basic Options",
     help="Run in Background without console logger.",
 )
 def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_process: bool, *func_args, **func_kwargs):

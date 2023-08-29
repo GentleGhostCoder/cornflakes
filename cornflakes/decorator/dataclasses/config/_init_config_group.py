@@ -72,13 +72,6 @@ def wrap_init_config_group(cls):
             allow_empty: Optional[bool] = False,
             **kwargs,
         ):
-            # changed_kwargs = {
-            #     key: value for key, value in kwargs.items() if repr(value) != repr(default_config.get(key))
-            # }
-
-            # if not changed_kwargs:
-            #     return init(self, **kwargs.copy())
-
             files = files if isinstance(files, list) else [str(files)] if files else config_files(cls)
 
             if not files:
