@@ -2,15 +2,16 @@
 from typing import Callable, Optional, Union, Any
 
 from click import argument as click_argument
+from click import option as click_option
 from click import command as click_command
 from click import group as click_group, Command, Group, BaseCommand, Argument
 
+from cornflakes.decorator.click._fill_option_groups import fill_option_groups
 from cornflakes.decorator.click.rich._rich_argument import RichArg
 from cornflakes.decorator.click.rich._rich_command import RichCommand
 from cornflakes.decorator.click.rich._rich_config import RichConfig
 from cornflakes.decorator.click.rich._rich_global_option_wrapper import rich_global_option_wrapper
 from cornflakes.decorator.click.rich._rich_group import RichGroup
-
 
 AnyCallable = Callable[..., Any]
 
@@ -23,7 +24,9 @@ def group(*args, cls=RichGroup, **kwargs) -> Callable[[Union[AnyCallable, RichGr
     return rich_global_option_wrapper(click_group, *args, cls=cls, **kwargs)
 
 
-def command(*args, cls=RichCommand, **kwargs) -> Callable[[Union[AnyCallable, Command, Group, RichCommand, RichGroup]], RichCommand]:  # type: ignore
+def command(
+    *args, cls=RichCommand, **kwargs
+) -> Callable[[Union[AnyCallable, Command, Group, RichCommand, RichGroup]], RichCommand]:  # type: ignore
     """Command decorator function.
 
     Defines the command() function so that it uses the RichCommand class by default.
@@ -37,6 +40,20 @@ def argument(*args, cls=RichArg, **kwargs) -> Callable[..., Union[Argument, Rich
     Defines the command() function so that it uses the RichCommand class by default.
     """
     return click_argument(*args, cls=cls, **kwargs)
+
+
+def option(*args, option_group="", **kwargs) -> Callable[..., Union[Argument, RichArg]]:  # type: ignore
+    """Command decorator function.
+
+    Defines the command() function so that it uses the RichCommand class by default.
+    """
+
+    def decorator(callback):
+        """Decorator function for the decorator."""
+        fill_option_groups(callback, option_group, *args)
+        return click_option(*args, **kwargs)(callback)
+
+    return decorator
 
 
 def group_command(self, name: Optional[str], cmd: Optional[Union[BaseCommand, Command, RichCommand]] = None):
@@ -70,6 +87,7 @@ __all__ = [
     "RichArg",
     "command",
     "group",
+    "option",
     "argument",
     "group_group",
     "group_command",

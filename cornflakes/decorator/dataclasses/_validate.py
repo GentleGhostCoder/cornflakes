@@ -1,7 +1,8 @@
 import logging
+from types import SimpleNamespace
 from typing import Any, Callable, Dict
 
-from cornflakes.common import check_type, extract_var_names
+from cornflakes.common import check_type, extract_var_names, has_return_statement
 from cornflakes.decorator.dataclasses._helper import (
     dataclass_fields,
     dataclass_required_keys,
@@ -12,24 +13,35 @@ from cornflakes.decorator.dataclasses._helper import (
 from cornflakes.types import INSPECT_EMPTY_TYPE
 
 
-def _validate(self, values, key, callback: Callable[..., Any]):
+def _handle_validate_return(value, values, key, callback, values_ns):
+    values.update(vars(values_ns))
+    if has_return_statement(callback):
+        return value
+    if key not in values:
+        raise TypeError(f"Callback {callback} has no return statement and does not provide a value for {key}!")
+    return values.get(key)
+
+
+def _validate(cls, values, key, callback: Callable[..., Any]):
     # TODO: add defaults to values
     try:
         co_varnames = extract_var_names(callback)
         kwargs = {}
         kwargs.update(co_varnames)
-        kwargs.update({"self": self, "values": values, "key": key})
+        values_ns = SimpleNamespace(**values)
+        kwargs.update({"cls": cls, "self": values_ns})
         kwargs = {
             key: value for key, value in kwargs.items() if key in co_varnames.keys() and value is not INSPECT_EMPTY_TYPE
         }
         kwargs.update({key: value for key, value in values.items() if key in co_varnames.keys()})
         if len(missing := [key for key in co_varnames.keys() if key not in kwargs.keys()]) > 1:
-            raise TypeError(f"Argument not provided: {missing})")
+            raise TypeError(f"Some Arguments not provided by init dataclass values: {missing})")
         if len(missing) == 1:
-            return callback(values.pop(key), **kwargs)
-        return callback(**kwargs)
+            # in some cases co_var names does not contain the wrapped argument (e.g. `func`)
+            return _handle_validate_return(callback(values.pop(key), **kwargs), values, key, callback, values_ns)
+        return _handle_validate_return(callback(**kwargs), values, key, callback, values_ns)
     except TypeError as e:
-        raise TypeError(f"Error while validating {key} for {self.__class__.__name__}: {e}")
+        raise TypeError(f"Error while validating {key} for {cls.__class__.__name__}: {e}")
 
 
 def _process_validator(self, values, validators: dict, **kwargs):

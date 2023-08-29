@@ -58,9 +58,9 @@ class AnyUrl:
     def __post_init__(self, url: Optional[str] = None) -> None:
         """Post init."""
         if url:
-            parsed = urlparse(url)
+            parsed = urlparse(str(url))
             if not parsed.netloc:
-                parsed = urlparse(f"//{url}")
+                parsed = urlparse(f"//{str(url)}")
             self.query_args.update(parse_qs(parsed.query))
             self.__init_parsed(parsed, overwrite=False)
         if self.username or self.password or self.port:

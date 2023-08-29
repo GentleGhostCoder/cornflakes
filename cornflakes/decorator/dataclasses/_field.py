@@ -380,7 +380,7 @@ def field(
         raise ValueError("cannot specify both default and default_factory")
 
     if default is MISSING and default_factory is MISSING and no_default:
-        default_factory = WITHOUT_DEFAULT
+        default = WITHOUT_DEFAULT
 
     if attr:
         return cast(Field, attr)

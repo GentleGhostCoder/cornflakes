@@ -83,7 +83,7 @@ markdown-it-py = ">=2.2,<4.0"
 clang-format = "^16.0.6"
 clang-tidy = "^15.0.2.1"
 cpplint = "^1.6.1"
-pydantic-settings = "^2.0.0"
+pydantic-settings = "^2.0.3"
 types-pyyaml = "^6.0.12.10"
 types-toml = "^0.10.8.6"
 

@@ -11,12 +11,12 @@ from cornflakes.decorator.dataclasses import is_config, is_group, normalized_cla
 from cornflakes.types import Constants
 
 
-def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wrap_kwargs):
+def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wraped_kwargs):
     """Wrapper Method for rich command / group."""
 
     def global_option_click_decorator(func):
         """Decorator for rich command / group."""
-        click_cls = click_func(*wrap_args, **wrap_kwargs)(func)
+        click_cls = click_func(*wrap_args, **wraped_kwargs)(func)
 
         # pass __auto_options_groups__ if
         if not hasattr(click_cls, Constants.config_option.OPTION_GROUPS):
@@ -63,24 +63,24 @@ def _apply_auto_option_config(func, **kwargs):
         return kwargs
 
     func_params = signature(func).parameters
+    auto_option_attributes = getattr(func, Constants.config_option.ATTRIBUTES, [])
+    config_kwargs = dict(filter(lambda kv: kv[0] in auto_option_attributes and kv[1], kwargs.items()))
+
+    if Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR in kwargs and kwargs.get(
+        Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR
+    ):
+        config_kwargs[Constants.config_decorator_args.FILES] = list(
+            kwargs.pop(Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR, "")
+        )
+
+    read_configs = getattr(func, Constants.config_option.READ_CONFIG_METHOD)(**config_kwargs)
+    recursive_update(kwargs, read_configs, merge_lists=True)
     passed_keys = getattr(func, Constants.config_option.PASSED_DECORATE_KEYS, None)
     for passed_key in passed_keys or []:
         if passed_key not in func_params:
-            return kwargs
-        auto_option_attributes = getattr(func, Constants.config_option.ATTRIBUTES, [])
-        config_kwargs = dict(filter(lambda kv: kv[0] in auto_option_attributes and kv[1], kwargs.items()))
-
-        if Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR in kwargs and kwargs.get(
-            Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR
-        ):
-            config_kwargs[Constants.config_decorator_args.FILES] = list(
-                kwargs.pop(Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR, "")
-            )
-
-        kwargs[passed_key] = getattr(func, Constants.config_option.READ_CONFIG_METHOD)(**config_kwargs)
+            continue
         config_type = get_actual_type(func_params[passed_key].annotation)
         config_name = normalized_class_name(func_params[passed_key].annotation)
-
         if config_name in ("list", "tuple"):
             config_name = normalized_class_name(func_params[passed_key].annotation.__args__[0])
 
@@ -107,17 +107,9 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
             # )
             # logging.warning(warning_msg)
             kwargs[passed_key] = check_type(
-                config_type,
+                func_params[passed_key].annotation,
                 passed_key,
-                [
-                    check_type(
-                        func_params[passed_key].annotation,
-                        passed_key,
-                        kwargs[passed_key][config_name],
-                        skip=False,
-                        validate=True,
-                    )
-                ],
+                kwargs[passed_key][config_name],
                 skip=False,
                 validate=True,
             )
@@ -130,7 +122,7 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
 
 
 def _handle_config_type_validation(func_params, passed_key, config_type, config_name, **kwargs):
-    config_value = kwargs[passed_key][config_name]
+    config_value = kwargs[config_name]
     if isinstance(config_value, (list, tuple)):
         warning_msg = (
             f"For {config_name}, the `is_list` parameter is currently set to True, "

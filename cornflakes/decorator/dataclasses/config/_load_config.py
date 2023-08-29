@@ -40,7 +40,7 @@ def create_file_loader(  # noqa: C901
     _alias_generator: Optional[Callable[[str], str]] = alias_generator(cls)
     if _alias_generator and callable(_alias_generator):
         keys = {
-            key: (getattr(f, "aliases", key), _alias_generator(key)) or key for key, f in dataclass_fields(cls).items()
+            key: [getattr(f, "aliases", key), _alias_generator(key)] or key for key, f in dataclass_fields(cls).items()
         }
     else:
         keys = {key: getattr(f, "aliases", key) or key for key, f in dataclass_fields(cls).items()}
@@ -58,7 +58,7 @@ def create_file_loader(  # noqa: C901
         if _instantiate:
             return cls(
                 **{key: value for key, value in config_args.items() if key in dataclass_fields(cls)},
-                _load_default=False,
+                init_from_default_cache=True,
             )
         return {key: value for key, value in config_args.items() if key in dataclass_fields(cls)}
 
