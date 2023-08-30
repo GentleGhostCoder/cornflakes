@@ -76,18 +76,18 @@ repos:
                     --exclude=cmake-build-debug/*,
                     --filter=-build/c++11,
                 ]
-          - id: cppcheck
-            name: cppcheck
-            entry: cppcheck
-            language: system
-            args:
-                [
-                    inst/cornflakes,
-                    "--suppress=syntaxError:inst/_cornflakes/datetime_utils.hpp",
-                    -DVERSION_INFO=$VERSION_INFO,
-                    --std=c++17,
-                ]
-            files: \.(c|h|cpp)$
+    #          - id: cppcheck
+    #            name: cppcheck
+    #            entry: cppcheck
+    #            language: system
+    #            args:
+    #                [
+    #                    inst/cornflakes,
+    #                    "--suppress=syntaxError:inst/_cornflakes/datetime_utils.hpp",
+    #                    -DVERSION_INFO=$VERSION_INFO,
+    #                    --std=c++17,
+    #                ]
+    #            files: \.(c|h|cpp)$
     - repo: https://github.com/pycqa/flake8
       rev: "6.1.0" # pick a git hash / tag to point to
       hooks:

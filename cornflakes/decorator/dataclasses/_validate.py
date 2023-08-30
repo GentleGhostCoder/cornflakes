@@ -53,7 +53,11 @@ def _validate(cls, values, key, callback: Callable[..., Any], has_return):
         values_ns = type(
             f"SimpleNamespace<{cls.__name__}>",
             (SimpleNamespace,),
-            {k: v for k, v in cls.__dict__.items() if callable(v) and f"_{cls.__name__}" in k and k not in values},
+            {
+                k: v
+                for k, v in cls.__dict__.items()
+                if callable(v) and k not in values and k not in ["__init__", "__setattr__"]
+            },
         )(**values)
         kwargs.update({"cls": cls, "self": values_ns})
         kwargs = {
