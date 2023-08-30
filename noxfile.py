@@ -122,6 +122,7 @@ def precommit(session: Session) -> None:
         "compiledb",
         "pyupgrade",
         "cpplint",
+        "cppcheck",
         "clang-format",
         "clang-tidy",
     )
