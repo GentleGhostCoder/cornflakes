@@ -35,13 +35,15 @@ class AnyUrl:
     """
 
     url: InitVar[Optional[str]] = field(default=None)
+    # urlparse arguments start here
     scheme: str = field(default="", init=True)
     netloc: str = field(default="", init=True)
     path: str = field(default="", init=True)
     query: str = field(default="", init=True)
     params: str = field(default="", init=True)
-    query_args: dict = field(default_factory=dict, init=True)
     fragment: str = field(default="", init=True)
+    # urlparse arguments end here
+    query_args: dict = field(default_factory=dict, init=True)
     hostname: Optional[str] = field(default="", init=True, repr=False)
     port: Optional[int] = field(default=None, init=True, repr=False)
     username: Optional[str] = field(default=None, init=True, repr=False)
