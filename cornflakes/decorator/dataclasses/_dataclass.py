@@ -116,6 +116,13 @@ else:
     ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
         ...
 
+    @dataclass_transform(field_specifiers=(field, Field))
+    @overload
+    def dataclass(
+        **kwargs: Any,
+    ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
+        ...
+
 
 # @dataclass_transform(field_specifiers=(field, Field))
 def dataclass(
@@ -337,9 +344,15 @@ def _wrap_custom_dataclass(
 
     dc_cls.__dataclass_fields__.update(dataclass_fields)
     setattr(dc_cls, Constants.dataclass_decorator.EVAL_ENV, eval_env)
-    setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, staticmethod(dict_factory) if dict_factory else dict)  # type: ignore
-    setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, staticmethod(tuple_factory) if tuple_factory else tuple)  # type: ignore
-    setattr(dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, staticmethod(value_factory) if value_factory else None)  # type: ignore
+    setattr(
+        dc_cls, Constants.dataclass_decorator.DICT_FACTORY, staticmethod(dict_factory) if dict_factory else dict
+    )  # type: ignore
+    setattr(
+        dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, staticmethod(tuple_factory) if tuple_factory else tuple
+    )  # type: ignore
+    setattr(
+        dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, staticmethod(value_factory) if value_factory else None
+    )  # type: ignore
     setattr(
         dc_cls,
         Constants.dataclass_decorator.IGNORED_SLOTS,

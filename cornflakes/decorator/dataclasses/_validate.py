@@ -50,7 +50,11 @@ def _validate(cls, values, key, callback: Callable[..., Any], has_return):
         co_varnames = extract_var_names(callback)
         kwargs = {}
         kwargs.update(co_varnames)
-        values_ns = type(f"SimpleNamespace<{cls.__name__}>", (SimpleNamespace,), {})(**values)
+        values_ns = type(
+            f"SimpleNamespace<{cls.__name__}>",
+            (SimpleNamespace,),
+            {k: v for k, v in cls.__dict__.items() if callable(v) and f"_{cls.__name__}" in k and k not in values},
+        )(**values)
         kwargs.update({"cls": cls, "self": values_ns})
         kwargs = {
             key: value for key, value in kwargs.items() if key in co_varnames.keys() and value is not INSPECT_EMPTY_TYPE
