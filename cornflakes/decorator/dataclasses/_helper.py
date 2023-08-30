@@ -153,7 +153,7 @@ def dc_slot_missing_default(slot):
 
 def default(slot):
     """Method to get the default value of the dataclass."""
-    return slot.default_factory if isinstance(slot.default, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE)) else slot.default
+    return slot.default_factory() if isinstance(slot.default, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE)) else slot.default
 
 
 def get_env_vars(dc_cls):

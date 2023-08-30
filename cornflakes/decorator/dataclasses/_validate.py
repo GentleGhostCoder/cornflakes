@@ -7,6 +7,7 @@ from cornflakes.decorator.dataclasses._helper import (
     dataclass_fields,
     dataclass_required_keys,
     dataclass_validators,
+    default,
     get_env_vars,
     is_eval_env,
 )
@@ -50,7 +51,7 @@ def _process_validator(self, values, validators: dict, **kwargs):
 
 def _process_type_checking(dc_cls, validate=False, **kwargs):
     return {
-        key: check_type(getattr(dc_cls, "__annotations__", {})[key], key, value, validate=validate)
+        key: check_type(dataclass_fields(dc_cls).get(key).type, key, value, validate=validate)
         for key, value in kwargs.items()
         if key in dataclass_fields(dc_cls).keys()
     }
@@ -65,6 +66,15 @@ def check_dataclass_kwargs(dc_cls, validate=False, **kwargs) -> Dict[str, Any]:
 def validate_dataclass_kwargs(dc_cls, validate=False, **kwargs):
     """Validate dataclass (includes type checks + validators)."""
     _validators = dataclass_validators(dc_cls)
+
+    # append init values with the default values for init fields
+    kwargs.update(
+        {
+            field.name: default(field)
+            for field in dataclass_fields(dc_cls).values()
+            if field.name not in kwargs and field.init
+        }
+    )
 
     if _validators and not validate:
         logging.warning(
