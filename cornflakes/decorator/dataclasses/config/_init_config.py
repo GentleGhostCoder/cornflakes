@@ -51,6 +51,7 @@ def _load_config_kwargs(
         )
         default_config = default_config[0]
         default_config.update(kwargs)
+
     _required_keys = dataclass_required_keys(cls)
 
     if is_eval_env(cls):

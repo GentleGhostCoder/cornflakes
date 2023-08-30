@@ -93,7 +93,7 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
         return
 
     if is_group(config_type):
-        kwargs[passed_key] = check_type(config_type, passed_key, kwargs[passed_key], skip=False, validate=True)
+        kwargs[passed_key] = check_type(config_type, kwargs[passed_key], passed_key, skip=False)
     elif is_config(config_type):
         return _handle_config_type_validation(func_params, passed_key, config_type, config_name, **kwargs)
     elif config_type in (list, tuple):
@@ -108,15 +108,13 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
             # logging.warning(warning_msg)
             kwargs[passed_key] = check_type(
                 func_params[passed_key].annotation,
-                passed_key,
                 kwargs[passed_key][config_name],
+                passed_key,
                 skip=False,
                 validate=True,
             )
         else:
-            kwargs[passed_key] = check_type(
-                config_type, passed_key, kwargs[passed_key][config_name], skip=False, validate=True
-            )
+            kwargs[passed_key] = check_type(config_type, kwargs[passed_key][config_name], passed_key, skip=False)
 
     return kwargs
 
@@ -132,8 +130,8 @@ def _handle_config_type_validation(func_params, passed_key, config_type, config_
             "(...,'is_list'=False) parameter in the config decorator method."
         )
         logging.warning(warning_msg)
-        kwargs[passed_key] = check_type(config_type, passed_key, config_value[0], skip=False, validate=True)
+        kwargs[passed_key] = check_type(config_type, config_value[0], passed_key, skip=False)
     else:
-        kwargs[passed_key] = check_type(config_type, passed_key, config_value, skip=False, validate=True)
+        kwargs[passed_key] = check_type(config_type, config_value, passed_key, skip=False)
 
     return kwargs

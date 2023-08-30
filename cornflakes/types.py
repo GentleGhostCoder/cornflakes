@@ -130,6 +130,7 @@ class DataclassDecorator:
     IGNORE_NONE: str = "__ignore_none__"
     VALIDATORS: str = "__cornflakes_validators__"
     REQUIRED_KEYS: str = "__cornflakes_required_keys__"
+    INIT_EXCLUDE_KEYS: str = "__cornflakes_init_exclude_keys__"
 
 
 @dataclass(frozen=True)

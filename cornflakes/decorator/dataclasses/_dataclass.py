@@ -10,7 +10,7 @@ from cornflakes.common import recursive_update
 from cornflakes.decorator.dataclasses._add_dataclass_slots import add_slots
 from cornflakes.decorator.dataclasses._enforce_types import enforce_types
 from cornflakes.decorator.dataclasses._field import Field, field
-from cornflakes.decorator.dataclasses._helper import dc_slot_missing_default
+from cornflakes.decorator.dataclasses._helper import dc_field_without_default
 from cornflakes.decorator.dataclasses._helper import dict_factory as d_factory
 from cornflakes.decorator.dataclasses._helper import is_index
 from cornflakes.decorator.dataclasses._helper import tuple_factory as t_factory
@@ -194,7 +194,7 @@ def dataclass(
             dc_cls.update = _update
 
         if validate:
-            dc_cls = enforce_types(dc_cls, validate=validate)
+            dc_cls = enforce_types(dc_cls)
 
         dc_cls.__doc__ = w_cls.__doc__
         dc_cls.__module__ = w_cls.__module__
@@ -358,7 +358,13 @@ def _wrap_custom_dataclass(
     setattr(
         dc_cls,
         Constants.dataclass_decorator.REQUIRED_KEYS,
-        [key for key, slot in dc_cls.__dataclass_fields__.items() if dc_slot_missing_default(slot)],
+        [key for key, slot in dc_cls.__dataclass_fields__.items() if dc_field_without_default(slot)],
+    )
+
+    setattr(
+        dc_cls,
+        Constants.dataclass_decorator.INIT_EXCLUDE_KEYS,
+        [key for key, slot in dc_cls.__dataclass_fields__.items() if not getattr(slot, "init", True)],
     )
 
     dc_cls.to_dict = to_dict

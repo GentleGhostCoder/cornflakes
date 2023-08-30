@@ -1,7 +1,7 @@
 from functools import reduce, wraps
 from inspect import isclass, signature
 from os.path import exists
-from typing import Any, Callable, Type, Union, cast
+from typing import Any, Callable, Type, Union
 
 from click import Command, Group, option
 
@@ -11,7 +11,7 @@ from cornflakes.decorator.click.helper import click_param_type_parser
 from cornflakes.decorator.dataclasses import (
     config_files,
     dataclass_fields,
-    dc_slot_missing_default,
+    dc_field_without_default,
     default,
     fields,
     is_config,
@@ -175,15 +175,14 @@ def _config_option(  # noqa: C901
         wrapper = callback
 
         slot_options = {
-            f"--{slot_name.replace('_', '-')}": slot
-            for slot_name, slot in cast(Type[CornflakesDataclass], config).__dataclass_fields__.items()
+            f"--{slot_name.replace('_', '-')}": slot for slot_name, slot in dataclass_fields(config).items()
         }
 
         for option_name, slot in slot_options.items():
             option_args = configs.get(slot.name, {})
             if "help" not in option_args:
                 option_args["help"] = f"value for {slot.name}"
-            if "default" not in option_args and not dc_slot_missing_default(slot):
+            if "default" not in option_args and not dc_field_without_default(slot):
                 option_args["default"] = default(slot)
                 if not slot.repr:
                     option_args["default"] = HIDDEN_DEFAULT

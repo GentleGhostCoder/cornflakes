@@ -59,7 +59,7 @@ class KwargsWrapper:
 
     @property
     def _params(self):
-        return [*self.key_params_no_default, *self.arg_params, *self.key_params, *self.kwarg_params]
+        return [*self.key_params_no_default, *self.key_params, *self.arg_params, *self.kwarg_params]
 
     @property
     def _params_declaration(self):

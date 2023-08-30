@@ -14,6 +14,19 @@ class Field(DataclassField):
        other arguments will be ignored when initialise dataclass.
     """
 
+    @staticmethod
+    def validate(field: Any):
+        """Decorator to add a validator to a field."""
+        # check if field is of type Field
+        if not isinstance(field, Field):
+            raise TypeError("Field validator can only be used on dataclasses Field!")
+
+        def wrapper(func):
+            field.validator = func
+            return func
+
+        return wrapper
+
     __slots__ = (
         *getattr(
             DataclassField,
@@ -140,15 +153,7 @@ class Field(DataclassField):
 
         Returns: None
         """
-        if isinstance(validator, MISSING_TYPE) or not callable(validator):
-
-            def validator_decorator(func) -> Any:
-                self.validator = func
-                return func
-
-            self.validator = validator_decorator
-        else:
-            self.validator = validator
+        self.validator = validator
         self.ignore = ignore
         self.aliases = aliases
         self.title = title

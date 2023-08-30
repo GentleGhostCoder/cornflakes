@@ -12,15 +12,14 @@ from typing import Any, Optional, get_args
 SpecialForm = type(Optional)
 
 
-def check_type(type_hint: Any, key, value, skip=False, validate=False):
+def check_type(type_hint: Any, value, key="", skip=False):
     """
     Check if the provided value matches the specified type hint.
 
     :param type_hint: The type hint or annotation to check against.
-    :param key: The attribute or variable name.
+    :param key: The attribute or variable name. (only required for error messages)
     :param value: The value to be checked.
     :param skip: If True, skip the type check and return None. Defaults to False.
-    :param validate: If True, perform stricter validation. Defaults to False.
     :return: The value if it matches the type hint.
     :raises TypeError: If the value does not match the expected type.
     :raises ValueError: If an error occurs during type conversion or when the value does not match the expected type.
@@ -56,18 +55,18 @@ def check_type(type_hint: Any, key, value, skip=False, validate=False):
 
     # If the actual type is a list or tuple, we check each element of the value against the corresponding type in the type hint.
     if isinstance(actual_type, (list, tuple)):
-        return _check_list_or_tuple_type(actual_type, key, value, skip, validate)
+        return _check_list_or_tuple_type(actual_type, key, value, skip)
 
     # If the actual type is the list or tuple type itself, we check that the value is a list or tuple.
     if actual_type in [list, tuple]:
-        return _check_list_or_tuple(actual_type, type_hint, key, value, skip, validate)
+        return _check_list_or_tuple(actual_type, type_hint, key, value, skip)
 
     # If the actual type is a built-in function or a user-defined function, we call the function with the value as argument and return the result.
     if inspect.isbuiltin(actual_type) or inspect.isfunction(actual_type):
         return actual_type(value)
 
     # If the actual type is a class, we check that the value is an instance of that class.
-    return _check_class_type(actual_type, type_hint, key, value, skip, validate)
+    return _check_class_type(actual_type, type_hint, key, value, skip)
 
 
 def get_actual_type(type_hint):
@@ -75,7 +74,6 @@ def get_actual_type(type_hint):
     actual_type = getattr(type_hint, "__origin__", getattr(type_hint, "type", type_hint))
     if isinstance(actual_type, SpecialForm):
         actual_type = getattr(type_hint, "__args__", type_hint)
-
     return (
         actual_type
         if inspect.isclass(type_hint) or isinstance(type_hint, (list, tuple))
@@ -83,7 +81,7 @@ def get_actual_type(type_hint):
     )
 
 
-def _check_list_or_tuple_type(actual_type, key, value, skip, validate):
+def _check_list_or_tuple_type(actual_type, key, value, skip):
     actual_types = (
         [t for t in actual_type if t is not None]
         if value
@@ -99,7 +97,7 @@ def _check_list_or_tuple_type(actual_type, key, value, skip, validate):
                 f"Expected any of {actual_types!r} for attribute {key!r} but received type {type(value)!r})."
             )
         actual_types = [type(t) for t in actual_types]
-    values = [check_type(t, key, value, skip=True, validate=validate) for t in actual_types]
+    values = [check_type(t, value, key, skip=True) for t in actual_types]
     if not any(values) and type(None) in actual_types:
         return None
     if not any(values):
@@ -109,24 +107,18 @@ def _check_list_or_tuple_type(actual_type, key, value, skip, validate):
     return next(item for item in values if item is not None)
 
 
-def _check_list_or_tuple(actual_type, type_hint, key, value, skip, validate):
+def _check_list_or_tuple(actual_type, type_hint, key, value, skip):
     if not isinstance(value, (list, tuple)):
         if skip:
             return
         raise TypeError(f"Expected type {type_hint!r} for attribute {key!r} but received type {type(value)!r}).")
     actual_types = [t for t in get_args(type_hint) if t is not None] or [str] if value else [type(None)]
-    return actual_type(chain([check_type(t, key, val, validate=validate) for val, t in zip(value, actual_types)]))
+    return actual_type(chain([check_type(t, val, key) for val, t in zip(value, actual_types)]))
 
 
-def _check_class_type(actual_type, type_hint, key, value, skip, validate):
+def _check_class_type(actual_type, type_hint, key, value, skip):
     if not isinstance(value, actual_type):
         try:
-            if not validate:
-                if skip:
-                    return
-                raise TypeError(
-                    f"Expected type {type_hint!r} for attribute {key!r} but received type {type(value)!r})."
-                )
             return actual_type(value)  # type: ignore
         except Exception as exc:
             if skip:
