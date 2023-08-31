@@ -153,7 +153,7 @@ def mypy(session: Session) -> None:
 
 
 @session(python=python_versions[:-1])  # current py3.11 not supported -> https://github.com/google/pytype/issues/1308
-def pytype(session):
+def pytype(session: Session):
     """Run the static type checker."""
     args = session.posargs or [
         "--disable=import-error",
