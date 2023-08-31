@@ -47,7 +47,6 @@ from cornflakes.decorator.click.rich import RichGroup
 def cli(self: RichGroup, ctx: Context):
     """"""
     if ctx.invoked_subcommand is None:
-        print(ctx)
         self.main(["--help"])
 
 
