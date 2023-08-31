@@ -1,6 +1,7 @@
 """Nox sessions."""
 import os
 from pathlib import Path
+import re
 import shlex
 import shutil
 import sys
@@ -179,7 +180,13 @@ def tests(session: Session) -> None:
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
     session.run("pip", "install", "virtualenv", "--upgrade")  # fix bug for windows tests
-    session.run("poetry", "install")
+    # session.run("poetry", "install")
+    # poetry install does not work for macOS for some reason -> the pybind11 extensions not built
+    session.run("poetry", "build")
+    version = re.sub(".*-", "", session.name.replace("pytype-", "")).replace(".", "")
+    search = f"*cp{version}*.whl"
+    file = list(Path("dist").glob(search))[0].name
+    session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("coverage[toml]", "pytest", "pygments")
     try:
         session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs, env={"NOX_RUNNING": "True"})
