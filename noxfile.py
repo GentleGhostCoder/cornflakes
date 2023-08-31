@@ -184,7 +184,7 @@ def tests(session: Session) -> None:
     # session.run("poetry", "install")
     # poetry install does not work for macOS for some reason -> the pybind11 extensions not built
     session.run("poetry", "build")
-    version = re.sub(".*-", "", session.name.replace("pytype-", "")).replace(".", "")
+    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
     search = f"*cp{version}*.whl"
     file = list(Path("dist").glob(search))[0].name
     session.run("pip", "install", f"dist/{file}", "--force-reinstall")

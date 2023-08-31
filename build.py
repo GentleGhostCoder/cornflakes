@@ -5,7 +5,7 @@ import re
 
 import docutils.core
 import pybind11
-from pybind11.setup_helpers import Pybind11Extension, build_ext
+from pybind11.setup_helpers import Pybind11Extension
 
 
 def find_replace(file_list, find, replace, file_pattern):
@@ -39,7 +39,7 @@ files = [
     if os.path.splitext(f)[1] == ".cpp"
 ]
 
-ext_paths = [external_path, f"{external_path}/pybind11/include", f"{external_path}/rapidjson/include/rapidjson"]
+ext_paths = [external_path, pybind11.get_include(), f"{external_path}/rapidjson/include/rapidjson"]
 
 find_replace(glob(f"{external_path}/*/**"), "#include <endian.h>", "#include <cross_endian.h>", "^.*(.cpp|.h|.hpp)$")
 
@@ -50,18 +50,16 @@ long_description = pathlib.Path("README.html").read_text()
 
 def build(setup_kwargs):
     ext_modules = [
-        Pybind11Extension(
-            "_cornflakes", [*files], include_dirs=[pybind11.get_include(), path, *ext_paths]
-        ),  # , cxx_std=17
+        Pybind11Extension("_cornflakes", [*files], include_dirs=[path, *ext_paths]),  # , cxx_std=17
     ]
     setup_kwargs.update(
         {
             # "long_description": long_description,
             "long_description_content_type": "text/html",
             "ext_modules": ext_modules,
-            "cmdclass": {
-                "build_ext": build_ext,
-            },
-            "zip_safe": False,
+            # "cmdclass": {
+            #     "build_ext": build_ext,
+            # },
+            "zip_safe": True,
         }
     )
