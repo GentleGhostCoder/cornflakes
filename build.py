@@ -50,7 +50,9 @@ long_description = pathlib.Path("README.html").read_text()
 
 def build(setup_kwargs):
     ext_modules = [
-        Pybind11Extension("_cornflakes", [*files], include_dirs=[pybind11.get_include(), path, *ext_paths], cxx_std=17),
+        Pybind11Extension(
+            "_cornflakes", [*files], include_dirs=[pybind11.get_include(), path, *ext_paths]
+        ),  # , cxx_std=17
     ]
     setup_kwargs.update(
         {
