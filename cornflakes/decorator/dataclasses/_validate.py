@@ -94,7 +94,8 @@ def _process_type_checking(dc_cls, dc_types, **kwargs):
 
 def check_dataclass_kwargs(dc_cls, **kwargs) -> Dict[str, Any]:
     """Check dataclass types."""
-    _dc_types = {key: dataclass_fields(dc_cls).get(key).type for key in kwargs.keys()}
+    _fields = dataclass_fields(dc_cls)
+    _dc_types = {key: _fields.get(key).type for key in kwargs.keys()}
     kwargs.update(_process_type_checking(dc_cls, _dc_types, **kwargs))
     return kwargs
 

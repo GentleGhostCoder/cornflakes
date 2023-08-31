@@ -35,9 +35,7 @@ def click_param_type_parser(config):
                 if isinstance(value, HIDDEN_DEFAULT_TYPE):
                     return value
                 if not isinstance(value, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE)):
-                    return check_dataclass_kwargs(config, **{param.name: eval_type(str(value))}, validate=True)[
-                        param.name
-                    ]
+                    return check_dataclass_kwargs(config, **{param.name: eval_type(str(value))})[param.name]
 
         return ClickParamType
 

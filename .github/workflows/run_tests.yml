@@ -106,7 +106,7 @@ jobs:
 
             - name: Install Dependencies
               run: |
-                  poetry install
+                  poetry install -vvv
 
             - name: Install nox nox-poetry rich
               run: |
