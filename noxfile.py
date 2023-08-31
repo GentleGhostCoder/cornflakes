@@ -179,6 +179,7 @@ def tests(session: Session) -> None:
     session.run("pip", "install", "pydantic-settings")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    session.run("pip", "install", "typeguard")
     session.run("pip", "install", "virtualenv", "--upgrade")  # fix bug for windows tests
     # session.run("poetry", "install")
     # poetry install does not work for macOS for some reason -> the pybind11 extensions not built
