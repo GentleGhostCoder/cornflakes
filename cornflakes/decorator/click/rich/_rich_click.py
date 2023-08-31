@@ -174,7 +174,7 @@ def _get_parameter_help(
         ):
             envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
     if envvar is not None:
-        envvar = ", ".join(param.envvar) if type(envvar) is list else envvar  # type: ignore
+        envvar = ", ".join(param.envvar) if isinstance(envvar, list) else envvar  # type: ignore
 
     # Environment variable BEFORE help text
     if getattr(param, "show_envvar", None) and config.OPTION_ENVVAR_FIRST and envvar is not None:

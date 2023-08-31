@@ -50,6 +50,11 @@ def dataclass_required_keys(cls):
     return getattr(cls, Constants.dataclass_decorator.REQUIRED_KEYS, {})
 
 
+def dataclass_init_exclude_keys(cls):
+    """Method to return dataclass exclude init keys."""
+    return getattr(cls, Constants.dataclass_decorator.INIT_EXCLUDE_KEYS, {})
+
+
 def is_eval_env(cls):
     """Method to return flag that class is a eval env class."""
     return getattr(cls, Constants.dataclass_decorator.EVAL_ENV, False)
@@ -62,16 +67,6 @@ def is_chain_files(cls):
 
 def dict_factory(cls):
     """Method to return class __dict_factory__."""
-    # dict_factory_method = getattr(cls, "__dict_factory__", dict)
-    #
-    # # check if any field in class is a memoryview type
-    # if any([f.type == memoryview for f in dataclass_fields(cls).values()]):
-    #     # if so, return a dict factory that converts memoryview to bytes
-    #     def dict_factory_wrapper(obj):
-    #         """Method to convert memoryview to bytes."""
-    #         return dict_factory_method({k: bytes(v) if isinstance(v, memoryview) else v for k, v in obj})
-    #
-    #     return dict_factory_wrapper
     return getattr(cls, Constants.dataclass_decorator.DICT_FACTORY, dict)
 
 
@@ -146,14 +141,18 @@ def pass_section_name(cls):
     return Constants.config_decorator.SECTION_NAME_KEY in getattr(cls, Constants.dataclass_decorator.FIELDS, {})
 
 
-def dc_slot_missing_default(slot):
+def dc_field_without_default(field):
     """Checks if the dataclass has a default / default_factory."""
-    return isinstance(slot.default, WITHOUT_DEFAULT_TYPE) or isinstance(slot.default_factory, WITHOUT_DEFAULT_TYPE)
+    return isinstance(field.default, WITHOUT_DEFAULT_TYPE) or isinstance(field.default_factory, WITHOUT_DEFAULT_TYPE)
 
 
-def default(slot):
+def default(field):
     """Method to get the default value of the dataclass."""
-    return slot.default_factory if isinstance(slot.default, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE)) else slot.default
+    return (
+        field.default_factory()
+        if not isinstance(field.default_factory, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE))
+        else field.default
+    )
 
 
 def get_env_vars(dc_cls):

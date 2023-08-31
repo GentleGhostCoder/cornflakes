@@ -11,7 +11,7 @@ from cornflakes.decorator.dataclasses._helper import (
     normalized_class_name,
     config_files,
     default,
-    dc_slot_missing_default,
+    dc_field_without_default,
     dataclass_fields,
     fields,
 )
@@ -34,7 +34,7 @@ __all__ = [
     "config_files",
     "dataclass_fields",
     "default",
-    "dc_slot_missing_default",
+    "dc_field_without_default",
     "config",
     "config_group",
     "AnyUrl",

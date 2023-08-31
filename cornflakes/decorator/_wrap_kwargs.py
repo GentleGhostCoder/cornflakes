@@ -44,27 +44,22 @@ class KwargsWrapper:
         return [*self.key_names_no_default, *self.key_names, *self.arg_names, *self.kwarg_names]
 
     @property
-    def _args_patch(self):
+    def _kwargs_builder(self):
         return (
-            f"{self.arg_names[0]} = {self.arg_names[0]}[{len(self.key_names_no_default)}: ]"
-            if len(self.arg_names)
-            else ""
-        )
-
-    @property
-    def _passed_names(self):
-        return ", ".join(
-            [
-                *[f"{key}" for key in self.key_names_no_default],
-                *[f"{key}={key}" for key in self.key_names],
-                *[f"*{arg}" for arg in self.arg_names],
-                *[f"**{arg}" for arg in self.kwarg_names],
-            ]
+            "{"
+            + ", ".join(
+                [
+                    *[f"'{key}': {key}" for key in self.key_names_no_default],
+                    *[f"'{key}': {key}" for key in self.key_names],
+                    *[f"**{arg}" for arg in self.kwarg_names],
+                ]
+            )
+            + "}"
         )
 
     @property
     def _params(self):
-        return [*self.key_params_no_default, *self.arg_params, *self.key_params, *self.kwarg_params]
+        return [*self.key_params_no_default, *self.key_params, *self.arg_params, *self.kwarg_params]
 
     @property
     def _params_declaration(self):
@@ -97,41 +92,39 @@ class KwargsWrapper:
 
     def _update_params(self, parameters):
         for name, param in parameters.items():
+            # update params for existing index in self._names
+            is_variadic = param.kind == Parameter.VAR_POSITIONAL or param.kind == Parameter.VAR_KEYWORD
             if name not in self._names:
                 if name in self.excluded:
                     continue
-                if _check_default(self.overwrites.get(param.name, INSPECT_EMPTY_TYPE)):
+                if _check_default(self.overwrites.get(param.name, INSPECT_EMPTY_TYPE)) and not is_variadic:
                     self.key_names.append(name)
                     self.key_params.append(
                         Parameter(
                             param.name,
                             kind=param.kind,
-                            default=self.overwrites.get(name),
+                            default=self.overwrites.get(name, MISSING),
                             annotation=param.annotation,
                         )
                     )
                     continue
-                if _check_default(param.default):
+                if _check_default(param.default) and not is_variadic:
                     self.key_names.append(name)
                     self.key_params.append(param)
                     continue
-                if param.kind == Parameter.VAR_POSITIONAL and not self.arg_names:
+                if is_variadic and param.kind == Parameter.VAR_POSITIONAL and not self.arg_names:
                     self.arg_names.append(name)
                     self.arg_params.append(param)
                     continue
-                if param.kind == Parameter.VAR_KEYWORD and not self.kwarg_names:
+                if is_variadic and param.kind == Parameter.VAR_KEYWORD and not self.kwarg_names:
                     self.kwarg_names.append(name)
                     self.kwarg_params.append(param)
                     continue
-                if _not_default_factory(param.default) and param.kind not in [
-                    Parameter.VAR_KEYWORD,
-                    Parameter.VAR_POSITIONAL,
-                ]:
+                if not is_variadic and _not_default_factory(param.default):
                     self.key_names_no_default.append(name)
                     self.key_params_no_default.append(param)
-                continue
+                continue  # continue -> add new index to self._names
 
-            is_variadic = Parameter.VAR_POSITIONAL or Parameter.VAR_KEYWORD
             param_idx = self._names.index(name)
             if is_variadic:
                 self._params[param_idx] = Parameter(
@@ -163,8 +156,14 @@ class KwargsWrapper:
         ldict: Dict[str, Any] = {**self._defaults_dict, **self._annotations_dict}
         wrapper_str = f"""
 def wrap_kwargs({self._params_declaration}):
-    {self._args_patch}
-    return wrapper({self._passed_names})
+    _wrapped_kwargs = {self._kwargs_builder}
+    {f'''
+    _wrapped_kwargs = {self._kwargs_builder}
+    argument_names = list(_wrapped_kwargs.keys())
+    argument_values = {self.arg_names[0]}[: len(argument_names)]
+    _wrapped_kwargs.update(dict(zip(argument_names, argument_values)))
+''' if self.arg_names else ''}
+    return wrapper(**_wrapped_kwargs)
 """
         try:
             exec(  # noqa: S102

@@ -11,12 +11,12 @@ from cornflakes.decorator.dataclasses import is_config, is_group, normalized_cla
 from cornflakes.types import Constants
 
 
-def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wrap_kwargs):
+def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wraped_kwargs):
     """Wrapper Method for rich command / group."""
 
     def global_option_click_decorator(func):
         """Decorator for rich command / group."""
-        click_cls = click_func(*wrap_args, **wrap_kwargs)(func)
+        click_cls = click_func(*wrap_args, **wraped_kwargs)(func)
 
         # pass __auto_options_groups__ if
         if not hasattr(click_cls, Constants.config_option.OPTION_GROUPS):
@@ -63,9 +63,6 @@ def _apply_auto_option_config(func, **kwargs):
         return kwargs
 
     func_params = signature(func).parameters
-    passed_key = getattr(func, Constants.config_option.PASSED_DECORATE_KEY, None)
-    if passed_key not in func_params:
-        return kwargs
     auto_option_attributes = getattr(func, Constants.config_option.ATTRIBUTES, [])
     config_kwargs = dict(filter(lambda kv: kv[0] in auto_option_attributes and kv[1], kwargs.items()))
 
@@ -76,14 +73,19 @@ def _apply_auto_option_config(func, **kwargs):
             kwargs.pop(Constants.config_option.ADD_CONFIG_FILE_OPTION_PARAM_VAR, "")
         )
 
-    kwargs[passed_key] = getattr(func, Constants.config_option.READ_CONFIG_METHOD)(**config_kwargs)
-    config_type = get_actual_type(func_params[passed_key].annotation)
-    config_name = normalized_class_name(func_params[passed_key].annotation)
+    read_configs = getattr(func, Constants.config_option.READ_CONFIG_METHOD)(**config_kwargs)
+    recursive_update(kwargs, read_configs, merge_lists=True)
+    passed_keys = getattr(func, Constants.config_option.PASSED_DECORATE_KEYS, None)
+    for passed_key in passed_keys or []:
+        if passed_key not in func_params:
+            continue
+        config_type = get_actual_type(func_params[passed_key].annotation)
+        config_name = normalized_class_name(func_params[passed_key].annotation)
+        if config_name in ("list", "tuple"):
+            config_name = normalized_class_name(func_params[passed_key].annotation.__args__[0])
 
-    if config_name in ("list", "tuple"):
-        config_name = normalized_class_name(func_params[passed_key].annotation.__args__[0])
-
-    return _validate_and_set_config(func_params, passed_key, config_type, config_name, **kwargs)
+        kwargs = _validate_and_set_config(func_params, passed_key, config_type, config_name, **kwargs)
+    return kwargs
 
 
 def _validate_and_set_config(func_params, passed_key, config_type, config_name, **kwargs):
@@ -91,55 +93,45 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
         return
 
     if is_group(config_type):
-        kwargs[passed_key] = check_type(config_type, passed_key, kwargs[passed_key], skip=False, validate=True)
+        kwargs[passed_key] = check_type(config_type, kwargs[passed_key], passed_key, skip=False)
     elif is_config(config_type):
         return _handle_config_type_validation(func_params, passed_key, config_type, config_name, **kwargs)
     elif config_type in (list, tuple):
         if config_name not in ("list", "tuple"):
-            warning_msg = (
-                f"For {config_name}, the is_list parameter is currently set to False, "
-                "resulting in a single config where multiple configs are considered. To "
-                "properly support multiple files, either change the config annotation to "
-                f"<List[{func_params['config'].annotation.__args__[0].__name__}]> or modify the "
-                "(...,'is_list'=True) parameter in the config decorator method."
-            )
-            logging.warning(warning_msg)
+            # warning_msg = (
+            #     f"For {config_name}, the is_list parameter is currently set to False, "
+            #     "resulting in a single config where multiple configs are considered. To "
+            #     "properly support multiple files, either change the config annotation to "
+            #     f"<List[{func_params[passed_key].annotation.__args__[0].__name__}]> or modify the "
+            #     "(...,'is_list'=True) parameter in the config decorator method."
+            # )
+            # logging.warning(warning_msg)
             kwargs[passed_key] = check_type(
-                config_type,
+                func_params[passed_key].annotation,
+                kwargs[passed_key][config_name],
                 passed_key,
-                [
-                    check_type(
-                        func_params[passed_key].annotation.__args__[0],
-                        passed_key,
-                        kwargs[passed_key],
-                        skip=False,
-                        validate=True,
-                    )
-                ],
                 skip=False,
                 validate=True,
             )
         else:
-            kwargs[passed_key] = check_type(
-                config_type, passed_key, kwargs[passed_key][config_name], skip=False, validate=True
-            )
+            kwargs[passed_key] = check_type(config_type, kwargs[passed_key][config_name], passed_key, skip=False)
 
     return kwargs
 
 
 def _handle_config_type_validation(func_params, passed_key, config_type, config_name, **kwargs):
-    config_value = kwargs[passed_key][config_name]
+    config_value = kwargs[config_name]
     if isinstance(config_value, (list, tuple)):
         warning_msg = (
             f"For {config_name}, the `is_list` parameter is currently set to True, "
             "resulting in a list of configs where only the first file is considered. To "
             "properly support multiple files, either change the config annotation to "
-            f"<List[{func_params['config'].annotation.__name__}]> or modify the "
+            f"<List[{func_params[passed_key].annotation.__name__}]> or modify the "
             "(...,'is_list'=False) parameter in the config decorator method."
         )
         logging.warning(warning_msg)
-        kwargs[passed_key] = check_type(config_type, passed_key, config_value[0], skip=False, validate=True)
+        kwargs[passed_key] = check_type(config_type, config_value[0], passed_key, skip=False)
     else:
-        kwargs[passed_key] = check_type(config_type, passed_key, config_value, skip=False, validate=True)
+        kwargs[passed_key] = check_type(config_type, config_value, passed_key, skip=False)
 
     return kwargs

@@ -10,7 +10,7 @@ from cornflakes.common import recursive_update
 from cornflakes.decorator.dataclasses._add_dataclass_slots import add_slots
 from cornflakes.decorator.dataclasses._enforce_types import enforce_types
 from cornflakes.decorator.dataclasses._field import Field, field
-from cornflakes.decorator.dataclasses._helper import dc_slot_missing_default
+from cornflakes.decorator.dataclasses._helper import dc_field_without_default
 from cornflakes.decorator.dataclasses._helper import dict_factory as d_factory
 from cornflakes.decorator.dataclasses._helper import is_index
 from cornflakes.decorator.dataclasses._helper import tuple_factory as t_factory
@@ -116,6 +116,13 @@ else:
     ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
         ...
 
+    @dataclass_transform(field_specifiers=(field, Field))
+    @overload
+    def dataclass(
+        **kwargs: Any,
+    ) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
+        ...
+
 
 # @dataclass_transform(field_specifiers=(field, Field))
 def dataclass(
@@ -159,6 +166,10 @@ def dataclass(
         :returns: A Cornflakes dataclass.
         :rtype: type
         """
+        if not init and slots:
+            # this is not supported by dataclasses
+            raise AttributeError("Cannot specify both init=False and slots=True")
+
         dc_cls = _wrap_custom_dataclass(
             w_cls,
             init=init,
@@ -179,7 +190,7 @@ def dataclass(
 
         if updatable:
             if kwargs.get("frozen", False):
-                raise TypeError("Cannot set both frozen=True and updatable=True")
+                raise AttributeError("Cannot set both frozen=True and updatable=True")
 
             def _update(self, new, merge_lists=False):
                 current = {**self}
@@ -190,12 +201,11 @@ def dataclass(
             dc_cls.update = _update
 
         if validate:
-            dc_cls = enforce_types(dc_cls, validate=validate)
+            dc_cls = enforce_types(dc_cls)
 
         dc_cls.__doc__ = w_cls.__doc__
         dc_cls.__module__ = w_cls.__module__
         dc_cls.__qualname__ = w_cls.__qualname__
-        dc_cls.__init__.__doc__ = w_cls.__init__.__doc__
 
         dc_cls = _wrap_mapping(dc_cls, ignore_none)
 
@@ -334,9 +344,15 @@ def _wrap_custom_dataclass(
 
     dc_cls.__dataclass_fields__.update(dataclass_fields)
     setattr(dc_cls, Constants.dataclass_decorator.EVAL_ENV, eval_env)
-    setattr(dc_cls, Constants.dataclass_decorator.DICT_FACTORY, staticmethod(dict_factory) if dict_factory else dict)  # type: ignore
-    setattr(dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, staticmethod(tuple_factory) if tuple_factory else tuple)  # type: ignore
-    setattr(dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, staticmethod(value_factory) if value_factory else None)  # type: ignore
+    setattr(
+        dc_cls, Constants.dataclass_decorator.DICT_FACTORY, staticmethod(dict_factory) if dict_factory else dict
+    )  # type: ignore
+    setattr(
+        dc_cls, Constants.dataclass_decorator.TUPLE_FACTORY, staticmethod(tuple_factory) if tuple_factory else tuple
+    )  # type: ignore
+    setattr(
+        dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, staticmethod(value_factory) if value_factory else None
+    )  # type: ignore
     setattr(
         dc_cls,
         Constants.dataclass_decorator.IGNORED_SLOTS,
@@ -355,7 +371,13 @@ def _wrap_custom_dataclass(
     setattr(
         dc_cls,
         Constants.dataclass_decorator.REQUIRED_KEYS,
-        [key for key, slot in dataclass_fields.items() if dc_slot_missing_default(slot)],
+        [key for key, slot in dc_cls.__dataclass_fields__.items() if dc_field_without_default(slot)],
+    )
+
+    setattr(
+        dc_cls,
+        Constants.dataclass_decorator.INIT_EXCLUDE_KEYS,
+        [key for key, slot in dc_cls.__dataclass_fields__.items() if not getattr(slot, "init", True)],
     )
 
     dc_cls.to_dict = to_dict

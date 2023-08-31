@@ -20,7 +20,7 @@ from cornflakes.decorator.click import argument
     type=Choice(["major", "minor", "patch"]),
     required=False,
 )
-def bump_version(level="patch"):
+def bump_version(level="patch"):  # noqa: C901
     """Bump version of the module for the given version level (major, minor, patch)."""
     latest_checkpoint = subprocess.check_output(["git", "rev-list", "--tags", "--max-count=1"]).decode().strip()
 
@@ -55,6 +55,11 @@ def bump_version(level="patch"):
         for file in files:
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
+
+                # Skip files in the "site-packages" directory
+                if "site-packages" in file_path:
+                    continue
+
                 content = pathlib.Path(file_path).read_text()
                 # Check if the file contains the string "# <<FORCE_BUMP>>"
                 if "# <<FORCE_BUMP>>" in content:
