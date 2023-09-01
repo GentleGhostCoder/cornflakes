@@ -26,7 +26,7 @@ def _update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:  # noq
                 parsed_version = _parse_version_dependency(v)
                 if parsed_version:
                     operator, current_version = parsed_version
-                    if not current_version or latest_version:
+                    if not current_version or not latest_version:
                         continue
                     if version.parse(current_version) < version.parse(latest_version):
                         updated_version_str = f"{operator}{latest_version}"
@@ -50,7 +50,11 @@ def _update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:  # noq
 
 @cli.command("update")
 def update_deps() -> None:
-    """Update dependencies to latest version."""
+    """Update dependencies to latest version.
+
+    Note: This method is curretly in alpha... check the updated lines after calling it.
+    TODO: Add the feature for soft update (highest and lowest possible version)
+    """
     content = pathlib.Path("./pyproject.toml").read_text()
     toml_dict = cast(Dict, toml.loads(content))
     subprocess.run(["poetry", "update"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -72,4 +76,4 @@ def update_deps() -> None:
 
 
 if __name__ == "__main__":
-    update_deps()
+    cli.main(["update"])

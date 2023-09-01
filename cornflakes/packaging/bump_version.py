@@ -80,4 +80,4 @@ if __name__ == "__main__":
         print("Please provide the version component to bump: 'major', 'minor', or 'patch'.")
     else:
         version_component = sys.argv[1]
-        bump_version(version_component)
+        cli.main(["bump", version_component])
