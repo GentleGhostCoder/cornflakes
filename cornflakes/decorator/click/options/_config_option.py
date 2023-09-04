@@ -220,11 +220,11 @@ def _config_option(  # noqa: C901
                     k: v
                     for k, v in kwargs.items()
                     if k in config_fields
-                    and config_fields[k].init
+                    and config_fields.get(k).init
                     and (
-                        v != default(config_fields[k])
+                        v != default(config_fields.get(k))
                         if k not in non_comparable_fields
-                        else repr(v) != repr(default(config_fields[k]))
+                        else repr(v) != repr(default(config_fields.get(k)))
                     )
                 }
                 # exclude values that are of type Missing, WithoutDefault or HiddenDefault

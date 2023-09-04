@@ -95,8 +95,11 @@ def wrap_init_default_config(cls, init_default_config=True):
                     k: v
                     for k, v in kwargs.items()
                     if (
-                        v != default_config[k] if k not in non_comparable_fields else repr(v) != repr(default_config[k])
+                        v != default_config.get(k)
+                        if k not in non_comparable_fields
+                        else repr(v) != repr(default_config.get(k))
                     )
+                    if k in default_config
                 }
                 if default_config
                 else {}

@@ -114,6 +114,8 @@ def _check_list_or_tuple(actual_type, type_hint, key, value, skip):
             return
         raise TypeError(f"Expected type {type_hint!r} for attribute {key!r} but received type {type(value)!r}).")
     actual_types = [t for t in get_args(type_hint) if t is not None] or [str] if value else [type(None)]
+    if len(value) > len(actual_types):
+        actual_types = [actual_types[0]] * len(value) if len(actual_types) else [type(None)] * len(value)
     return actual_type(chain([check_type(t, val, key) for val, t in zip(value, actual_types)]))
 
 
