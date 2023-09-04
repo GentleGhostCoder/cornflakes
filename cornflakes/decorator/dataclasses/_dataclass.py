@@ -148,7 +148,7 @@ def dataclass(
     if sys.version_info >= (3, 10):
         kwargs = dict(kw_only=kw_only, slots=slots, match_args=match_args)
     else:
-        kwargs: dict = {}
+        kwargs = {}
 
     def create_dataclass(w_cls: Type[_T]) -> Union[Type[CornflakesDataclass], MappingWrapper[_T]]:
         """
