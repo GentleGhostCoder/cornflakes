@@ -47,7 +47,7 @@ find_replace(glob(f"{external_path}/*/**"), "#include <endian.h>", "#include <cr
 
 def build(setup_kwargs):
     ext_modules = [
-        Pybind11Extension("_cornflakes", [*files], include_dirs=[path, *ext_paths]),  # , cxx_std=17
+        Pybind11Extension("_cornflakes", [*files], include_dirs=[path, *ext_paths], cxx_std=17),
     ]
     setup_kwargs.update(
         {
