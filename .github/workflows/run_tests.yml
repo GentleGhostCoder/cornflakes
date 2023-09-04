@@ -98,12 +98,6 @@ jobs:
                   python -m venv .venv
                   source .venv/bin/activate
 
-            - name: Install Ninja and pybind11
-              run: |
-                  pip install ninja
-                  ninja --version
-                  pip install pybind11
-
             - name: Install Poetry
               run: |
                   pip install "poetry==1.3.2"
@@ -112,13 +106,6 @@ jobs:
             - name: Install Dependencies
               run: |
                   poetry install --only dev -v
-
-            - name: Install nox nox-poetry rich
-              run: |
-                  pip install nox
-                  pip inject nox nox-poetry
-                  pip inject nox rich
-                  nox --version
 
             - name: Compute pre-commit cache key
               if: matrix.session == 'pre-commit'

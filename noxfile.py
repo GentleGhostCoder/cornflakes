@@ -183,6 +183,11 @@ def tests(session: Session) -> None:
     session.run("pip", "install", "virtualenv", "--upgrade")  # fix bug for windows tests
     # session.run("poetry", "install")
     # poetry install does not work for macOS for some reason -> the pybind11 extensions not built
+    # remove build / dist folders
+    if Path("build").exists():
+        shutil.rmtree("build")
+    if Path("dist").exists():
+        shutil.rmtree("dist")
     session.run("poetry", "build")
     version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
     search = f"*cp{version}*.whl"
