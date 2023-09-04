@@ -111,8 +111,8 @@ jobs:
             - name: Install nox nox-poetry rich
               run: |
                   pip install nox
-                  pip inject nox nox-poetry
-                  pip inject nox rich
+                  pip install nox nox-poetry
+                  pip install nox rich
                   nox --version
 
             - name: Compute pre-commit cache key
