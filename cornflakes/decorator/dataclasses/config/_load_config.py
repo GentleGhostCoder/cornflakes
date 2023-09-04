@@ -5,17 +5,19 @@ import re
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from cornflakes import ini_load
+from cornflakes.common import recursive_update
 from cornflakes.decorator.dataclasses._helper import (
     alias_generator,
     dataclass_fields,
     dataclass_required_keys,
-    is_chain_files,
+    is_chain_configs,
     is_config,
     is_config_list,
     is_use_regex,
     normalized_class_name,
     pass_section_name,
 )
+from cornflakes.types import Constants
 
 
 def create_file_loader(  # noqa: C901
@@ -108,16 +110,17 @@ def create_file_loader(  # noqa: C901
         :returns: Nested Lists of Config Classes
         """
         if not sections:
-            sections = cls.__config_sections__
+            sections = getattr(cls, Constants.config_decorator.SECTIONS, None)
         if not files:
-            files = cls.__config_files__
+            files = getattr(cls, Constants.config_decorator.FILES, None)
         if not eval_env:
-            eval_env = cls.__eval_env__
+            eval_env = getattr(cls, Constants.dataclass_decorator.EVAL_ENV, None)
         if not allow_empty:
-            allow_empty = cls.__allow_empty_config__
+            allow_empty = getattr(cls, Constants.config_decorator.ALLOW_EMPTY, None)
 
         create_config = partial(_create_config, allow_empty=allow_empty)
-
+        normalized_cls_name = normalized_class_name(cls)
+        chain_configs = is_chain_configs(cls)
         pass_sections = pass_section_name(cls)
 
         def get_section_kwargs(section):
@@ -134,40 +137,42 @@ def create_file_loader(  # noqa: C901
                 config_dict = _check_config_dict(config_dict)
 
             if not section and config_dict.keys():
-                section = config_dict.popitem()[0] or normalized_class_name(cls)
+                section = config_dict.popitem()[0] or normalized_cls_name
 
             config = create_config(config_dict.get(section, {}), **get_section_kwargs(section))
+
+            if chain_configs:
+                section = normalized_cls_name
 
             if not config:
                 return {section: create_config({}, **get_section_kwargs(section))}
             return {section: config}
 
         if not config_dict:
-            if is_chain_files(cls):
-                config_dict = OrderedDict(
-                    _loader_callback(
-                        files={None: files}, sections={normalized_class_name(cls): None}, keys=keys, eval_env=eval_env
-                    )
-                )
-            else:
-                raw_config_dict = OrderedDict(
-                    _loader_callback(files=files, sections=None, keys=keys, eval_env=eval_env)
-                )
-                config_dict = {}
-                for file_name, section_config in raw_config_dict.items():
-                    for section_name, config in section_config.items():
-                        config_dict[f"{file_name}:{section_name or normalized_class_name(cls)}"] = config
-                config_dict = _check_config_dict(config_dict)
+            raw_config_dict = OrderedDict(_loader_callback(files=files, sections=None, keys=keys, eval_env=eval_env))
+            config_dict = {}
+            for file_name, section_config in raw_config_dict.items():
+                for section_name, config in section_config.items():
+                    config_dict[f"{file_name}:{section_name or normalized_cls_name}"] = config
+            config_dict = _check_config_dict(config_dict)
 
             logging.debug(f"Read config with sections: {config_dict.keys()}")
 
         regex = f'({"|".join(sections) if isinstance(sections, list) else sections or ""})'
         logging.debug(f"Load all configs that match regex: `{regex}`")
-        config_dict = {
-            section: config
-            for section, config in config_dict.items()
-            if bool(re.match(regex, section.split(":", 1).pop() or ""))
-        }
+        sections_found = [
+            section for section in config_dict if bool(re.match(regex, section.split(":", 1).pop() or ""))
+        ]
+
+        if chain_configs:
+            if not sections_found:
+                sections_found = list(config_dict.keys())
+            if normalized_cls_name not in config_dict:
+                config_dict[normalized_cls_name] = {}
+            for section in sections_found:
+                recursive_update(config_dict[normalized_cls_name], config_dict.pop(section), merge_lists=True)
+        else:
+            config_dict = {section: config for section, config in config_dict.items() if section in sections_found}
 
         if not is_config_list(cls):
             return {
@@ -180,11 +185,11 @@ def create_file_loader(  # noqa: C901
                 }.items()
                 if config
             } or {
-                normalized_class_name(cls): create_config({}, **slot_kwargs)  # no matches
+                normalized_cls_name: create_config({}, **slot_kwargs)  # no matches
             }
 
         return {
-            normalized_class_name(cls): (
+            normalized_cls_name: (
                 list(
                     _none_omit(
                         [

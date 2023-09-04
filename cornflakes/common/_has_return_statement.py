@@ -1,27 +1,63 @@
-import ast
-import inspect
-import textwrap
+import dis
 
 
 def has_return_statement(func):
-    source = inspect.getsource(func)
-    source = textwrap.dedent(source)  # Remove leading whitespace
-    tree = ast.parse(source)
+    """
+    Checks if a given function has a return statement that returns a value other than None.
 
-    has_return = False
-    all_returns_none = True  # Assume all returns are None until proven otherwise
+    :param func: The function to be checked
+    :type func: Callable
+    :return: True if the function has a return statement that returns a value other than None, False otherwise.
+    :rtype: bool
 
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Return):
-            has_return = True  # Found a return statement
-            if node.value is not None:  # Check if the return statement returns something other than None
-                all_returns_none = False
-                break  # No need to continue checking
+    :xdoctest:
 
-    if not has_return:
-        return False  # No return statement found
+    >>> def no_return(): pass
+    >>> has_return_statement(no_return)
+    False
 
-    if all_returns_none:
-        return False  # All return statements are of type None
+    >>> def return_none():
+    ...     return None
+    >>> has_return_statement(return_none)
+    False
 
-    return True  # There's at least one return statement that is not None
+    >>> def return_something():
+    ...     return 42
+    >>> has_return_statement(return_something)
+    True
+
+    >>> def return_conditionally(x):
+    ...     if x > 0:
+    ...         return x
+    >>> has_return_statement(return_conditionally)
+    True
+
+    >>> def multiple_return(x):
+    ...     if x > 0:
+    ...         return None
+    ...     return x
+    >>> has_return_statement(multiple_return)
+    True
+
+    >>> def multiple_none_return(x):
+    ...     if x > 0:
+    ...         return None
+    ...     return None
+    >>> has_return_statement(multiple_none_return)
+    False
+    """
+
+    return_count = 0
+    none_return_count = 0
+    has_load_const_none = False
+
+    for inst in dis.get_instructions(func):
+        if inst.opname == "LOAD_CONST" and inst.argval is None:
+            has_load_const_none = True
+        if inst.opname == "RETURN_VALUE":
+            return_count += 1
+            if has_load_const_none:
+                none_return_count += 1
+            has_load_const_none = False
+
+    return return_count > none_return_count

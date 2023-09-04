@@ -1,6 +1,7 @@
+from copy import copy
 from inspect import signature
 from types import SimpleNamespace
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, List
 
 from cornflakes.common import check_type, extract_var_names, has_return_statement
 from cornflakes.decorator.dataclasses._helper import (
@@ -92,6 +93,27 @@ def _process_type_checking(dc_cls, dc_types, **kwargs):
     }
 
 
+def get_dataclass_non_comparable_kwargs(field_defaults: dict) -> List[Any]:
+    """Check if all fields are naturally comparable using ==.
+    Returns a list of field names that are not comparable.
+    """
+    non_comparable_fields = []
+
+    for field_name, default_value in field_defaults.items():
+        try:
+            # Try to create a copy of the default value
+            copied_value = copy(default_value)
+
+            # Try to compare the copied value with the original
+            if copied_value != default_value:
+                non_comparable_fields.append(field_name)
+        except Exception as e:
+            print(f"Cannot check comparability for field {field_name}: {e}")
+            non_comparable_fields.append(field_name)
+
+    return non_comparable_fields
+
+
 def check_dataclass_kwargs(dc_cls, **kwargs) -> Dict[str, Any]:
     """Check dataclass types."""
     _fields = dataclass_fields(dc_cls)
@@ -114,7 +136,7 @@ def validate_dataclass_kwargs(dc_cls, force=True, **kwargs):
         {field.name: default(field) for field in _fields.values() if field.name not in [*kwargs, *_init_exclude_keys]}
     )
 
-    _dc_types = {key: _fields.get(key).type for key in kwargs.keys()}
+    _dc_types = {key: _fields.get(key).type for key in kwargs.keys() if key in _fields}
 
     if not force:
         # remove required_keys that have kwargs WITHOUT_DEFAULT_TYPE that has without default

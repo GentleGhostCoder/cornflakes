@@ -54,7 +54,7 @@ def config(
     is_list: Optional[Union[bool, int]] = False,
     default_loader: Optional[Loader] = None,
     allow_empty: Optional[bool] = False,
-    chain_files: Optional[bool] = False,
+    chain_configs: Optional[bool] = False,
     **kwargs: Any,
 ) -> Callable[[Type[_T]], Union[Type[CornflakesDataclass], Type[Config], Type[ConfigGroup], MappingWrapper[_T]]]:
     ...
@@ -89,7 +89,7 @@ def config(
     is_list: Optional[Union[bool, int]] = False,
     default_loader: Optional[Loader] = None,
     allow_empty: Optional[bool] = False,
-    chain_files: Optional[bool] = False,
+    chain_configs: Optional[bool] = False,
     **kwargs: Any,
 ) -> Union[Type[Config], Type[CornflakesDataclass], Type[ConfigGroup], MappingWrapper[_T]]:
     ...
@@ -123,7 +123,7 @@ def config(
     is_list: Optional[Union[bool, int]] = False,
     default_loader: Optional[Loader] = None,
     allow_empty: Optional[bool] = False,
-    chain_files: Optional[bool] = False,
+    chain_configs: Optional[bool] = False,
     init_default_config: Optional[bool] = True,
     **kwargs: Any,
 ) -> Union[
@@ -179,8 +179,8 @@ def config(
     :type default_loader: Loader, optional
     :param allow_empty: If set to True, an empty config result will be allowed. Default is False.
     :type allow_empty: bool, optional
-    :param chain_files: If set to True, multiple config files will be chained into a single config. Default is False.
-    :type chain_files: bool, optional
+    :param chain_configs: If set to True, multiple config files will be chained into a single config. Default is False.
+    :type chain_configs: bool, optional
     :param init_default_config: If set to True, will initialize the default config file(s) upon loading. Default is True.
     :type init_default_config: bool, optional
 
@@ -259,7 +259,7 @@ def config(
         setattr(config_cls, Constants.config_decorator.FILES, files)
         setattr(config_cls, Constants.config_decorator.USE_REGEX, use_regex)
         setattr(config_cls, Constants.config_decorator.IS_LIST, is_list)
-        setattr(config_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
+        setattr(config_cls, Constants.config_decorator.chain_configs, chain_configs)
         setattr(config_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
         setattr(config_cls, Constants.config_decorator.VALIDATE, validate)
         setattr(config_cls, Constants.config_decorator.DEFAULT_LOADER, default_loader)

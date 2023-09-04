@@ -5,7 +5,7 @@ from cornflakes.decorator.dataclasses._validate import validate_dataclass_kwargs
 _T = TypeVar("_T")
 
 
-def enforce_types(cls: Type[_T]) -> Type[_T]:  # noqa: C901
+def enforce_types(cls: Type[_T], dc_cls=None) -> Type[_T]:  # noqa: C901
     """Adds a simple decorator enforce_types that enables enforcing strict typing on a function or dataclass using annotations."""
 
     default_kwargs = validate_dataclass_kwargs(dc_cls=cls, force=False)  # pre validation

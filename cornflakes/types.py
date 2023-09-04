@@ -110,7 +110,7 @@ class ConfigDecorator:
     DEFAULT_LOADER: str = "__default_loader__"
     CUSTOM_LOADER: str = "__custom_loader__"
     ALLOW_EMPTY: str = "__allow_empty_config__"
-    CHAIN_FILES: str = "__chain_files__"
+    chain_configs: str = "__chain_configs__"
     VALIDATE: str = "__validate__"
     ALIAS_GENERATOR: str = "__alias_generator__"
 
@@ -131,6 +131,7 @@ class DataclassDecorator:
     VALIDATORS: str = "__cornflakes_validators__"
     REQUIRED_KEYS: str = "__cornflakes_required_keys__"
     INIT_EXCLUDE_KEYS: str = "__cornflakes_init_exclude_keys__"
+    NON_COMPARABLE_FIELDS: str = "__cornflakes_non_comparable_fields__"
 
 
 @dataclass(frozen=True)
@@ -338,7 +339,7 @@ class StandardConfigArgs(Protocol):
     __config_list__: ClassVar[bool]
     __default_loader__: ClassVar[Loader]
     __allow_empty_config__: ClassVar[bool]
-    __chain_files__: ClassVar[bool]
+    __chain_configs__: ClassVar[bool]
 
 
 @runtime_checkable
@@ -392,7 +393,7 @@ class StandardConfigMethods(Protocol):
 class StandardConfigGroupArgs(Protocol):
     __allow_empty_config__: ClassVar[bool]
     __config_files__: ClassVar[Optional[Union[List[str], str]]]
-    __chain_files__: ClassVar[bool]
+    __chain_configs__: ClassVar[bool]
 
 
 @runtime_checkable

@@ -1,7 +1,7 @@
 from functools import reduce, wraps
 from inspect import isclass, signature
 from os.path import exists
-from typing import Any, Callable, Type, Union
+from typing import Any, Callable, List, Optional, Type, Union
 
 from click import Command, Group, option
 
@@ -95,7 +95,13 @@ def _update_options_help(callback, config, formatter=None):
 
 
 def _config_group_option(
-    config, add_config_file_options: bool = False, passing_key=None, is_sub_config=False, **options
+    config,
+    add_config_file_option: bool = False,
+    files: Optional[Union[List[str], str]] = None,
+    sections: Optional[Union[List[str], str]] = None,
+    passing_key=None,
+    is_sub_config=False,
+    **options,
 ):
     decorators: list = []  # List to hold all decorators
     sub_configs = []
@@ -106,7 +112,9 @@ def _config_group_option(
             decorators.append(
                 _config_option(
                     config=sub_config,
-                    add_config_file_options=add_config_file_options,
+                    add_config_file_option=add_config_file_option,
+                    files=files,
+                    sections=sections,
                     passing_key=passing_key,
                     is_sub_config=is_sub_config,
                     **options,
@@ -121,7 +129,7 @@ def _config_group_option(
             help_str = " ".join([c.__name__ for c in sub_configs])
             return f"""Add config files to init <{config.__name__}> by **DICT[{help_str}]\n\nFound default configs: {[f for f in config_files(config) if exists(f)]}"""
 
-        if add_config_file_options:
+        if add_config_file_option:
             new_func = _update_options_help(new_func, config, formatter)
 
         _set_passed_key(new_func, config, passing_key)
@@ -136,7 +144,9 @@ AnyCallable = Callable[..., Any]
 
 def _config_option(  # noqa: C901
     config: Union[Type[_T], Type[Config], Type[ConfigGroup]],
-    add_config_file_options: bool = False,
+    add_config_file_option: bool = False,
+    files: Optional[Union[List[str], str]] = None,
+    sections: Optional[Union[List[str], str]] = None,
     passing_key=None,
     is_sub_config: bool = False,
     **options,
@@ -148,12 +158,14 @@ def _config_option(  # noqa: C901
 
     # check if options are valid dict of dicts
     if not all(isinstance(v, dict) for v in options.values()):
-        raise ValueError("Options should be a dict of dicts with option arguments!")
+        raise ValueError(f"Options should be a dict of dicts with option arguments! Got invalid options {options}.")
 
     if not is_config(config) and is_group(config):
         return _config_group_option(
             config=config,
-            add_config_file_options=add_config_file_options,
+            add_config_file_option=add_config_file_option,
+            files=files,
+            sections=sections,
             passing_key=passing_key,
             is_sub_config=True,
             **options,
@@ -198,7 +210,7 @@ def _config_option(  # noqa: C901
             option_args["show_default"] = True
             wrapper = option(option_name, cls=None, **option_args)(wrapper)
 
-        if not is_sub_config and add_config_file_options:
+        if not is_sub_config and add_config_file_option:
 
             def formatter(help_str):
                 help_str = f"{help_str}, {config.__name__}"
@@ -210,15 +222,28 @@ def _config_option(  # noqa: C901
 
         setattr(wrapper, Constants.config_option.ENABLED, True)
 
+        # add sections to config default if some provided
+        if sections:
+            getattr(config, Constants.config_decorator.SECTIONS).extend(
+                [sections] if isinstance(sections, str) else sections
+            )
+
         def wrap_read_config(func=None):
             """Wrap the read_config function to read config from file."""
 
             def read_config(**kwargs):
                 config_fields = dataclass_fields(config)
+                non_comparable_fields = getattr(config, Constants.dataclass_decorator.NON_COMPARABLE_FIELDS, [])
                 config_args = {
                     k: v
                     for k, v in kwargs.items()
-                    if k in config_fields and config_fields[k].init and v != default(config_fields[k])
+                    if k in config_fields
+                    and config_fields.get(k).init
+                    and (
+                        v != default(config_fields.get(k))
+                        if k not in non_comparable_fields
+                        else repr(v) != repr(default(config_fields.get(k)))
+                    )
                 }
                 # exclude values that are of type Missing, WithoutDefault or HiddenDefault
                 config_args = {
@@ -226,12 +251,12 @@ def _config_option(  # noqa: C901
                     for k, v in config_args.items()
                     if not isinstance(v, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE, HIDDEN_DEFAULT_TYPE))
                 }
-                files = (
-                    kwargs.get(Constants.config_decorator_args.FILES, None)
-                    if add_config_file_options
-                    else config_files(config)
+                _files = (
+                    (kwargs.get(Constants.config_decorator_args.FILES, None) if add_config_file_option else None)
+                    if not files
+                    else files
                 )
-                return config.from_file(files=files, **config_args)
+                return config.from_file(files=_files, sections=sections, **config_args)
 
             return wraps(func)(read_config) if func else read_config
 
@@ -268,7 +293,9 @@ def _config_option(  # noqa: C901
 
 def config_option(  # noqa: C901
     config: Union[Type[_T], Type[CornflakesDataclass], Type[Config], Type[ConfigGroup]],
-    add_config_file_options: bool = False,
+    add_config_file_option: bool = False,
+    files: Optional[Union[List[str], str]] = None,
+    sections: Optional[Union[List[str], str]] = None,
     passing_key=None,
     **options,
 ) -> Callable[[Union[Command, Group, Type[_T], AnyCallable]], Union[Command, Group, Type[_T], AnyCallable]]:
@@ -277,4 +304,12 @@ def config_option(  # noqa: C901
         raise TypeError("config should be a class!")
 
     options.pop("is_sub_config", None)  # Remove is_sub_config if exists not passed by user
-    return _config_option(config, add_config_file_options, passing_key, is_sub_config=False, **options)
+    return _config_option(
+        config=config,
+        add_config_file_option=add_config_file_option,
+        files=files,
+        sections=sections,
+        passing_key=passing_key,
+        is_sub_config=False,
+        **options,
+    )

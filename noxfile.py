@@ -34,6 +34,13 @@ os.environ["NOX_RUNNING"] = "True"
 # TODO: optimize build with session.install() instead of poetry build -> install dist
 
 
+def clear():
+    if Path("build").exists():
+        shutil.rmtree("build")
+    if Path("dist").exists():
+        shutil.rmtree("dist")
+
+
 def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
     """Activate virtualenv in hooks installed by pre-commit.
 
@@ -147,6 +154,7 @@ def mypy(session: Session) -> None:
     session.run("pip", "install", "poetry")
     session.run("pip", "install", "pydantic[dotenv]")
     session.run("pip", "install", "pydantic-settings")
+    clear()
     session.run("poetry", "install")
     session.install("mypy", "pytest", "types-pkg-resources", "types-requests", "types-attrs")
     session.run("mypy", *args)
@@ -165,6 +173,7 @@ def pytype(session: Session):
     session.run("pip", "install", "poetry")
     session.run("pip", "install", "pydantic[dotenv]")
     session.run("pip", "install", "pydantic-settings")
+    clear()
     session.run("poetry", "install")
     session.install("pytype")
     session.run("pytype", *args)
@@ -184,10 +193,7 @@ def tests(session: Session) -> None:
     # session.run("poetry", "install")
     # poetry install does not work for macOS for some reason -> the pybind11 extensions not built
     # remove build / dist folders
-    if Path("build").exists():
-        shutil.rmtree("build")
-    if Path("dist").exists():
-        shutil.rmtree("dist")
+    clear()
     session.run("poetry", "build")
     version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
     search = f"*cp{version}*.whl"
@@ -225,6 +231,7 @@ def typeguard(session: Session) -> None:
     session.run("pip", "install", "pydantic[dotenv]")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    clear()
     session.run("poetry", "install")
     # session.run("poetry", "build")
     # version = re.sub(".*-", "", session.name.replace("typeguard-", "")).replace(".", "")
@@ -241,6 +248,7 @@ def xdoctest(session: Session) -> None:
     args = session.posargs or ["all"]
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    clear()
     session.run("poetry", "install")
     # version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
     # search = f"*cp{version}*.whl"
@@ -256,6 +264,7 @@ def docs_build(session: Session) -> None:
     args = session.posargs or ["docs", "docs/_build"]
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    clear()
     session.run("poetry", "install")
     # session.run("poetry", "build")
     # version = re.sub(".*-", "", session.name.replace("docs_build-", "")).replace(".", "")
@@ -285,6 +294,7 @@ def docs(session: Session) -> None:
     args = session.posargs or ["--open-browser", "docs", "docs/_build"]
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    clear()
     session.run("poetry", "install")
     # session.run("poetry", "build")
     # version = re.sub(".*-", "", session.name.replace("docs-", "")).replace(".", "")

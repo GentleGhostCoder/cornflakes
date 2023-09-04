@@ -35,7 +35,7 @@ def config_group(
     ignore_none: bool = False,
     files: Optional[Union[List[str], str]] = None,
     allow_empty: Optional[bool] = None,
-    chain_files: Optional[bool] = False,
+    chain_configs: Optional[bool] = False,
     **kwargs,
 ) -> Callable[[Type[_T]], Union[Type[ConfigGroup], Type[CornflakesDataclass], MappingWrapper[_T]]]:
     ...
@@ -66,7 +66,7 @@ def config_group(
     ignore_none: bool = False,
     files: Optional[Union[str, List[str]]] = None,
     allow_empty: Optional[bool] = None,
-    chain_files: Optional[bool] = False,
+    chain_configs: Optional[bool] = False,
     **kwargs,
 ) -> Union[Type[ConfigGroup], Type[CornflakesDataclass], MappingWrapper[_T]]:
     ...
@@ -96,7 +96,7 @@ def config_group(
     ignore_none: bool = False,
     files: Optional[Union[str, List[str]]] = None,
     allow_empty: Optional[bool] = None,
-    chain_files: Optional[bool] = False,
+    chain_configs: Optional[bool] = False,
     **kwargs,
 ) -> Union[
     Callable[[Type[_T]], Union[Type[ConfigGroup], Type[CornflakesDataclass], MappingWrapper[_T]]],
@@ -126,7 +126,7 @@ def config_group(
     :param cls: Config class
     :param files: Default config files
     :param allow_empty: Flag that allows empty config result
-    :param chain_files: flag indicating whether to chain files in to single config.
+    :param chain_configs: flag indicating whether to chain files in to single config.
     :param kwargs: Additional args for custom dataclass. (dict_factory, eval_env. ...).
 
     :returns: wrapped class or the wrapper itself with the custom default arguments if the config class is not
@@ -158,7 +158,7 @@ def config_group(
         )(w_cls)
 
         setattr(config_group_cls, Constants.config_decorator.FILES, files)
-        setattr(config_group_cls, Constants.config_decorator.CHAIN_FILES, chain_files)
+        setattr(config_group_cls, Constants.config_decorator.chain_configs, chain_configs)
         setattr(config_group_cls, Constants.config_decorator.ALLOW_EMPTY, allow_empty)
         setattr(config_group_cls, Constants.config_decorator.ALIAS_GENERATOR, alias_generator)
 

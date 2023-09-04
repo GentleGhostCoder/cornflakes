@@ -116,7 +116,18 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
 
 
 def _handle_config_type_validation(func_params, passed_key, config_type, config_name, **kwargs):
-    config_value = kwargs[config_name]
+    sections = getattr(config_type, Constants.config_decorator.SECTIONS, [])
+    sections.extend([name for name in [config_name, passed_key] if name not in sections])
+
+    # config_value -> first found section in kwargs that exists. otherwise raise error
+
+    config_value = next(
+        (kwargs[section] for section in sections if section in kwargs and kwargs[section] is not None), None
+    )
+
+    if config_value is None:
+        raise ValueError(f"Could not find any config value with keys {sections} in kwargs {kwargs}")
+
     if isinstance(config_value, (list, tuple)):
         warning_msg = (
             f"For {config_name}, the `is_list` parameter is currently set to True, "

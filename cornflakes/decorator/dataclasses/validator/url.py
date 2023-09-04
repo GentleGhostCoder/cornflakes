@@ -49,7 +49,7 @@ class AnyUrl:
     username: Optional[str] = field(default=None, init=True, repr=False)
     password: Optional[str] = field(default=None, init=True, repr=False)
     tld: Optional[str] = field(default=None, init=True, repr=False)
-    valid: Optional[str] = field(default=None, init=True, repr=False)
+    valid: bool = field(default=False, init=True, repr=False)
     token: Optional[str] = field(default=None, init=True)
 
     def __init_parsed(self, parsed: ParseResult, overwrite=True):
@@ -85,7 +85,7 @@ class AnyUrl:
             tld = self.hostname[::-1].split(".", 1)[0][::-1]
             if tld in VALID_ZONES:
                 self.tld = tld
-        self.valid = validators.url(self.hostname or "")
+        self.valid = validators.url(self.hostname or "") is True
         self.token = self.token or self.password or self.username
 
     def __str__(self) -> str:
