@@ -49,7 +49,7 @@ class AnyUrl:
     username: Optional[str] = field(default=None, init=True, repr=False)
     password: Optional[str] = field(default=None, init=True, repr=False)
     tld: Optional[str] = field(default=None, init=True, repr=False)
-    valid: Optional[str] = field(default=None, init=True, repr=False)
+    valid: bool = field(default=False, init=True, repr=False)
     token: Optional[str] = field(default=None, init=True)
 
     def __init_parsed(self, parsed: ParseResult, overwrite=True):

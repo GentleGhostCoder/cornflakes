@@ -60,9 +60,9 @@ def is_eval_env(cls):
     return getattr(cls, Constants.dataclass_decorator.EVAL_ENV, False)
 
 
-def is_chain_files(cls):
+def is_chain_configs(cls):
     """Method to return flag that class is a chain files class."""
-    return getattr(cls, Constants.config_decorator.CHAIN_FILES, False)
+    return getattr(cls, Constants.config_decorator.chain_configs, False)
 
 
 def dict_factory(cls):
