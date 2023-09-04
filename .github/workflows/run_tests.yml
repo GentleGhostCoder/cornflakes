@@ -97,6 +97,7 @@ jobs:
                   pip install virtualenv --upgrade
                   python -m venv .venv
                   source .venv/bin/activate
+                  pip install --upgrade pip
 
             - name: Install Poetry
               run: |
