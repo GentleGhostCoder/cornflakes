@@ -1,12 +1,10 @@
 from glob import glob
 import os
+import pathlib
 import re
 
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension
-import pypandoc
-
-long_description = pypandoc.convert_file("README.rst", "md")
 
 
 def find_replace(file_list, find, replace, file_pattern):
@@ -43,6 +41,8 @@ files = [
 ext_paths = [external_path, pybind11.get_include(), f"{external_path}/rapidjson/include/rapidjson"]
 
 find_replace(glob(f"{external_path}/*/**"), "#include <endian.h>", "#include <cross_endian.h>", "^.*(.cpp|.h|.hpp)$")
+
+long_description = pathlib.Path("README.md").read_text()
 
 
 def build(setup_kwargs):
