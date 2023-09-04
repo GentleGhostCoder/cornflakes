@@ -94,10 +94,11 @@ jobs:
                   pip install virtualenv
                   pip install virtualenv --upgrade
 
-            - name: Install Ninja
+            - name: Install Ninja and pybind11
               run: |
                   pip install ninja
                   ninja --version
+                  pip install pybind11
 
             - name: Install Poetry
               run: |
