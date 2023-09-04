@@ -136,7 +136,7 @@ def validate_dataclass_kwargs(dc_cls, force=True, **kwargs):
         {field.name: default(field) for field in _fields.values() if field.name not in [*kwargs, *_init_exclude_keys]}
     )
 
-    _dc_types = {key: _fields.get(key).type for key in kwargs.keys()}
+    _dc_types = {key: _fields.get(key).type for key in kwargs.keys() if key in _fields}
 
     if not force:
         # remove required_keys that have kwargs WITHOUT_DEFAULT_TYPE that has without default
