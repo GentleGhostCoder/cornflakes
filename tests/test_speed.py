@@ -16,6 +16,9 @@ from cornflakes.decorator.dataclasses import config, dataclass
 class TestSpeed(unittest.TestCase):
     """Tests for eval_datetime."""
 
+    # this speed measurement is very inaccurate and
+    # only for a custom indicator whether it is faster or slower when changing something
+
     @pytest.mark.skipif(os.environ.get("NOX_RUNNING", "False"))
     def test_ini_load_speed(self):
         s = perf_counter()

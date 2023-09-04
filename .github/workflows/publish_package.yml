@@ -21,6 +21,21 @@ jobs:
                   remote: true
                   submodules: recursive
 
+            - name: Install dependencies
+              run: |
+                  echo $RUNNER_OS &&
+                  if [ "$RUNNER_OS" == "Linux" ]; then
+                    sudo apt-get install -y pandoc;
+                  elif [ "$RUNNER_OS" == "macOS" ]; then
+                    brew install pandoc;
+                  elif [ "$RUNNER_OS" == "Windows" ]; then
+                    choco install pandoc;
+                  else
+                    echo "$RUNNER_OS not supported";
+                    exit 1
+                  fi
+              shell: bash
+
             - name: Set up Python
               uses: actions/setup-python@v4
               with:
@@ -75,6 +90,11 @@ jobs:
                   remote: true
                   submodules: recursive
               name: Check out source-code repository
+
+            - name: Install pandoc
+              run: |
+                  yum install -y pandoc;
+              shell: bash
 
             - name: Setup Python
               run: |
@@ -131,6 +151,11 @@ jobs:
                   remote: true
                   submodules: recursive
               name: Check out source-code repository
+
+            - name: Install pandoc
+              run: |
+                  yum install -y pandoc;
+              shell: bash
 
             - name: Setup Python
               run: |

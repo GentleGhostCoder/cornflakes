@@ -164,9 +164,16 @@ def _config_option(  # noqa: C901
             raise TypeError("Wrapped object should be a function!")
 
         configs = {}
-        for line in getattr(config, "__doc__", "").split("\n"):
+
+        docs = ""
+        if hasattr(config, "__bases__"):
+            docs = "\n".join([getattr(base, "__doc__", "") for base in config.__bases__])
+
+        docs += "\n" + getattr(config, "__doc__", "")
+
+        for line in docs.split("\n"):
             line = line.strip()
-            if line[:5] == ":cvar":
+            if line[:5] in [":cvar", ":var", ":ivar", ":param"]:
                 line = line[6:].split(":")
                 configs[line[0]] = {"help": line[1].strip()}
 

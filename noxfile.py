@@ -1,6 +1,7 @@
 """Nox sessions."""
 import os
 from pathlib import Path
+import re
 import shlex
 import shutil
 import sys
@@ -152,7 +153,7 @@ def mypy(session: Session) -> None:
 
 
 @session(python=python_versions[:-1])  # current py3.11 not supported -> https://github.com/google/pytype/issues/1308
-def pytype(session):
+def pytype(session: Session):
     """Run the static type checker."""
     args = session.posargs or [
         "--disable=import-error",
@@ -178,8 +179,20 @@ def tests(session: Session) -> None:
     session.run("pip", "install", "pydantic-settings")
     session.run("pip", "install", "ninja")
     session.run("pip", "install", "poetry")
+    session.run("pip", "install", "typeguard")
     session.run("pip", "install", "virtualenv", "--upgrade")  # fix bug for windows tests
-    session.run("poetry", "install")
+    # session.run("poetry", "install")
+    # poetry install does not work for macOS for some reason -> the pybind11 extensions not built
+    # remove build / dist folders
+    if Path("build").exists():
+        shutil.rmtree("build")
+    if Path("dist").exists():
+        shutil.rmtree("dist")
+    session.run("poetry", "build")
+    version = re.sub(".*-", "", session.name.replace("tests-", "")).replace(".", "")
+    search = f"*cp{version}*.whl"
+    file = list(Path("dist").glob(search))[0].name
+    session.run("pip", "install", f"dist/{file}", "--force-reinstall")
     session.install("coverage[toml]", "pytest", "pygments")
     try:
         session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs, env={"NOX_RUNNING": "True"})

@@ -6,7 +6,7 @@ from cornflakes.decorator.click.types import GlobalOption
 from cornflakes.decorator.dataclasses.config import config
 
 
-@config(init=True, slots=True, updatable=True)
+@config(init=True, slots=True, updatable=True)  # type: ignore
 class RichConfig:
     """DataClass for click config-values."""
 

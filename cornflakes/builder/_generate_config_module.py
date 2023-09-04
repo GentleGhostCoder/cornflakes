@@ -14,7 +14,7 @@ from cornflakes.decorator.dataclasses import config
 from cornflakes.decorator.dataclasses import dataclass as data
 
 
-@data(slots=True)
+@data(slots=True)  # type: ignore
 class _ConfigModuleGenerator:
     title: str
     target_module_file: str

@@ -26,8 +26,8 @@
 .. |Tests| image:: https://github.com/semmjon/cornflakes/workflows/Run%20cornflakes%20Tests/badge.svg
    :target: https://github.com/semmjon/cornflakes/actions?workflow=Tests
    :alt: Run Tests Status
-.. |Codecov| image:: https://codecov.io/gh/semmjon/cornflakes/branch/release-1.4.5/graph/badge.svg
-   :target: https://codecov.io/gh/semmjon/cornflakes
+.. |Codecov| image:: https://codecov.io/gh/sgeist-ionos/cornflakes/graph/badge.svg?token=FY72EIXI82
+   :target: https://codecov.io/gh/sgeist-ionos/cornflakes
    :alt: Codecov
 .. |Pre-Commit-CI| image:: https://results.pre-commit.ci/badge/github/sgeist-ionos/cornflakes/main.svg
    :target: https://results.pre-commit.ci/latest/github/sgeist-ionos/cornflakes/main
