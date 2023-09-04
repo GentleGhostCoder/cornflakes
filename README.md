@@ -1,6 +1,4 @@
-![cornflakes logo](https://github.com/semmjon/cornflakes/blob/main/assets/cornflakes.png?raw=true)
-
----
+## <img src="https://github.com/semmjon/cornflakes/blob/main/assets/cornflakes.png?raw=true" alt="cornflakes logo" width="400" height="400"/>
 
 ![PyPI](https://img.shields.io/pypi/v/cornflakes.svg)
 ![Python Version](https://img.shields.io/pypi/pyversions/cornflakes)
