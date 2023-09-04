@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cornflakes"
-version = "3.3.12"  # <<FORCE_BUMP>>
+version = "3.3.13"  # <<FORCE_BUMP>>
 description = "Create generic any easy way to manage Configs for your project"
 authors = ["Semjon Geist <semjon.geist@ionos.com>"]
 license = "Apache2.0"

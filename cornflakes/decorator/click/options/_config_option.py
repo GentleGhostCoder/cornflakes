@@ -215,10 +215,17 @@ def _config_option(  # noqa: C901
 
             def read_config(**kwargs):
                 config_fields = dataclass_fields(config)
+                non_comparable_fields = getattr(config, Constants.dataclass_decorator.NON_COMPARABLE_FIELDS, [])
                 config_args = {
                     k: v
                     for k, v in kwargs.items()
-                    if k in config_fields and config_fields[k].init and v != default(config_fields[k])
+                    if k in config_fields
+                    and config_fields[k].init
+                    and (
+                        v != default(config_fields[k])
+                        if k not in non_comparable_fields
+                        else repr(v) != repr(default(config_fields[k]))
+                    )
                 }
                 # exclude values that are of type Missing, WithoutDefault or HiddenDefault
                 config_args = {

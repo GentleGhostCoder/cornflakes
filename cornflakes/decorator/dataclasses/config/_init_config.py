@@ -89,8 +89,15 @@ def wrap_init_default_config(cls, init_default_config=True):
             if init_from_default_cache:
                 return init(self, **kwargs.copy())
 
+            non_comparable_fields = getattr(self, Constants.dataclass_decorator.NON_COMPARABLE_FIELDS, [])
             changed_kwargs = (
-                {key: value for key, value in kwargs.items() if repr(value) != repr(default_config.get(key))}
+                {
+                    k: v
+                    for k, v in kwargs.items()
+                    if (
+                        v != default_config[k] if k not in non_comparable_fields else repr(v) != repr(default_config[k])
+                    )
+                }
                 if default_config
                 else {}
             )
