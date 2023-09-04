@@ -3,9 +3,17 @@ import os
 import pathlib
 import re
 
-import docutils.core
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension
+
+try:
+    import pypandoc
+
+    long_description = pypandoc.convert_file("README.md", "rst")
+except (OSError, ImportError):
+    long_description = open("README.md").read()
+
+long_description = pathlib.Path("README.html").read_text()
 
 
 def find_replace(file_list, find, replace, file_pattern):
@@ -43,10 +51,6 @@ ext_paths = [external_path, pybind11.get_include(), f"{external_path}/rapidjson/
 
 find_replace(glob(f"{external_path}/*/**"), "#include <endian.h>", "#include <cross_endian.h>", "^.*(.cpp|.h|.hpp)$")
 
-docutils.core.publish_file(source_path="README.rst", destination_path="README.html", writer_name="html")
-
-long_description = pathlib.Path("README.html").read_text()
-
 
 def build(setup_kwargs):
     ext_modules = [
@@ -54,7 +58,7 @@ def build(setup_kwargs):
     ]
     setup_kwargs.update(
         {
-            # "long_description": long_description,
+            "long_description": long_description,
             "long_description_content_type": "text/html",
             "ext_modules": ext_modules,
             # "cmdclass": {
