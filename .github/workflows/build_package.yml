@@ -22,7 +22,7 @@ jobs:
               run: |
                   echo $RUNNER_OS &&
                   if [ "$RUNNER_OS" == "Linux" ]; then
-                    sudo apt-get install -y pandoc;
+                    apt-get install -y pandoc;
                   elif [ "$RUNNER_OS" == "macOS" ]; then
                     brew install pandoc;
                   elif [ "$RUNNER_OS" == "Windows" ]; then
@@ -76,7 +76,7 @@ jobs:
 
             - name: Install pandoc
               run: |
-                  sudo apt-get install -y pandoc;
+                  apt-get install -y pandoc;
               shell: bash
 
             - name: Setup Python
@@ -136,7 +136,7 @@ jobs:
 
             - name: Install pandoc
               run: |
-                  sudo apt-get install -y pandoc;
+                  apt-get install -y pandoc;
               shell: bash
 
             - name: Setup Python
