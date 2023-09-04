@@ -1,19 +1,12 @@
 from glob import glob
 import os
-import pathlib
 import re
 
 import pybind11
 from pybind11.setup_helpers import Pybind11Extension
+import pypandoc
 
-try:
-    import pypandoc
-
-    long_description = pypandoc.convert_file("README.md", "rst")
-except (OSError, ImportError):
-    long_description = open("README.md").read()
-
-long_description = pathlib.Path("README.html").read_text()
+long_description = pypandoc.convert_file("README.rst", "md")
 
 
 def find_replace(file_list, find, replace, file_pattern):
@@ -59,7 +52,6 @@ def build(setup_kwargs):
     setup_kwargs.update(
         {
             "long_description": long_description,
-            "long_description_content_type": "text/html",
             "ext_modules": ext_modules,
             # "cmdclass": {
             #     "build_ext": build_ext,
