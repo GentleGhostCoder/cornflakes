@@ -92,7 +92,7 @@ jobs:
             - name: Update virtualenv
               run: |
                   pip install virtualenv
-                  pip upgrade virtualenv
+                  pip install virtualenv --upgrade
 
             - name: Install Ninja
               run: |
