@@ -10,6 +10,7 @@ from itertools import chain
 from typing import Any, Optional, get_args
 
 SpecialForm = type(Optional)
+AnyMeta = type(Any)
 
 
 def check_type(type_hint: Any, value, key="", skip=False):
@@ -35,7 +36,7 @@ def check_type(type_hint: Any, value, key="", skip=False):
     ```
     """
     # If the type hint is None or a special form (like Optional), we return the value as is.
-    if isinstance(type_hint, (type(None), SpecialForm)):
+    if isinstance(type_hint, (type(None), SpecialForm, AnyMeta)):
         return value
 
     # If the type hint is a class and the value is an instance of that class, we return the value as is.
