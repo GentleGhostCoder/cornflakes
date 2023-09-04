@@ -93,6 +93,8 @@ jobs:
               run: |
                   pip install virtualenv
                   pip install virtualenv --upgrade
+                  python -m venv .venv
+                  source .venv/bin/activate
 
             - name: Install Ninja and pybind11
               run: |
