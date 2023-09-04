@@ -53,7 +53,13 @@ def bump_version(level="patch"):  # noqa: C901
     # Update the version in Python files
     for root, dirs, files in os.walk("."):
         for file in files:
-            if file.endswith(".py"):
+            if (
+                file.endswith(".py")
+                or file.endswith(".yml")
+                or file.endswith(".yaml")
+                or file.endswith(".ini")
+                or file.endswith(".toml")
+            ):
                 file_path = os.path.join(root, file)
 
                 # Skip files in the "site-packages" directory
@@ -62,7 +68,7 @@ def bump_version(level="patch"):  # noqa: C901
 
                 content = pathlib.Path(file_path).read_text()
                 # Check if the file contains the string "# <<FORCE_BUMP>>"
-                if "# <<FORCE_BUMP>>" in content:
+                if "<<FORCE_BUMP>>" in content:
                     # Increment the version number in the file
                     content = content.replace(parsed_version.public, str(new_version))
 
