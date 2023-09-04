@@ -91,6 +91,11 @@ jobs:
                   submodules: recursive
               name: Check out source-code repository
 
+            - name: Install pandoc
+              run: |
+                  sudo apt-get install -y pandoc;
+              shell: bash
+
             - name: Setup Python
               run: |
                   python${{ matrix.python }} -m pip install --upgrade pip
@@ -146,6 +151,11 @@ jobs:
                   remote: true
                   submodules: recursive
               name: Check out source-code repository
+
+            - name: Install pandoc
+              run: |
+                  sudo apt-get install -y pandoc;
+              shell: bash
 
             - name: Setup Python
               run: |
