@@ -17,13 +17,13 @@
 .. |License| image:: https://img.shields.io/github/license/semmjon/cornflakes
    :target: https://opensource.org/licenses/Apache2.0
    :alt: License
-.. |Read the Docs| image:: https://github.com/sgeist-ionos/cornflakes/actions/workflows/build_package.yml/badge.svg?branch=main
+.. |Read the Docs| image:: https://github.com/sgeist-ionos/cornflakes/actions/workflows/publish_docs.yml/badge.svg
    :target: https://cornflakes.readthedocs.io
    :alt: Read the documentation at https://cornflakes.readthedocs.io
-.. |Build| image:: https://github.com/semmjon/cornflakes/workflows/Build%20cornflakes%20Package/badge.svg
+.. |Build| image:: https://github.com/sgeist-ionos/cornflakes/actions/workflows/build_package.yml/badge.svg
    :target: https://github.com/sgeist-ionos/cornflakes/actions/workflows/build_package.yml
    :alt: Build Package Status
-.. |Tests| image:: https://github.com/sgeist-ionos/cornflakes/actions/workflows/run_tests.yml/badge.svg?branch=main
+.. |Tests| image:: https://github.com/sgeist-ionos/cornflakes/actions/workflows/run_tests.yml/badge.svg
    :target: https://github.com/sgeist-ionos/cornflakes/actions/workflows/run_tests.yml
    :alt: Run Tests Status
 .. |Codecov| image:: https://codecov.io/gh/sgeist-ionos/cornflakes/graph/badge.svg?token=FY72EIXI82
