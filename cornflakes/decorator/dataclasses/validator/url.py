@@ -18,20 +18,20 @@ from cornflakes.decorator.dataclasses._field import field
 class AnyUrl:
     """Database URL.
 
-    :cvar url: URL to init the whole object (will be overwritten with other args).
-    :cvar scheme: The scheme of the url
-    :cvar netloc: user / pw / host and port of the url
-    :cvar path: path of the url
-    :cvar query: url query
-    :cvar params: url params
-    :cvar query_args: url query_args -> parsed query
-    :cvar fragment: url fragment
-    :cvar hostname: url hostname (overwrites the netloc)
-    :cvar port: url port (overwrites the netloc)
-    :cvar username: url username (overwrites the netloc)
-    :cvar password: url password (overwrites the netloc)
-    :cvar tld: url tld if it is valid
-    :cvar valid: validators.url validation result
+    :ivar url: URL to init the whole object (will be overwritten with other args).
+    :ivar scheme: The scheme of the url
+    :ivar netloc: user / pw / host and port of the url
+    :ivar path: path of the url
+    :ivar query: url query
+    :ivar params: url params
+    :ivar query_args: url query_args -> parsed query
+    :ivar fragment: url fragment
+    :ivar hostname: url hostname (overwrites the netloc)
+    :ivar port: url port (overwrites the netloc)
+    :ivar username: url username (overwrites the netloc)
+    :ivar password: url password (overwrites the netloc)
+    :ivar tld: url tld if it is valid
+    :ivar valid: validators.url validation result
     """
 
     url: InitVar[Optional[str]] = field(default=None)
@@ -44,7 +44,7 @@ class AnyUrl:
     fragment: str = field(default="", init=True)
     # urlparse arguments end here
     query_args: dict = field(default_factory=dict, init=True)
-    hostname: Optional[str] = field(default="", init=True, repr=False)
+    hostname: str = field(default="", init=True, repr=False)
     port: Optional[int] = field(default=None, init=True, repr=False)
     username: Optional[str] = field(default=None, init=True, repr=False)
     password: Optional[str] = field(default=None, init=True, repr=False)

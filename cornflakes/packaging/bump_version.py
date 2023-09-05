@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
+from distutils.version import LooseVersion
 import os
 import pathlib
 import subprocess
 import sys
 
 from click import Choice
-from packaging import version
 
 from cornflakes.cli import cli
 from cornflakes.decorator.click import argument
@@ -28,10 +28,10 @@ def bump_version(level="patch"):  # noqa: C901
     current_version = subprocess.check_output(["git", "describe", "--tags", latest_checkpoint]).decode().strip()
 
     # Parse the current version
-    parsed_version = version.parse(current_version)
+    parsed_version = LooseVersion(current_version)
 
     # Split the version string into major, minor, and patch numbers
-    major, minor, patch = parsed_version.release
+    major, minor, patch = map(int, parsed_version.vstring.split("."))
 
     # Increment the specified version component
     if level == "major":
@@ -48,7 +48,7 @@ def bump_version(level="patch"):  # noqa: C901
         return
 
     # Create the new version object
-    new_version = version.Version(f"{major}.{minor}.{patch}")
+    new_version = LooseVersion(f"{major}.{minor}.{patch}")
 
     # Update the version in Python files
     for root, dirs, files in os.walk("."):
@@ -70,7 +70,7 @@ def bump_version(level="patch"):  # noqa: C901
                 # Check if the file contains the string "# <<FORCE_BUMP>>"
                 if "<<FORCE_BUMP>>" in content:
                     # Increment the version number in the file
-                    content = content.replace(parsed_version.public, str(new_version))
+                    content = content.replace(str(parsed_version), str(new_version))
 
                     with open(file_path, "w") as f:
                         f.write(content)
