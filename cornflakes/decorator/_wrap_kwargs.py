@@ -210,8 +210,8 @@ def wrap_kwargs(wrapped, exclude: Optional[List[str]] = None, **overwrites):
     >>> @wrap_kwargs(wrapped=sum)
     ... def new_sum(**kwargs):
     ...     return kwargs
-    >>> new_sum([1, 2, 3])
-    {iterable: [1, 2, 3], strart: None}  # Output would be 16 because 'start' is overwritten to 10
+    >>> new_sum([1, 2, 3])  # Output would be 16 because 'start' is overwritten to 10
+    {'iterable': [1, 2, 3]}
     """
     kwargs_wrapper = KwargsWrapper(wrapped=wrapped, overwrites=overwrites, excluded=exclude or [])
 
