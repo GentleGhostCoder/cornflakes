@@ -123,8 +123,12 @@ def create_file_loader(  # noqa: C901
         chain_configs = is_chain_configs(cls)
         pass_sections = pass_section_name(cls)
 
-        def get_section_kwargs(section):
-            return {**slot_kwargs, **({"section_name": section} if pass_sections else {})}
+        def get_section_kwargs(value: str):
+            """Get section kwargs.
+
+            :param value: Section name
+            """
+            return {**slot_kwargs, **({Constants.config_decorator.SECTION_NAME_KEY: value} if pass_sections else {})}
 
         if not is_use_regex(cls) and not is_config_list(cls) and sections and len(sections) == 1:
             section = sections[0]
@@ -163,14 +167,13 @@ def create_file_loader(  # noqa: C901
         sections_found = [
             section for section in config_dict if bool(re.match(regex, section.split(":", 1).pop() or ""))
         ]
-
         if chain_configs:
+            new_config = {normalized_cls_name: {}}
             if not sections_found:
                 sections_found = list(config_dict.keys())
-            if normalized_cls_name not in config_dict:
-                config_dict[normalized_cls_name] = {}
             for section in sections_found:
-                recursive_update(config_dict[normalized_cls_name], config_dict.pop(section), merge_lists=True)
+                recursive_update(new_config[normalized_cls_name], config_dict.pop(section), merge_lists=True)
+            config_dict = new_config
         else:
             config_dict = {section: config for section, config in config_dict.items() if section in sections_found}
 

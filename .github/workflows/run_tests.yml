@@ -52,18 +52,13 @@ jobs:
                           os: ubuntu-latest,
                           session: "xdoctest",
                       }
-                    - {
-                          python-version: 3.8,
-                          os: ubuntu-latest,
-                          session: "docs-build",
-                      }
 
         env:
             NOXSESSION: ${{ matrix.session }}
 
         steps:
             - name: Check out the repository
-              uses: actions/checkout@v4.0.0
+              uses: actions/checkout@v4
               with:
                   remote: true
                   submodules: recursive
@@ -78,13 +73,11 @@ jobs:
               run: |
                   echo $RUNNER_OS &&
                   if [ "$RUNNER_OS" == "Linux" ]; then
-                    sudo apt-get install -y doxygen cppcheck clang-tidy pandoc;
+                    sudo apt-get install -y cppcheck clang-tidy;
                   elif [ "$RUNNER_OS" == "macOS" ]; then
-                    brew install doxygen;
-                    brew install pandoc;
+                    echo "nothing to do";
                   elif [ "$RUNNER_OS" == "Windows" ]; then
-                    choco install pandoc;
-                    choco install doxygen.install;
+                    echo "nothing to do";
                   else
                     echo "$RUNNER_OS not supported";
                     exit 1
@@ -145,19 +138,12 @@ jobs:
                   name: coverage-data
                   path: ".coverage.*"
 
-            - name: Upload documentation
-              if: matrix.session == 'docs-build'
-              uses: actions/upload-artifact@v3
-              with:
-                  name: docs
-                  path: docs/_build
-
     coverage:
         runs-on: ubuntu-latest
         needs: tests
         steps:
             - name: Check out the repository
-              uses: actions/checkout@v4.0.0
+              uses: actions/checkout@v4
 
             - name: Set up Python 3.8
               uses: actions/setup-python@v4
@@ -177,10 +163,6 @@ jobs:
               run: |
                   pipx install ninja
                   ninja --version
-
-            - name: Install Docs Requirements
-              run: |
-                  pip install -r docs/requirements.txt
 
             - name: Install nox nox-poetry rich
               run: |

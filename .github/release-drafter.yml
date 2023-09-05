@@ -1,5 +1,5 @@
-name-template: "3.3.14 🌈" # <<FORCE_BUMP>>
-tag-template: 3.3.14 # <<FORCE_BUMP>>
+name-template: "3.3.15 🌈" # <<FORCE_BUMP>>
+tag-template: 3.3.15 # <<FORCE_BUMP>>
 exclude-labels:
     - "skip-changelog"
 

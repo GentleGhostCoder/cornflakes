@@ -42,7 +42,7 @@ ext_paths = [external_path, pybind11.get_include(), f"{external_path}/rapidjson/
 
 find_replace(glob(f"{external_path}/*/**"), "#include <endian.h>", "#include <cross_endian.h>", "^.*(.cpp|.h|.hpp)$")
 
-long_description = pathlib.Path("README.md").read_text()
+long_description = pathlib.Path("README.rst").read_text()
 
 
 def build(setup_kwargs):
@@ -53,6 +53,7 @@ def build(setup_kwargs):
         {
             "long_description": long_description,
             "ext_modules": ext_modules,
+            "long_description_content_type": "text/x-rst",
             # "cmdclass": {
             #     "build_ext": build_ext,
             # },

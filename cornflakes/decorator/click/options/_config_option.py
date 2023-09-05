@@ -232,6 +232,7 @@ def _config_option(  # noqa: C901
             """Wrap the read_config function to read config from file."""
 
             def read_config(**kwargs):
+                # exclude values that are of type Missing, WithoutDefault or HiddenDefault
                 config_fields = dataclass_fields(config)
                 non_comparable_fields = getattr(config, Constants.dataclass_decorator.NON_COMPARABLE_FIELDS, [])
                 config_args = {
@@ -245,17 +246,16 @@ def _config_option(  # noqa: C901
                         else repr(v) != repr(default(config_fields.get(k)))
                     )
                 }
-                # exclude values that are of type Missing, WithoutDefault or HiddenDefault
                 config_args = {
                     k: v
                     for k, v in config_args.items()
                     if not isinstance(v, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE, HIDDEN_DEFAULT_TYPE))
                 }
-                _files = (
-                    (kwargs.get(Constants.config_decorator_args.FILES, None) if add_config_file_option else None)
-                    if not files
-                    else files
-                )
+                _files = config_args.pop(Constants.config_decorator_args.FILES, None)
+                if not add_config_file_option or files:
+                    # pass files from config_option decorator
+                    # if add_config_file_option is False, we will overwrite the files anyway even if its None
+                    _files = files
                 return config.from_file(files=_files, sections=sections, **config_args)
 
             return wraps(func)(read_config) if func else read_config

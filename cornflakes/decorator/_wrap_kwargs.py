@@ -22,6 +22,18 @@ def _check_annotation(annotation):
     return _not_empty(annotation)
 
 
+class WrappedValue:
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return repr(self.value)
+
+
+def _filter_not_wrapped_kwargs(kwargs):
+    return {key: value for key, value in kwargs.items() if not isinstance(value, WrappedValue)}
+
+
 @dataclass
 class KwargsWrapper:
     """KwargsWrapper Class."""
@@ -68,7 +80,7 @@ class KwargsWrapper:
                 (
                     f'{str(param).split(":", 1)[0].split("=", 1)[0]}'
                     f'{f": wrapped_type_{idx}" * _check_annotation(param.annotation)}'
-                    f'{f"=wrapped_default_value_{idx}" * _check_default(param.default)}'
+                    f'{f"=WrappedValue(wrapped_default_value_{idx})" * _check_default(param.default)}'
                 )
                 for idx, param in enumerate(self._params)
             ]
@@ -163,12 +175,13 @@ def wrap_kwargs({self._params_declaration}):
     argument_values = {self.arg_names[0]}[: len(argument_names)]
     _wrapped_kwargs.update(dict(zip(argument_names, argument_values)))
 ''' if self.arg_names else ''}
+    _wrapped_kwargs = _filter_not_wrapped_kwargs(_wrapped_kwargs)
     return wrapper(**_wrapped_kwargs)
 """
         try:
             exec(  # noqa: S102
                 wrapper_str,
-                locals(),
+                {**locals(), **globals()},
                 ldict,
             )
         except Exception as exc:
@@ -183,7 +196,23 @@ def wrap_kwargs({self._params_declaration}):
 
 
 def wrap_kwargs(wrapped, exclude: Optional[List[str]] = None, **overwrites):
-    """Function Decorator that can update all passed arguments (that can be a variable) of function."""
+    """
+    Function Decorator that can update all passed arguments (that can be a variable) of function.
+
+    Args:
+        wrapped (Callable): The original function to be wrapped.
+        exclude (List[str], optional): A list of keys to exclude from wrapping.
+        **overwrites: Keyword arguments that specify default values to overwrite.
+
+    Returns:
+        Callable: A function that wraps the original function.
+
+    >>> @wrap_kwargs(wrapped=sum)
+    ... def new_sum(**kwargs):
+    ...     return kwargs
+    >>> new_sum([1, 2, 3])  # Output would be 16 because 'start' is overwritten to 10
+    {'iterable': [1, 2, 3]}
+    """
     kwargs_wrapper = KwargsWrapper(wrapped=wrapped, overwrites=overwrites, excluded=exclude or [])
 
     def wrapper(func):
