@@ -11,6 +11,17 @@ Subpackages
    cornflakes.decorator.click.options
    cornflakes.decorator.click.rich
 
+Submodules
+----------
+
+cornflakes.decorator.click.types module
+---------------------------------------
+
+.. automodule:: cornflakes.decorator.click.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
