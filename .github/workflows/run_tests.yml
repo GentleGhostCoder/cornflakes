@@ -78,13 +78,11 @@ jobs:
               run: |
                   echo $RUNNER_OS &&
                   if [ "$RUNNER_OS" == "Linux" ]; then
-                    sudo apt-get install -y doxygen cppcheck clang-tidy pandoc;
+                    sudo apt-get install -y doxygen cppcheck clang-tidy;
                   elif [ "$RUNNER_OS" == "macOS" ]; then
                     brew install doxygen;
-                    brew install pandoc;
                   elif [ "$RUNNER_OS" == "Windows" ]; then
-                    choco install pandoc;
-                    choco install doxygen.install;
+                    scoop install doxygen;
                   else
                     echo "$RUNNER_OS not supported";
                     exit 1

@@ -3,7 +3,6 @@ name: PR to master branch from patch/release branch only
 on:
     pull_request:
         branches:
-            - master
             - main
 
 jobs:
@@ -11,9 +10,10 @@ jobs:
         runs-on: ubuntu-latest
         name: Check Target branch
         steps:
-            # PRs to the repository master branch are only ok if coming from any patch or release branch
+            # PRs to the repository main branch are only ok if coming from any patch or release branch
             - name: Check PRs
               run: |
+                  echo $GITHUB_HEAD_REF
                   { [[ $GITHUB_HEAD_REF = *"release"* ]]; } || [[ $GITHUB_HEAD_REF == *"patch"* ]] || [[ $GITHUB_HEAD_REF == *"dev"* ]]
 
             # If the above check failed, post a comment on the PR explaining the failure
