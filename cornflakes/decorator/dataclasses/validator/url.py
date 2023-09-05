@@ -44,7 +44,7 @@ class AnyUrl:
     fragment: str = field(default="", init=True)
     # urlparse arguments end here
     query_args: dict = field(default_factory=dict, init=True)
-    hostname: Optional[str] = field(default="", init=True, repr=False)
+    hostname: str = field(default="", init=True, repr=False)
     port: Optional[int] = field(default=None, init=True, repr=False)
     username: Optional[str] = field(default=None, init=True, repr=False)
     password: Optional[str] = field(default=None, init=True, repr=False)
