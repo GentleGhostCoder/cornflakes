@@ -1,9 +1,9 @@
+from distutils.version import LooseVersion
 import pathlib
 import re
 import subprocess
 from typing import Dict, cast
 
-from packaging import version
 import toml
 
 from cornflakes.cli import cli
@@ -28,7 +28,7 @@ def _update_deps(name: str, latest_version: str, t: Dict, c: str) -> str:  # noq
                     operator, current_version = parsed_version
                     if not current_version or not latest_version:
                         continue
-                    if version.parse(current_version) < version.parse(latest_version):
+                    if LooseVersion(current_version) < LooseVersion(latest_version):  # Use LooseVersion
                         updated_version_str = f"{operator}{latest_version}"
 
                         def _replace_version(line):
