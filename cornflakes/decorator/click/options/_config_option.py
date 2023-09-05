@@ -18,17 +18,7 @@ from cornflakes.decorator.dataclasses import (
     is_group,
     normalized_class_name,
 )
-from cornflakes.types import (
-    _T,
-    HIDDEN_DEFAULT,
-    HIDDEN_DEFAULT_TYPE,
-    MISSING_TYPE,
-    WITHOUT_DEFAULT_TYPE,
-    Config,
-    ConfigGroup,
-    Constants,
-    CornflakesDataclass,
-)
+from cornflakes.types import _T, HIDDEN_DEFAULT, Config, ConfigGroup, Constants, CornflakesDataclass
 
 
 def _set_passed_key(wrapper, config, passing_key):
@@ -232,31 +222,31 @@ def _config_option(  # noqa: C901
             """Wrap the read_config function to read config from file."""
 
             def read_config(**kwargs):
-                config_fields = dataclass_fields(config)
-                non_comparable_fields = getattr(config, Constants.dataclass_decorator.NON_COMPARABLE_FIELDS, [])
-                config_args = {
-                    k: v
-                    for k, v in kwargs.items()
-                    if k in config_fields
-                    and config_fields.get(k).init
-                    and (
-                        v != default(config_fields.get(k))
-                        if k not in non_comparable_fields
-                        else repr(v) != repr(default(config_fields.get(k)))
-                    )
-                }
+                # config_fields = dataclass_fields(config)
+                # non_comparable_fields = getattr(config, Constants.dataclass_decorator.NON_COMPARABLE_FIELDS, [])
+                # config_args = {
+                #     k: v
+                #     for k, v in kwargs.items()
+                #     if k in config_fields
+                #     and config_fields.get(k).init
+                #     and (
+                #         v != default(config_fields.get(k))
+                #         if k not in non_comparable_fields
+                #         else repr(v) != repr(default(config_fields.get(k)))
+                #     )
+                # }
                 # exclude values that are of type Missing, WithoutDefault or HiddenDefault
-                config_args = {
-                    k: v
-                    for k, v in config_args.items()
-                    if not isinstance(v, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE, HIDDEN_DEFAULT_TYPE))
-                }
+                # config_args = {
+                #     k: v
+                #     for k, v in config_args.items()
+                #     if not isinstance(v, (MISSING_TYPE, WITHOUT_DEFAULT_TYPE, HIDDEN_DEFAULT_TYPE))
+                # }
                 _files = (
-                    (kwargs.get(Constants.config_decorator_args.FILES, None) if add_config_file_option else None)
+                    (kwargs.pop(Constants.config_decorator_args.FILES, None) if add_config_file_option else None)
                     if not files
                     else files
                 )
-                return config.from_file(files=_files, sections=sections, **config_args)
+                return config.from_file(files=_files, sections=sections, **kwargs)
 
             return wraps(func)(read_config) if func else read_config
 

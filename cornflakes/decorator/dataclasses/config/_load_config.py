@@ -124,7 +124,7 @@ def create_file_loader(  # noqa: C901
         pass_sections = pass_section_name(cls)
 
         def get_section_kwargs(section):
-            return {**slot_kwargs, **({"section_name": section} if pass_sections else {})}
+            return {**slot_kwargs, **({Constants.config_decorator.SECTION_NAME_KEY: section} if pass_sections else {})}
 
         if not is_use_regex(cls) and not is_config_list(cls) and sections and len(sections) == 1:
             section = sections[0]

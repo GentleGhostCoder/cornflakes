@@ -127,7 +127,7 @@ def _check_class_type(actual_type, type_hint, key, value, skip):
             if skip:
                 return
             raise ValueError(
-                f"\n{exc}\n" f"Expected type {type_hint!r} for attribute {key!r} but received type {type(value)!r})."
+                f"\n{exc}\n" f"Expected type {actual_type!r} for attribute {key!r} but received type {type(value)!r})."
             ) from exc
 
     return value

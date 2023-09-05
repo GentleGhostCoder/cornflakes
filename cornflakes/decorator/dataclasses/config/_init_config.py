@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
 from cornflakes.decorator.dataclasses._helper import (
@@ -79,35 +79,23 @@ def wrap_init_default_config(cls, init_default_config=True):
         @wrap_kwargs(init, **default_config)
         def wrapper(
             self,
-            files: Optional[List[str]] = None,
-            sections: Optional[List[str]] = None,
+            files: Optional[Union[List[str], str]] = None,
+            sections: Optional[Union[List[str], str]] = None,
             eval_env: Optional[bool] = None,
             allow_empty: Optional[bool] = False,
             init_from_default_cache: bool = False,
             **kwargs,
         ):
+
             if init_from_default_cache:
                 return init(self, **kwargs.copy())
 
-            non_comparable_fields = getattr(self, Constants.dataclass_decorator.NON_COMPARABLE_FIELDS, [])
-            changed_kwargs = (
-                {
-                    k: v
-                    for k, v in kwargs.items()
-                    if (
-                        v != default_config.get(k)
-                        if k not in non_comparable_fields
-                        else repr(v) != repr(default_config.get(k))
-                    )
-                    if k in default_config
-                }
-                if default_config
-                else {}
-            )
+            if not sections and "section_name" in kwargs:
+                sections = kwargs.pop(Constants.config_decorator.SECTION_NAME_KEY)
 
-            if not changed_kwargs and not files:
+            if not kwargs and not files and not sections:
                 # If no kwargs are changed, we can use the default config
-                config_result = init(self, **kwargs.copy())
+                config_result = init(self, **default_config)
                 return config_result
 
             return init(
@@ -119,7 +107,7 @@ def wrap_init_default_config(cls, init_default_config=True):
                     sections=sections,
                     eval_env=eval_env,
                     allow_empty=allow_empty,
-                    **changed_kwargs,
+                    **kwargs,
                 ),
             )
 
