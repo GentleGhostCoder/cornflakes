@@ -11,8 +11,12 @@ import os
 import re
 import sys
 
-sys.path.insert(0, os.path.abspath(".."))
+from cornflakes import patch_module
 
+sys.path.insert(0, os.path.abspath(".."))
+os.chdir("..")
+patch_module("cornflakes")
+os.chdir("docs")
 # -- General configuration ---------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.

@@ -276,7 +276,7 @@ def docs_build(session: Session) -> None:
         "sphinx-click",
         "sphinx-rtd-theme",
         "sphinx-rtd-dark-mode",
-        "sphinxcontrib-inlinesyntaxhighlight",
+        # "sphinxcontrib-inlinesyntaxhighlight",
         "myst-parser",
         "breathe",
     )
@@ -307,7 +307,7 @@ def docs(session: Session) -> None:
         "sphinx-click",
         "sphinx-rtd-theme",
         "sphinx-rtd-dark-mode",
-        "sphinxcontrib-inlinesyntaxhighlight",
+        # "sphinxcontrib-inlinesyntaxhighlight",
         "myst-parser",
         "breathe",
     )

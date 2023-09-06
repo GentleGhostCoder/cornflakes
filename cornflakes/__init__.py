@@ -22,5 +22,3 @@ __all__ = [
     "setup_logging",
     "patch_module",
 ]
-
-patch_module("cornflakes")
