@@ -317,7 +317,9 @@ def _config_option(  # noqa: C901
 
             setattr(wrapper, Constants.config_option.READ_CONFIG_METHOD, new_func)
 
-        setattr(wrapper, Constants.config_option.ATTRIBUTES, {f.name for f in fields(config) if f.init})
+        if not hasattr(wrapper, Constants.config_option.ATTRIBUTES):
+            setattr(wrapper, Constants.config_option.ATTRIBUTES, [])
+        getattr(wrapper, Constants.config_option.ATTRIBUTES, []).extend([f.name for f in fields(config) if f.init])
         wrapper = fill_option_groups(wrapper, config.__name__, *slot_options.keys())
 
         return wrapper
