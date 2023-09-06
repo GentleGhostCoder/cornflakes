@@ -1,0 +1,6 @@
+﻿cornflakes.common.extract\_var\_names
+=====================================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: extract_var_names

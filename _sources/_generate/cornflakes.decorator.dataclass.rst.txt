@@ -1,0 +1,6 @@
+﻿cornflakes.decorator.dataclass
+==============================
+
+.. currentmodule:: cornflakes.decorator
+
+.. autofunction:: dataclass

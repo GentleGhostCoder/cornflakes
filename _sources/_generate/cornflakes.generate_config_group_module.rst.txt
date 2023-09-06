@@ -1,0 +1,6 @@
+﻿cornflakes.generate\_config\_group\_module
+==========================================
+
+.. currentmodule:: cornflakes
+
+.. autofunction:: generate_config_group_module

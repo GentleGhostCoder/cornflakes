@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.decorator.click.helper package &mdash; cornflakes 3.3.16 documentation</title>
+  <title>cornflakes.decorator.click.helper package &mdash; cornflakes 3.3.17 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f214ba4b"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=566c3e52"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -40,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.16
+                3.3.17
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -61,10 +61,21 @@
 <li class="toctree-l3 current"><a class="reference internal" href="cornflakes.html">cornflakes package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="cornflakes.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#cornflakes-types-module">cornflakes.types module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes.types">cornflakes.types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.ini_load.html">cornflakes.ini_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_type.html">cornflakes.eval_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_datetime.html">cornflakes.eval_datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_csv.html">cornflakes.eval_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.extract_between.html">cornflakes.extract_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.apply_match.html">cornflakes.apply_match</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.generate_config_group_module.html">cornflakes.generate_config_group_module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.yaml_load.html">cornflakes.yaml_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.attach_log.html">cornflakes.attach_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.setup_logging.html">cornflakes.setup_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.patch_module.html">cornflakes.patch_module</a></li>
 </ul>
 </li>
 </ul>
@@ -105,8 +116,21 @@
              
   <section id="cornflakes-decorator-click-helper-package">
 <h1>cornflakes.decorator.click.helper package<a class="headerlink" href="#cornflakes-decorator-click-helper-package" title="Permalink to this heading"></a></h1>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.click.helper">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cornflakes.decorator.click.helper" title="Permalink to this heading"></a></h2>
+<p>Helper methods for click decorators.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.click.helper.click_param_type_parser">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.click.helper.</span></span><span class="sig-name descname"><span class="pre">click_param_type_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/click/helper/_click_param_type_parser.html#click_param_type_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.click.helper.click_param_type_parser" title="Permalink to this definition"></a></dt>
+<dd><p>Create click param type parser.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.click.helper.get_command_name">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.click.helper.</span></span><span class="sig-name descname"><span class="pre">get_command_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/click/helper/_get_command_name.html#get_command_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.click.helper.get_command_name" title="Permalink to this definition"></a></dt>
+<dd><p>Recursively build the command name from the callback and its parents.</p>
+</dd></dl>
+
 </section>
 </section>
 

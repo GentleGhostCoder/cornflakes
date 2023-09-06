@@ -1,0 +1,6 @@
+﻿cornflakes.common.patch\_module
+===============================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: patch_module

@@ -1,0 +1,6 @@
+﻿cornflakes.decorator.click\_cli
+===============================
+
+.. currentmodule:: cornflakes.decorator
+
+.. autofunction:: click_cli

@@ -1,0 +1,6 @@
+﻿cornflakes.decorator.config
+===========================
+
+.. currentmodule:: cornflakes.decorator
+
+.. autofunction:: config

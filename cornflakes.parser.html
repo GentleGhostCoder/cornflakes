@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.parser package &mdash; cornflakes 3.3.16 documentation</title>
+  <title>cornflakes.parser package &mdash; cornflakes 3.3.17 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f214ba4b"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=566c3e52"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -24,8 +24,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Usage" href="usage.html" />
-    <link rel="prev" title="cornflakes.packaging package" href="cornflakes.packaging.html" /> 
+    <link rel="next" title="cornflakes.parser.yaml_load" href="_generate/cornflakes.parser.yaml_load.html" />
+    <link rel="prev" title="cornflakes.packaging.update_deps" href="_generate/cornflakes.packaging.update_deps.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.16
+                3.3.17
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -61,10 +61,21 @@
 <li class="toctree-l3 current"><a class="reference internal" href="cornflakes.html">cornflakes package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="cornflakes.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#cornflakes-types-module">cornflakes.types module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes.types">cornflakes.types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.ini_load.html">cornflakes.ini_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_type.html">cornflakes.eval_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_datetime.html">cornflakes.eval_datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_csv.html">cornflakes.eval_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.extract_between.html">cornflakes.extract_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.apply_match.html">cornflakes.apply_match</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.generate_config_group_module.html">cornflakes.generate_config_group_module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.yaml_load.html">cornflakes.yaml_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.attach_log.html">cornflakes.attach_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.setup_logging.html">cornflakes.setup_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.patch_module.html">cornflakes.patch_module</a></li>
 </ul>
 </li>
 </ul>
@@ -103,8 +114,34 @@
              
   <section id="cornflakes-parser-package">
 <h1>cornflakes.parser package<a class="headerlink" href="#cornflakes-parser-package" title="Permalink to this heading"></a></h1>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.parser">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cornflakes.parser" title="Permalink to this heading"></a></h2>
+<p>Cornflakes config parser module.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cornflakes.parser.yaml_load" title="cornflakes.parser.yaml_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yaml_load</span></code></a>(files[, sections, keys, defaults, ...])</p></td>
+<td><p>Yaml Wrapper for reading yaml files in a generic way.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.parser.yaml_load">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.parser.</span></span><span class="sig-name descname"><span class="pre">yaml_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.parser.yaml_load" title="Permalink to this definition"></a></dt>
+<dd><p>Yaml Wrapper for reading yaml files in a generic way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<em>str</em><em> | </em><em>List</em><em>[</em><em>str</em><em>] </em><em>| </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em> | </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>sections</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>Dict</em><em>[</em><em>str</em><em> | </em><em>None</em><em>, </em><em>List</em><em>[</em><em>str</em><em>] </em><em>| </em><em>str</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+<li><p><strong>keys</strong> (<em>Union</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em> | </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>str</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+<li><p><strong>defaults</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+<li><p><strong>eval_env</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>loader</strong> (<em>Union</em><em>[</em><em>Type</em><em>[</em><em>UnsafeLoader</em><em>]</em><em>, </em><em>Type</em><em>[</em><em>SafeLoader</em><em>]</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -112,8 +149,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cornflakes.packaging.html" class="btn btn-neutral float-left" title="cornflakes.packaging package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_generate/cornflakes.packaging.update_deps.html" class="btn btn-neutral float-left" title="cornflakes.packaging.update_deps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_generate/cornflakes.parser.yaml_load.html" class="btn btn-neutral float-right" title="cornflakes.parser.yaml_load" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

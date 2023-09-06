@@ -1,0 +1,6 @@
+﻿cornflakes.common.datetime\_ms
+==============================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: datetime_ms

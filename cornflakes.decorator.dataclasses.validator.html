@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.decorator.dataclasses.validator package &mdash; cornflakes 3.3.16 documentation</title>
+  <title>cornflakes.decorator.dataclasses.validator package &mdash; cornflakes 3.3.17 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f214ba4b"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=566c3e52"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -40,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.16
+                3.3.17
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -61,10 +61,21 @@
 <li class="toctree-l3 current"><a class="reference internal" href="cornflakes.html">cornflakes package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="cornflakes.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#cornflakes-types-module">cornflakes.types module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes.types">cornflakes.types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.ini_load.html">cornflakes.ini_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_type.html">cornflakes.eval_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_datetime.html">cornflakes.eval_datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_csv.html">cornflakes.eval_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.extract_between.html">cornflakes.extract_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.apply_match.html">cornflakes.apply_match</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.generate_config_group_module.html">cornflakes.generate_config_group_module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.yaml_load.html">cornflakes.yaml_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.attach_log.html">cornflakes.attach_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.setup_logging.html">cornflakes.setup_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.patch_module.html">cornflakes.patch_module</a></li>
 </ul>
 </li>
 </ul>
@@ -108,11 +119,342 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
-<section id="cornflakes-decorator-dataclasses-validator-url-module">
-<h2>cornflakes.decorator.dataclasses.validator.url module<a class="headerlink" href="#cornflakes-decorator-dataclasses-validator-url-module" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.dataclasses.validator.url">
+<span id="cornflakes-decorator-dataclasses-validator-url-module"></span><h2>cornflakes.decorator.dataclasses.validator.url module<a class="headerlink" href="#module-cornflakes.decorator.dataclasses.validator.url" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.dataclasses.validator.url.</span></span><span class="sig-name descname"><span class="pre">AnyUrl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">netloc=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tld=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/dataclasses/validator/url.html#AnyUrl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Database URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – URL to init the whole object (will be overwritten with other args).</p></li>
+<li><p><strong>scheme</strong> – The scheme of the url</p></li>
+<li><p><strong>netloc</strong> – user / pw / host and port of the url</p></li>
+<li><p><strong>path</strong> – path of the url</p></li>
+<li><p><strong>query</strong> – url query</p></li>
+<li><p><strong>params</strong> – url params</p></li>
+<li><p><strong>query_args</strong> – url query_args -&gt; parsed query</p></li>
+<li><p><strong>fragment</strong> – url fragment</p></li>
+<li><p><strong>hostname</strong> – url hostname (overwrites the netloc)</p></li>
+<li><p><strong>port</strong> – url port (overwrites the netloc)</p></li>
+<li><p><strong>username</strong> – url username (overwrites the netloc)</p></li>
+<li><p><strong>password</strong> – url password (overwrites the netloc)</p></li>
+<li><p><strong>tld</strong> – url tld if it is valid</p></li>
+<li><p><strong>valid</strong> – validators.url validation result</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>url</strong> (<em>dataclasses.InitVar</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>NoneType</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>scheme</strong> (<em>str</em>) – </p></li>
+<li><p><strong>netloc</strong> (<em>str</em>) – </p></li>
+<li><p><strong>path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>query</strong> (<em>str</em>) – </p></li>
+<li><p><strong>params</strong> (<em>str</em>) – </p></li>
+<li><p><strong>fragment</strong> (<em>str</em>) – </p></li>
+<li><p><strong>query_args</strong> (<em>dict</em>) – </p></li>
+<li><p><strong>hostname</strong> (<em>str</em>) – </p></li>
+<li><p><strong>port</strong> (<em>int</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>username</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>password</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>tld</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>valid</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>token</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.check_kwargs">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.check_kwargs" title="Permalink to this definition"></a></dt>
+<dd><p>Check dataclass types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Dict</em>[str, <em>Any</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.fragment">
+<span class="sig-name descname"><span class="pre">fragment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.fragment" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.hostname">
+<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.hostname" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.keys">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.keys" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.netloc">
+<span class="sig-name descname"><span class="pre">netloc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.netloc" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.password">
+<span class="sig-name descname"><span class="pre">password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.password" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.path">
+<span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.port">
+<span class="sig-name descname"><span class="pre">port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.port" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.query" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.query_args">
+<span class="sig-name descname"><span class="pre">query_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.query_args" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.scheme">
+<span class="sig-name descname"><span class="pre">scheme</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.scheme" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.tld">
+<span class="sig-name descname"><span class="pre">tld</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.tld" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Method to convert Dataclass with slots to dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.to_tuple">
+<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.to_tuple" title="Permalink to this definition"></a></dt>
+<dd><p>Method to convert Dataclass with slots to dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Any</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.token" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.url">
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dataclasses.InitVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoneType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.url" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.username">
+<span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.username" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.valid">
+<span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.valid" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.url.AnyUrl.validate_kwargs">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.url.AnyUrl.validate_kwargs" title="Permalink to this definition"></a></dt>
+<dd><p>Validate dataclass (includes type checks + validators).</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.dataclasses.validator">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cornflakes.decorator.dataclasses.validator" title="Permalink to this heading"></a></h2>
+<p>cornflakes default validators for config_fields.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.dataclasses.validator.</span></span><span class="sig-name descname"><span class="pre">AnyUrl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheme=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">netloc=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tld=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/dataclasses/validator/url.html#AnyUrl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Database URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – URL to init the whole object (will be overwritten with other args).</p></li>
+<li><p><strong>scheme</strong> – The scheme of the url</p></li>
+<li><p><strong>netloc</strong> – user / pw / host and port of the url</p></li>
+<li><p><strong>path</strong> – path of the url</p></li>
+<li><p><strong>query</strong> – url query</p></li>
+<li><p><strong>params</strong> – url params</p></li>
+<li><p><strong>query_args</strong> – url query_args -&gt; parsed query</p></li>
+<li><p><strong>fragment</strong> – url fragment</p></li>
+<li><p><strong>hostname</strong> – url hostname (overwrites the netloc)</p></li>
+<li><p><strong>port</strong> – url port (overwrites the netloc)</p></li>
+<li><p><strong>username</strong> – url username (overwrites the netloc)</p></li>
+<li><p><strong>password</strong> – url password (overwrites the netloc)</p></li>
+<li><p><strong>tld</strong> – url tld if it is valid</p></li>
+<li><p><strong>valid</strong> – validators.url validation result</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>url</strong> (<em>dataclasses.InitVar</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>NoneType</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>scheme</strong> (<em>str</em>) – </p></li>
+<li><p><strong>netloc</strong> (<em>str</em>) – </p></li>
+<li><p><strong>path</strong> (<em>str</em>) – </p></li>
+<li><p><strong>query</strong> (<em>str</em>) – </p></li>
+<li><p><strong>params</strong> (<em>str</em>) – </p></li>
+<li><p><strong>fragment</strong> (<em>str</em>) – </p></li>
+<li><p><strong>query_args</strong> (<em>dict</em>) – </p></li>
+<li><p><strong>hostname</strong> (<em>str</em>) – </p></li>
+<li><p><strong>port</strong> (<em>int</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>username</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>password</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>tld</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>valid</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>token</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.check_kwargs">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.check_kwargs" title="Permalink to this definition"></a></dt>
+<dd><p>Check dataclass types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Dict</em>[str, <em>Any</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.fragment">
+<span class="sig-name descname"><span class="pre">fragment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.fragment" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.hostname">
+<span class="sig-name descname"><span class="pre">hostname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.hostname" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.keys">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.keys" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.netloc">
+<span class="sig-name descname"><span class="pre">netloc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.netloc" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.password">
+<span class="sig-name descname"><span class="pre">password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.password" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.path">
+<span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.port">
+<span class="sig-name descname"><span class="pre">port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.port" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.query" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.query_args">
+<span class="sig-name descname"><span class="pre">query_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.query_args" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.scheme">
+<span class="sig-name descname"><span class="pre">scheme</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.scheme" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.tld">
+<span class="sig-name descname"><span class="pre">tld</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.tld" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Method to convert Dataclass with slots to dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.to_tuple">
+<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.to_tuple" title="Permalink to this definition"></a></dt>
+<dd><p>Method to convert Dataclass with slots to dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Any</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.token" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.url">
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dataclasses.InitVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoneType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.url" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.username">
+<span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.username" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.valid">
+<span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.valid" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cornflakes.decorator.dataclasses.validator.AnyUrl.validate_kwargs">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.dataclasses.validator.AnyUrl.validate_kwargs" title="Permalink to this definition"></a></dt>
+<dd><p>Validate dataclass (includes type checks + validators).</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 

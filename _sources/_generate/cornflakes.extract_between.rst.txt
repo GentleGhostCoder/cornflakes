@@ -1,0 +1,6 @@
+﻿cornflakes.extract\_between
+===========================
+
+.. currentmodule:: cornflakes
+
+.. autofunction:: extract_between

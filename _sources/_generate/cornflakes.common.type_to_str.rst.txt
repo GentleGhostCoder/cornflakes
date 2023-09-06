@@ -1,0 +1,6 @@
+﻿cornflakes.common.type\_to\_str
+===============================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: type_to_str

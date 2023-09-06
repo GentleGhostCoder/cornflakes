@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cornflakes.decorator.datalite.fetch &mdash; cornflakes 3.3.17 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/dark_mode_css/general.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/dark_mode_css/dark.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=566c3e52"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
+        <script src="../../../../_static/dark_mode_js/theme_switcher.js?v=a2af87b2"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            cornflakes
+          </a>
+              <div class="version">
+                3.3.17
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme.html">Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme.html#development">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../code_of_conduct.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">cornflakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cornflakes.decorator.datalite.fetch</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cornflakes.decorator.datalite.fetch</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sqlite3</span> <span class="k">as</span> <span class="nn">sql</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses</span> <span class="kn">import</span> <span class="n">dataclass_fields</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.datalite.commons</span> <span class="kn">import</span> <span class="n">_convert_sql_format</span><span class="p">,</span> <span class="n">_get_table_cols</span>
+
+
+<span class="k">def</span> <span class="nf">_insert_pagination</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">page</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">element_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert the pagination arguments if page number is given.</span>
+
+<span class="sd">    :param query: Query to insert to</span>
+<span class="sd">    :param page: Page to get.</span>
+<span class="sd">    :param element_count: Element count in each page.</span>
+<span class="sd">    :return: The modified (or not) query.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">page</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; ORDER BY obj_id LIMIT </span><span class="si">{</span><span class="n">element_count</span><span class="si">}</span><span class="s2"> OFFSET </span><span class="si">{</span><span class="p">(</span><span class="n">page</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">element_count</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">query</span> <span class="o">+</span> <span class="s2">&quot;;&quot;</span>
+
+
+<div class="viewcode-block" id="is_fetchable"><a class="viewcode-back" href="../../../../cornflakes.decorator.datalite.html#cornflakes.decorator.datalite.fetch.is_fetchable">[docs]</a><span class="k">def</span> <span class="nf">is_fetchable</span><span class="p">(</span><span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a record is fetchable given its obj_id and</span>
+<span class="sd">    class_ type.</span>
+
+<span class="sd">    :param class_: Class type of the object.</span>
+<span class="sd">    :param obj_id: Unique obj_id of the object.</span>
+<span class="sd">    :return: If the object is fetchable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">sql</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="s2">&quot;db_path&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+        <span class="n">cur</span><span class="p">:</span> <span class="n">sql</span><span class="o">.</span><span class="n">Cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SELECT 1 FROM </span><span class="si">{</span><span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">  WHERE &#39;obj_id&#39; = ?;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">obj_id</span><span class="p">,))</span>
+        <span class="k">except</span> <span class="n">sql</span><span class="o">.</span><span class="n">OperationalError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Table </span><span class="si">{</span><span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2"> does not exist.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="fetch_equals"><a class="viewcode-back" href="../../../../cornflakes.decorator.datalite.html#cornflakes.decorator.datalite.fetch.fetch_equals">[docs]</a><span class="k">def</span> <span class="nf">fetch_equals</span><span class="p">(</span>
+    <span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span>
+    <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetch a class_ type variable from its bound db.</span>
+
+<span class="sd">    :param class_: Class to fetch.</span>
+<span class="sd">    :param field: Field to check for, by default, object id.</span>
+<span class="sd">    :param value: Value of the field to check for.</span>
+<span class="sd">    :return: The object whose data is taken from the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">table_name</span> <span class="o">=</span> <span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">sql</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="s2">&quot;db_path&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+        <span class="n">cur</span><span class="p">:</span> <span class="n">sql</span><span class="o">.</span><span class="n">Cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SELECT * FROM </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> WHERE </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> = ?;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span><span class="p">,))</span>
+        <span class="n">obj_id</span><span class="p">,</span> <span class="o">*</span><span class="n">field_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">())</span>
+        <span class="n">field_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_table_cols</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">field_names</span><span class="p">,</span> <span class="n">field_values</span><span class="p">))</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">class_</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;obj_id&quot;</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="fetch_from"><a class="viewcode-back" href="../../../../cornflakes.decorator.datalite.html#cornflakes.decorator.datalite.fetch.fetch_from">[docs]</a><span class="k">def</span> <span class="nf">fetch_from</span><span class="p">(</span><span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetch a class_ type variable from its bound dv.</span>
+
+<span class="sd">    :param class_: Class to fetch from.</span>
+<span class="sd">    :param obj_id: Unique object id of the object.</span>
+<span class="sd">    :return: The fetched object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_fetchable</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;An object with </span><span class="si">{</span><span class="n">obj_id</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not exist, or&quot;</span> <span class="sa">f</span><span class="s2">&quot;otherwise is unreachable.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">fetch_equals</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="s2">&quot;obj_id&quot;</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_convert_record_to_object</span><span class="p">(</span><span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">field_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a given record fetched from an SQL instance to a Python Object of given class_.</span>
+
+<span class="sd">    :param class_: Class type to convert the record to.</span>
+<span class="sd">    :param record: Record to get data from.</span>
+<span class="sd">    :param field_names: Field names of the class.</span>
+<span class="sd">    :return: the created object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">field_names</span><span class="p">,</span> <span class="n">record</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>  <span class="c1"># type: ignore</span>
+    <span class="n">field_types</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dataclass_fields</span><span class="p">(</span><span class="n">class_</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field_types</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="nb">bytes</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="n">obj_id</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">class_</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;obj_id&quot;</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">obj</span>
+
+
+<div class="viewcode-block" id="fetch_if"><a class="viewcode-back" href="../../../../cornflakes.decorator.datalite.html#cornflakes.decorator.datalite.fetch.fetch_if">[docs]</a><span class="k">def</span> <span class="nf">fetch_if</span><span class="p">(</span><span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">element_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetch all class_ type variables from the bound db,</span>
+<span class="sd">    provided they fit the given condition</span>
+
+<span class="sd">    :param class_: Class type to fetch.</span>
+<span class="sd">    :param condition: Condition to check for.</span>
+<span class="sd">    :param page: Which page to retrieve, default all. (0 means closed).</span>
+<span class="sd">    :param element_count: Element count in each page.</span>
+<span class="sd">    :return: A tuple of records that fit the given condition</span>
+<span class="sd">        of given type class_.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">table_name</span> <span class="o">=</span> <span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">sql</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="s2">&quot;db_path&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+        <span class="n">cur</span><span class="p">:</span> <span class="n">sql</span><span class="o">.</span><span class="n">Cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">_insert_pagination</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SELECT * FROM </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> WHERE </span><span class="si">{</span><span class="n">condition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">element_count</span><span class="p">))</span>
+        <span class="n">records</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">field_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_table_cols</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_convert_record_to_object</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">field_names</span><span class="p">)</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fetch_where"><a class="viewcode-back" href="../../../../cornflakes.decorator.datalite.html#cornflakes.decorator.datalite.fetch.fetch_where">[docs]</a><span class="k">def</span> <span class="nf">fetch_where</span><span class="p">(</span><span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">element_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetch all class_ type variables from the bound db,</span>
+<span class="sd">    provided that the field of the records fit the</span>
+<span class="sd">    given value.</span>
+
+<span class="sd">    :param class_: Class of the records.</span>
+<span class="sd">    :param field: Field to check.</span>
+<span class="sd">    :param value: Value to check for.</span>
+<span class="sd">    :param page: Which page to retrieve, default all. (0 means closed).</span>
+<span class="sd">    :param element_count: Element count in each page.</span>
+<span class="sd">    :return: A tuple of the records.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">fetch_if</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">_convert_sql_format</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">element_count</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fetch_range"><a class="viewcode-back" href="../../../../cornflakes.decorator.datalite.html#cornflakes.decorator.datalite.fetch.fetch_range">[docs]</a><span class="k">def</span> <span class="nf">fetch_range</span><span class="p">(</span><span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">range_</span><span class="p">:</span> <span class="nb">range</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetch the records in a given range of object ids.</span>
+
+<span class="sd">    :param class_: Class of the records.</span>
+<span class="sd">    :param range_: Range of the object ids.</span>
+<span class="sd">    :return: A tuple of class_ type objects whose values</span>
+<span class="sd">        come from the class_&#39; bound database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">fetch_from</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">range_</span> <span class="k">if</span> <span class="n">is_fetchable</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="fetch_all"><a class="viewcode-back" href="../../../../cornflakes.decorator.datalite.html#cornflakes.decorator.datalite.fetch.fetch_all">[docs]</a><span class="k">def</span> <span class="nf">fetch_all</span><span class="p">(</span><span class="n">class_</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">element_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetchall the records in the bound database.</span>
+
+<span class="sd">    :param class_: Class of the records.</span>
+<span class="sd">    :param page: Which page to retrieve, default all. (0 means closed).</span>
+<span class="sd">    :param element_count: Element count in each page.</span>
+<span class="sd">    :return: All the records of type class_ in</span>
+<span class="sd">        the bound database as a tuple.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">db_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="s2">&quot;db_path&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Given class is not decorated with datalite.&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">sql</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+        <span class="n">cur</span><span class="p">:</span> <span class="n">sql</span><span class="o">.</span><span class="n">Cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">_insert_pagination</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SELECT * FROM </span><span class="si">{</span><span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">element_count</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">sql</span><span class="o">.</span><span class="n">OperationalError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No record of type </span><span class="si">{</span><span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">records</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">field_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_table_cols</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">class_</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_convert_record_to_object</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">field_names</span><span class="p">)</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Semjon Geist.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

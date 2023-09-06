@@ -1,0 +1,6 @@
+﻿cornflakes.setup\_logging
+=========================
+
+.. currentmodule:: cornflakes
+
+.. autofunction:: setup_logging

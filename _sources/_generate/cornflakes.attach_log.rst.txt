@@ -1,0 +1,6 @@
+﻿cornflakes.attach\_log
+======================
+
+.. currentmodule:: cornflakes
+
+.. autofunction:: attach_log

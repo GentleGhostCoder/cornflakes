@@ -1,0 +1,6 @@
+﻿cornflakes.common.recursive\_update
+===================================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: recursive_update

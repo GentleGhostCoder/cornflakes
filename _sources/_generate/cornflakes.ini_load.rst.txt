@@ -1,0 +1,6 @@
+﻿cornflakes.ini\_load
+====================
+
+.. currentmodule:: cornflakes
+
+.. autofunction:: ini_load

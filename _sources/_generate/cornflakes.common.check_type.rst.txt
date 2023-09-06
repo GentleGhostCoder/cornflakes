@@ -1,0 +1,6 @@
+﻿cornflakes.common.check\_type
+=============================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: check_type

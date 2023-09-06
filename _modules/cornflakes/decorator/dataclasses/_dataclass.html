@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cornflakes.decorator.dataclasses._dataclass &mdash; cornflakes 3.3.17 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/dark_mode_css/general.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/dark_mode_css/dark.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=566c3e52"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
+        <script src="../../../../_static/dark_mode_js/theme_switcher.js?v=a2af87b2"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            cornflakes
+          </a>
+              <div class="version">
+                3.3.17
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme.html">Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme.html#development">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../code_of_conduct.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">cornflakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cornflakes.decorator.dataclasses._dataclass</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cornflakes.decorator.dataclasses._dataclass</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">fields</span><span class="p">,</span> <span class="n">is_dataclass</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
+
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">dataclass_transform</span>  <span class="c1"># type: ignore</span>
+
+<span class="kn">from</span> <span class="nn">cornflakes.common</span> <span class="kn">import</span> <span class="n">recursive_update</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._add_dataclass_slots</span> <span class="kn">import</span> <span class="n">add_slots</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._enforce_types</span> <span class="kn">import</span> <span class="n">enforce_types</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._field</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">dc_field_without_default</span><span class="p">,</span> <span class="n">default</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">dict_factory</span> <span class="k">as</span> <span class="n">d_factory</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">is_index</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">tuple_factory</span> <span class="k">as</span> <span class="n">t_factory</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">value_factory</span> <span class="k">as</span> <span class="n">v_factory</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._validate</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">check_dataclass_kwargs</span><span class="p">,</span>
+    <span class="n">get_dataclass_non_comparable_kwargs</span><span class="p">,</span>
+    <span class="n">validate_dataclass_kwargs</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">cornflakes.types</span> <span class="kn">import</span> <span class="n">_T</span><span class="p">,</span> <span class="n">Constants</span><span class="p">,</span> <span class="n">CornflakesDataclass</span><span class="p">,</span> <span class="n">MappingWrapper</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+
+    <span class="nd">@dataclass_transform</span><span class="p">(</span><span class="n">field_specifiers</span><span class="o">=</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">Field</span><span class="p">))</span>
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">dataclass</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="nb">repr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">eq</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">unsafe_hash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">frozen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">kw_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">slots</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">match_args</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">dict_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tuple_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">value_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">updatable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ignore_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">]],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">CornflakesDataclass</span><span class="p">],</span> <span class="n">MappingWrapper</span><span class="p">[</span><span class="n">_T</span><span class="p">]]]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@dataclass_transform</span><span class="p">(</span><span class="n">field_specifiers</span><span class="o">=</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">Field</span><span class="p">))</span>
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">dataclass</span><span class="p">(</span>
+        <span class="n">_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="nb">repr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">eq</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">unsafe_hash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">frozen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">kw_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">slots</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">match_args</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">dict_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tuple_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">value_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">updatable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ignore_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">CornflakesDataclass</span><span class="p">],</span> <span class="n">MappingWrapper</span><span class="p">[</span><span class="n">_T</span><span class="p">]]:</span>
+        <span class="o">...</span>
+
+<span class="k">else</span><span class="p">:</span>
+
+    <span class="nd">@dataclass_transform</span><span class="p">(</span><span class="n">field_specifiers</span><span class="o">=</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">Field</span><span class="p">))</span>
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">dataclass</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="nb">repr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">eq</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">unsafe_hash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">frozen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">dict_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tuple_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">value_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">updatable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ignore_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">]],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">CornflakesDataclass</span><span class="p">],</span> <span class="n">MappingWrapper</span><span class="p">[</span><span class="n">_T</span><span class="p">]]]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@dataclass_transform</span><span class="p">(</span><span class="n">field_specifiers</span><span class="o">=</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">Field</span><span class="p">))</span>
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">dataclass</span><span class="p">(</span>
+        <span class="n">_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="nb">repr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">eq</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">unsafe_hash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">frozen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">dict_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tuple_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">value_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">updatable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ignore_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">CornflakesDataclass</span><span class="p">],</span> <span class="n">MappingWrapper</span><span class="p">[</span><span class="n">_T</span><span class="p">]]:</span>
+        <span class="o">...</span>
+
+
+<span class="c1"># @dataclass_transform(field_specifiers=(field, Field))</span>
+<span class="k">def</span> <span class="nf">dataclass</span><span class="p">(</span>
+    <span class="bp">cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="nb">repr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">eq</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">unsafe_hash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">frozen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">kw_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">slots</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">match_args</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">dict_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">tuple_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">value_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">updatable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">ignore_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span>
+    <span class="n">Callable</span><span class="p">[[</span><span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">]],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">CornflakesDataclass</span><span class="p">],</span> <span class="n">MappingWrapper</span><span class="p">[</span><span class="n">_T</span><span class="p">]]],</span>
+    <span class="n">Type</span><span class="p">[</span><span class="n">CornflakesDataclass</span><span class="p">],</span>
+    <span class="n">MappingWrapper</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span>
+<span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around built-in dataclasses dataclass.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="n">kw_only</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="n">slots</span><span class="p">,</span> <span class="n">match_args</span><span class="o">=</span><span class="n">match_args</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">create_dataclass</span><span class="p">(</span><span class="n">w_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">CornflakesDataclass</span><span class="p">],</span> <span class="n">MappingWrapper</span><span class="p">[</span><span class="n">_T</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Cornflakes dataclass from a regular dataclass.</span>
+
+<span class="sd">        :param w_cls: The class to create the Cornflakes dataclass from.</span>
+<span class="sd">        :type w_cls: type</span>
+<span class="sd">        :returns: A Cornflakes dataclass.</span>
+<span class="sd">        :rtype: type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">init</span> <span class="ow">and</span> <span class="n">slots</span><span class="p">:</span>
+            <span class="c1"># this is not supported by dataclasses</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Cannot specify both init=False and slots=True&quot;</span><span class="p">)</span>
+
+        <span class="n">dc_cls</span> <span class="o">=</span> <span class="n">_wrap_custom_dataclass</span><span class="p">(</span>
+            <span class="n">w_cls</span><span class="p">,</span>
+            <span class="n">init</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>
+            <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">,</span>
+            <span class="n">eq</span><span class="o">=</span><span class="n">eq</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+            <span class="n">unsafe_hash</span><span class="o">=</span><span class="n">unsafe_hash</span><span class="p">,</span>
+            <span class="n">frozen</span><span class="o">=</span><span class="n">frozen</span><span class="p">,</span>
+            <span class="n">dict_factory</span><span class="o">=</span><span class="n">dict_factory</span><span class="p">,</span>
+            <span class="n">tuple_factory</span><span class="o">=</span><span class="n">tuple_factory</span><span class="p">,</span>
+            <span class="n">value_factory</span><span class="o">=</span><span class="n">value_factory</span><span class="p">,</span>
+            <span class="n">eval_env</span><span class="o">=</span><span class="n">eval_env</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">slots</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+            <span class="n">dc_cls</span> <span class="o">=</span> <span class="n">add_slots</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">updatable</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frozen&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Cannot set both frozen=True and updatable=True&quot;</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">merge_lists</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                <span class="n">current</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="p">}</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
+                    <span class="n">recursive_update</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">merge_lists</span><span class="o">=</span><span class="n">merge_lists</span><span class="p">)</span>
+                <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="o">**</span><span class="n">current</span><span class="p">)</span>
+
+            <span class="n">dc_cls</span><span class="o">.</span><span class="n">update</span> <span class="o">=</span> <span class="n">_update</span>
+
+        <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
+            <span class="n">dc_cls</span> <span class="o">=</span> <span class="n">enforce_types</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">)</span>
+
+        <span class="n">dc_cls</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">w_cls</span><span class="o">.</span><span class="vm">__doc__</span>
+        <span class="n">dc_cls</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">=</span> <span class="n">w_cls</span><span class="o">.</span><span class="vm">__module__</span>
+        <span class="n">dc_cls</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">=</span> <span class="n">w_cls</span><span class="o">.</span><span class="vm">__qualname__</span>
+
+        <span class="n">dc_cls</span> <span class="o">=</span> <span class="n">_wrap_mapping</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">,</span> <span class="n">ignore_none</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dc_cls</span>
+
+    <span class="k">return</span> <span class="n">create_dataclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="k">if</span> <span class="bp">cls</span> <span class="k">else</span> <span class="n">create_dataclass</span>  <span class="c1"># type: ignore</span>
+
+
+<span class="k">def</span> <span class="nf">_zero_copy_astuple_inner</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">value_factory</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_zero_copy_astuple_inner</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">v_factory</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t_factory</span><span class="p">(</span><span class="n">obj</span><span class="p">)(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_index</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">):</span>
+        <span class="c1"># obj is a namedtuple.  Recurse into it, but the returned</span>
+        <span class="c1"># object is another namedtuple of the same type.  This is</span>
+        <span class="c1"># similar to how other list- or tuple-derived classes are</span>
+        <span class="c1"># treated (see below), but we just need to create them</span>
+        <span class="c1"># differently because a namedtuple&#39;s __init__ needs to be</span>
+        <span class="c1"># called differently (see bpo-34363).</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)(</span><span class="o">*</span><span class="p">[</span><span class="n">_zero_copy_astuple_inner</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="c1"># Assume we can create an object of this type by passing in a</span>
+        <span class="c1"># generator (which is not true for namedtuples, handled</span>
+        <span class="c1"># above).</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)(</span><span class="n">_zero_copy_astuple_inner</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)((</span><span class="n">_zero_copy_astuple_inner</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">_zero_copy_astuple_inner</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value_factory</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">if</span> <span class="n">value_factory</span> <span class="k">else</span> <span class="n">obj</span>
+
+
+<div class="viewcode-block" id="to_tuple"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.to_tuple">[docs]</a><span class="k">def</span> <span class="nf">to_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># noqa: C901</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to convert Dataclass with slots to dict.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_zero_copy_astuple_inner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_zero_copy_asdict_inner</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">value_factory</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Patched version of dataclasses._asdict_inner that does not copy the dataclass values.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_zero_copy_asdict_inner</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">v_factory</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">d_factory</span><span class="p">(</span><span class="n">obj</span><span class="p">)(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_index</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">):</span>
+        <span class="c1"># obj is a namedtuple.  Recurse into it, but the returned</span>
+        <span class="c1"># object is another namedtuple of the same type.  This is</span>
+        <span class="c1"># similar to how other list- or tuple-derived classes are</span>
+        <span class="c1"># treated (see below), but we just need to create them</span>
+        <span class="c1"># differently because a namedtuple&#39;s __init__ needs to be</span>
+        <span class="c1"># called differently (see bpo-34363).</span>
+
+        <span class="c1"># I&#39;m not using namedtuple&#39;s _asdict()</span>
+        <span class="c1"># method, because:</span>
+        <span class="c1"># - it does not recurse in to the namedtuple fields and</span>
+        <span class="c1">#   convert them to dicts (using dict_factory).</span>
+        <span class="c1"># - I don&#39;t actually want to return a dict here.  The main</span>
+        <span class="c1">#   use case here is json.dumps, and it handles converting</span>
+        <span class="c1">#   namedtuples to lists.  Admittedly we&#39;re losing some</span>
+        <span class="c1">#   information here when we produce a json list instead of a</span>
+        <span class="c1">#   dict.  Note that if we returned dicts here instead of</span>
+        <span class="c1">#   namedtuples, we could no longer call asdict() on a data</span>
+        <span class="c1">#   structure where a namedtuple was used as a dict key.</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)(</span><span class="o">*</span><span class="p">[</span><span class="n">_zero_copy_asdict_inner</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="c1"># Assume we can create an object of this type by passing in a</span>
+        <span class="c1"># generator (which is not true for namedtuples, handled</span>
+        <span class="c1"># above).</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)(</span><span class="n">_zero_copy_asdict_inner</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)((</span><span class="n">_zero_copy_asdict_inner</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">_zero_copy_asdict_inner</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value_factory</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">if</span> <span class="n">value_factory</span> <span class="k">else</span> <span class="n">obj</span>
+
+
+<span class="c1"># @profile</span>
+<div class="viewcode-block" id="to_dict"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.to_dict">[docs]</a><span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to convert Dataclass with slots to dict.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_zero_copy_asdict_inner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_new_getattr_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_zero_copy_asdict_inner</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="n">v_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_new_getattr_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_zero_copy_astuple_inner</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="n">index</span><span class="p">]),</span> <span class="n">v_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_new_getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_new_getattr_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_new_getattr_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_wrap_custom_dataclass</span><span class="p">(</span>
+    <span class="n">w_cls</span><span class="p">,</span>
+    <span class="n">init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="nb">repr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">eq</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">unsafe_hash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">frozen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">dict_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">tuple_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">value_factory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">dc_cls</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span>  <span class="c1"># type: ignore[call-overload]</span>
+        <span class="n">w_cls</span><span class="p">,</span>
+        <span class="n">init</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>
+        <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">,</span>
+        <span class="n">eq</span><span class="o">=</span><span class="n">eq</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+        <span class="n">unsafe_hash</span><span class="o">=</span><span class="n">unsafe_hash</span><span class="p">,</span>
+        <span class="n">frozen</span><span class="o">=</span><span class="n">frozen</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">dict_factory</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">dict_factory</span><span class="p">)</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">dict_factory</span><span class="p">)</span> <span class="k">else</span> <span class="nb">dict</span>  <span class="c1"># type: ignore</span>
+    <span class="n">tuple_factory</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">tuple_factory</span><span class="p">)</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">tuple_factory</span><span class="p">)</span> <span class="k">else</span> <span class="nb">tuple</span>  <span class="c1"># type: ignore</span>
+    <span class="n">value_factory</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">value_factory</span><span class="p">)</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">value_factory</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+
+    <span class="n">dataclass_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">obj_name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">w_cls</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">obj_name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">w_cls</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">w_cls</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">),</span> <span class="n">Field</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">w_cls</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">),</span> <span class="s2">&quot;aliases&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">dc_cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dataclass_fields</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">EVAL_ENV</span><span class="p">,</span> <span class="n">eval_env</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">DICT_FACTORY</span><span class="p">,</span> <span class="n">dict_factory</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">TUPLE_FACTORY</span><span class="p">,</span> <span class="n">tuple_factory</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">VALUE_FACTORY</span><span class="p">,</span> <span class="n">value_factory</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="c1"># Non-comparable fields should be compared via repr, so they are stored for later use</span>
+    <span class="nb">setattr</span><span class="p">(</span>
+        <span class="n">dc_cls</span><span class="p">,</span>
+        <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">NON_COMPARABLE_FIELDS</span><span class="p">,</span>
+        <span class="n">get_dataclass_non_comparable_kwargs</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">obj_name</span><span class="p">:</span> <span class="n">default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj_name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">dc_cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span>
+        <span class="n">dc_cls</span><span class="p">,</span>
+        <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">IGNORED_SLOTS</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">)</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)],</span>
+    <span class="p">)</span>
+    <span class="c1"># setattr(dc_cls, Constants.dataclass_decorator.IGNORE_NONE, ignore_none)</span>
+    <span class="nb">setattr</span><span class="p">(</span>
+        <span class="n">dc_cls</span><span class="p">,</span>
+        <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">VALIDATORS</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">validator</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dc_cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">validator</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;validator&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span>
+        <span class="n">dc_cls</span><span class="p">,</span>
+        <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">REQUIRED_KEYS</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">dc_cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">dc_field_without_default</span><span class="p">(</span><span class="n">slot</span><span class="p">)],</span>
+    <span class="p">)</span>
+
+    <span class="nb">setattr</span><span class="p">(</span>
+        <span class="n">dc_cls</span><span class="p">,</span>
+        <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">INIT_EXCLUDE_KEYS</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">dc_cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">slot</span><span class="p">,</span> <span class="s2">&quot;init&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)],</span>
+    <span class="p">)</span>
+
+    <span class="n">dc_cls</span><span class="o">.</span><span class="n">to_dict</span> <span class="o">=</span> <span class="n">to_dict</span>
+    <span class="n">dc_cls</span><span class="o">.</span><span class="n">to_tuple</span> <span class="o">=</span> <span class="n">to_tuple</span>
+
+    <span class="n">dc_cls</span><span class="o">.</span><span class="n">validate_kwargs</span> <span class="o">=</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">validate_dataclass_kwargs</span><span class="p">)</span>
+    <span class="n">dc_cls</span><span class="o">.</span><span class="n">check_kwargs</span> <span class="o">=</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">check_dataclass_kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dc_cls</span>
+
+
+<span class="k">def</span> <span class="nf">_wrap_mapping</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">,</span> <span class="n">ignore_none</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap a mapping class.&quot;&quot;&quot;</span>
+
+    <span class="n">dc_cls</span><span class="o">.</span><span class="fm">__getitem__</span> <span class="o">=</span> <span class="n">_new_getattr</span>
+    <span class="n">static_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_none</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">static_keys</span>  <span class="c1">#</span>
+
+        <span class="k">def</span> <span class="nf">_len</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">static_keys</span><span class="p">)</span>
+
+        <span class="n">dc_cls</span><span class="o">.</span><span class="fm">__len__</span> <span class="o">=</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">_len</span><span class="p">)</span>
+        <span class="n">dc_cls</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">static_keys</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="n">dc_cls</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span>  <span class="c1"># not classmethod</span>
+        <span class="n">dc_cls</span><span class="o">.</span><span class="fm">__len__</span> <span class="o">=</span> <span class="n">_len</span>
+
+    <span class="k">return</span> <span class="n">dc_cls</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Semjon Geist.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

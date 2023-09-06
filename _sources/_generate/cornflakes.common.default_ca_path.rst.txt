@@ -1,0 +1,6 @@
+﻿cornflakes.common.default\_ca\_path
+===================================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: default_ca_path

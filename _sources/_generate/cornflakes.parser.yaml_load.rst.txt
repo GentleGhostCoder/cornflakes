@@ -1,0 +1,6 @@
+﻿cornflakes.parser.yaml\_load
+============================
+
+.. currentmodule:: cornflakes.parser
+
+.. autofunction:: yaml_load

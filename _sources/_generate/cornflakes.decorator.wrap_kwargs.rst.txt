@@ -1,0 +1,6 @@
+﻿cornflakes.decorator.wrap\_kwargs
+=================================
+
+.. currentmodule:: cornflakes.decorator
+
+.. autofunction:: wrap_kwargs

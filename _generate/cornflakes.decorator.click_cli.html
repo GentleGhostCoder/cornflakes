@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cornflakes.decorator.click_cli &mdash; cornflakes 3.3.17 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/dark_mode_css/general.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/dark_mode_css/dark.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=566c3e52"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js?v=a2af87b2"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="cornflakes.decorator.config" href="cornflakes.decorator.config.html" />
+    <link rel="prev" title="cornflakes.decorator.datalite package" href="../cornflakes.decorator.datalite.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            cornflakes
+          </a>
+              <div class="version">
+                3.3.17
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html#development">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../reference.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../reference.html#packages">Packages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../cornflakes.html">cornflakes package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../cornflakes.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cornflakes.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cornflakes.html#module-cornflakes.types">cornflakes.types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cornflakes.html#module-cornflakes">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.ini_load.html">cornflakes.ini_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.eval_type.html">cornflakes.eval_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.eval_datetime.html">cornflakes.eval_datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.eval_csv.html">cornflakes.eval_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.extract_between.html">cornflakes.extract_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.apply_match.html">cornflakes.apply_match</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.generate_config_group_module.html">cornflakes.generate_config_group_module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.yaml_load.html">cornflakes.yaml_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.attach_log.html">cornflakes.attach_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.setup_logging.html">cornflakes.setup_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cornflakes.patch_module.html">cornflakes.patch_module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conduct.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">cornflakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../reference.html">Reference</a></li>
+          <li class="breadcrumb-item"><a href="../cornflakes.html">cornflakes package</a></li>
+          <li class="breadcrumb-item"><a href="../cornflakes.decorator.html">cornflakes.decorator package</a></li>
+      <li class="breadcrumb-item active">cornflakes.decorator.click_cli</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_generate/cornflakes.decorator.click_cli.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cornflakes-decorator-click-cli">
+<h1>cornflakes.decorator.click_cli<a class="headerlink" href="#cornflakes-decorator-click-cli" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.click_cli">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.</span></span><span class="sig-name descname"><span class="pre">click_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">STYLE_OPTION='bold</span> <span class="pre">cyan'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_ARGUMENT='bold</span> <span class="pre">cyan'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_SWITCH='bold</span> <span class="pre">green'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_METAVAR='bold</span> <span class="pre">yellow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_METAVAR_APPEND='dim</span> <span class="pre">yellow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_METAVAR_SEPARATOR='dim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_HEADER_TEXT=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_FOOTER_TEXT=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_USAGE='yellow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_USAGE_COMMAND='bold'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_DEPRECATED='red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_HELPTEXT_FIRST_LINE=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_HELPTEXT='dim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTION_HELP=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTION_DEFAULT='dim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTION_ENVVAR='dim</span> <span class="pre">yellow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_REQUIRED_SHORT='red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_REQUIRED_LONG='dim</span> <span class="pre">red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_PANEL_BORDER='dim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ALIGN_OPTIONS_PANEL='left'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_TABLE_SHOW_LINES=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_TABLE_LEADING=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_TABLE_PAD_EDGE=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_TABLE_PADDING=(0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_TABLE_SHOW_EDGE=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_TABLE_BOX=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_TABLE_ROW_STYLES=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_TABLE_HEADER_STYLE='table.header'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_OPTIONS_TABLE_BORDER_STYLE=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_COMMANDS_PANEL_BORDER='dim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ALIGN_COMMANDS_PANEL='left'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_COMMANDS_TABLE_SHOW_LINES=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_COMMANDS_TABLE_LEADING=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_COMMANDS_TABLE_PAD_EDGE=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_COMMANDS_TABLE_PADDING=(0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_COMMANDS_TABLE_BOX=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_COMMANDS_TABLE_ROW_STYLES=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_COMMANDS_TABLE_BORDER_STYLE=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_ERRORS_PANEL_BORDER='red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ALIGN_ERRORS_PANEL='left'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_ERRORS_SUGGESTION='dim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">STYLE_ABORTED='red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MAX_WIDTH=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">COLOR_SYSTEM='auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FORCE_TERMINAL=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HEADER_TEXT=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HEADER_LOGO=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FOOTER_TEXT=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DEPRECATED_STRING='(Deprecated)</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DEFAULT_STRING='[default:</span> <span class="pre">{}]'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ENVVAR_STRING='[env</span> <span class="pre">var:</span> <span class="pre">{}]'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">REQUIRED_SHORT_STRING='*'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">REQUIRED_LONG_STRING='[required]'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RANGE_STRING='</span> <span class="pre">[{}]'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">APPEND_METAVARS_HELP_STRING='({})'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ARGUMENTS_PANEL_TITLE='Arguments'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">OPTIONS_PANEL_TITLE='Options'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">COMMANDS_PANEL_TITLE='Commands'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ERRORS_PANEL_TITLE='Error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ERRORS_SUGGESTION=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ERRORS_EPILOGUE=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ABORTED_TEXT='Aborted.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SHOW_ARGUMENTS=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SHOW_METAVARS_COLUMN=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">APPEND_METAVARS_HELP=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">APPEND_METAVARS_REQUIRED=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GROUP_ARGUMENTS_OPTIONS=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">OPTION_ENVVAR_FIRST=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">USE_RST=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SHOW_RST_ERRORS=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">USE_MARKDOWN=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">USE_MARKDOWN_EMOJI=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">USE_RICH_MARKUP=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CODE_THEME='monokai'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">USE_CLICK_SHORT_HELP=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VERSION_INFO=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VERBOSE_OPTION=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BG_PROCESS_OPTION=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sections=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_env=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_empty=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_from_default_cache=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader=&lt;Loader.DICT:</span> <span class="pre">'from_dict'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_log_level=20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_command=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.decorator.click_cli" title="Permalink to this definition"></a></dt>
+<dd><p>Function that creates generic click CLI Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>STYLE_OPTION</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_ARGUMENT</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_SWITCH</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_METAVAR</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_METAVAR_APPEND</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_METAVAR_SEPARATOR</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_HEADER_TEXT</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_FOOTER_TEXT</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_USAGE</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_USAGE_COMMAND</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_DEPRECATED</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_HELPTEXT_FIRST_LINE</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_HELPTEXT</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_OPTION_HELP</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_OPTION_DEFAULT</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_OPTION_ENVVAR</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_REQUIRED_SHORT</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_REQUIRED_LONG</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_PANEL_BORDER</strong> (<em>str</em>) – </p></li>
+<li><p><strong>ALIGN_OPTIONS_PANEL</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_TABLE_SHOW_LINES</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_TABLE_LEADING</strong> (<em>int</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_TABLE_PAD_EDGE</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_TABLE_PADDING</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_TABLE_SHOW_EDGE</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_TABLE_BOX</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_TABLE_ROW_STYLES</strong> (<em>List</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_TABLE_HEADER_STYLE</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_OPTIONS_TABLE_BORDER_STYLE</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>STYLE_COMMANDS_PANEL_BORDER</strong> (<em>str</em>) – </p></li>
+<li><p><strong>ALIGN_COMMANDS_PANEL</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_COMMANDS_TABLE_SHOW_LINES</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>STYLE_COMMANDS_TABLE_LEADING</strong> (<em>int</em>) – </p></li>
+<li><p><strong>STYLE_COMMANDS_TABLE_PAD_EDGE</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>STYLE_COMMANDS_TABLE_PADDING</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – </p></li>
+<li><p><strong>STYLE_COMMANDS_TABLE_BOX</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_COMMANDS_TABLE_ROW_STYLES</strong> (<em>List</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>STYLE_COMMANDS_TABLE_BORDER_STYLE</strong> (<em>List</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>STYLE_ERRORS_PANEL_BORDER</strong> (<em>str</em>) – </p></li>
+<li><p><strong>ALIGN_ERRORS_PANEL</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_ERRORS_SUGGESTION</strong> (<em>str</em>) – </p></li>
+<li><p><strong>STYLE_ABORTED</strong> (<em>str</em>) – </p></li>
+<li><p><strong>MAX_WIDTH</strong> (<em>int</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>COLOR_SYSTEM</strong> (<em>Literal</em><em>[</em><em>'auto'</em><em>, </em><em>'standard'</em><em>, </em><em>'256'</em><em>, </em><em>'truecolor'</em><em>, </em><em>'windows'</em><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>FORCE_TERMINAL</strong> (<em>bool</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>HEADER_TEXT</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>HEADER_LOGO</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>FOOTER_TEXT</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>DEPRECATED_STRING</strong> (<em>str</em>) – </p></li>
+<li><p><strong>DEFAULT_STRING</strong> (<em>str</em>) – </p></li>
+<li><p><strong>ENVVAR_STRING</strong> (<em>str</em>) – </p></li>
+<li><p><strong>REQUIRED_SHORT_STRING</strong> (<em>str</em>) – </p></li>
+<li><p><strong>REQUIRED_LONG_STRING</strong> (<em>str</em>) – </p></li>
+<li><p><strong>RANGE_STRING</strong> (<em>str</em>) – </p></li>
+<li><p><strong>APPEND_METAVARS_HELP_STRING</strong> (<em>str</em>) – </p></li>
+<li><p><strong>ARGUMENTS_PANEL_TITLE</strong> (<em>str</em>) – </p></li>
+<li><p><strong>OPTIONS_PANEL_TITLE</strong> (<em>str</em>) – </p></li>
+<li><p><strong>COMMANDS_PANEL_TITLE</strong> (<em>str</em>) – </p></li>
+<li><p><strong>ERRORS_PANEL_TITLE</strong> (<em>str</em>) – </p></li>
+<li><p><strong>ERRORS_SUGGESTION</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>ERRORS_EPILOGUE</strong> (<em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>ABORTED_TEXT</strong> (<em>str</em>) – </p></li>
+<li><p><strong>SHOW_ARGUMENTS</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>SHOW_METAVARS_COLUMN</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>APPEND_METAVARS_HELP</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>APPEND_METAVARS_REQUIRED</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>GROUP_ARGUMENTS_OPTIONS</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>OPTION_ENVVAR_FIRST</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>USE_RST</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>SHOW_RST_ERRORS</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>USE_MARKDOWN</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>USE_MARKDOWN_EMOJI</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>USE_RICH_MARKUP</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>CODE_THEME</strong> (<em>str</em>) – </p></li>
+<li><p><strong>USE_CLICK_SHORT_HELP</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>VERSION_INFO</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>VERBOSE_OPTION</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>BG_PROCESS_OPTION</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>files</strong> (<em>List</em><em>[</em><em>str</em><em>] </em><em>| </em><em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>sections</strong> (<em>List</em><em>[</em><em>str</em><em>] </em><em>| </em><em>str</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>eval_env</strong> (<em>bool</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>allow_empty</strong> (<em>bool</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>init_from_default_cache</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>callback</strong> (<em>Any</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>config</strong> (<a class="reference internal" href="../cornflakes.decorator.click.rich.html#cornflakes.decorator.click.rich.RichConfig" title="cornflakes.decorator.click.rich._rich_config.RichConfig"><em>RichConfig</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>loader</strong> (<a class="reference internal" href="../cornflakes.html#cornflakes.types.Loader" title="cornflakes.types.Loader"><em>Loader</em></a>) – </p></li>
+<li><p><strong>default_log_level</strong> (<em>int</em>) – </p></li>
+<li><p><strong>as_command</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../cornflakes.decorator.datalite.html" class="btn btn-neutral float-left" title="cornflakes.decorator.datalite package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cornflakes.decorator.config.html" class="btn btn-neutral float-right" title="cornflakes.decorator.config" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Semjon Geist.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

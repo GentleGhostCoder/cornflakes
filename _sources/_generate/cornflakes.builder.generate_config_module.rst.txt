@@ -1,0 +1,6 @@
+﻿cornflakes.builder.generate\_config\_module
+===========================================
+
+.. currentmodule:: cornflakes.builder
+
+.. autofunction:: generate_config_module

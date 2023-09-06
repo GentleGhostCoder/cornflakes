@@ -1,0 +1,6 @@
+﻿cornflakes.decorator.string\_builder
+====================================
+
+.. currentmodule:: cornflakes.decorator
+
+.. autofunction:: string_builder

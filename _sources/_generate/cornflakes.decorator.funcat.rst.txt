@@ -1,0 +1,6 @@
+﻿cornflakes.decorator.funcat
+===========================
+
+.. currentmodule:: cornflakes.decorator
+
+.. autofunction:: funcat

@@ -1,0 +1,6 @@
+﻿cornflakes.common.has\_return\_statement
+========================================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: has_return_statement

@@ -1,0 +1,6 @@
+﻿cornflakes.common.get\_method\_type\_hint
+=========================================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: get_method_type_hint

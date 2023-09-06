@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.common package &mdash; cornflakes 3.3.16 documentation</title>
+  <title>cornflakes.common package &mdash; cornflakes 3.3.17 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f214ba4b"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=566c3e52"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -24,8 +24,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="cornflakes.decorator package" href="cornflakes.decorator.html" />
-    <link rel="prev" title="cornflakes.cli package" href="cornflakes.cli.html" /> 
+    <link rel="next" title="cornflakes.common.default_ca_path" href="_generate/cornflakes.common.default_ca_path.html" />
+    <link rel="prev" title="cornflakes.cli.cli" href="_generate/cornflakes.cli.cli.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.16
+                3.3.17
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -61,10 +61,21 @@
 <li class="toctree-l3 current"><a class="reference internal" href="cornflakes.html">cornflakes package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="cornflakes.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#cornflakes-types-module">cornflakes.types module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes.types">cornflakes.types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.ini_load.html">cornflakes.ini_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_type.html">cornflakes.eval_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_datetime.html">cornflakes.eval_datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_csv.html">cornflakes.eval_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.extract_between.html">cornflakes.extract_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.apply_match.html">cornflakes.apply_match</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.generate_config_group_module.html">cornflakes.generate_config_group_module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.yaml_load.html">cornflakes.yaml_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.attach_log.html">cornflakes.attach_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.setup_logging.html">cornflakes.setup_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.patch_module.html">cornflakes.patch_module</a></li>
 </ul>
 </li>
 </ul>
@@ -103,8 +114,308 @@
              
   <section id="cornflakes-common-package">
 <h1>cornflakes.common package<a class="headerlink" href="#cornflakes-common-package" title="Permalink to this heading"></a></h1>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.common">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cornflakes.common" title="Permalink to this heading"></a></h2>
+<section id="cornflakes-common-module">
+<h3>cornflakes common module.<a class="headerlink" href="#cornflakes-common-module" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cornflakes.common.default_ca_path" title="cornflakes.common.default_ca_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_ca_path</span></code></a>()</p></td>
+<td><p>Find default ca-certificate of the current system.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cornflakes.common.type_to_str" title="cornflakes.common.type_to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type_to_str</span></code></a>(f)</p></td>
+<td><p>Function to convert python object to string -&gt; fix scientific notation for float / Decimal.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cornflakes.common.extract_var_names" title="cornflakes.common.extract_var_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_var_names</span></code></a>(obj)</p></td>
+<td><p>Extract variables from class or function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cornflakes.common.patch_module" title="cornflakes.common.patch_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">patch_module</span></code></a>(module)</p></td>
+<td><p>Method to overwrite module with all submodules in a generic way.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cornflakes.common.check_type" title="cornflakes.common.check_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_type</span></code></a>(type_hint, value[, key, skip])</p></td>
+<td><p>Check if the provided value matches the specified type hint.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cornflakes.common.get_actual_type" title="cornflakes.common.get_actual_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_actual_type</span></code></a>(type_hint)</p></td>
+<td><p>Returns the actual type of the type hint.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cornflakes.common.recursive_update" title="cornflakes.common.recursive_update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recursive_update</span></code></a>(d, u[, merge_lists])</p></td>
+<td><p>Method to recursively update a dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cornflakes.common.datetime_ms" title="cornflakes.common.datetime_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime_ms</span></code></a>(year[, month, day, hour, ...])</p></td>
+<td><p>Create Instance of <code class="xref py py-meth docutils literal notranslate"><span class="pre">cornflakes.common.DatetimeMS()</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cornflakes.common.unquoted_string" title="cornflakes.common.unquoted_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unquoted_string</span></code></a>(x)</p></td>
+<td><p>Create Instance of <code class="xref py py-meth docutils literal notranslate"><span class="pre">cornflakes.common.UnquotedString()</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cornflakes.common.get_method_definition" title="cornflakes.common.get_method_definition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_method_definition</span></code></a>(func)</p></td>
+<td><p>This function returns the string representation of a given function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cornflakes.common.get_method_type_hint" title="cornflakes.common.get_method_type_hint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_method_type_hint</span></code></a>(method)</p></td>
+<td><p>This function returns the type hint of a given function as a string in the format <cite>Callable[[args], return]</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cornflakes.common.has_return_statement" title="cornflakes.common.has_return_statement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_return_statement</span></code></a>(func)</p></td>
+<td><p>Checks if a given function has a return statement that returns a value other than None.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.check_type">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">check_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_hint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.check_type" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the provided value matches the specified type hint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type_hint</strong> (<em>Any</em>) – The type hint or annotation to check against.</p></li>
+<li><p><strong>key</strong> – The attribute or variable name. (only required for error messages)</p></li>
+<li><p><strong>value</strong> – The value to be checked.</p></li>
+<li><p><strong>skip</strong> – If True, skip the type check and return None. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value if it matches the type hint.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – If the value does not match the expected type.</p></li>
+<li><p><strong>ValueError</strong> – If an error occurs during type conversion or when the value does not match the expected type.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This function handles various scenarios, including handling of special types, class types, dataclasses,
+unions, lists, tuples, built-in types, and custom types.</p>
+<p>Example:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">#</span> <span class="pre">Checking</span> <span class="pre">if</span> <span class="pre">a</span> <span class="pre">value</span> <span class="pre">matches</span> <span class="pre">the</span> <span class="pre">type</span> <span class="pre">hint</span>
+<span class="pre">result</span> <span class="pre">=</span> <span class="pre">check_type(int,</span> <span class="pre">'my_var',</span> <span class="pre">10)</span>
+<span class="pre">#</span> <span class="pre">`result`</span> <span class="pre">will</span> <span class="pre">be</span> <span class="pre">10,</span> <span class="pre">as</span> <span class="pre">it</span> <span class="pre">matches</span> <span class="pre">the</span> <span class="pre">`int`</span> <span class="pre">type</span> <span class="pre">hint.</span>
+<span class="pre">`</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.datetime_ms">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">datetime_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">millisecond</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tzinfo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.datetime_ms" title="Permalink to this definition"></a></dt>
+<dd><p>Create Instance of <code class="xref py py-meth docutils literal notranslate"><span class="pre">cornflakes.common.DatetimeMS()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>month</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+<li><p><strong>day</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+<li><p><strong>hour</strong> (<em>int</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>minute</strong> (<em>int</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>second</strong> (<em>int</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>millisecond</strong> (<em>int</em><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>tzinfo</strong> (<em>Union</em><em>[</em><em>tzinfo</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>DatetimeMS</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.default_ca_path">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">default_ca_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.default_ca_path" title="Permalink to this definition"></a></dt>
+<dd><p>Find default ca-certificate of the current system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>system default ca-certificate</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.extract_var_names">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">extract_var_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.extract_var_names" title="Permalink to this definition"></a></dt>
+<dd><p>Extract variables from class or function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>Callable</em><em>[</em><em>[</em><em>...</em><em>]</em><em>, </em><em>Any</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.get_actual_type">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">get_actual_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_hint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.get_actual_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the actual type of the type hint.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.get_method_definition">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">get_method_definition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.get_method_definition" title="Permalink to this definition"></a></dt>
+<dd><p>This function returns the string representation of a given function. It supports both lambda functions
+and functions defined using <cite>def</cite>. It also supports <cite>functools.partial</cite> objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>callable</em>) – A function or a <cite>functools.partial</cite> object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string representation of the function or <cite>functools.partial</cite> object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p>Examples:
+&gt;&gt;&gt; def original_function(x, y, z=3):
+…     return x + y + z
+…
+&gt;&gt;&gt; p = partial(original_function, 1, z=5)
+&gt;&gt;&gt; get_method_definition(p)  # doctest: +NORMALIZE_WHITESPACE
+‘partial(original_function, 1, z=5)’</p>
+<p># &gt;&gt;&gt; l = lambda x, y, z: print(x, y, z)
+# &gt;&gt;&gt; get_method_definition(l)
+# ‘lambda x, y, z: print(x, y, z)’
+#
+# &gt;&gt;&gt; method = partial(lambda x, y, z: print(x, y, z), x=1)
+# &gt;&gt;&gt; get_method_definition(method)
+# ‘partial(lambda x, y, z: print(x, y, z), x=1)’</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.get_method_type_hint">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">get_method_type_hint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.get_method_type_hint" title="Permalink to this definition"></a></dt>
+<dd><p>This function returns the type hint of a given function as a string in the format <cite>Callable[[args], return]</cite>.
+It supports functions with positional arguments, keyword arguments, variable positional arguments (<cite>*args</cite>),
+and variable keyword arguments (<cite>**kwargs</cite>). The type hints for <cite>*args</cite> and <cite>**kwargs</cite> are represented as <cite>…</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>method</strong> (<em>callable</em>) – A function.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The type hint of the function as a string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p>Examples:
+&gt;&gt;&gt; def func1(x: int, y: str) -&gt; bool:
+…     return y in str(x)
+…
+&gt;&gt;&gt; get_method_type_hint(func1)
+‘Callable[[int, str], bool]’</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_method_type_hint</span><span class="p">(</span><span class="n">func2</span><span class="p">)</span>
+<span class="go">&#39;Callable[..., Any]&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func3</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_method_type_hint</span><span class="p">(</span><span class="n">func3</span><span class="p">)</span>
+<span class="go">&#39;Callable[[Any, Any], Any]&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.has_return_statement">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">has_return_statement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.has_return_statement" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if a given function has a return statement that returns a value other than None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>Callable</em>) – The function to be checked</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the function has a return statement that returns a value other than None, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Xdoctest<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">no_return</span><span class="p">():</span> <span class="k">pass</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">has_return_statement</span><span class="p">(</span><span class="n">no_return</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">return_none</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">has_return_statement</span><span class="p">(</span><span class="n">return_none</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">return_something</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="mi">42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">has_return_statement</span><span class="p">(</span><span class="n">return_something</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">return_conditionally</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="n">x</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">has_return_statement</span><span class="p">(</span><span class="n">return_conditionally</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">multiple_return</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="kc">None</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">x</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">has_return_statement</span><span class="p">(</span><span class="n">multiple_return</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">multiple_none_return</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="kc">None</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">has_return_statement</span><span class="p">(</span><span class="n">multiple_none_return</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.patch_module">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">patch_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.patch_module" title="Permalink to this definition"></a></dt>
+<dd><p>Method to overwrite module with all submodules in a generic way.</p>
+<ol class="arabic simple">
+<li><p>Overwrite names from submodules declared in __all__ to parent module.</p></li>
+<li><p>Overwrite doc_string and adds auto summary with objects defined in __all__.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>module</strong> (<em>str</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.recursive_update">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">recursive_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_lists</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.recursive_update" title="Permalink to this definition"></a></dt>
+<dd><p>Method to recursively update a dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.type_to_str">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">type_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.type_to_str" title="Permalink to this definition"></a></dt>
+<dd><p>Function to convert python object to string -&gt; fix scientific notation for float / Decimal.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.common.unquoted_string">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.common.</span></span><span class="sig-name descname"><span class="pre">unquoted_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.common.unquoted_string" title="Permalink to this definition"></a></dt>
+<dd><p>Create Instance of <code class="xref py py-meth docutils literal notranslate"><span class="pre">cornflakes.common.UnquotedString()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>str</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -112,8 +423,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cornflakes.cli.html" class="btn btn-neutral float-left" title="cornflakes.cli package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="cornflakes.decorator.html" class="btn btn-neutral float-right" title="cornflakes.decorator package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_generate/cornflakes.cli.cli.html" class="btn btn-neutral float-left" title="cornflakes.cli.cli" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_generate/cornflakes.common.default_ca_path.html" class="btn btn-neutral float-right" title="cornflakes.common.default_ca_path" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

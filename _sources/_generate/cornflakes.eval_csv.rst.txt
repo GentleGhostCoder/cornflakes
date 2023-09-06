@@ -1,0 +1,6 @@
+﻿cornflakes.eval\_csv
+====================
+
+.. currentmodule:: cornflakes
+
+.. autofunction:: eval_csv

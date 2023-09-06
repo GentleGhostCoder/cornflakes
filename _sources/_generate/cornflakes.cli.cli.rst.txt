@@ -1,0 +1,6 @@
+﻿cornflakes.cli.cli
+==================
+
+.. currentmodule:: cornflakes.cli
+
+.. autodata:: cli

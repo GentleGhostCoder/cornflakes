@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cornflakes.decorator.dataclasses._helper &mdash; cornflakes 3.3.17 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/dark_mode_css/general.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/dark_mode_css/dark.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=566c3e52"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
+        <script src="../../../../_static/dark_mode_js/theme_switcher.js?v=a2af87b2"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            cornflakes
+          </a>
+              <div class="version">
+                3.3.17
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme.html">Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme.html#development">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../code_of_conduct.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">cornflakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cornflakes.decorator.dataclasses._helper</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cornflakes.decorator.dataclasses._helper</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Dataclass helper functions used by the custom dataclass decorator.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">fields</span> <span class="k">as</span> <span class="n">dc_fields</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">cornflakes</span> <span class="kn">import</span> <span class="n">eval_type</span><span class="p">,</span> <span class="n">ini_load</span>
+<span class="kn">from</span> <span class="nn">cornflakes.parser</span> <span class="kn">import</span> <span class="n">yaml_load</span>
+<span class="kn">from</span> <span class="nn">cornflakes.types</span> <span class="kn">import</span> <span class="n">MISSING_TYPE</span><span class="p">,</span> <span class="n">WITHOUT_DEFAULT_TYPE</span><span class="p">,</span> <span class="n">Constants</span><span class="p">,</span> <span class="n">IndexInstance</span><span class="p">,</span> <span class="n">Loader</span>
+
+
+<span class="k">def</span> <span class="nf">is_index</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the given object is an index type.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;__class__&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="s2">&quot;__name__&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;_Index&quot;</span>
+
+
+<div class="viewcode-block" id="is_config"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.is_config">[docs]</a><span class="k">def</span> <span class="nf">is_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return flag that class is a config class.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">SECTIONS</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_group"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.is_group">[docs]</a><span class="k">def</span> <span class="nf">is_group</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return flag that class is a config group class.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">is_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">FILES</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="config_files"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.config_files">[docs]</a><span class="k">def</span> <span class="nf">config_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return class __config_files__.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">FILES</span><span class="p">,</span> <span class="p">[])</span></div>
+
+
+<span class="k">def</span> <span class="nf">config_sections</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return class __config_sections__.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">SECTIONS</span><span class="p">,</span> <span class="p">[])</span>
+
+
+<div class="viewcode-block" id="dataclass_fields"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.dataclass_fields">[docs]</a><span class="k">def</span> <span class="nf">dataclass_fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return dataclass fields.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">FIELDS</span><span class="p">,</span> <span class="p">{})</span></div>
+
+
+<span class="k">def</span> <span class="nf">dataclass_validators</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return dataclass validators.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">VALIDATORS</span><span class="p">,</span> <span class="p">{})</span>
+
+
+<span class="k">def</span> <span class="nf">dataclass_required_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return dataclass required keys.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">REQUIRED_KEYS</span><span class="p">,</span> <span class="p">{})</span>
+
+
+<span class="k">def</span> <span class="nf">dataclass_init_exclude_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return dataclass exclude init keys.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">INIT_EXCLUDE_KEYS</span><span class="p">,</span> <span class="p">{})</span>
+
+
+<span class="k">def</span> <span class="nf">is_eval_env</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return flag that class is a eval env class.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">EVAL_ENV</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">is_chain_configs</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return flag that class is a chain files class.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">chain_configs</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">dict_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return class __dict_factory__.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">DICT_FACTORY</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">value_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return class __value_factory__.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">VALUE_FACTORY</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">alias_generator</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return class __alias_generator__.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">ALIAS_GENERATOR</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">evaluate_default_configs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to evaluate default configs.&quot;&quot;&quot;</span>
+    <span class="c1"># if is_validated(cls):</span>
+    <span class="c1">#     return config</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">dataclass_fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">IndexInstance</span><span class="p">):</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span>
+
+
+<span class="k">def</span> <span class="nf">is_validated</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return flag that class is a validated class.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">VALIDATE</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="normalized_class_name"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.normalized_class_name">[docs]</a><span class="k">def</span> <span class="nf">normalized_class_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return class name normalized.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([a-z])([A-Z])&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">1_</span><span class="se">\\</span><span class="s2">2&quot;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
+
+
+<span class="k">def</span> <span class="nf">tuple_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return class __tuple_factory__.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">TUPLE_FACTORY</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">is_config_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return flag that the object is a list of configs.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">IS_LIST</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;__args__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">__args__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">IS_LIST</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_not_ignored_slots</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return slots that are not ignored fields.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;keys&quot;</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">[</span>
+            <span class="n">slot</span>
+            <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">FIELDS</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">slot</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">IGNORED_SLOTS</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">is_use_regex</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return flag that the config class can be empty.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">USE_REGEX</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">is_allow_empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return flag that the config class can be empty.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">ALLOW_EMPTY</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">pass_section_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to return flag that the config has section_name in slots, so that the section title is passed in.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Constants</span><span class="o">.</span><span class="n">config_decorator</span><span class="o">.</span><span class="n">SECTION_NAME_KEY</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">FIELDS</span><span class="p">,</span> <span class="p">{})</span>
+
+
+<div class="viewcode-block" id="dc_field_without_default"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.dc_field_without_default">[docs]</a><span class="k">def</span> <span class="nf">dc_field_without_default</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the dataclass has a default / default_factory.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">WITHOUT_DEFAULT_TYPE</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">default_factory</span><span class="p">,</span> <span class="n">WITHOUT_DEFAULT_TYPE</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="default"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.default">[docs]</a><span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to get the default value of the dataclass.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">field</span><span class="o">.</span><span class="n">default_factory</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">default_factory</span><span class="p">,</span> <span class="p">(</span><span class="n">MISSING_TYPE</span><span class="p">,</span> <span class="n">WITHOUT_DEFAULT_TYPE</span><span class="p">))</span>
+        <span class="k">else</span> <span class="n">field</span><span class="o">.</span><span class="n">default</span>
+    <span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_env_vars</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to get the environment variables for the dataclass.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">eval_type</span><span class="p">(</span><span class="n">environ</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dc_cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">environ</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+
+<div class="viewcode-block" id="fields"><a class="viewcode-back" href="../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.fields">[docs]</a><span class="k">def</span> <span class="nf">fields</span><span class="p">(</span><span class="n">class_or_instance</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Patched method of the dataclasses fields method to ignore the custom dataclass.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">dc_fields</span><span class="p">(</span><span class="n">class_or_instance</span><span class="p">)</span></div>
+
+
+<span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
+
+
+<span class="k">def</span> <span class="nf">get_default_loader</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Loader</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to get the default loader from filenames.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">Loader</span><span class="o">.</span><span class="n">DICT</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">files</span>
+        <span class="k">else</span> <span class="n">Loader</span><span class="o">.</span><span class="n">INI</span>
+        <span class="k">if</span> <span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;ini&quot;</span>
+        <span class="k">else</span> <span class="n">Loader</span><span class="o">.</span><span class="n">YAML</span>
+        <span class="k">if</span> <span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;yaml&quot;</span>
+        <span class="k">else</span> <span class="n">Loader</span><span class="o">.</span><span class="n">DICT</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_loader_callback</span><span class="p">(</span><span class="n">loader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to get the loader callback.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">yaml_load</span> <span class="k">if</span> <span class="n">loader</span> <span class="o">==</span> <span class="n">Loader</span><span class="o">.</span><span class="n">YAML</span> <span class="k">else</span> <span class="n">ini_load</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Semjon Geist.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

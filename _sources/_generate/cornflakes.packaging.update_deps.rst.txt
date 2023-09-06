@@ -1,0 +1,6 @@
+﻿cornflakes.packaging.update\_deps
+=================================
+
+.. currentmodule:: cornflakes.packaging
+
+.. autodata:: update_deps

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.logging package &mdash; cornflakes 3.3.16 documentation</title>
+  <title>cornflakes.logging package &mdash; cornflakes 3.3.17 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f214ba4b"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=566c3e52"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -24,8 +24,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="cornflakes.packaging package" href="cornflakes.packaging.html" />
-    <link rel="prev" title="cornflakes.decorator.datalite package" href="cornflakes.decorator.datalite.html" /> 
+    <link rel="next" title="cornflakes.logging.attach_log" href="_generate/cornflakes.logging.attach_log.html" />
+    <link rel="prev" title="cornflakes.decorator.string_builder" href="_generate/cornflakes.decorator.string_builder.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.16
+                3.3.17
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -61,10 +61,21 @@
 <li class="toctree-l3 current"><a class="reference internal" href="cornflakes.html">cornflakes package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="cornflakes.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#cornflakes-types-module">cornflakes.types module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes.types">cornflakes.types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.ini_load.html">cornflakes.ini_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_type.html">cornflakes.eval_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_datetime.html">cornflakes.eval_datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_csv.html">cornflakes.eval_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.extract_between.html">cornflakes.extract_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.apply_match.html">cornflakes.apply_match</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.generate_config_group_module.html">cornflakes.generate_config_group_module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.yaml_load.html">cornflakes.yaml_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.attach_log.html">cornflakes.attach_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.setup_logging.html">cornflakes.setup_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.patch_module.html">cornflakes.patch_module</a></li>
 </ul>
 </li>
 </ul>
@@ -106,11 +117,82 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
-<section id="cornflakes-logging-logger-module">
-<h2>cornflakes.logging.logger module<a class="headerlink" href="#cornflakes-logging-logger-module" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.logging.logger">
+<span id="cornflakes-logging-logger-module"></span><h2>cornflakes.logging.logger module<a class="headerlink" href="#module-cornflakes.logging.logger" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cornflakes.logging.logger.LoggerMetaClass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cornflakes.logging.logger.</span></span><span class="sig-name descname"><span class="pre">LoggerMetaClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/logging/logger.html#LoggerMetaClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.logging.logger.LoggerMetaClass" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>LoggerMetaClass used for  metaclass.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cornflakes.logging.logger.LoggerProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cornflakes.logging.logger.</span></span><span class="sig-name descname"><span class="pre">LoggerProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/logging/logger.html#LoggerProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.logging.logger.LoggerProtocol" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cornflakes.html#cornflakes.types.Protocol" title="cornflakes.types.Protocol"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a></p>
+<p>LoggerProtocol used for Type Annotation.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.logging.logger.LoggerProtocol.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Logger</span></em><a class="headerlink" href="#cornflakes.logging.logger.LoggerProtocol.logger" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.logging">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cornflakes.logging" title="Permalink to this heading"></a></h2>
+<section id="cornflakes-logger">
+<h3>cornflakes Logger.<a class="headerlink" href="#cornflakes-logger" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#cornflakes.logging.attach_log" title="cornflakes.logging.attach_log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attach_log</span></code></a>([obj, log_level, default_level, ...])</p></td>
+<td><p>Function decorator to attach Logger to functions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#cornflakes.logging.setup_logging" title="cornflakes.logging.setup_logging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_logging</span></code></a>([default_path, default_level, ...])</p></td>
+<td><p>Setup logging configuration.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.logging.attach_log">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.logging.</span></span><span class="sig-name descname"><span class="pre">attach_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'logging.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LOG_CFG'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.logging.attach_log" title="Permalink to this definition"></a></dt>
+<dd><p>Function decorator to attach Logger to functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – Logger function or class to attach the logging to.</p></li>
+<li><p><strong>log_level</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>None</em><em>]</em>) – log-level for the current object logging.</p></li>
+<li><p><strong>default_path</strong> (<em>str</em>) – Default path to logging config file.</p></li>
+<li><p><strong>default_level</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>None</em><em>]</em>) – Default log-level (Logging.INFO).</p></li>
+<li><p><strong>env_key</strong> (<em>str</em>) – Environment key to use for logging configuration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Object with attached logging instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.logging.setup_logging">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.logging.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'logging.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LOG_CFG'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loggers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handlers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cornflakes.logging.setup_logging" title="Permalink to this definition"></a></dt>
+<dd><p>Setup logging configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<em>bool</em>) – Overwrite current log-level</p></li>
+<li><p><strong>default_path</strong> (<em>str</em>) – Default path to logging config file.</p></li>
+<li><p><strong>default_level</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>None</em><em>]</em>) – Default log-level (Logging.INFO).</p></li>
+<li><p><strong>env_key</strong> (<em>str</em>) – Environment key to use for logging configuration.</p></li>
+<li><p><strong>loggers</strong> (<em>Union</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>None</em><em>]</em>) – List of loggers to set log-level for.</p></li>
+<li><p><strong>handlers</strong> (<em>Union</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>None</em><em>]</em>) – List of handlers to set log-level for.</p></li>
+<li><p><strong>kwargs</strong> – arguments to pass to rich_handler</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -118,8 +200,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cornflakes.decorator.datalite.html" class="btn btn-neutral float-left" title="cornflakes.decorator.datalite package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="cornflakes.packaging.html" class="btn btn-neutral float-right" title="cornflakes.packaging package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_generate/cornflakes.decorator.string_builder.html" class="btn btn-neutral float-left" title="cornflakes.decorator.string_builder" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_generate/cornflakes.logging.attach_log.html" class="btn btn-neutral float-right" title="cornflakes.logging.attach_log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

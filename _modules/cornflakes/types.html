@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cornflakes.types &mdash; cornflakes 3.3.17 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/dark_mode_css/general.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/dark_mode_css/dark.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=566c3e52"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
+        <script src="../../_static/dark_mode_js/theme_switcher.js?v=a2af87b2"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            cornflakes
+          </a>
+              <div class="version">
+                3.3.17
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html#development">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributor Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Contributor Covenant Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">cornflakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cornflakes.types</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cornflakes.types</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">ClassVar</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Generic</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Protocol</span><span class="p">,</span>
+    <span class="n">Type</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">runtime_checkable</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">_T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;_T&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+
+<div class="viewcode-block" id="GenericType"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.GenericType">[docs]</a><span class="k">class</span> <span class="nc">GenericType</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+    <span class="o">...</span></div>
+
+
+<span class="k">class</span> <span class="nc">_HiddenDefault</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;***&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_WithoutDefault</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="n">WITHOUT_DEFAULT</span> <span class="o">=</span> <span class="n">_WithoutDefault</span><span class="p">()</span>
+<span class="n">WITHOUT_DEFAULT_TYPE</span> <span class="o">=</span> <span class="n">_WithoutDefault</span>
+<span class="n">MISSING_TYPE</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">_MISSING_TYPE</span>
+<span class="n">MISSING</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">MISSING</span>
+<span class="n">HAS_DEFAULT_FACTORY</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataclasses</span><span class="p">,</span> <span class="s2">&quot;_HAS_DEFAULT_FACTORY&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">INSPECT_EMPTY_TYPE</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inspect</span><span class="p">,</span> <span class="s2">&quot;_empty&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">HIDDEN_DEFAULT</span> <span class="o">=</span> <span class="n">_HiddenDefault</span><span class="p">()</span>
+<span class="n">HIDDEN_DEFAULT_TYPE</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">HIDDEN_DEFAULT</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FuncatTypes"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.FuncatTypes">[docs]</a><span class="k">class</span> <span class="nc">FuncatTypes</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">WRAP</span> <span class="o">=</span> <span class="s2">&quot;wrap&quot;</span>
+    <span class="n">BEFORE</span> <span class="o">=</span> <span class="s2">&quot;before&quot;</span>
+    <span class="n">AFTER</span> <span class="o">=</span> <span class="s2">&quot;after&quot;</span></div>
+
+
+<div class="viewcode-block" id="Loader"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.Loader">[docs]</a><span class="k">class</span> <span class="nc">Loader</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config Loader Enums.&quot;&quot;&quot;</span>
+
+    <span class="n">INI</span> <span class="o">=</span> <span class="s2">&quot;from_ini&quot;</span>
+    <span class="n">YAML</span> <span class="o">=</span> <span class="s2">&quot;from_yaml&quot;</span>
+    <span class="n">DICT</span> <span class="o">=</span> <span class="s2">&quot;from_dict&quot;</span>
+    <span class="n">FILE</span> <span class="o">=</span> <span class="s2">&quot;from_file&quot;</span>
+    <span class="n">CUSTOM</span> <span class="o">=</span> <span class="s2">&quot;from_custom&quot;</span></div>
+
+
+<div class="viewcode-block" id="Writer"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.Writer">[docs]</a><span class="k">class</span> <span class="nc">Writer</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config Writer Enums.&quot;&quot;&quot;</span>
+
+    <span class="n">INI</span> <span class="o">=</span> <span class="s2">&quot;to_ini&quot;</span>
+    <span class="n">YAML</span> <span class="o">=</span> <span class="s2">&quot;to_yaml&quot;</span>
+    <span class="n">DICT</span> <span class="o">=</span> <span class="s2">&quot;to_dict&quot;</span>
+    <span class="n">FILE</span> <span class="o">=</span> <span class="s2">&quot;to_file&quot;</span>
+    <span class="n">CUSTOM</span> <span class="o">=</span> <span class="s2">&quot;to_custom&quot;</span></div>
+
+
+<div class="viewcode-block" id="ConfigOption"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.ConfigOption">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ConfigOption</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config Option Constants.&quot;&quot;&quot;</span>
+
+    <span class="n">ENABLED</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__auto_option_enabled__&quot;</span>
+    <span class="n">READ_CONFIG_METHOD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__auto_option_init__&quot;</span>
+    <span class="n">ATTRIBUTES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__auto_option_attributes__&quot;</span>
+    <span class="n">PASSED_DECORATE_KEYS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__auto_option_keys__&quot;</span>
+    <span class="n">OPTION_GROUPS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__option_groups__&quot;</span>
+    <span class="n">ADD_CONFIG_FILE_OPTION_PARAM_VAR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;config_file&quot;</span>
+    <span class="n">ADD_CONFIG_FILE_OPTION_PARAM</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;--config-file&quot;</span>
+    <span class="n">ADD_CONFIG_FILE_OPTION_PARAM_SHORT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;-cfg&quot;</span>
+    <span class="n">SHOW_CONFIG_FILES_OPTION_PARAM_VAR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;show_config_files&quot;</span>
+    <span class="n">SHOW_CONFIG_FILES_OPTION_PARAM</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;--show-config-files&quot;</span>
+    <span class="n">SHOW_CONFIG_FILES_OPTION_PARAM_SHORT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;-scf&quot;</span></div>
+
+
+<div class="viewcode-block" id="ConfigDecoratorArgs"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.ConfigDecoratorArgs">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ConfigDecoratorArgs</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config Arguments Arguments.&quot;&quot;&quot;</span>
+
+    <span class="n">FILES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;files&quot;</span>
+    <span class="n">SECTIONS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sections&quot;</span>
+    <span class="n">USE_REGEX</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;use_regex&quot;</span>
+    <span class="n">IS_LIST</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;is_list&quot;</span>
+    <span class="n">DEFAULT_LOADER</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default_loader&quot;</span>
+    <span class="n">ALLOW_EMPTY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;allow_empty&quot;</span></div>
+
+
+<div class="viewcode-block" id="ConfigDecorator"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.ConfigDecorator">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ConfigDecorator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config Decorator Constants.&quot;&quot;&quot;</span>
+
+    <span class="n">FILES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__config_files__&quot;</span>
+    <span class="n">SECTIONS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__config_sections__&quot;</span>
+    <span class="n">USE_REGEX</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__multi_config__&quot;</span>
+    <span class="n">IS_LIST</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__config_list__&quot;</span>
+    <span class="n">DEFAULT_LOADER</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__default_loader__&quot;</span>
+    <span class="n">CUSTOM_LOADER</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__custom_loader__&quot;</span>
+    <span class="n">ALLOW_EMPTY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__allow_empty_config__&quot;</span>
+    <span class="n">chain_configs</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__chain_configs__&quot;</span>
+    <span class="n">VALIDATE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__validate__&quot;</span>
+    <span class="n">ALIAS_GENERATOR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__alias_generator__&quot;</span>
+
+    <span class="n">SECTION_NAME_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;section_name&quot;</span></div>
+
+
+<div class="viewcode-block" id="DataclassDecorator"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.DataclassDecorator">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">DataclassDecorator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dataclass Decorator Constants.&quot;&quot;&quot;</span>
+
+    <span class="n">FIELDS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__dataclass_fields__&quot;</span>
+    <span class="n">DICT_FACTORY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__dict_factory__&quot;</span>
+    <span class="n">TUPLE_FACTORY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__tuple_factory__&quot;</span>
+    <span class="n">VALUE_FACTORY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__value_factory__&quot;</span>
+    <span class="n">EVAL_ENV</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__eval_env__&quot;</span>
+    <span class="n">IGNORED_SLOTS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__ignored_slots__&quot;</span>
+    <span class="n">IGNORE_NONE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__ignore_none__&quot;</span>
+    <span class="n">VALIDATORS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__cornflakes_validators__&quot;</span>
+    <span class="n">REQUIRED_KEYS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__cornflakes_required_keys__&quot;</span>
+    <span class="n">INIT_EXCLUDE_KEYS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__cornflakes_init_exclude_keys__&quot;</span>
+    <span class="n">NON_COMPARABLE_FIELDS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__cornflakes_non_comparable_fields__&quot;</span></div>
+
+
+<div class="viewcode-block" id="Constants"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.Constants">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Constants</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Constants.&quot;&quot;&quot;</span>
+
+    <span class="n">DEFAULT_LOADER</span><span class="p">:</span> <span class="n">Loader</span> <span class="o">=</span> <span class="n">Loader</span><span class="o">.</span><span class="n">INI</span>
+    <span class="n">DEFAULT_CONFIG_FILE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;config.ini&quot;</span>
+    <span class="n">config_option</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ConfigOption</span><span class="p">]</span> <span class="o">=</span> <span class="n">ConfigOption</span>
+    <span class="n">config_decorator_args</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ConfigDecoratorArgs</span><span class="p">]</span> <span class="o">=</span> <span class="n">ConfigDecoratorArgs</span>
+    <span class="n">config_decorator</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ConfigDecorator</span><span class="p">]</span> <span class="o">=</span> <span class="n">ConfigDecorator</span>
+    <span class="n">dataclass_decorator</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">DataclassDecorator</span><span class="p">]</span> <span class="o">=</span> <span class="n">DataclassDecorator</span></div>
+
+
+<span class="n">ConfigArgument</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]]</span>
+
+
+<div class="viewcode-block" id="LoaderMethod"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.LoaderMethod">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">LoaderMethod</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config loader method protocol.&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Config loader method protocol.</span>
+
+<span class="sd">        Methods generated by the Methods implemented in:</span>
+<span class="sd">        from_yaml -&gt; :meth:`cornflakes.decorator.config.yaml.create_yaml_file_loader`</span>
+<span class="sd">        from_ini -&gt; :meth:`cornflakes.decorator.config.ini.create_ini_file_loader`</span>
+<span class="sd">        from_dict -&gt; :meth:`cornflakes.decorator.config.dict.create_dict_file_loader`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+
+
+<div class="viewcode-block" id="IndexInstance"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.IndexInstance">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">IndexInstance</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol for Index instances.&quot;&quot;&quot;</span>
+
+    <span class="n">reset</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MappingWrapper"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.MappingWrapper">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">MappingWrapper</span><span class="p">(</span><span class="n">Protocol</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="MappingWrapper.keys"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.MappingWrapper.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="o">...</span></div>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MappingWrapper[_T]&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and return a new object.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new descriptor object.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span></div>
+
+
+<div class="viewcode-block" id="StandardDataclass"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardDataclass">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">StandardDataclass</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="n">__dataclass_fields__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+    <span class="n">__dataclass_params__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>  <span class="c1"># in reality `dataclasses._DataclassParams`</span>
+    <span class="n">__post_init__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
+
+    <span class="n">__args__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span>
+    <span class="vm">__name__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="StandardCornflakesDataclass"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardCornflakesDataclass">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">StandardCornflakesDataclass</span><span class="p">(</span><span class="n">StandardDataclass</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+    <span class="c1"># @classmethod</span>
+    <span class="c1"># def __new__(cls: Type[_T], *args, **kwargs) -&gt; _T:</span>
+    <span class="c1">#     ...</span>
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="StandardCornflakesDataclass.validate_kwargs"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardCornflakesDataclass.validate_kwargs">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate_kwargs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate kwargs.</span>
+
+<span class="sd">        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.validate_dataclass_kwargs`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses</span> <span class="kn">import</span> <span class="n">validate_dataclass_kwargs</span>
+
+        <span class="k">return</span> <span class="n">validate_dataclass_kwargs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="n">validate</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StandardCornflakesDataclass.check_kwargs"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardCornflakesDataclass.check_kwargs">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">check_kwargs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check dataclass kwargs.</span>
+
+<span class="sd">        Method implemented in :meth:`cornflakes.decorator.dataclass._validate.check_dataclass_kwargs`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses</span> <span class="kn">import</span> <span class="n">check_dataclass_kwargs</span>
+
+        <span class="k">return</span> <span class="n">check_dataclass_kwargs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="n">validate</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="DataclassInstance"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.DataclassInstance">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">DataclassInstance</span><span class="p">(</span><span class="n">StandardCornflakesDataclass</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the value associated with the given key.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="DataclassInstance.keys"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.DataclassInstance.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterable of all the keys.&quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the dictionary has the specified key, else False.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Implement iter(self).&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return len(self).&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataclassInstance[_T]&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and return a new object.  See help(type) for accurate signature.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="DataclassInstance.to_dict"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.DataclassInstance.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse config to dict.</span>
+
+<span class="sd">        Method implemented in :meth:`cornflakes.decorator.dataclass._dataclass.to_dict`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses</span> <span class="kn">import</span> <span class="n">to_dict</span>
+
+        <span class="k">return</span> <span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataclassInstance.to_tuple"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.DataclassInstance.to_tuple">[docs]</a>    <span class="k">def</span> <span class="nf">to_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse config to tuple.</span>
+
+<span class="sd">        Method implemented in :meth:`cornflakes.decorator.dataclass._dataclass.to_tuple`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses</span> <span class="kn">import</span> <span class="n">to_tuple</span>
+
+        <span class="k">return</span> <span class="n">to_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataclassInstance.to_ini"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.DataclassInstance.to_ini">[docs]</a>    <span class="k">def</span> <span class="nf">to_ini</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_cfg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytearray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse config to ini file / bytes.</span>
+
+<span class="sd">        Method implemented in :meth:`cornflakes.decorator.config.ini.to_ini`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses</span> <span class="kn">import</span> <span class="n">to_ini</span>
+
+        <span class="k">return</span> <span class="n">to_ini</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_cfg</span><span class="o">=</span><span class="n">out_cfg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataclassInstance.to_yaml"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.DataclassInstance.to_yaml">[docs]</a>    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_cfg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytearray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse config to yaml file / bytes.</span>
+
+<span class="sd">        Method implemented in :meth:`cornflakes.decorator.config.yaml.to_yaml`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses</span> <span class="kn">import</span> <span class="n">to_yaml</span>
+
+        <span class="k">return</span> <span class="n">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_cfg</span><span class="o">=</span><span class="n">out_cfg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CornflakesType"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.CornflakesType">[docs]</a><span class="k">class</span> <span class="nc">CornflakesType</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CornflakesDataclass"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.CornflakesDataclass">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">CornflakesDataclass</span><span class="p">(</span><span class="n">StandardCornflakesDataclass</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dataclass instance protocol.&quot;&quot;&quot;</span>
+
+    <span class="n">__eval_env__</span><span class="p">:</span> <span class="nb">bool</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataclassInstance</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span></div>
+
+
+<div class="viewcode-block" id="StandardConfigArgs"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardConfigArgs">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">StandardConfigArgs</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="n">__config_files__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]]</span>
+    <span class="n">__config_sections__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]]</span>
+    <span class="n">__multi_config__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+    <span class="n">__config_list__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+    <span class="n">__default_loader__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Loader</span><span class="p">]</span>
+    <span class="n">__allow_empty_config__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+    <span class="n">__chain_configs__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="StandardConfigMethods"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardConfigMethods">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">StandardConfigMethods</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<div class="viewcode-block" id="StandardConfigMethods.from_ini"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardConfigMethods.from_ini">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_ini</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to load a config from ini files.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">get_loader_callback</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses.config._load_config</span> <span class="kn">import</span> <span class="n">create_file_loader</span>
+
+        <span class="k">return</span> <span class="n">create_file_loader</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_loader_callback</span><span class="o">=</span><span class="n">get_loader_callback</span><span class="p">(</span><span class="n">Loader</span><span class="o">.</span><span class="n">INI</span><span class="p">),</span> <span class="n">_instantiate</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span>
+            <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="n">sections</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">,</span> <span class="n">eval_env</span><span class="o">=</span><span class="n">eval_env</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="StandardConfigMethods.from_yaml"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardConfigMethods.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to load a config from yaml files.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">get_loader_callback</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses.config._load_config</span> <span class="kn">import</span> <span class="n">create_file_loader</span>
+
+        <span class="k">return</span> <span class="n">create_file_loader</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_loader_callback</span><span class="o">=</span><span class="n">get_loader_callback</span><span class="p">(</span><span class="n">Loader</span><span class="o">.</span><span class="n">YAML</span><span class="p">),</span> <span class="n">_instantiate</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span>
+            <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="n">sections</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">,</span> <span class="n">eval_env</span><span class="o">=</span><span class="n">eval_env</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="StandardConfigMethods.from_dict"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardConfigMethods.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to load a config from dict files.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">get_loader_callback</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses.config._load_config</span> <span class="kn">import</span> <span class="n">create_file_loader</span>
+
+        <span class="k">return</span> <span class="n">create_file_loader</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_loader_callback</span><span class="o">=</span><span class="n">get_loader_callback</span><span class="p">(</span><span class="n">Loader</span><span class="o">.</span><span class="n">DICT</span><span class="p">),</span> <span class="n">_instantiate</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span>
+            <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="n">sections</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">,</span> <span class="n">eval_env</span><span class="o">=</span><span class="n">eval_env</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="StandardConfigMethods.from_file"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardConfigMethods.from_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to load a config from files.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">config_files</span><span class="p">,</span> <span class="n">get_default_loader</span><span class="p">,</span> <span class="n">get_loader_callback</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses.config._load_config</span> <span class="kn">import</span> <span class="n">create_file_loader</span>
+
+        <span class="k">return</span> <span class="n">create_file_loader</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span>
+            <span class="n">_loader_callback</span><span class="o">=</span><span class="n">get_loader_callback</span><span class="p">(</span><span class="n">get_default_loader</span><span class="p">(</span><span class="n">files</span> <span class="ow">or</span> <span class="n">config_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">))),</span>
+            <span class="n">_instantiate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)(</span><span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="n">sections</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">,</span> <span class="n">eval_env</span><span class="o">=</span><span class="n">eval_env</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="StandardConfigGroupArgs"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardConfigGroupArgs">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">StandardConfigGroupArgs</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="n">__allow_empty_config__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span>
+    <span class="n">__config_files__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]]</span>
+    <span class="n">__chain_configs__</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="StandardConfigGroupMethods"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardConfigGroupMethods">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">StandardConfigGroupMethods</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<div class="viewcode-block" id="StandardConfigGroupMethods.from_file"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.StandardConfigGroupMethods.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to load a config from files.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">config_files</span><span class="p">,</span> <span class="n">get_default_loader</span><span class="p">,</span> <span class="n">get_loader_callback</span>
+        <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses.config._load_config</span> <span class="kn">import</span> <span class="n">create_file_loader</span>
+
+        <span class="k">return</span> <span class="n">create_file_loader</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">_loader_callback</span><span class="o">=</span><span class="n">get_loader_callback</span><span class="p">(</span><span class="n">get_default_loader</span><span class="p">(</span><span class="n">files</span> <span class="ow">or</span> <span class="n">config_files</span><span class="p">(</span><span class="bp">self</span><span class="p">))),</span>
+            <span class="n">_instantiate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)(</span><span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">sections</span><span class="o">=</span><span class="n">sections</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="n">defaults</span><span class="p">,</span> <span class="n">eval_env</span><span class="o">=</span><span class="n">eval_env</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ConfigInstance"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.ConfigInstance">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">ConfigInstance</span><span class="p">(</span><span class="n">StandardConfigMethods</span><span class="p">,</span> <span class="n">StandardConfigArgs</span><span class="p">,</span> <span class="n">DataclassInstance</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config Protocol Type.&quot;&quot;&quot;</span>
+
+    <span class="o">...</span></div>
+
+
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">StandardConfigMethods</span><span class="p">,</span> <span class="n">StandardConfigArgs</span><span class="p">,</span> <span class="n">CornflakesDataclass</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config Protocol Type.&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">_T</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConfigInstance</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>  <span class="c1"># type: ignore</span>
+        <span class="o">...</span></div>
+
+
+<div class="viewcode-block" id="ConfigGroupInstance"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.ConfigGroupInstance">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">ConfigGroupInstance</span><span class="p">(</span><span class="n">StandardConfigGroupMethods</span><span class="p">,</span> <span class="n">StandardConfigArgs</span><span class="p">,</span> <span class="n">DataclassInstance</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ConfigGroup Protocol Type.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ConfigGroup"><a class="viewcode-back" href="../../cornflakes.html#cornflakes.types.ConfigGroup">[docs]</a><span class="nd">@runtime_checkable</span>
+<span class="k">class</span> <span class="nc">ConfigGroup</span><span class="p">(</span><span class="n">StandardConfigGroupMethods</span><span class="p">,</span> <span class="n">StandardConfigGroupArgs</span><span class="p">,</span> <span class="n">CornflakesDataclass</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">_T</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ConfigGroup Protocol Type.&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">_T</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConfigGroupInstance</span><span class="p">[</span><span class="n">_T</span><span class="p">]:</span>  <span class="c1"># type: ignore</span>
+        <span class="o">...</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Semjon Geist.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

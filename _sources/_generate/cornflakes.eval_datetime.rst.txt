@@ -1,0 +1,6 @@
+﻿cornflakes.eval\_datetime
+=========================
+
+.. currentmodule:: cornflakes
+
+.. autofunction:: eval_datetime

@@ -1,0 +1,6 @@
+﻿cornflakes.common.unquoted\_string
+==================================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: unquoted_string

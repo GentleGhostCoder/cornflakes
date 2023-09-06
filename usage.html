@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Usage &mdash; cornflakes 3.3.16 documentation</title>
+  <title>Usage &mdash; cornflakes 3.3.17 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f214ba4b"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=566c3e52"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -25,7 +25,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Contributor Guide" href="contributing.html" />
-    <link rel="prev" title="cornflakes.parser package" href="cornflakes.parser.html" /> 
+    <link rel="prev" title="cornflakes.patch_module" href="_generate/cornflakes.patch_module.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.16
+                3.3.17
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,7 +57,14 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cornflakes">cornflakes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cornflakes-bump">bump</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cornflakes-update">update</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributor Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Contributor Covenant Code of Conduct</a></li>
@@ -89,13 +96,61 @@
              
   <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
+<section id="cornflakes">
+<h2>cornflakes<a class="headerlink" href="#cornflakes" title="Permalink to this heading"></a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cornflakes<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cornflakes-version">
+<span class="sig-name descname"><span class="pre">--version</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-cornflakes-version" title="Permalink to this definition"></a></dt>
+<dd><p>Show the version and exit.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cornflakes-v">
+<span id="cmdoption-cornflakes-verbose"></span><span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-cornflakes-v" title="Permalink to this definition"></a></dt>
+<dd><p>Base logging level is set to logging.DEBUG.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cornflakes-b">
+<span id="cmdoption-cornflakes-background-process"></span><span class="sig-name descname"><span class="pre">-b</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--background-process</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-cornflakes-b" title="Permalink to this definition"></a></dt>
+<dd><p>Run in Background without console logger.</p>
+</dd></dl>
+
+<section id="cornflakes-bump">
+<h3>bump<a class="headerlink" href="#cornflakes-bump" title="Permalink to this heading"></a></h3>
+<p>Bump version of the module for the given version level (major, minor, patch).</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cornflakes<span class="w"> </span>bump<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[[</span>major<span class="p">|</span>minor<span class="p">|</span>patch<span class="o">]]</span>
+</pre></div>
+</div>
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-cornflakes-bump-arg-VERSION_COMPONENT">
+<span class="sig-name descname"><span class="pre">VERSION_COMPONENT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-cornflakes-bump-arg-VERSION_COMPONENT" title="Permalink to this definition"></a></dt>
+<dd><p>Optional argument</p>
+</dd></dl>
+
+</section>
+<section id="cornflakes-update">
+<h3>update<a class="headerlink" href="#cornflakes-update" title="Permalink to this heading"></a></h3>
+<p>Update dependencies to latest version.</p>
+<p>Note: This method is curretly in alpha… check the updated lines after calling it.
+TODO: Add the feature for soft update (highest and lowest possible version)</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cornflakes<span class="w"> </span>update<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cornflakes.parser.html" class="btn btn-neutral float-left" title="cornflakes.parser package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="_generate/cornflakes.patch_module.html" class="btn btn-neutral float-left" title="cornflakes.patch_module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="contributing.html" class="btn btn-neutral float-right" title="Contributor Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

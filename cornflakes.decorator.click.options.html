@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.decorator.click.options package &mdash; cornflakes 3.3.16 documentation</title>
+  <title>cornflakes.decorator.click.options package &mdash; cornflakes 3.3.17 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f214ba4b"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=566c3e52"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -40,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.16
+                3.3.17
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -61,10 +61,21 @@
 <li class="toctree-l3 current"><a class="reference internal" href="cornflakes.html">cornflakes package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="cornflakes.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#cornflakes-types-module">cornflakes.types module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes.types">cornflakes.types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.ini_load.html">cornflakes.ini_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_type.html">cornflakes.eval_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_datetime.html">cornflakes.eval_datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_csv.html">cornflakes.eval_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.extract_between.html">cornflakes.extract_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.apply_match.html">cornflakes.apply_match</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.generate_config_group_module.html">cornflakes.generate_config_group_module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.yaml_load.html">cornflakes.yaml_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.attach_log.html">cornflakes.attach_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.setup_logging.html">cornflakes.setup_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.patch_module.html">cornflakes.patch_module</a></li>
 </ul>
 </li>
 </ul>
@@ -105,8 +116,65 @@
              
   <section id="cornflakes-decorator-click-options-package">
 <h1>cornflakes.decorator.click.options package<a class="headerlink" href="#cornflakes-decorator-click-options-package" title="Permalink to this heading"></a></h1>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.click.options">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cornflakes.decorator.click.options" title="Permalink to this heading"></a></h2>
+<p>Default Global Click Options.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.click.options.bg_process_option">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.click.options.</span></span><span class="sig-name descname"><span class="pre">bg_process_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_process</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">func_args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">func_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/click/options/_bg_process.html#bg_process_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.click.options.bg_process_option" title="Permalink to this definition"></a></dt>
+<dd><p>Default Option for running in background.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="cornflakes.decorator.click.rich.html#cornflakes.decorator.click.rich.RichCommand" title="cornflakes.decorator.click.rich._rich_command.RichCommand"><em>RichCommand</em></a><em> | </em><a class="reference internal" href="cornflakes.decorator.click.rich.html#cornflakes.decorator.click.rich.RichGroup" title="cornflakes.decorator.click.rich._rich_group.RichGroup"><em>RichGroup</em></a><em> | </em><em>Any</em>) – </p></li>
+<li><p><strong>background_process</strong> (<em>bool</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.click.options.config_option">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.click.options.</span></span><span class="sig-name descname"><span class="pre">config_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_config_file_option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passing_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/click/options/_config_option.html#config_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.click.options.config_option" title="Permalink to this definition"></a></dt>
+<dd><p>Click Option Decorator to define a global option for cli decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>Type</em><em>[</em><em>_T</em><em>] </em><em>| </em><em>Type</em><em>[</em><a class="reference internal" href="cornflakes.html#cornflakes.types.CornflakesDataclass" title="cornflakes.types.CornflakesDataclass"><em>CornflakesDataclass</em></a><em>] </em><em>| </em><em>Type</em><em>[</em><a class="reference internal" href="cornflakes.html#cornflakes.types.Config" title="cornflakes.types.Config"><em>Config</em></a><em>] </em><em>| </em><em>Type</em><em>[</em><a class="reference internal" href="cornflakes.html#cornflakes.types.ConfigGroup" title="cornflakes.types.ConfigGroup"><em>ConfigGroup</em></a><em>]</em>) – </p></li>
+<li><p><strong>add_config_file_option</strong> (<em>bool</em>) – </p></li>
+<li><p><strong>files</strong> (<em>Union</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>str</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+<li><p><strong>sections</strong> (<em>Union</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>str</em><em>, </em><em>None</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Callable</em>[[<em>Command</em> | <em>Group</em> | <em>Type</em>[<em>_T</em>] | <em>Callable</em>[[…], <em>Any</em>]], <em>Command</em> | <em>Group</em> | <em>Type</em>[<em>_T</em>] | <em>Callable</em>[[…], <em>Any</em>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.click.options.global_option">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.click.options.</span></span><span class="sig-name descname"><span class="pre">global_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">option_args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">option_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/click/options/_global.html#global_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.click.options.global_option" title="Permalink to this definition"></a></dt>
+<dd><p>Click Option Decorator to define a global option for cli decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Callable</em>[[…], <a class="reference internal" href="cornflakes.decorator.click.html#cornflakes.decorator.click.types.GlobalOption" title="cornflakes.decorator.click.types.GlobalOption"><em>GlobalOption</em></a>] | <a class="reference internal" href="cornflakes.decorator.click.html#cornflakes.decorator.click.types.GlobalOption" title="cornflakes.decorator.click.types.GlobalOption"><em>GlobalOption</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.click.options.verbose_option">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.click.options.</span></span><span class="sig-name descname"><span class="pre">verbose_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/click/options/_verbose.html#verbose_option"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.click.options.verbose_option" title="Permalink to this definition"></a></dt>
+<dd><p>Default Option for verbose logging.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.click.options.verbose_option_all">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.click.options.</span></span><span class="sig-name descname"><span class="pre">verbose_option_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/click/options/_verbose.html#verbose_option_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.click.options.verbose_option_all" title="Permalink to this definition"></a></dt>
+<dd><p>Default Option for verbose logging.</p>
+</dd></dl>
+
 </section>
 </section>
 

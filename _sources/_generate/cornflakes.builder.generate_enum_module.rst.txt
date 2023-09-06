@@ -1,0 +1,6 @@
+﻿cornflakes.builder.generate\_enum\_module
+=========================================
+
+.. currentmodule:: cornflakes.builder
+
+.. autofunction:: generate_enum_module

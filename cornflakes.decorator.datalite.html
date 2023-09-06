@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.decorator.datalite package &mdash; cornflakes 3.3.16 documentation</title>
+  <title>cornflakes.decorator.datalite package &mdash; cornflakes 3.3.17 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f214ba4b"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=566c3e52"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -24,7 +24,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="cornflakes.logging package" href="cornflakes.logging.html" />
+    <link rel="next" title="cornflakes.decorator.click_cli" href="_generate/cornflakes.decorator.click_cli.html" />
     <link rel="prev" title="cornflakes.decorator.dataclasses.validator package" href="cornflakes.decorator.dataclasses.validator.html" /> 
 </head>
 
@@ -40,7 +40,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.16
+                3.3.17
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -61,10 +61,21 @@
 <li class="toctree-l3 current"><a class="reference internal" href="cornflakes.html">cornflakes package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="cornflakes.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cornflakes.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#cornflakes-types-module">cornflakes.types module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes.types">cornflakes.types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cornflakes.html#module-cornflakes">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.ini_load.html">cornflakes.ini_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_type.html">cornflakes.eval_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_datetime.html">cornflakes.eval_datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.eval_csv.html">cornflakes.eval_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.extract_between.html">cornflakes.extract_between</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.apply_match.html">cornflakes.apply_match</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.generate_config_group_module.html">cornflakes.generate_config_group_module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.yaml_load.html">cornflakes.yaml_load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.attach_log.html">cornflakes.attach_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.setup_logging.html">cornflakes.setup_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_generate/cornflakes.patch_module.html">cornflakes.patch_module</a></li>
 </ul>
 </li>
 </ul>
@@ -107,29 +118,494 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
-<section id="cornflakes-decorator-datalite-commons-module">
-<h2>cornflakes.decorator.datalite.commons module<a class="headerlink" href="#cornflakes-decorator-datalite-commons-module" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.datalite.commons">
+<span id="cornflakes-decorator-datalite-commons-module"></span><h2>cornflakes.decorator.datalite.commons module<a class="headerlink" href="#module-cornflakes.decorator.datalite.commons" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.commons.default_formatter">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.commons.</span></span><span class="sig-name descname"><span class="pre">default_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/commons.html#default_formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.commons.default_formatter" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>Any</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Any</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.commons.generator_formatter">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.commons.</span></span><span class="sig-name descname"><span class="pre">generator_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/commons.html#generator_formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.commons.generator_formatter" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>_</strong> (<em>Generator</em><em>[</em><em>T_co</em><em>, </em><em>T_contra</em><em>, </em><em>V_co</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.commons.str_to_bool">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.commons.</span></span><span class="sig-name descname"><span class="pre">str_to_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/commons.html#str_to_bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.commons.str_to_bool" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<em>str</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.commons.uuid_formatter">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.commons.</span></span><span class="sig-name descname"><span class="pre">uuid_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/commons.html#uuid_formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.commons.uuid_formatter" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>UUID</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="cornflakes-decorator-datalite-constraints-module">
-<h2>cornflakes.decorator.datalite.constraints module<a class="headerlink" href="#cornflakes-decorator-datalite-constraints-module" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.datalite.constraints">
+<span id="cornflakes-decorator-datalite-constraints-module"></span><h2>cornflakes.decorator.datalite.constraints module<a class="headerlink" href="#module-cornflakes.decorator.datalite.constraints" title="Permalink to this heading"></a></h2>
+<dl class="simple">
+<dt>datalite.constraints module introduces constraint</dt><dd><p>types that can be used to hint field variables,
+that can be used to signal datalite decorator
+constraints in the database.</p>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.constraints.ConstraintFailedError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.constraints.</span></span><span class="sig-name descname"><span class="pre">ConstraintFailedError</span></span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/constraints.html#ConstraintFailedError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.constraints.ConstraintFailedError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>This exception is raised when a Constraint fails.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.constraints.Unique">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.constraints.</span></span><span class="sig-name descname"><span class="pre">Unique</span></span><a class="headerlink" href="#cornflakes.decorator.datalite.constraints.Unique" title="Permalink to this definition"></a></dt>
+<dd><p>Dataclass fields hinted with this type signals
+datalite that the bound column of this
+field in the table is NOT NULL and UNIQUE.</p>
+<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
+</dd></dl>
+
 </section>
-<section id="cornflakes-decorator-datalite-datalite-decorator-module">
-<h2>cornflakes.decorator.datalite.datalite_decorator module<a class="headerlink" href="#cornflakes-decorator-datalite-datalite-decorator-module" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.datalite.datalite_decorator">
+<span id="cornflakes-decorator-datalite-datalite-decorator-module"></span><h2>cornflakes.decorator.datalite.datalite_decorator module<a class="headerlink" href="#module-cornflakes.decorator.datalite.datalite_decorator" title="Permalink to this heading"></a></h2>
+<p>Defines the Datalite decorator that can be used to convert a dataclass to
+a class bound to a sqlite3 database.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.datalite_decorator.datalite">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.datalite_decorator.</span></span><span class="sig-name descname"><span class="pre">datalite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_overload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/datalite_decorator.html#datalite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.datalite_decorator.datalite" title="Permalink to this definition"></a></dt>
+<dd><p>Bind a dataclass to a sqlite3 database. This adds new methods to the class, such as
+<cite>create_entry()</cite>, <cite>remove_entry()</cite> and <cite>update_entry()</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_path</strong> (<em>str</em>) – Path of the database to be binded.</p></li>
+<li><p><strong>type_overload</strong> (<em>Union</em><em>[</em><em>Dict</em><em>[</em><em>Union</em><em>[</em><em>type</em><em>, </em><em>None</em><em>]</em><em>, </em><em>str</em><em>]</em><em>, </em><em>None</em><em>]</em>) – Type overload dictionary.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The new dataclass.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Callable</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.datalite_decorator.remove_from">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.datalite_decorator.</span></span><span class="sig-name descname"><span class="pre">remove_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/datalite_decorator.html#remove_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.datalite_decorator.remove_from" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class_</strong> (<em>type</em>) – </p></li>
+<li><p><strong>obj_id</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="cornflakes-decorator-datalite-fetch-module">
-<h2>cornflakes.decorator.datalite.fetch module<a class="headerlink" href="#cornflakes-decorator-datalite-fetch-module" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.datalite.fetch">
+<span id="cornflakes-decorator-datalite-fetch-module"></span><h2>cornflakes.decorator.datalite.fetch module<a class="headerlink" href="#module-cornflakes.decorator.datalite.fetch" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.fetch.fetch_all">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/fetch.html#fetch_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.fetch.fetch_all" title="Permalink to this definition"></a></dt>
+<dd><p>Fetchall the records in the bound database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class</strong> – Class of the records.</p></li>
+<li><p><strong>page</strong> (<em>int</em>) – Which page to retrieve, default all. (0 means closed).</p></li>
+<li><p><strong>element_count</strong> (<em>int</em>) – Element count in each page.</p></li>
+<li><p><strong>class_</strong> (<em>type</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>All the records of type <a href="#id1"><span class="problematic" id="id2">class_</span></a> in
+the bound database as a tuple.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.fetch.fetch_equals">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_equals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/fetch.html#fetch_equals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.fetch.fetch_equals" title="Permalink to this definition"></a></dt>
+<dd><p>Fetch a <a href="#id3"><span class="problematic" id="id4">class_</span></a> type variable from its bound db.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class</strong> – Class to fetch.</p></li>
+<li><p><strong>field</strong> (<em>str</em>) – Field to check for, by default, object id.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – Value of the field to check for.</p></li>
+<li><p><strong>class_</strong> (<em>type</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The object whose data is taken from the database.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Any</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.fetch.fetch_from">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/fetch.html#fetch_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.fetch.fetch_from" title="Permalink to this definition"></a></dt>
+<dd><p>Fetch a <a href="#id5"><span class="problematic" id="id6">class_</span></a> type variable from its bound dv.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class</strong> – Class to fetch from.</p></li>
+<li><p><strong>obj_id</strong> (<em>int</em>) – Unique object id of the object.</p></li>
+<li><p><strong>class_</strong> (<em>type</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fetched object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Any</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.fetch.fetch_if">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_if</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/fetch.html#fetch_if"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.fetch.fetch_if" title="Permalink to this definition"></a></dt>
+<dd><p>Fetch all <a href="#id7"><span class="problematic" id="id8">class_</span></a> type variables from the bound db,
+provided they fit the given condition</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class</strong> – Class type to fetch.</p></li>
+<li><p><strong>condition</strong> (<em>str</em>) – Condition to check for.</p></li>
+<li><p><strong>page</strong> (<em>int</em>) – Which page to retrieve, default all. (0 means closed).</p></li>
+<li><p><strong>element_count</strong> (<em>int</em>) – Element count in each page.</p></li>
+<li><p><strong>class_</strong> (<em>type</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple of records that fit the given condition
+of given type <a href="#id9"><span class="problematic" id="id10">class_</span></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.fetch.fetch_range">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/fetch.html#fetch_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.fetch.fetch_range" title="Permalink to this definition"></a></dt>
+<dd><p>Fetch the records in a given range of object ids.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class</strong> – Class of the records.</p></li>
+<li><p><strong>range</strong> – Range of the object ids.</p></li>
+<li><p><strong>class_</strong> (<em>type</em>) – </p></li>
+<li><p><strong>range_</strong> (<em>range</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple of <a href="#id11"><span class="problematic" id="id12">class_</span></a> type objects whose values
+come from the <a href="#id13"><span class="problematic" id="id14">class_</span></a>’ bound database.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.fetch.fetch_where">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.fetch.</span></span><span class="sig-name descname"><span class="pre">fetch_where</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/fetch.html#fetch_where"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.fetch.fetch_where" title="Permalink to this definition"></a></dt>
+<dd><p>Fetch all <a href="#id15"><span class="problematic" id="id16">class_</span></a> type variables from the bound db,
+provided that the field of the records fit the
+given value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class</strong> – Class of the records.</p></li>
+<li><p><strong>field</strong> (<em>str</em>) – Field to check.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – Value to check for.</p></li>
+<li><p><strong>page</strong> (<em>int</em>) – Which page to retrieve, default all. (0 means closed).</p></li>
+<li><p><strong>element_count</strong> (<em>int</em>) – Element count in each page.</p></li>
+<li><p><strong>class_</strong> (<em>type</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple of the records.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.fetch.is_fetchable">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.fetch.</span></span><span class="sig-name descname"><span class="pre">is_fetchable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/fetch.html#is_fetchable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.fetch.is_fetchable" title="Permalink to this definition"></a></dt>
+<dd><p>Check if a record is fetchable given its obj_id and
+<a href="#id17"><span class="problematic" id="id18">class_</span></a> type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class</strong> – Class type of the object.</p></li>
+<li><p><strong>obj_id</strong> (<em>int</em>) – Unique obj_id of the object.</p></li>
+<li><p><strong>class_</strong> (<em>type</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If the object is fetchable.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="cornflakes-decorator-datalite-mass-actions-module">
-<h2>cornflakes.decorator.datalite.mass_actions module<a class="headerlink" href="#cornflakes-decorator-datalite-mass-actions-module" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.datalite.mass_actions">
+<span id="cornflakes-decorator-datalite-mass-actions-module"></span><h2>cornflakes.decorator.datalite.mass_actions module<a class="headerlink" href="#module-cornflakes.decorator.datalite.mass_actions" title="Permalink to this heading"></a></h2>
+<p>This module includes functions to insert multiple records
+to a bound database at one time, with one time open and closing
+of the database file.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.mass_actions.HeterogeneousCollectionError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.mass_actions.</span></span><span class="sig-name descname"><span class="pre">HeterogeneousCollectionError</span></span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/mass_actions.html#HeterogeneousCollectionError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.mass_actions.HeterogeneousCollectionError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="simple">
+<dt>:raise<span class="classifier">if the passed collection is not homogeneous.</span></dt><dd><p>ie: If a List or Tuple has elements of multiple
+types.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.mass_actions.copy_many">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.mass_actions.</span></span><span class="sig-name descname"><span class="pre">copy_many</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objects</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protect_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/mass_actions.html#copy_many"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.mass_actions.copy_many" title="Permalink to this definition"></a></dt>
+<dd><p>Copy many records to another database, from
+their original database to new database, do
+not delete old records.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>objects</strong> (<em>Union</em><em>[</em><em>List</em><em>[</em><em>T</em><em>]</em><em>, </em><em>Tuple</em><em>[</em><em>T</em><em>]</em><em>]</em>) – Objects to copy.</p></li>
+<li><p><strong>db_name</strong> (<em>str</em>) – Name of the new database.</p></li>
+<li><p><strong>protect_memory</strong> (<em>bool</em>) – Wheter to protect memory during operation,
+Setting this to False will quicken the operation, but if the
+operation is cut short, database file will corrupt.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.mass_actions.create_many">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.mass_actions.</span></span><span class="sig-name descname"><span class="pre">create_many</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objects</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protect_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/mass_actions.html#create_many"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.mass_actions.create_many" title="Permalink to this definition"></a></dt>
+<dd><p>Insert many records corresponding to objects
+in a tuple or a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>protect_memory</strong> (<em>bool</em>) – If False, memory protections are turned off,
+makes it faster.</p></li>
+<li><p><strong>objects</strong> (<em>Union</em><em>[</em><em>List</em><em>[</em><em>T</em><em>]</em><em>, </em><em>Tuple</em><em>[</em><em>T</em><em>]</em><em>]</em>) – A tuple or a list of objects decorated
+with datalite.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="cornflakes-decorator-datalite-migrations-module">
-<h2>cornflakes.decorator.datalite.migrations module<a class="headerlink" href="#cornflakes-decorator-datalite-migrations-module" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.datalite.migrations">
+<span id="cornflakes-decorator-datalite-migrations-module"></span><h2>cornflakes.decorator.datalite.migrations module<a class="headerlink" href="#module-cornflakes.decorator.datalite.migrations" title="Permalink to this heading"></a></h2>
+<p>Migrations module deals with migrating data when the object
+definitions change. This functions deal with Schema Migrations.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.migrations.basic_migrate">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.migrations.</span></span><span class="sig-name descname"><span class="pre">basic_migrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_transfer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/migrations.html#basic_migrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.migrations.basic_migrate" title="Permalink to this definition"></a></dt>
+<dd><p>Given a class, compare its previous table,
+delete the fields that no longer exist,
+create new columns for new fields. If the
+column_flow parameter is given, migrate elements
+from previous column to the new ones. It should be
+noted that, the obj_ids do not persist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cls</strong> (<em>type</em>) – Datalite class to migrate.</p></li>
+<li><p><strong>column_transfer</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – A dictionary showing which
+columns will be copied to new ones.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="cornflakes-decorator-datalite-type-mapping-module">
-<h2>cornflakes.decorator.datalite.type_mapping module<a class="headerlink" href="#cornflakes-decorator-datalite-type-mapping-module" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.datalite.type_mapping">
+<span id="cornflakes-decorator-datalite-type-mapping-module"></span><h2>cornflakes.decorator.datalite.type_mapping module<a class="headerlink" href="#module-cornflakes.decorator.datalite.type_mapping" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.type_mapping.</span></span><span class="sig-name descname"><span class="pre">SQLTypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/type_mapping.html#SQLTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="cornflakes.html#cornflakes.types.Enum" title="cornflakes.types.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>SQL types for SQLite3.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.autoincrement">
+<span class="sig-name descname"><span class="pre">autoincrement</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'AUTOINCREMENT'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.autoincrement" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.blob">
+<span class="sig-name descname"><span class="pre">blob</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BLOB'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.blob" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.date">
+<span class="sig-name descname"><span class="pre">date</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATE'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.date" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.foreign_key">
+<span class="sig-name descname"><span class="pre">foreign_key</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FOREIGN</span> <span class="pre">KEY'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.foreign_key" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.integer">
+<span class="sig-name descname"><span class="pre">integer</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INTEGER'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.integer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.json">
+<span class="sig-name descname"><span class="pre">json</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'JSON'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.null">
+<span class="sig-name descname"><span class="pre">null</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NULL'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.null" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.numeric">
+<span class="sig-name descname"><span class="pre">numeric</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NUMERIC'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.numeric" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.primary_key">
+<span class="sig-name descname"><span class="pre">primary_key</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PRIMARY</span> <span class="pre">KEY'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.primary_key" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.real">
+<span class="sig-name descname"><span class="pre">real</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'REAL'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.real" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TEXT'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.text" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TIME'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.time" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TIMESTAMP'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.timestamp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.unique">
+<span class="sig-name descname"><span class="pre">unique</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'UNIQUE'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.unique" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.type_mapping.SQLTypes.unique_not_null">
+<span class="sig-name descname"><span class="pre">unique_not_null</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NOT</span> <span class="pre">NULL</span> <span class="pre">UNIQUE'</span></em><a class="headerlink" href="#cornflakes.decorator.datalite.type_mapping.SQLTypes.unique_not_null" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-cornflakes.decorator.datalite">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cornflakes.decorator.datalite" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="cornflakes.decorator.datalite.datalite">
+<span class="sig-prename descclassname"><span class="pre">cornflakes.decorator.datalite.</span></span><span class="sig-name descname"><span class="pre">datalite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_overload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cornflakes/decorator/datalite/datalite_decorator.html#datalite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cornflakes.decorator.datalite.datalite" title="Permalink to this definition"></a></dt>
+<dd><p>Bind a dataclass to a sqlite3 database. This adds new methods to the class, such as
+<cite>create_entry()</cite>, <cite>remove_entry()</cite> and <cite>update_entry()</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db_path</strong> (<em>str</em>) – Path of the database to be binded.</p></li>
+<li><p><strong>type_overload</strong> (<em>Union</em><em>[</em><em>Dict</em><em>[</em><em>Union</em><em>[</em><em>type</em><em>, </em><em>None</em><em>]</em><em>, </em><em>str</em><em>]</em><em>, </em><em>None</em><em>]</em>) – Type overload dictionary.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The new dataclass.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Callable</em></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -138,7 +614,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="cornflakes.decorator.dataclasses.validator.html" class="btn btn-neutral float-left" title="cornflakes.decorator.dataclasses.validator package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="cornflakes.logging.html" class="btn btn-neutral float-right" title="cornflakes.logging package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_generate/cornflakes.decorator.click_cli.html" class="btn btn-neutral float-right" title="cornflakes.decorator.click_cli" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

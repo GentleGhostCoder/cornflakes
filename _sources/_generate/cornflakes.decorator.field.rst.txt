@@ -1,0 +1,6 @@
+﻿cornflakes.decorator.field
+==========================
+
+.. currentmodule:: cornflakes.decorator
+
+.. autofunction:: field

@@ -1,0 +1,6 @@
+﻿cornflakes.apply\_match
+=======================
+
+.. currentmodule:: cornflakes
+
+.. autofunction:: apply_match

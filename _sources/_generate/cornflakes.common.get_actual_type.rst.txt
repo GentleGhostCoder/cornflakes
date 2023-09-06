@@ -1,0 +1,6 @@
+﻿cornflakes.common.get\_actual\_type
+===================================
+
+.. currentmodule:: cornflakes.common
+
+.. autofunction:: get_actual_type
