@@ -9,6 +9,9 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               name: Check out source-code repository
+              with:
+                  remote: true
+                  submodules: recursive
 
             - name: Setup Python
               uses: actions/setup-python@v4
