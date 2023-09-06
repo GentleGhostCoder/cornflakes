@@ -13,8 +13,9 @@ from cornflakes.decorator.dataclasses import config_files, field, is_config
 from cornflakes.decorator.dataclasses.config import config_group
 from cornflakes.types import Constants, Loader
 
+DECORATOR_MODULE_NAME = import_module("cornflakes.decorator").__name__
 TEMPLATE = f'''"""Template Module."""
-from {import_module("cornflakes.decorator.dataclasses").__name__} import config_group
+from {DECORATOR_MODULE_NAME} import config_group
 
 
 @config_group
@@ -91,7 +92,7 @@ def generate_config_group_module(  # noqa: C901
     )
 
     extra_imports.extend(
-        [f"from {field.__module__} import {field.__name__}", "from typing import List"] if declaration else []
+        [f"from {DECORATOR_MODULE_NAME} import {field.__name__}", "from typing import List"] if declaration else []
     )
 
     if args or kwargs:

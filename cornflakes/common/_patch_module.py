@@ -59,7 +59,7 @@ def _patch_module(m: str, main_module: str):
    :toctree: _generate
 
     {'''
-    '''.join(getattr(module, "__all__", [key for key, _ in getmembers(module)]))}
+    '''.join(getattr(module, "__all__", [key for key, _ in getmembers(module) if not key.startswith("_")]))}
 """
 
 

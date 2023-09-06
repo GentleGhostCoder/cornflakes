@@ -7,7 +7,7 @@ from cornflakes.parser import yaml_load
 
 __author__ = "Semjon Geist"
 __email__ = "semjon.geist@ionos.com"
-__version__ = "3.3.16"  # <<FORCE_BUMP>>
+__version__ = "3.3.17"  # <<FORCE_BUMP>>
 
 __all__ = [
     "ini_load",
@@ -22,5 +22,3 @@ __all__ = [
     "setup_logging",
     "patch_module",
 ]
-
-patch_module("cornflakes")

@@ -168,7 +168,7 @@ def create_file_loader(  # noqa: C901
             section for section in config_dict if bool(re.match(regex, section.split(":", 1).pop() or ""))
         ]
         if chain_configs:
-            new_config = {normalized_cls_name: {}}
+            new_config: Dict[str, Any] = {normalized_cls_name: {}}
             if not sections_found:
                 sections_found = list(config_dict.keys())
             for section in sections_found:

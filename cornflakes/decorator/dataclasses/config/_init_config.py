@@ -19,8 +19,8 @@ from cornflakes.types import Constants, Loader
 def _load_config_kwargs(
     cls,
     file_loader,
-    files: Optional[List[str]] = None,
-    sections: Optional[List[str]] = None,
+    files: Optional[Union[List[str], str]] = None,
+    sections: Optional[Union[List[str], str]] = None,
     eval_env: Optional[bool] = None,
     allow_empty: Optional[bool] = False,
     **kwargs,

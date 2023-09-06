@@ -69,6 +69,8 @@ test-pytype:
 test-typeguard:
 	 pytest --typeguard-packages=cornflakes
 
+test-types: test-mypy test-xdoctest test-typeguard test-pytype
+
 test-all: ## run tests on every Python version with tox
 	nox
 
