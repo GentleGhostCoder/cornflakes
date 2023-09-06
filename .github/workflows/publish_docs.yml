@@ -25,7 +25,7 @@ jobs:
 
             - name: Install doc dependencies
               run: |
-                  pip install -r docs/requirements.txt
+                  make install
 
             - name: Build docs
               run: |
