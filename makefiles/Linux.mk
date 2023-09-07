@@ -113,7 +113,11 @@ pr: bump
 		echo "You have unstaged/committed changes. Please commit or stash them first."; \
 		exit 1; \
 	fi && \
-	@BRANCH_NAME=$(shell git branch --show-current) && \
+	if [ -n "$$(git log @{u}..)" ]; then \
+		echo "There are commits that haven't been pushed yet. Please push your changes first."; \
+		exit 1; \
+	fi && \
+	BRANCH_NAME=$(shell git branch --show-current) && \
 	gh pr create --base main --head $$BRANCH_NAME --title "PR $$BRANCH_NAME - $(shell git describe --tags $(shell git rev-list --tags --max-count=1))" --body "$(filter-out $@,$(MAKECMDGOALS))"
 
 pr-status:
