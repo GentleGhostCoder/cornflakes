@@ -54,7 +54,7 @@ class AnyUrl:
 
     def __init_parsed(self, parsed: ParseResult, overwrite=True):
         for f in fields(cast(Any, self)):
-            if (overwrite or not f.default) and hasattr(parsed, f.name):
+            if (overwrite or (not f.default and not getattr(self, f.name, None))) and hasattr(parsed, f.name):
                 setattr(self, f.name, getattr(parsed, f.name, None))
 
     def __post_init__(self, url: Optional[str] = None) -> None:
