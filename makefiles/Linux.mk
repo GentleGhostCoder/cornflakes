@@ -95,15 +95,82 @@ servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
 bump-patch:
+	git pull
 	cornflakes bump "patch"
 
 bump-minor:
+	git pull
 	cornflakes bump "minor"
 
 bump-major:
+	git pull
 	cornflakes bump "major"
 
 bump: bump-patch # default
+
+pr: bump
+	@if [ -n "$$(git status --porcelain --ignore-submodules)" ]; then \
+		echo "You have unstaged/committed changes. Please commit or stash them first."; \
+		exit 1; \
+	fi && \
+	if [ -n "$$(git log @{u}..)" ]; then \
+		echo "There are commits that haven't been pushed yet. Please push your changes first."; \
+		exit 1; \
+	fi && \
+	BRANCH_NAME=$(shell git branch --show-current) && \
+	gh pr create --base main --head $$BRANCH_NAME --title "PR $$BRANCH_NAME - $(shell git describe --tags $(shell git rev-list --tags --max-count=1))" --body "$(filter-out $@,$(MAKECMDGOALS))"
+
+pr-status:
+	@BRANCH_NAME=$(shell git branch --show-current) && \
+	COMMIT_HASH=$(shell git rev-parse HEAD) && \
+	PR_NUMBER=$$(gh pr list --base $$BRANCH_NAME --json number -q ".[0].number") && \
+	CHECK_RUNS=$$(gh api --paginate repos/:owner/:repo/commits/$$COMMIT_HASH/check-runs) && \
+	SUCCESSFUL=$$(echo "$$CHECK_RUNS" | jq '[.check_runs[] | select(.status == "completed" and .conclusion == "success")] | length') && \
+	IN_PROGRESS=$$(echo "$$CHECK_RUNS" | jq '[.check_runs[] | select(.status == "in_progress")] | length') && \
+	QUEUED=$$(echo "$$CHECK_RUNS" | jq '[.check_runs[] | select(.status == "queued")] | length') && \
+	echo "$$SUCCESSFUL successful, $$IN_PROGRESS in progress, and $$QUEUED queued checks" && \
+	([ $$SUCCESSFUL -gt 0 ] && [ $$IN_PROGRESS -eq 0 ] && [ $$QUEUED -eq 0 ])
+
+
+#🌈
+pr-merge-if-ready: bump
+	@if [ -n "$$(git status --porcelain --ignore-submodules)" ]; then \
+		echo "You have unstaged/committed changes. Please commit or stash them first."; \
+		exit 1; \
+	fi && \
+	if [ -n "$$(git log @{u}..)" ]; then \
+		echo "There are commits that haven't been pushed yet. Please push your changes first."; \
+		exit 1; \
+	fi && \
+	if $(MAKE) pr-status; then \
+		BRANCH_NAME=$(shell git branch --show-current) && \
+		PR_NUMBER=$$(gh pr list --base $$BRANCH_NAME --json number -q ".[0].number") && \
+		gh pr merge $$PR_NUMBER --auto --merge; \
+	else \
+		echo "PR is not ready to be merged due to pending or failing checks."; \
+	fi
+
+
+release: pr-merge-if-ready
+	@# Fetch the latest status of the main branch from the remote
+	git fetch origin main:main && \
+	OPEN_PRS_COUNT=$$(gh pr list --base main --state open --json number | jq ". | length") && \
+    	if [ "$$OPEN_PRS_COUNT" -ne 0 ]; then \
+    		echo "There are open PRs targeting the main branch. Resolve them before creating a tag."; \
+    		exit 1; \
+    	fi && \
+	VERSION=$$(poetry version -s) && \
+	echo "Detected version: $$VERSION" && \
+	if git rev-parse "$$VERSION" >/dev/null 2>&1; then \
+		echo "Tag $$VERSION already exists."; \
+	else \
+		echo "Creating new tag $$VERSION on the remote main branch." && \
+		git tag "$$VERSION" origin/main && \
+		git push origin "$$VERSION" && \
+		gh release create "$$VERSION" --title "$$VERSION 🌈" --generate-notes; \
+		echo "Tag $$VERSION has been created on the remote main branch and pushed. A new GitHub release has been made with title '$$VERSION 🌈'."; \
+	fi
+
 
 update:
 	cornflakes update

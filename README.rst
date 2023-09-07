@@ -72,6 +72,7 @@ Prerequisites
 -  A compiler with C++17 support
 -  Pip 10+ or CMake >= 3.4 (or 3.8+ on Windows, which was the first version to support VS 2015)
 -  Python 3.8+
+-  gh (optional) GitHub's official command line tool
 -  doxygen
 -  cppcheck
 -  clang-tools-extra or clang-tidy
