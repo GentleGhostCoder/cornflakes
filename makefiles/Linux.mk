@@ -109,7 +109,7 @@ bump-major:
 bump: bump-patch # default
 
 pr: bump
-	@if [ -n "$$(git status --porcelain)" ]; then \
+	@if [ -n "$$(git status --porcelain --ignore-submodules)" ]; then \
 		echo "You have unstaged/committed changes. Please commit or stash them first."; \
 		exit 1; \
 	fi && \
@@ -134,7 +134,7 @@ pr-status:
 
 #🌈
 pr-merge-if-ready: bump
-	@if [ -n "$$(git status --porcelain)" ]; then \
+	@if [ -n "$$(git status --porcelain --ignore-submodules)" ]; then \
 		echo "You have unstaged/committed changes. Please commit or stash them first."; \
 		exit 1; \
 	fi && \
