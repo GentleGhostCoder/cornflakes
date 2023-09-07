@@ -1,0 +1,6 @@
+﻿cornflakes.cli.update\_deps
+===========================
+
+.. currentmodule:: cornflakes.cli
+
+.. autodata:: update_deps

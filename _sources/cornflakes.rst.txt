@@ -12,7 +12,6 @@ Subpackages
    cornflakes.common
    cornflakes.decorator
    cornflakes.logging
-   cornflakes.packaging
    cornflakes.parser
 
 Submodules

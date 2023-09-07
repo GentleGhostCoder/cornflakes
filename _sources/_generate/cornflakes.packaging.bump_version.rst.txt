@@ -1,6 +1,0 @@
-﻿cornflakes.packaging.bump\_version
-==================================
-
-.. currentmodule:: cornflakes.packaging
-
-.. autodata:: bump_version

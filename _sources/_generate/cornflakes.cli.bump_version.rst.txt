@@ -1,0 +1,6 @@
+﻿cornflakes.cli.bump\_version
+============================
+
+.. currentmodule:: cornflakes.cli
+
+.. autodata:: bump_version
