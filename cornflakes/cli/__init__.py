@@ -1,6 +1,6 @@
 """Command-line interface."""
 from click import Context
-
+from cornflakes.packaging import bump_version, update_deps
 from cornflakes.decorator.click import group, bg_process_option, verbose_option
 from cornflakes.decorator.click.rich import RichGroup
 
@@ -50,7 +50,7 @@ def cli(self: RichGroup, ctx: Context):
         self.main(["--help"])
 
 
-__all__ = ["cli"]
+__all__ = ["cli", "bump_version", "update_deps"]
 
 if __name__ == "__main__":
     cli()  # pragma: no cover
