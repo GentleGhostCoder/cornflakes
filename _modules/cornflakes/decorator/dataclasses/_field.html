@@ -122,6 +122,7 @@
         <span class="p">),</span>
         <span class="s2">&quot;validator&quot;</span><span class="p">,</span>
         <span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cli&quot;</span><span class="p">,</span>
         <span class="s2">&quot;aliases&quot;</span><span class="p">,</span>
         <span class="s2">&quot;title&quot;</span><span class="p">,</span>
         <span class="s2">&quot;description&quot;</span><span class="p">,</span>
@@ -160,6 +161,7 @@
         <span class="n">validator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span> <span class="n">MISSING_TYPE</span><span class="p">]]</span> <span class="o">=</span> <span class="n">MISSING</span><span class="p">,</span>
         <span class="n">aliases</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">ignore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">cli</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">exclude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -196,6 +198,7 @@
 <span class="sd">        :param validator: Validator for field.</span>
 <span class="sd">        :param aliases: Aliases for config data (will be used to read from config files).</span>
 <span class="sd">        :param ignore: Field will be ignored when writing to_ini etc.</span>
+<span class="sd">        :param cli: Field will be included in cli on option_config.</span>
 <span class="sd">        :param title: Can be any string, used in the schema.</span>
 <span class="sd">        :param description: can be any string, used in the schema.</span>
 <span class="sd">        :param exclude: exclude this field while dumping. Takes same values as</span>
@@ -242,6 +245,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">validator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="n">ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cli</span> <span class="o">=</span> <span class="n">cli</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span> <span class="o">=</span> <span class="n">aliases</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
@@ -306,6 +310,7 @@
             <span class="n">validator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validator</span><span class="p">,</span>
             <span class="n">aliases</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="p">,</span>
             <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">,</span>
+            <span class="n">cli</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cli</span><span class="p">,</span>
             <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
             <span class="n">exclude</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="p">,</span>
@@ -339,6 +344,7 @@
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DataclassField</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;validator=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">validator</span><span class="si">!r}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;ignore=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;cli=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cli</span><span class="si">!r}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;aliases=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="si">!r}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;title=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">!r}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;description=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">!r}</span><span class="s2">, &quot;</span>
@@ -379,6 +385,7 @@
     <span class="n">validator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span> <span class="n">MISSING_TYPE</span><span class="p">]]</span> <span class="o">=</span> <span class="n">MISSING</span><span class="p">,</span>
     <span class="n">aliases</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ignore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">cli</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">exclude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -422,6 +429,7 @@
 <span class="sd">    :param validator: Validator for field.</span>
 <span class="sd">    :param aliases: Aliases for config data (will be used to read from config files).</span>
 <span class="sd">    :param ignore: Field will be ignored when writing to_ini etc.</span>
+<span class="sd">    :param cli: Field will be included in cli on option_config.</span>
 <span class="sd">    :param title: Can be any string, used in the schema.</span>
 <span class="sd">    :param description: can be any string, used in the schema.</span>
 <span class="sd">    :param exclude: exclude this field while dumping. Takes same values as</span>
@@ -489,6 +497,7 @@
         <span class="n">validator</span><span class="o">=</span><span class="n">validator</span><span class="p">,</span>
         <span class="n">aliases</span><span class="o">=</span><span class="n">aliases</span><span class="p">,</span>
         <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">,</span>
+        <span class="n">cli</span><span class="o">=</span><span class="n">cli</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
         <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span>
