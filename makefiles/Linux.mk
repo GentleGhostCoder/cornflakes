@@ -128,7 +128,7 @@ pr-status:
 	SUCCESSFUL=$$(echo "$$CHECK_RUNS" | jq '[.check_runs[] | select(.status == "completed" and .conclusion == "success")] | length') && \
 	IN_PROGRESS=$$(echo "$$CHECK_RUNS" | jq '[.check_runs[] | select(.status == "in_progress")] | length') && \
 	QUEUED=$$(echo "$$CHECK_RUNS" | jq '[.check_runs[] | select(.status == "queued")] | length') && \
-	echo "$$SUCCESSFUL successful, $$IN_PROGRESS in progress, and $$QUEUED queued checks for PR #$$PR_NUMBER" && \
+	echo "$$SUCCESSFUL successful, $$IN_PROGRESS in progress, and $$QUEUED queued checks" && \
 	([ $$SUCCESSFUL -gt 0 ] && [ $$IN_PROGRESS -eq 0 ] && [ $$QUEUED -eq 0 ])
 
 
@@ -136,6 +136,10 @@ pr-status:
 pr-merge-if-ready: bump
 	@if [ -n "$$(git status --porcelain --ignore-submodules)" ]; then \
 		echo "You have unstaged/committed changes. Please commit or stash them first."; \
+		exit 1; \
+	fi && \
+	if [ -n "$$(git log @{u}..)" ]; then \
+		echo "There are commits that haven't been pushed yet. Please push your changes first."; \
 		exit 1; \
 	fi && \
 	if $(MAKE) pr-status; then \
