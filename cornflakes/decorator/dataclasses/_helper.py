@@ -98,7 +98,7 @@ def is_validated(cls):
 
 def normalized_class_name(cls):
     """Method to return class name normalized."""
-    return re.sub(r"([a-z])([A-Z])", "\\1_\\2", cls.__name__).lower()
+    return re.sub(r"([a-z])([A-Z])", "\\1_\\2", getattr(cls, "__name__", "WrongConfigClass")).lower()
 
 
 def tuple_factory(cls):
