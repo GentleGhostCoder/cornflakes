@@ -57,8 +57,8 @@ The module also has a click wrapper that simplifies the implementation of comman
 
 There are other useful methods in the base of the module that are generally useful for Python development. These can help you develop your projects faster and more efficiently.
 
-Short Term RoadMap:
-~~~~~~~~~~~~~~~~~~~~
+Short Term RoadMap
+~~~~~~~~~~~~~~~~~~~
 
 - Add autocompletion support for click CLI (automatically)
 - Enrich json methods

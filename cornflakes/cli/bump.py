@@ -51,7 +51,7 @@ def bump_version(level="patch"):  # noqa: C901
     new_version = LooseVersion(f"{major}.{minor}.{patch}")
 
     # Update the version in Python files
-    for root, dirs, files in os.walk("."):
+    for root, dirs, files in os.walk("../packaging"):
         for file in files:
             if (
                 file.endswith(".py")

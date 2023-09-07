@@ -1,6 +1,6 @@
 Usage
 =====
 
-.. click:: cornflakes.cli:cli
+.. click:: cornflakes.cli.entrypoint:cli
    :prog: cornflakes
    :nested: full
