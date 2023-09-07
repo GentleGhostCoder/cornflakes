@@ -35,6 +35,7 @@ class Field(DataclassField):
         ),
         "validator",
         "ignore",
+        "cli",
         "aliases",
         "title",
         "description",
@@ -73,6 +74,7 @@ class Field(DataclassField):
         validator: Optional[Union[Callable[[str], Any], MISSING_TYPE]] = MISSING,
         aliases: Optional[Union[List[str], str]] = None,
         ignore: Optional[bool] = False,
+        cli: Optional[bool] = True,
         title: Optional[str] = None,
         description: Optional[str] = None,
         exclude: Optional[Union[str, List[str]]] = None,
@@ -109,6 +111,7 @@ class Field(DataclassField):
         :param validator: Validator for field.
         :param aliases: Aliases for config data (will be used to read from config files).
         :param ignore: Field will be ignored when writing to_ini etc.
+        :param cli: Field will be included in cli on option_config.
         :param title: Can be any string, used in the schema.
         :param description: can be any string, used in the schema.
         :param exclude: exclude this field while dumping. Takes same values as
@@ -155,6 +158,7 @@ class Field(DataclassField):
         """
         self.validator = validator
         self.ignore = ignore
+        self.cli = cli
         self.aliases = aliases
         self.title = title
         self.description = description
@@ -219,6 +223,7 @@ class Field(DataclassField):
             validator=self.validator,
             aliases=self.aliases,
             ignore=self.ignore,
+            cli=self.cli,
             title=self.title,
             description=self.description,
             exclude=self.exclude,
@@ -252,6 +257,7 @@ class Field(DataclassField):
             f"{DataclassField.__repr__(self)[:-1]}, "
             f"validator={self.validator!r}, "
             f"ignore={self.ignore!r}, "
+            f"cli={self.cli!r}, "
             f"aliases={self.aliases!r}, "
             f"title={self.title!r}, "
             f"description={self.description!r}, "
@@ -292,6 +298,7 @@ def field(
     validator: Optional[Union[Callable[[str], Any], MISSING_TYPE]] = MISSING,
     aliases: Optional[Union[List[str], str]] = None,
     ignore: Optional[bool] = False,
+    cli: Optional[bool] = True,
     title: Optional[str] = None,
     description: Optional[str] = None,
     exclude: Optional[Union[str, List[str]]] = None,
@@ -335,6 +342,7 @@ def field(
     :param validator: Validator for field.
     :param aliases: Aliases for config data (will be used to read from config files).
     :param ignore: Field will be ignored when writing to_ini etc.
+    :param cli: Field will be included in cli on option_config.
     :param title: Can be any string, used in the schema.
     :param description: can be any string, used in the schema.
     :param exclude: exclude this field while dumping. Takes same values as
@@ -402,6 +410,7 @@ def field(
         validator=validator,
         aliases=aliases,
         ignore=ignore,
+        cli=cli,
         title=title,
         description=description,
         exclude=exclude,

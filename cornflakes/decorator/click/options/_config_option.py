@@ -216,7 +216,9 @@ def _config_option(  # noqa: C901
         wrapper = callback
 
         slot_options = {
-            f"--{slot_name.replace('_', '-')}": slot for slot_name, slot in dataclass_fields(config).items()
+            f"--{slot_name.replace('_', '-')}": slot
+            for slot_name, slot in dataclass_fields(config).items()
+            if getattr(slot, "cli", True) and slot.init
         }
 
         for option_name, slot in slot_options.items():
