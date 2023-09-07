@@ -281,7 +281,7 @@ def _config_option(  # noqa: C901
                 func_params = signature(callback).parameters
                 file_config_result = config.from_file(files=_files, sections=sections, **config_args)
                 config_type = get_actual_type(func_params[passed_key].annotation)
-                config_name = normalized_class_name(func_params[passed_key].annotation)
+                config_name = normalized_class_name(config)
                 if config_name in ("list", "tuple"):
                     config_name = normalized_class_name(func_params[passed_key].annotation.__args__[0])
 
