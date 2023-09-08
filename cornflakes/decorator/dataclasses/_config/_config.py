@@ -26,6 +26,8 @@ from cornflakes.types import (
     Writer,
 )
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass_transform(field_specifiers=(field, Field))
 @overload
@@ -206,7 +208,7 @@ def config(
 
         # Check is config
         if any(hasattr(slot, Constants.config_decorator.SECTIONS) for slot in w_cls.__annotations__.values()):
-            logging.warning(
+            logger.warning(
                 "Wrapper config not working for a subset of config classes. "
                 f"Please use {config_group.__name__} instead."
             )

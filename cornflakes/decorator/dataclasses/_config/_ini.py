@@ -7,6 +7,8 @@ from cornflakes.decorator.dataclasses._config._write_config import write_config
 from cornflakes.decorator.dataclasses._helper import get_loader_callback, get_not_ignored_slots, is_config
 from cornflakes.types import Loader
 
+logger = logging.getLogger(__name__)
+
 
 def _parse_config_list(cfg, cfg_name: str, title: str):
     _ini_bytes = bytearray()
@@ -30,7 +32,7 @@ def _parse_config_list(cfg, cfg_name: str, title: str):
             _ini_bytes.extend(_parse_config_list(sub_cfg, sub_cfg_name, title))
         return _ini_bytes
     else:
-        logging.warning(f"The Value {cfg_name} of {title} be in a child config class!")
+        logger.warning(f"The Value {cfg_name} of {title} be in a child config class!")
         return b""
 
 

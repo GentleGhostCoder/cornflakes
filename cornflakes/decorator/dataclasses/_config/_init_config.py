@@ -15,6 +15,8 @@ from cornflakes.decorator.dataclasses._helper import (
 )
 from cornflakes.types import Constants, Loader
 
+logger = logging.getLogger(__name__)
+
 
 def _load_config_kwargs(
     cls,
@@ -44,7 +46,7 @@ def _load_config_kwargs(
     ).popitem()[1]
 
     if is_config_list(cls) and len(default_config):
-        logging.debug(
+        logger.debug(
             f"Config class **{cls.__name__}** generates a list of configs."
             f"You can use the `config_group` decorator that includes the config-list or to call the from_file method to load the configs."
             f"The normal instantiation of the config class will only use the first config in the list."

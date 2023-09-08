@@ -15,6 +15,8 @@ from cornflakes.decorator.dataclasses._helper import (
 )
 from cornflakes.types import Config, Constants
 
+logger = logging.getLogger(__name__)
+
 
 def _load_config_kwargs(
     cls,
@@ -55,8 +57,8 @@ def _load_config_kwargs(
             default_config.update(slot_config)
 
     if error_args := [key for key in default_config if key not in dataclass_fields(cls)]:
-        logging.debug(f"The variables {error_args} in **{cls.__name__}** are not defined!")
-        logging.debug("Use generate_group in build script to auto generate the config group!")
+        logger.debug(f"The variables {error_args} in **{cls.__name__}** are not defined!")
+        logger.debug("Use generate_group in build script to auto generate the config group!")
 
     return default_config
 

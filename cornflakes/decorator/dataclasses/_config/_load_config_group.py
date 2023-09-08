@@ -2,6 +2,8 @@ import logging
 
 from cornflakes.decorator.dataclasses._helper import is_config, is_config_list, is_group
 
+logger = logging.getLogger(__name__)
+
 
 def create_group_loader(cls):
     """Config decorator to parse Ini Files and implements from_file method to config-group-classes.
@@ -56,8 +58,8 @@ def create_group_loader(cls):
 
         error_args = [key for key in slot_kwargs if key not in cls.__dataclass_fields__]
         if error_args:
-            logging.debug(f"The variables {error_args} in **{cls.__name__}** are not defined!")
-            logging.debug("Use generate_group in build script to auto generate the config group!")
+            logger.debug(f"The variables {error_args} in **{cls.__name__}** are not defined!")
+            logger.debug("Use generate_group in build script to auto generate the config group!")
 
         return cls(*slot_args, **{key: value for key, value in slot_kwargs.items() if key not in error_args})
 

@@ -16,6 +16,8 @@ from cornflakes.decorator.dataclasses._helper import (
 )
 from cornflakes.types import INSPECT_EMPTY_TYPE, WITHOUT_DEFAULT_TYPE
 
+logger = logging.getLogger(__name__)
+
 
 def _check_validator_return_type(callback, dc_types, key):
     if return_type := signature(callback).return_annotation:
@@ -109,7 +111,7 @@ def get_dataclass_non_comparable_kwargs(field_defaults: dict) -> List[Any]:
             if copied_value != default_value:
                 non_comparable_fields.append(field_name)
         except Exception as e:
-            logging.error(f"Cannot check comparability for field {field_name}: {e}")
+            logger.error(f"Cannot check comparability for field {field_name}: {e}")
             non_comparable_fields.append(field_name)
 
     return non_comparable_fields

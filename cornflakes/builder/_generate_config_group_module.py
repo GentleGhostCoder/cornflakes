@@ -9,9 +9,10 @@ from types import ModuleType
 from typing import Dict, List, Optional, Union
 
 # from cornflakes.decorator import wrap_kwargs
-from cornflakes.decorator.dataclasses import config_files, field, is_config
-from cornflakes.decorator.dataclasses._config import config_group
+from cornflakes.decorator.dataclasses import config_files, config_group, field, is_config
 from cornflakes.types import Constants, Loader
+
+logger = logging.getLogger(__name__)
 
 DECORATOR_MODULE_NAME = import_module("cornflakes.decorator").__name__
 TEMPLATE = f'''"""Template Module."""
@@ -78,7 +79,7 @@ def generate_config_group_module(  # noqa: C901
             imports.append(cfg_name)
             files.extend([file for file in config_files(cfg_class) if file and file not in files])
 
-    logging.debug(f"Found configs: {imports}")
+    logger.debug(f"Found configs: {imports}")
     declaration.extend(
         [
             (
