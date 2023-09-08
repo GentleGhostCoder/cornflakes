@@ -35,6 +35,13 @@ class TestSpeed(unittest.TestCase):
                 cornflakes.eval_csv(data)
         self.assertTrue(0.2 > (perf_counter() - s))
 
+        test_str = "\n".join(["'[\"1\",2,3]','[4,5,6]'"] * 10000)
+        test_str = f"test1,test2\n{test_str}"
+        s = perf_counter()
+        for _ in range(1000):
+            cornflakes.eval_csv(test_str)
+        self.assertTrue(3.5 > (perf_counter() - s))
+
     @pytest.mark.skipif(os.environ.get("NOX_RUNNING", "False"))
     def test_compare_custom_dataclass_with_padantic(self):
         """Test that compare custom dataclass with padantic."""

@@ -451,6 +451,40 @@ py::object to_generic_datetime(const std::string &value) {
   return py::cast(value);
 }
 
+// clang-format off
+void preprocessJsonInPlace(std::string &input) {  // NOLINT
+  char insideQuote = '\0';  // '\0' means outside any string
+  size_t pos = 0;
+  while (pos < input.size()) {
+    size_t nextQuotePos;
+    if (insideQuote) {
+      // If inside a string, search for the ending quote type
+      nextQuotePos = input.find(insideQuote, pos);
+      if (nextQuotePos == std::string::npos) {
+        break;  // No more of the current quote type found
+      }
+      insideQuote = '\0';  // Reset to outside any string
+    } else {
+      // If outside a string, search for both single and double quotes
+      nextQuotePos = input.find_first_of("'\"", pos);
+      if (nextQuotePos == std::string::npos) {
+        break;  // No more quotes found
+      }
+      if (input[nextQuotePos] == '"') {
+        insideQuote = '"';
+      } else {
+        input[nextQuotePos] = '"';
+        insideQuote = '\0';
+      }
+    }
+    pos = nextQuotePos + 1;
+  }
+}
+//// clang-format on
+
+
+
+
 /// This is a simple C++ function to cast strings into python objects with
 /// specific type
 ///
@@ -559,6 +593,7 @@ py::object eval_type(std::string value) {
       (value[0] == ARRAY_CHARS[0] && last_char == ARRAY_CHARS[1])) {
     std::string json_value =
         replace_all(value, ESCAPE_CHAR, PYTHON_ESCAPE_CHAR);
+    preprocessJsonInPlace(json_value);
     if (!json_doc.Parse(const_cast<char *>(json_value.c_str()))
              .HasParseError()) {
       return py::eval(json_value);
