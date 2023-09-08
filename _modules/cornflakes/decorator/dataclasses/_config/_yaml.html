@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.decorator.dataclasses.config._yaml &mdash; cornflakes 3.3.20 documentation</title>
+  <title>cornflakes.decorator.dataclasses._config._yaml &mdash; cornflakes 3.3.21 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
@@ -15,7 +15,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=30b5de53"></script>
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=94cd5a4a"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="../../../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -37,7 +37,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.20
+                3.3.21
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
@@ -75,7 +75,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">cornflakes.decorator.dataclasses.config._yaml</li>
+      <li class="breadcrumb-item active">cornflakes.decorator.dataclasses._config._yaml</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -84,15 +84,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for cornflakes.decorator.dataclasses.config._yaml</h1><div class="highlight"><pre>
+  <h1>Source code for cornflakes.decorator.dataclasses._config._yaml</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">SafeLoader</span><span class="p">,</span> <span class="n">UnsafeLoader</span>
 
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._config._load_config</span> <span class="kn">import</span> <span class="n">create_file_loader</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._config._write_config</span> <span class="kn">import</span> <span class="n">write_config</span>
 <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">get_loader_callback</span>
-<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses.config._load_config</span> <span class="kn">import</span> <span class="n">create_file_loader</span>
-<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses.config._write_config</span> <span class="kn">import</span> <span class="n">write_config</span>
 <span class="kn">from</span> <span class="nn">cornflakes.types</span> <span class="kn">import</span> <span class="n">Loader</span>
 
 
@@ -105,12 +105,12 @@
     <span class="k">return</span> <span class="n">_yaml_loader</span>
 
 
-<div class="viewcode-block" id="to_yaml_bytes"><a class="viewcode-back" href="../../../../../cornflakes.decorator.dataclasses.config.html#cornflakes.decorator.dataclasses.to_yaml_bytes">[docs]</a><span class="k">def</span> <span class="nf">to_yaml_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">to_yaml_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to write an instance of the main config class of the module into a yaml bytearray.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()},</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()},</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="to_yaml"><a class="viewcode-back" href="../../../../../cornflakes.decorator.dataclasses.config.html#cornflakes.decorator.dataclasses.to_yaml">[docs]</a><span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">out_cfg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytearray</span><span class="p">]:</span>
+<div class="viewcode-block" id="to_yaml"><a class="viewcode-back" href="../../../../../cornflakes.decorator.dataclasses.html#cornflakes.decorator.dataclasses.to_yaml">[docs]</a><span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">out_cfg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytearray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to write an instance of the main config class of the module into a yaml file.&quot;&quot;&quot;</span>
     <span class="c1"># TODO: More Tests for nested Objects</span>
     <span class="k">return</span> <span class="n">write_config</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">to_yaml_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)),</span> <span class="n">out_cfg</span><span class="p">)</span></div>

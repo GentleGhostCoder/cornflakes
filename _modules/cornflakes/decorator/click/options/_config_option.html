@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.decorator.click.options._config_option &mdash; cornflakes 3.3.20 documentation</title>
+  <title>cornflakes.decorator.click.options._config_option &mdash; cornflakes 3.3.21 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
@@ -15,7 +15,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=30b5de53"></script>
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=94cd5a4a"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="../../../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -37,7 +37,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.20
+                3.3.21
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
@@ -317,6 +317,18 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">slot</span><span class="o">.</span><span class="n">repr</span><span class="p">:</span>
                     <span class="n">option_args</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">HIDDEN_DEFAULT</span>
             <span class="k">if</span> <span class="s2">&quot;type&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">option_args</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">slot_options</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="n">option_name</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># other slots for which index</span>
+                    <span class="n">other_slots</span> <span class="o">=</span> <span class="p">[</span><span class="n">other_slot</span> <span class="k">for</span> <span class="n">other_slot</span> <span class="ow">in</span> <span class="n">slot_options</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">other_slot</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">slot</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">other_slots</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                                <span class="p">[</span>
+                                    <span class="sa">f</span><span class="s2">&quot;Option </span><span class="si">{</span><span class="n">option_name</span><span class="si">}</span><span class="s2"> has different types </span><span class="si">{</span><span class="n">slot</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">other_slot</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="k">for</span> <span class="n">other_slot</span> <span class="ow">in</span> <span class="n">other_slots</span>
+                                <span class="p">]</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
                 <span class="n">option_args</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_parser</span><span class="p">(</span><span class="n">slot</span><span class="o">.</span><span class="n">type</span><span class="p">)()</span>
             <span class="n">option_args</span><span class="p">[</span><span class="s2">&quot;show_default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">wrapper</span> <span class="o">=</span> <span class="n">option</span><span class="p">(</span><span class="n">option_name</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">option_args</span><span class="p">)(</span><span class="n">wrapper</span><span class="p">)</span>
