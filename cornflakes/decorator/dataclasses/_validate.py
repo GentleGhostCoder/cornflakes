@@ -1,5 +1,6 @@
 from copy import copy
 from inspect import signature
+import logging
 from types import SimpleNamespace
 from typing import Any, Callable, Dict, List
 
@@ -14,6 +15,8 @@ from cornflakes.decorator.dataclasses._helper import (
     is_eval_env,
 )
 from cornflakes.types import INSPECT_EMPTY_TYPE, WITHOUT_DEFAULT_TYPE
+
+logger = logging.getLogger(__name__)
 
 
 def _check_validator_return_type(callback, dc_types, key):
@@ -108,7 +111,7 @@ def get_dataclass_non_comparable_kwargs(field_defaults: dict) -> List[Any]:
             if copied_value != default_value:
                 non_comparable_fields.append(field_name)
         except Exception as e:
-            print(f"Cannot check comparability for field {field_name}: {e}")
+            logger.error(f"Cannot check comparability for field {field_name}: {e}")
             non_comparable_fields.append(field_name)
 
     return non_comparable_fields

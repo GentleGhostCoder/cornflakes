@@ -19,6 +19,8 @@ from cornflakes.decorator.dataclasses._helper import (
 )
 from cornflakes.types import Constants
 
+logger = logging.getLogger(__name__)
+
 
 def create_file_loader(  # noqa: C901
     cls,
@@ -53,8 +55,8 @@ def create_file_loader(  # noqa: C901
         config_args.update(cls_kwargs)
         error_args = [key for key in config_args if key not in [*dataclass_fields(cls)]]
         if error_args:
-            logging.debug(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
-            logging.debug(f"Please check Args: {error_args}")
+            logger.debug(f"Some variables in **{cls.__name__}** have no annotation or are not defined!")
+            logger.debug(f"Please check Args: {error_args}")
 
         #  config_instance
         if _instantiate:
@@ -132,7 +134,7 @@ def create_file_loader(  # noqa: C901
 
         if not is_use_regex(cls) and not is_config_list(cls) and sections and len(sections) == 1:
             section = sections[0]
-            logging.debug(f"Load ini from file: {files} - section: {section} for config {cls.__name__}")
+            logger.debug(f"Load ini from file: {files} - section: {section} for config {cls.__name__}")
 
             if not config_dict:
                 config_dict = OrderedDict(
@@ -160,10 +162,10 @@ def create_file_loader(  # noqa: C901
                     config_dict[f"{file_name}:{section_name or normalized_cls_name}"] = config
             config_dict = _check_config_dict(config_dict)
 
-            logging.debug(f"Read config with sections: {config_dict.keys()}")
+            logger.debug(f"Read config with sections: {config_dict.keys()}")
 
         regex = f'({"|".join(sections) if isinstance(sections, list) else sections or ""})'
-        logging.debug(f"Load all configs that match regex: `{regex}`")
+        logger.debug(f"Load all configs that match regex: `{regex}`")
         sections_found = [
             section for section in config_dict if bool(re.match(regex, section.split(":", 1).pop() or ""))
         ]

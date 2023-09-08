@@ -1,5 +1,5 @@
 """custom dataclass wrapper."""
-from cornflakes.decorator.dataclasses.config import config_group, config, to_ini, to_yaml
+from cornflakes.decorator.dataclasses._config import config_group, config, to_ini, to_yaml
 from cornflakes.decorator.dataclasses._add_dataclass_slots import add_slots
 
 # from dataclasses import *  # noqa: F401, F403

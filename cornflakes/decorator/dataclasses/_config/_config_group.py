@@ -4,11 +4,11 @@ from typing_extensions import dataclass_transform  # type: ignore
 
 from cornflakes.decorator._funcat import funcat
 from cornflakes.decorator._indexer import Index
+from cornflakes.decorator.dataclasses._config._ini import to_ini
+from cornflakes.decorator.dataclasses._config._init_config_group import wrap_init_config_group
+from cornflakes.decorator.dataclasses._config._yaml import to_yaml
 from cornflakes.decorator.dataclasses._dataclass import dataclass
 from cornflakes.decorator.dataclasses._field import Field, field
-from cornflakes.decorator.dataclasses.config._ini import to_ini
-from cornflakes.decorator.dataclasses.config._init_config_group import wrap_init_config_group
-from cornflakes.decorator.dataclasses.config._yaml import to_yaml
 from cornflakes.types import _T, ConfigGroup, Constants, CornflakesDataclass, FuncatTypes, MappingWrapper, Writer
 
 

@@ -4,6 +4,8 @@ import logging
 import os
 from pkgutil import iter_modules
 
+logger = logging.getLogger(__name__)
+
 __pached_modules = []
 
 
@@ -49,7 +51,7 @@ def _patch_module(m: str, main_module: str):
             try:
                 obj.__module__ = getattr(module, "__name__", "")
             except Exception as e:
-                logging.debug(e)
+                logger.debug(e)
 
     module.__doc__ = f"""{getattr(module, "__doc__", f"{getattr(module, '__name__', '')} module.")}
 

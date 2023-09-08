@@ -1,6 +1,6 @@
 import os
 
-from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
+from cornflakes.decorator.dataclasses._config._load_config import create_file_loader
 
 
 def create_dict_file_loader(

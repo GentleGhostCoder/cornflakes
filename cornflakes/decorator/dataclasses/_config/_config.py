@@ -5,14 +5,14 @@ from typing_extensions import dataclass_transform  # type: ignore
 
 from cornflakes.decorator._funcat import funcat
 from cornflakes.decorator._indexer import Index
+from cornflakes.decorator.dataclasses._config._config_group import config_group
+from cornflakes.decorator.dataclasses._config._dict import create_dict_file_loader
+from cornflakes.decorator.dataclasses._config._ini import create_ini_file_loader, to_ini
+from cornflakes.decorator.dataclasses._config._init_config import wrap_init_default_config
+from cornflakes.decorator.dataclasses._config._yaml import create_yaml_file_loader, to_yaml
 from cornflakes.decorator.dataclasses._dataclass import dataclass
 from cornflakes.decorator.dataclasses._field import Field, field
 from cornflakes.decorator.dataclasses._helper import dataclass_fields, fields, get_default_loader
-from cornflakes.decorator.dataclasses.config._config_group import config_group
-from cornflakes.decorator.dataclasses.config._dict import create_dict_file_loader
-from cornflakes.decorator.dataclasses.config._ini import create_ini_file_loader, to_ini
-from cornflakes.decorator.dataclasses.config._init_config import wrap_init_default_config
-from cornflakes.decorator.dataclasses.config._yaml import create_yaml_file_loader, to_yaml
 from cornflakes.types import (
     _T,
     Config,
@@ -25,6 +25,8 @@ from cornflakes.types import (
     MappingWrapper,
     Writer,
 )
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass_transform(field_specifiers=(field, Field))
@@ -206,7 +208,7 @@ def config(
 
         # Check is config
         if any(hasattr(slot, Constants.config_decorator.SECTIONS) for slot in w_cls.__annotations__.values()):
-            logging.warning(
+            logger.warning(
                 "Wrapper config not working for a subset of config classes. "
                 f"Please use {config_group.__name__} instead."
             )

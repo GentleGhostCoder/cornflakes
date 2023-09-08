@@ -8,6 +8,8 @@ from typing import Any, Union
 from cornflakes.decorator.click.options._global import global_option
 from cornflakes.decorator.click.rich import RichCommand, RichGroup
 
+logger = logging.getLogger(__name__)
+
 
 @global_option(
     ["-b", "--background-process"],
@@ -20,7 +22,7 @@ def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_proce
     if background_process:
         stdout_file = f"{self.callback.__name__}.log"
         stderr_file = f"{self.callback.__name__}_error.log"
-        logging.debug(
+        logger.debug(
             f"Method {self.callback.__name__} is running in background. "
             f"See logs at stdout: {stdout_file}, stderr: {stderr_file}."
         )
@@ -33,7 +35,7 @@ def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_proce
             f"{self.callback.__name__}(*{func_args},**{func_kwargs});"
         )
 
-        logging.debug(f"Python Command: {command}")
+        logger.debug(f"Python Command: {command}")
 
         subprocess.Popen(  # noqa: S603
             [
