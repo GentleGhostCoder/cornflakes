@@ -3,9 +3,9 @@ from typing import Optional, Type, Union
 import yaml
 from yaml import SafeLoader, UnsafeLoader
 
+from cornflakes.decorator.dataclasses._config._load_config import create_file_loader
+from cornflakes.decorator.dataclasses._config._write_config import write_config
 from cornflakes.decorator.dataclasses._helper import get_loader_callback
-from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
-from cornflakes.decorator.dataclasses.config._write_config import write_config
 from cornflakes.types import Loader
 
 

@@ -230,6 +230,18 @@ def _config_option(  # noqa: C901
                 if not slot.repr:
                     option_args["default"] = HIDDEN_DEFAULT
             if "type" not in option_args:
+                if len([o for o in slot_options.keys() if o == option_name]) > 1:
+                    # other slots for which index
+                    other_slots = [other_slot for other_slot in slot_options.values() if other_slot.type != slot.type]
+                    if other_slots:
+                        raise ValueError(
+                            "\n".join(
+                                [
+                                    f"Option {option_name} has different types {slot.type} != {other_slot.type}"
+                                    for other_slot in other_slots
+                                ]
+                            )
+                        )
                 option_args["type"] = param_parser(slot.type)()
             option_args["show_default"] = True
             wrapper = option(option_name, cls=None, **option_args)(wrapper)

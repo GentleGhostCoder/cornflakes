@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Union
 
 # from cornflakes.decorator import wrap_kwargs
 from cornflakes.decorator.dataclasses import config_files, field, is_config
-from cornflakes.decorator.dataclasses.config import config_group
+from cornflakes.decorator.dataclasses._config import config_group
 from cornflakes.types import Constants, Loader
 
 DECORATOR_MODULE_NAME = import_module("cornflakes.decorator").__name__

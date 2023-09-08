@@ -3,7 +3,7 @@ from os import getenv
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Tuple, Union
 
 from cornflakes.decorator.click.types import GlobalOption
-from cornflakes.decorator.dataclasses.config import config
+from cornflakes.decorator.dataclasses._config import config
 
 
 @config(init=True, slots=True, updatable=True)  # type: ignore

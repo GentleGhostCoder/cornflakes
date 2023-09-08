@@ -348,8 +348,8 @@ class StandardConfigMethods(Protocol):
     def from_ini(cls, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs):
         """Method to load a config from ini files."""
         ...
+        from cornflakes.decorator.dataclasses._config._load_config import create_file_loader
         from cornflakes.decorator.dataclasses._helper import get_loader_callback
-        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 
         return create_file_loader(cls=cls, _loader_callback=get_loader_callback(Loader.INI), _instantiate=True)(
             files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
@@ -359,8 +359,8 @@ class StandardConfigMethods(Protocol):
     def from_yaml(cls, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs):
         """Method to load a config from yaml files."""
         ...
+        from cornflakes.decorator.dataclasses._config._load_config import create_file_loader
         from cornflakes.decorator.dataclasses._helper import get_loader_callback
-        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 
         return create_file_loader(cls=cls, _loader_callback=get_loader_callback(Loader.YAML), _instantiate=True)(
             files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
@@ -370,8 +370,8 @@ class StandardConfigMethods(Protocol):
     def from_dict(cls, files=None, sections=None, keys=None, defaults=None, eval_env: bool = False, *args, **kwargs):
         """Method to load a config from dict files."""
         ...
+        from cornflakes.decorator.dataclasses._config._load_config import create_file_loader
         from cornflakes.decorator.dataclasses._helper import get_loader_callback
-        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 
         return create_file_loader(cls=cls, _loader_callback=get_loader_callback(Loader.DICT), _instantiate=True)(
             files=files, sections=sections, keys=keys, defaults=defaults, eval_env=eval_env, *args, **kwargs
@@ -383,8 +383,8 @@ class StandardConfigMethods(Protocol):
     ) -> Any:
         """Method to load a config from files."""
         ...
+        from cornflakes.decorator.dataclasses._config._load_config import create_file_loader
         from cornflakes.decorator.dataclasses._helper import config_files, get_default_loader, get_loader_callback
-        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 
         return create_file_loader(
             cls=cls,
@@ -407,8 +407,8 @@ class StandardConfigGroupMethods(Protocol):
     ) -> Any:
         """Method to load a config from files."""
         ...
+        from cornflakes.decorator.dataclasses._config._load_config import create_file_loader
         from cornflakes.decorator.dataclasses._helper import config_files, get_default_loader, get_loader_callback
-        from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 
         return create_file_loader(
             cls=self,

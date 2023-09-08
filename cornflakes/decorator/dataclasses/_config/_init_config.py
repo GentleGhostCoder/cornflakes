@@ -2,6 +2,7 @@ import logging
 from typing import List, Optional, Union
 
 from cornflakes.decorator._wrap_kwargs import wrap_kwargs
+from cornflakes.decorator.dataclasses._config._load_config import create_file_loader
 from cornflakes.decorator.dataclasses._helper import (
     config_files,
     config_sections,
@@ -12,7 +13,6 @@ from cornflakes.decorator.dataclasses._helper import (
     is_config_list,
     is_eval_env,
 )
-from cornflakes.decorator.dataclasses.config._load_config import create_file_loader
 from cornflakes.types import Constants, Loader
 
 

@@ -1,5 +1,6 @@
 from copy import copy
 from inspect import signature
+import logging
 from types import SimpleNamespace
 from typing import Any, Callable, Dict, List
 
@@ -108,7 +109,7 @@ def get_dataclass_non_comparable_kwargs(field_defaults: dict) -> List[Any]:
             if copied_value != default_value:
                 non_comparable_fields.append(field_name)
         except Exception as e:
-            print(f"Cannot check comparability for field {field_name}: {e}")
+            logging.error(f"Cannot check comparability for field {field_name}: {e}")
             non_comparable_fields.append(field_name)
 
     return non_comparable_fields
