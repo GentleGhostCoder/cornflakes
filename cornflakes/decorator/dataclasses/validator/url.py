@@ -85,7 +85,7 @@ class AnyUrl:
             tld = self.hostname[::-1].split(".", 1)[0][::-1]
             if tld in VALID_ZONES:
                 self.tld = tld
-        self.valid = validators.url(self.hostname or "") is True
+        self.valid = validators.url(str(self) or "") is True
         self.token = self.token or self.password or self.username
 
     def __str__(self) -> str:
