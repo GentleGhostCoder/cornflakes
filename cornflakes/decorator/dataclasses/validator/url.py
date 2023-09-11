@@ -1,6 +1,6 @@
-from dataclasses import InitVar, fields
-from typing import Any, Optional, cast
-from urllib.parse import ParseResult, parse_qs, urlparse, urlunparse
+from dataclasses import InitVar
+from typing import Optional
+from urllib.parse import ParseResult, parse_qs, quote, urlparse, urlunparse
 
 import validators
 
@@ -39,8 +39,8 @@ class AnyUrl:
     scheme: str = field(default="", init=True)
     netloc: str = field(default="", init=True)
     path: str = field(default="", init=True)
-    query: str = field(default="", init=True)
     params: str = field(default="", init=True)
+    query: str = field(default="", init=True)
     fragment: str = field(default="", init=True)
     # urlparse arguments end here
     query_args: dict = field(default_factory=dict, init=True)
@@ -53,9 +53,18 @@ class AnyUrl:
     token: Optional[str] = field(default=None, init=True)
 
     def __init_parsed(self, parsed: ParseResult, overwrite=True):
-        for f in fields(cast(Any, self)):
-            if (overwrite or (not f.default and not getattr(self, f.name, None))) and hasattr(parsed, f.name):
-                setattr(self, f.name, getattr(parsed, f.name, None))
+        if overwrite or (not self.scheme and not getattr(self, "scheme", None)):
+            self.scheme = parsed.scheme
+        if overwrite or (not self.netloc and not getattr(self, "netloc", None)):
+            self.netloc = parsed.netloc
+        if overwrite or (not self.path and not getattr(self, "path", None)):
+            self.path = quote(parsed.path)
+        if overwrite or (not self.params and not getattr(self, "params", None)):
+            self.params = quote(parsed.params)
+        if overwrite or (not self.query and not getattr(self, "query", None)):
+            self.query = quote(parsed.query)
+        if overwrite or (not self.fragment and not getattr(self, "fragment", None)):
+            self.fragment = quote(parsed.fragment)
 
     def __post_init__(self, url: Optional[str] = None) -> None:
         """Post init."""
