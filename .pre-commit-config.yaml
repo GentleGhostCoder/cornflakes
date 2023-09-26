@@ -16,12 +16,12 @@ ci:
 repos:
     - repo: https://github.com/astral-sh/ruff-pre-commit
       # Ruff version. TODO: remove flake8 in future
-      rev: "v0.0.287"
+      rev: "v0.0.291"
       hooks:
           - id: ruff
             args: [--fix]
     - repo: https://github.com/psf/black
-      rev: 23.7.0
+      rev: 23.9.1
       hooks:
           - id: black
             name: black
@@ -113,7 +113,7 @@ repos:
                 - "--remove-duplicate-keys"
                 - "--remove-unused-variables"
     - repo: https://github.com/asottile/pyupgrade
-      rev: v3.10.1
+      rev: v3.13.0
       hooks:
           - id: pyupgrade
             name: pyupgrade
