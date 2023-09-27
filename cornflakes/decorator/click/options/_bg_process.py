@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_process: bool):
     """Default Option for running in background."""
     if background_process:
-        print(self)
         command_name = get_command_name(self).replace(" ", "_").replace("-", "_")
         stdout_file = f"{command_name}.log"
         stderr_file = f"{command_name}_error.log"
