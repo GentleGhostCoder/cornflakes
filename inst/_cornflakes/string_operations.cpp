@@ -866,7 +866,7 @@ void generateAvroSchema(const rapidjson::Value &value,
   }
 }
 
-py::dict generateAvroSchemaPy(const std::string& jsonChunk) {
+py::dict generateAvroSchemaPy(const std::string &jsonChunk) {
   rapidjson::StringBuffer buffer;
 
   rapidjson::Document d;

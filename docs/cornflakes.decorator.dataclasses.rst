@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   cornflakes.decorator.dataclasses.config
    cornflakes.decorator.dataclasses.validator
 
 Module contents

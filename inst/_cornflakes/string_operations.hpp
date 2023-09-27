@@ -99,7 +99,7 @@ py::list extract_between(const std::string &data, std::string start, char end);
 py::object apply_match(const std::vector<std::string> &vec, std::string match);
 
 void generateAvroSchema(const rapidjson::Value &value,
-                        rapidjson::StringBuffer *buffer, int depth = 0);
+                        rapidjson::StringBuffer *buffer, int depth);
 
 py::dict generateAvroSchemaPy(const std::string &jsonChunk);
 
