@@ -1,4 +1,6 @@
+from datetime import datetime
 import logging
+import os
 import subprocess  # noqa: S404
 import sys
 from typing import Any, Union
@@ -18,24 +20,34 @@ logger = logging.getLogger(__name__)
 def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_process: bool):
     """Default Option for running in background."""
     if background_process:
-        command_name = get_command_name(self).replace(" ", "_").replace("-", "_")
-        stdout_file = f"{command_name}.log"
-        stderr_file = f"{command_name}_error.log"
+        # Create a Popen object but don't start the subprocess yet
+        process = subprocess.Popen(sys.argv, stdout=subprocess.PIPE, bufsize=-1, start_new_session=True)
+
+        command = get_command_name(self)
+        group, command = command.split(" ", 1)
+        log_dir = f".log_{group}".replace(" ", "_").replace("-", "_")
+
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+
+        command_name = command.replace(" ", "_").replace("-", "_")
+
+        date_str = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+
+        stdout_file = f"{log_dir}/{command_name}_stdout_{process.pid}_{date_str}.log"
+        stderr_file = f"{log_dir}/{command_name}_stderr_{process.pid}_{date_str}.log"
         logger.debug(
             f"Method {self.callback.__name__} is running in background. "
             f"See logs at stdout: {stdout_file}, stderr: {stderr_file}."
         )
-        stdout = open(stdout_file, "w")
-        stderr = open(stderr_file, "w")
+        stdout = open(stdout_file, "a")
+        stderr = open(stderr_file, "a")
 
         # remove -b or --background-process from sys.argv
         sys.argv = [arg for arg in sys.argv if arg not in ["-b", "--background-process"]]
 
         logger.debug(f"Command: {' '.join(sys.argv)}")
-
-        subprocess.Popen(  # noqa: S603
-            sys.argv,
-            stdout=stdout,
-            stderr=stderr,
-        )
+        process.stdout = stdout
+        process.stderr = stderr
+        process.communicate()
         sys.exit(0)
