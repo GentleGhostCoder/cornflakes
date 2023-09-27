@@ -22,33 +22,15 @@ PYBIND11_MODULE(_cornflakes, module) {
             simple_sha256
     )pbdoc";
 
-  //    py::object decimal = py::module::import("decimal").attr("Decimal");
-  //    auto custom_decimal = py::reinterpret_borrow<py::object>((PyObject *)
-  //    &PyType_Type); py::dict attributes;
-  //
-  //    py::class_<std::int64_t> custom_decimal_class =
-  //    custom_decimal("Decimal", py::make_tuple(decimal), attributes);
-  //
-  //    custom_decimal_class.def("__str__", [](const py::object &self) ->
-  //    std::string {
-  //        auto str = self.attr("__repr__")().cast<std::string>();
-  //        str = str.substr(9, str.size() - 11);
-  //        std::string::const_iterator start_iter(str.begin());
-  //        std::string::const_iterator end_iter(str.end());
-  //        std::string::const_iterator e_idx = std::find(start_iter, end_iter,
-  //        'E'); if (e_idx == end_iter) return str; if (str[0] == '-') {
-  //            return "-0." + std::string((std::stoi(std::string(e_idx + 2,
-  //            end_iter)) - 1), '0') +
-  //                   str[1] + (start_iter + 3 < e_idx ? std::string(start_iter
-  //                   + 3, e_idx) : "");
-  //        }
-  //        return "0." + std::string((std::stoi(std::string(e_idx + 2,
-  //        end_iter)) - 1), '0') +
-  //               str[0] + (start_iter + 2 < e_idx ? std::string(start_iter +
-  //               2, e_idx) : "");
-  //    }, R"pbdoc(Wrapper of decimal.Decimal class.)pbdoc");
-  //
-  //    module.attr("Decimal") = custom_decimal_class;
+  module.def(
+      "eval_json",
+      [](const std::string &json) -> py::object {
+        return string_operations::generateAvroSchemaPy(json);
+      },
+      R"pbdoc(
+        .. doxygenfunction:: string_operations::generateAvroSchemaPy
+            :project: _cornflakes
+        )pbdoc");
 
   module.def(
       "ini_load",

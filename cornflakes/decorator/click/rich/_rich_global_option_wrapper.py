@@ -1,5 +1,5 @@
 from functools import wraps
-from inspect import signature
+from inspect import Parameter, signature
 from typing import Any, Callable, Optional
 
 from click import get_current_context
@@ -47,7 +47,13 @@ def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wra
 
 def _apply_global_options(click_cls, *args, **kwargs):
     for option_obj in click_cls.config.GLOBAL_OPTIONS:
-        option_obj(*args, **dict(filter(lambda kv: kv[0] in signature(option_obj).parameters.keys(), kwargs.items())))
+        sig = signature(option_obj)
+        if any(p.kind == Parameter.VAR_KEYWORD for p in sig.parameters.values()):
+            params = kwargs  # pass all kwargs
+        else:
+            params = dict(filter(lambda kv: kv[0] in sig.parameters.keys(), kwargs.items()))
+
+        option_obj(*args, **params)
 
 
 def _apply_option_groups(click_cls):
@@ -60,7 +66,6 @@ def _apply_auto_option_config(func, **kwargs):
     if not getattr(func, Constants.config_option.ENABLED, False):
         return kwargs
 
-    signature(func).parameters
     auto_option_attributes = getattr(func, Constants.config_option.ATTRIBUTES, [])
     config_kwargs = dict(filter(lambda kv: kv[0] in auto_option_attributes and kv[1], kwargs.items()))
 

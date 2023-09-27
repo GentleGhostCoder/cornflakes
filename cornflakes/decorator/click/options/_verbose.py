@@ -27,6 +27,6 @@ def verbose_option(verbose, self):
     # option_group="Basic Options",
     is_flag=True,
 )
-def verbose_option_all(verbose):
+def verbose_option_all(verbose_all):
     """Default Option for verbose logging."""
-    setup_logging(default_level=logging.DEBUG if verbose else logging.root.level, force=True)
+    setup_logging(default_level=logging.DEBUG if verbose_all else logging.root.level, force=True)

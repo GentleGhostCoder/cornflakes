@@ -8,6 +8,10 @@ from cornflakes.decorator.dataclasses._dataclass import dataclass as data
 from cornflakes.decorator.dataclasses._dataclass import to_tuple
 from cornflakes.decorator.dataclasses._field import field
 
+QUOTED_ATTRIBUTES = ["path", "params", "query", "fragment"]
+ALL_ATTRIBUTES = ["scheme", "netloc", "path", "params", "query", "fragment", "hostname", "port", "username", "password"]
+NON_QUOTED_ATTRIBUTES = [attr for attr in ALL_ATTRIBUTES if attr not in QUOTED_ATTRIBUTES]
+
 
 @data(  # type: ignore
     slots=True,
@@ -53,18 +57,22 @@ class AnyUrl:
     token: Optional[str] = field(default=None, init=True)
 
     def __init_parsed(self, parsed: ParseResult, overwrite=True):
-        if overwrite or (not self.scheme and not getattr(self, "scheme", None)):
-            self.scheme = parsed.scheme
-        if overwrite or (not self.netloc and not getattr(self, "netloc", None)):
-            self.netloc = parsed.netloc
-        if overwrite or (not self.path and not getattr(self, "path", None)):
-            self.path = quote(parsed.path)
-        if overwrite or (not self.params and not getattr(self, "params", None)):
-            self.params = quote(parsed.params)
-        if overwrite or (not self.query and not getattr(self, "query", None)):
-            self.query = quote(parsed.query)
-        if overwrite or (not self.fragment and not getattr(self, "fragment", None)):
-            self.fragment = quote(parsed.fragment)
+        # Process non-quoted attributes
+        for attr in NON_QUOTED_ATTRIBUTES:
+            current_value = getattr(self, attr, None)
+            parsed_value = getattr(parsed, attr)
+            if overwrite or not current_value:
+                setattr(self, attr, parsed_value)
+
+        # Process quoted attributes
+        for attr in QUOTED_ATTRIBUTES:
+            current_value = getattr(self, attr, None)
+            parsed_value = getattr(parsed, attr)
+            if parsed_value:
+                parsed_value = quote(parsed_value)
+
+            if overwrite or not current_value:
+                setattr(self, attr, parsed_value)
 
     def __post_init__(self, url: Optional[str] = None) -> None:
         """Post init."""

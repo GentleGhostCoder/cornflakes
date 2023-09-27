@@ -275,7 +275,7 @@ def _config_option(  # noqa: C901
                     # if add_config_file_option is False, we will overwrite the files anyway even if its None
                     _files = files
                 config_fields = dataclass_fields(config)
-                non_comparable_fields = getattr(config, Constants.dataclass_decorator.NON_COMPARABLE_FIELDS, [])
+                non_comparable_fields = getattr(config, Constants.config_decorator.NON_COMPARABLE_FIELDS, [])
                 config_args = {
                     k: v
                     for k, v in kwargs.items()

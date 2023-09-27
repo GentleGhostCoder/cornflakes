@@ -793,4 +793,90 @@ std::map<std::string, py::object> eval_csv(
   format["quoting_character"] = py::cast(quoting_character);
   return format;
 }
+
+std::string DetectType(const rapidjson::Value &value) {
+  if (value.IsString()) return "string";
+  if (value.IsInt()) return "int";
+  if (value.IsBool()) return "boolean";
+  if (value.IsDouble()) return "double";
+  if (value.IsObject()) return "record";
+  if (value.IsArray()) return "array";
+  return "null";
+}
+
+void generateAvroSchema(const rapidjson::Value &value,
+                        rapidjson::StringBuffer *buffer, int depth = 0) {
+  if (depth >= MAX_DEPTH) {
+    throw std::runtime_error("Failed to process parsed JSON string, "
+                             "because recursion depth is to large!");
+  }
+  rapidjson::Writer<rapidjson::StringBuffer> writer(*buffer);
+
+  std::string type = DetectType(value);
+
+  if (type == "record") {
+    writer.StartObject();
+    writer.Key("type");
+    writer.String("record");
+    writer.Key("fields");
+    writer.StartArray();
+
+    for (rapidjson::Value::ConstMemberIterator itr = value.MemberBegin();
+    itr != value.MemberEnd(); ++itr) {
+      rapidjson::StringBuffer subBuffer;
+      rapidjson::Writer<rapidjson::StringBuffer> subWriter(subBuffer);
+
+      writer.StartObject();
+      writer.Key("name");
+      writer.String(itr->name.GetString());
+      writer.Key("type");
+
+      generateAvroSchema(itr->value, &subBuffer, depth + 1);
+      writer.RawValue(subBuffer.GetString(),
+                      subBuffer.GetSize(),
+                      rapidjson::kNullType);
+
+      writer.EndObject();
+    }
+    writer.EndArray();
+    writer.EndObject();
+  } else if (type == "array") {
+    writer.StartObject();
+    writer.Key("type");
+    writer.String("array");
+    writer.Key("items");
+
+    // Handle arrays with elements of potentially different types
+    writer.StartArray();
+    for (rapidjson::SizeType i = 0; i < value.Size(); i++) {
+      rapidjson::StringBuffer subBuffer;
+      rapidjson::Writer<rapidjson::StringBuffer> subWriter(subBuffer);
+
+      generateAvroSchema(value[i], &subBuffer, depth + 1);
+      writer.RawValue(subBuffer.GetString(),
+                      subBuffer.GetSize(),
+                      rapidjson::kNullType);
+    }
+    writer.EndArray();
+
+    writer.EndObject();
+
+  } else {
+    writer.String(type.c_str());
+  }
+}
+
+py::dict generateAvroSchemaPy(const std::string& jsonChunk) {
+  rapidjson::StringBuffer buffer;
+
+  rapidjson::Document d;
+  d.Parse(jsonChunk.c_str());
+  if (d.HasParseError()) {
+    throw std::runtime_error("Failed to parse the provided JSON string.");
+  }
+  generateAvroSchema(d, &buffer, 0);
+
+  return py::eval(buffer.GetString());
+}
+
 }  // namespace string_operations
