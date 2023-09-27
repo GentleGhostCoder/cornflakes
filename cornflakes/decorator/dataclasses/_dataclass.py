@@ -10,16 +10,12 @@ from cornflakes.common import recursive_update
 from cornflakes.decorator.dataclasses._add_dataclass_slots import add_slots
 from cornflakes.decorator.dataclasses._enforce_types import enforce_types
 from cornflakes.decorator.dataclasses._field import Field, field
-from cornflakes.decorator.dataclasses._helper import dc_field_without_default, default
+from cornflakes.decorator.dataclasses._helper import dc_field_without_default
 from cornflakes.decorator.dataclasses._helper import dict_factory as d_factory
 from cornflakes.decorator.dataclasses._helper import is_index
 from cornflakes.decorator.dataclasses._helper import tuple_factory as t_factory
 from cornflakes.decorator.dataclasses._helper import value_factory as v_factory
-from cornflakes.decorator.dataclasses._validate import (
-    check_dataclass_kwargs,
-    get_dataclass_non_comparable_kwargs,
-    validate_dataclass_kwargs,
-)
+from cornflakes.decorator.dataclasses._validate import check_dataclass_kwargs, validate_dataclass_kwargs
 from cornflakes.types import _T, Constants, CornflakesDataclass, MappingWrapper
 
 if sys.version_info >= (3, 10):
@@ -350,13 +346,6 @@ def _wrap_custom_dataclass(
     setattr(dc_cls, Constants.dataclass_decorator.VALUE_FACTORY, value_factory)  # type: ignore
 
     # Non-comparable fields should be compared via repr, so they are stored for later use
-    setattr(
-        dc_cls,
-        Constants.dataclass_decorator.NON_COMPARABLE_FIELDS,
-        get_dataclass_non_comparable_kwargs(
-            {obj_name: default(obj) for obj_name, obj in dc_cls.__dataclass_fields__.items()}
-        ),
-    )
     setattr(
         dc_cls,
         Constants.dataclass_decorator.IGNORED_SLOTS,
