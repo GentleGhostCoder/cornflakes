@@ -12,7 +12,8 @@ from cornflakes.decorator.dataclasses._config._init_config import wrap_init_defa
 from cornflakes.decorator.dataclasses._config._yaml import create_yaml_file_loader, to_yaml
 from cornflakes.decorator.dataclasses._dataclass import dataclass
 from cornflakes.decorator.dataclasses._field import Field, field
-from cornflakes.decorator.dataclasses._helper import dataclass_fields, fields, get_default_loader
+from cornflakes.decorator.dataclasses._helper import dataclass_fields, default, fields, get_default_loader
+from cornflakes.decorator.dataclasses._validate import get_dataclass_non_comparable_kwargs
 from cornflakes.types import (
     _T,
     Config,
@@ -266,6 +267,14 @@ def config(
         setattr(config_cls, Constants.config_decorator.VALIDATE, validate)
         setattr(config_cls, Constants.config_decorator.DEFAULT_LOADER, default_loader)
         setattr(config_cls, Constants.config_decorator.ALIAS_GENERATOR, alias_generator)
+
+        setattr(
+            config_cls,
+            Constants.config_decorator.NON_COMPARABLE_FIELDS,
+            get_dataclass_non_comparable_kwargs(
+                {obj_name: default(obj) for obj_name, obj in dataclass_fields(config_cls).items()}
+            ),
+        )
 
         # Set Writer
         setattr(config_cls, Writer.INI.value, to_ini)

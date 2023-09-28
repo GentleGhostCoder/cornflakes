@@ -113,6 +113,7 @@ class ConfigDecorator:
     chain_configs: str = "__chain_configs__"
     VALIDATE: str = "__validate__"
     ALIAS_GENERATOR: str = "__alias_generator__"
+    NON_COMPARABLE_FIELDS: str = "__cornflakes_non_comparable_fields__"
 
     SECTION_NAME_KEY: str = "section_name"
 
@@ -131,7 +132,6 @@ class DataclassDecorator:
     VALIDATORS: str = "__cornflakes_validators__"
     REQUIRED_KEYS: str = "__cornflakes_required_keys__"
     INIT_EXCLUDE_KEYS: str = "__cornflakes_init_exclude_keys__"
-    NON_COMPARABLE_FIELDS: str = "__cornflakes_non_comparable_fields__"
 
 
 @dataclass(frozen=True)
