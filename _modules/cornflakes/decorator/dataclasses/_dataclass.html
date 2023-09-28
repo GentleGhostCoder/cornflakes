@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.decorator.dataclasses._dataclass &mdash; cornflakes 3.3.23 documentation</title>
+  <title>cornflakes.decorator.dataclasses._dataclass &mdash; cornflakes 3.3.24 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
@@ -15,7 +15,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=074d5439"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=ccc4c4f4"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="../../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -37,7 +37,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.23
+                3.3.24
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -97,16 +97,12 @@
 <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._add_dataclass_slots</span> <span class="kn">import</span> <span class="n">add_slots</span>
 <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._enforce_types</span> <span class="kn">import</span> <span class="n">enforce_types</span>
 <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._field</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">dc_field_without_default</span><span class="p">,</span> <span class="n">default</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">dc_field_without_default</span>
 <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">dict_factory</span> <span class="k">as</span> <span class="n">d_factory</span>
 <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">is_index</span>
 <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">tuple_factory</span> <span class="k">as</span> <span class="n">t_factory</span>
 <span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._helper</span> <span class="kn">import</span> <span class="n">value_factory</span> <span class="k">as</span> <span class="n">v_factory</span>
-<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._validate</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">check_dataclass_kwargs</span><span class="p">,</span>
-    <span class="n">get_dataclass_non_comparable_kwargs</span><span class="p">,</span>
-    <span class="n">validate_dataclass_kwargs</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">cornflakes.decorator.dataclasses._validate</span> <span class="kn">import</span> <span class="n">check_dataclass_kwargs</span><span class="p">,</span> <span class="n">validate_dataclass_kwargs</span>
 <span class="kn">from</span> <span class="nn">cornflakes.types</span> <span class="kn">import</span> <span class="n">_T</span><span class="p">,</span> <span class="n">Constants</span><span class="p">,</span> <span class="n">CornflakesDataclass</span><span class="p">,</span> <span class="n">MappingWrapper</span>
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
@@ -437,13 +433,6 @@
     <span class="nb">setattr</span><span class="p">(</span><span class="n">dc_cls</span><span class="p">,</span> <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">VALUE_FACTORY</span><span class="p">,</span> <span class="n">value_factory</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
     <span class="c1"># Non-comparable fields should be compared via repr, so they are stored for later use</span>
-    <span class="nb">setattr</span><span class="p">(</span>
-        <span class="n">dc_cls</span><span class="p">,</span>
-        <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">NON_COMPARABLE_FIELDS</span><span class="p">,</span>
-        <span class="n">get_dataclass_non_comparable_kwargs</span><span class="p">(</span>
-            <span class="p">{</span><span class="n">obj_name</span><span class="p">:</span> <span class="n">default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj_name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">dc_cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="p">),</span>
-    <span class="p">)</span>
     <span class="nb">setattr</span><span class="p">(</span>
         <span class="n">dc_cls</span><span class="p">,</span>
         <span class="n">Constants</span><span class="o">.</span><span class="n">dataclass_decorator</span><span class="o">.</span><span class="n">IGNORED_SLOTS</span><span class="p">,</span>
