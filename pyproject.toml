@@ -78,7 +78,7 @@ nox = "^2023.4.22"
 nox-poetry = "^1.0.3"
 compiledb = "^0.10.1"
 isort = "^5.12.0"
-virtualenv = "^20.24.4"
+virtualenv = "^20.24.5"
 pybind11 = "^2.11.1"
 pydantic = {extras = ["dotenv"], version = "^2.0"}
 markdown-it-py = ">=3.0.0"
