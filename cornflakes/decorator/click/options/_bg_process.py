@@ -22,9 +22,7 @@ def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_proce
     """Default Option for running in background."""
     if background_process:
         # Create a Popen object but don't start the subprocess yet
-        tmp = tempfile.NamedTemporaryFile("w")
-
-        process = subprocess.Popen(sys.argv, stdout=tmp, bufsize=-1, start_new_session=False)
+        tempfile.NamedTemporaryFile("w")
 
         command = get_command_name(self)
         is_group = len(command.split(" ", 1)) > 1
@@ -40,8 +38,11 @@ def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_proce
 
         date_str = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
 
-        stdout_file = f"{log_dir}/{command_name}_stdout_{process.pid}_{date_str}.log"
-        stderr_file = f"{log_dir}/{command_name}_stderr_{process.pid}_{date_str}.log"
+        # try to guess the process id of the background process (not 100% accurate)
+        pid = os.getpid() + 1
+
+        stdout_file = f"{log_dir}/{command_name}_stdout_{pid}_{date_str}.log"
+        stderr_file = f"{log_dir}/{command_name}_stderr_{pid}_{date_str}.log"
         logger.debug(
             f"Method {self.callback.__name__} is running in background. "
             f"See logs at stdout: {stdout_file}, stderr: {stderr_file}."
@@ -52,8 +53,7 @@ def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_proce
         logger.debug(f"Command: {' '.join(sys.argv)}")
 
         with open(stdout_file, "w") as stdout, open(stderr_file, "w") as stderr:
-            process.stdout = stdout
-            process.stderr = stderr
+            process = subprocess.Popen(sys.argv, stdout=stdout, stderr=stderr, bufsize=-1, start_new_session=False)
             try:
                 process.communicate()
             except Exception as e:
