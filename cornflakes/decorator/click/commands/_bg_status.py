@@ -4,10 +4,11 @@ import re
 import sys
 from typing import Optional, Union
 
-from click import Command, command
+from click import Command
 from rich.syntax import Syntax
 from rich.table import Table
 
+from cornflakes.decorator.click._command import command
 from cornflakes.decorator.click.rich import RichCommand, argument
 
 
@@ -65,14 +66,9 @@ def _get_status_msg(process_patterns, exclude_pattern=None):
 
 
 @command("stop")
-@argument("id", type=int, required=False, default=None)
-def command_stop(id: Optional[int]):
-    """Default Command to stop all running processes stated from the parent group.
-
-    :param id: id of the process to kill
-
-    :return: None
-    """
+@argument("id", type=str, required=False, default=None)
+def command_stop(id: Optional[str]):
+    """Default Command to stop all running processes stated from the parent group."""
     if id is None:
         os.system(f"kill $(ps aux | grep '{sys.argv[0]}' " "| awk '{print $2}')")
         return
@@ -83,12 +79,7 @@ def command_stop(id: Optional[int]):
 
 @command("status")
 def command_status(self: Union[RichCommand, Command]):
-    """Default Command to get status Table of all running processes stated from the parent group.
-
-    :param self: RichCommand or Command
-
-    :return: None
-    """
+    """Default Command to get status Table of all running processes stated from the parent group."""
 
     group_name = self.parent.name.replace(" ", "_").replace("-", "_")
 

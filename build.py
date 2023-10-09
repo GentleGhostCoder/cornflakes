@@ -57,6 +57,6 @@ def build(setup_kwargs):
             # "cmdclass": {
             #     "build_ext": build_ext,
             # },
-            "zip_safe": True,
+            "zip_safe": False,
         }
     )

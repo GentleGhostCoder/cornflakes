@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cornflakes"
-version = "3.3.24"  # <<FORCE_BUMP>>
+version = "3.3.25"  # <<FORCE_BUMP>>
 description = "Create generic any easy way to manage Configs for your project"
 authors = ["Semjon Geist <semjon.geist@ionos.com>"]
 license = "Apache2.0"
@@ -78,7 +78,7 @@ nox = "^2023.4.22"
 nox-poetry = "^1.0.3"
 compiledb = "^0.10.1"
 isort = "^5.12.0"
-virtualenv = "^20.24.4"
+virtualenv = "^20.24.5"
 pybind11 = "^2.11.1"
 pydantic = {extras = ["dotenv"], version = "^2.0"}
 markdown-it-py = ">=3.0.0"

@@ -2,10 +2,12 @@ from functools import wraps
 from inspect import Parameter, signature
 from typing import Any, Callable, Optional
 
-from click import get_current_context
+from click import Command, Group, get_current_context
 from click.core import Context
 
 from cornflakes.common import recursive_update
+from cornflakes.decorator.click.rich._rich_command import RichCommand
+from cornflakes.decorator.click.rich._rich_group import RichGroup
 from cornflakes.types import Constants
 
 
@@ -34,6 +36,7 @@ def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wra
                 _apply_option_groups(click_cls)
 
             kwargs = _apply_auto_option_config(func, **kwargs)
+
             return func(
                 *args, **{key: value for key, value in kwargs.items() if key in signature(func).parameters.keys()}
             )
@@ -48,12 +51,19 @@ def rich_global_option_wrapper(click_func: Callable[..., Any], *wrap_args, **wra
 def _apply_global_options(click_cls, *args, **kwargs):
     for option_obj in click_cls.config.GLOBAL_OPTIONS:
         sig = signature(option_obj)
-        if any(p.kind == Parameter.VAR_KEYWORD for p in sig.parameters.values()):
-            params = kwargs  # pass all kwargs
-        else:
-            params = dict(filter(lambda kv: kv[0] in sig.parameters.keys(), kwargs.items()))
+        params = kwargs
 
-        option_obj(*args, **params)
+        if isinstance(option_obj, (Command, RichCommand, Group, RichGroup)):
+            raise ValueError("Global options should not be a click.Command or click.Group instance.")
+
+        # pass arguments to key-arguments
+        param_names = list(sig.parameters.keys())
+        params.update(dict(zip(param_names, args)))
+
+        if not any(p.kind == Parameter.VAR_KEYWORD for p in sig.parameters.values()):
+            params = dict(filter(lambda kv: kv[0] in sig.parameters.keys(), params.items()))
+
+        option_obj(**params)
 
 
 def _apply_option_groups(click_cls):

@@ -1,4 +1,4 @@
-from _cornflakes import eval_json
+from cornflakes import eval_json
 
 sample_json_str = """
     {

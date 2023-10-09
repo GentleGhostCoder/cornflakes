@@ -68,7 +68,7 @@ def click_cli(  # noqa: C901
                 **{
                     key: value
                     for key, value in kwargs.items()
-                    if key in [*RichCommand.__init__.__code__.co_varnames, Command.__init__.__code__.co_varnames]
+                    if key in [*RichCommand.__init__.__code__.co_varnames, *Command.__init__.__code__.co_varnames]
                 },
             )(w_callback)
             if as_command
@@ -98,7 +98,6 @@ def click_cli(  # noqa: C901
             version_args = {
                 "prog_name": name,
                 "version": __version,
-                # "option_group": "Basic Options",
                 "message": style(
                     f"\033[95m{module}\033" f"[0m \033[95m" f"Version\033[0m: \033[1m" f"{__version}\033[0m"
                 ),

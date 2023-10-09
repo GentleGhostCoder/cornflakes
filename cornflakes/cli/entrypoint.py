@@ -2,6 +2,7 @@
 from click import Context
 
 from cornflakes.decorator.click import bg_process_option, group, verbose_option
+from cornflakes.decorator.click.commands import command_status, command_stop
 from cornflakes.decorator.click.rich import RichGroup
 
 
@@ -49,6 +50,9 @@ def cli(self: RichGroup, ctx: Context):
     if ctx.invoked_subcommand is None:
         self.main(["--help"])
 
+
+cli.add_command(command_status)
+cli.add_command(command_stop)
 
 __all__ = ["cli"]
 
