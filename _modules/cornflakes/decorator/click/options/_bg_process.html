@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.decorator.click.options._bg_process &mdash; cornflakes 3.3.24 documentation</title>
+  <title>cornflakes.decorator.click.options._bg_process &mdash; cornflakes 3.3.25 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
@@ -15,7 +15,7 @@
   
         <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=ccc4c4f4"></script>
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=68bc40ed"></script>
         <script src="../../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../../_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="../../../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -37,7 +37,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.24
+                3.3.25
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
@@ -90,6 +90,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>  <span class="c1"># noqa: S404</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">cornflakes.decorator.click.helper</span> <span class="kn">import</span> <span class="n">get_command_name</span>
@@ -108,9 +109,14 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Default Option for running in background.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">background_process</span><span class="p">:</span>
         <span class="c1"># Create a Popen object but don&#39;t start the subprocess yet</span>
-        <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_new_session</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+
+        <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">tmp</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_new_session</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="n">command</span> <span class="o">=</span> <span class="n">get_command_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">is_group</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_group</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">group</span><span class="p">,</span> <span class="n">command</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">log_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;.log_</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
 
@@ -127,17 +133,19 @@
             <span class="sa">f</span><span class="s2">&quot;Method </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is running in background. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;See logs at stdout: </span><span class="si">{</span><span class="n">stdout_file</span><span class="si">}</span><span class="s2">, stderr: </span><span class="si">{</span><span class="n">stderr_file</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="p">)</span>
-        <span class="n">stdout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">stdout_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
-        <span class="n">stderr</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">stderr_file</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
 
         <span class="c1"># remove -b or --background-process from sys.argv</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">argv</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span> <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="s2">&quot;--background-process&quot;</span><span class="p">]]</span>
-
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Command: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">process</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">stdout</span>
-        <span class="n">process</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">stderr</span>
-        <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">stdout_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stdout</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">stderr_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stderr</span><span class="p">:</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">stdout</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">stderr</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error communicating with subprocess: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

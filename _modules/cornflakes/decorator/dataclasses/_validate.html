@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cornflakes.decorator.dataclasses._validate &mdash; cornflakes 3.3.24 documentation</title>
+  <title>cornflakes.decorator.dataclasses._validate &mdash; cornflakes 3.3.25 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
@@ -15,7 +15,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=ccc4c4f4"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=68bc40ed"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="../../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -37,7 +37,7 @@
             cornflakes
           </a>
               <div class="version">
-                3.3.24
+                3.3.25
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -197,8 +197,7 @@
             <span class="c1"># Try to compare the copied value with the original</span>
             <span class="k">if</span> <span class="n">copied_value</span> <span class="o">!=</span> <span class="n">default_value</span><span class="p">:</span>
                 <span class="n">non_comparable_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot check comparability for field </span><span class="si">{</span><span class="n">field_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">non_comparable_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">non_comparable_fields</span>

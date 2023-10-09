@@ -1,0 +1,6 @@
+﻿cornflakes.eval\_json
+=====================
+
+.. currentmodule:: cornflakes
+
+.. autofunction:: eval_json
