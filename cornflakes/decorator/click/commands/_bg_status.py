@@ -66,8 +66,8 @@ def _get_status_msg(process_patterns, exclude_pattern=None):
 
 
 @command("stop")
-@argument("id", type=int, required=False, default=None)
-def command_stop(id: Optional[int]):
+@argument("id", type=str, required=False, default=None)
+def command_stop(id: Optional[str]):
     """Default Command to stop all running processes stated from the parent group."""
     if id is None:
         os.system(f"kill $(ps aux | grep '{sys.argv[0]}' " "| awk '{print $2}')")
