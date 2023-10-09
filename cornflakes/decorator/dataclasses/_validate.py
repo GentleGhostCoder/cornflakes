@@ -110,8 +110,7 @@ def get_dataclass_non_comparable_kwargs(field_defaults: dict) -> List[Any]:
             # Try to compare the copied value with the original
             if copied_value != default_value:
                 non_comparable_fields.append(field_name)
-        except Exception as e:
-            logger.error(f"Cannot check comparability for field {field_name}: {e}")
+        except Exception:
             non_comparable_fields.append(field_name)
 
     return non_comparable_fields

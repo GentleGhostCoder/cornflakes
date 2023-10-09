@@ -3,6 +3,7 @@ import logging
 import os
 import subprocess  # noqa: S404
 import sys
+import tempfile
 from typing import Any, Union
 
 from cornflakes.decorator.click.helper import get_command_name
@@ -21,9 +22,14 @@ def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_proce
     """Default Option for running in background."""
     if background_process:
         # Create a Popen object but don't start the subprocess yet
-        process = subprocess.Popen(sys.argv, stdout=subprocess.PIPE, bufsize=-1, start_new_session=True)
+        tmp = tempfile.NamedTemporaryFile("w")
+
+        process = subprocess.Popen(sys.argv, stdout=tmp, bufsize=-1, start_new_session=False)
 
         command = get_command_name(self)
+        is_group = len(command.split(" ", 1)) > 1
+        if not is_group:
+            command = f"{command} {self.callback.__name__}"
         group, command = command.split(" ", 1)
         log_dir = f".log_{group}".replace(" ", "_").replace("-", "_")
 
@@ -40,14 +46,16 @@ def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_proce
             f"Method {self.callback.__name__} is running in background. "
             f"See logs at stdout: {stdout_file}, stderr: {stderr_file}."
         )
-        stdout = open(stdout_file, "a")
-        stderr = open(stderr_file, "a")
 
         # remove -b or --background-process from sys.argv
         sys.argv = [arg for arg in sys.argv if arg not in ["-b", "--background-process"]]
-
         logger.debug(f"Command: {' '.join(sys.argv)}")
-        process.stdout = stdout
-        process.stderr = stderr
-        process.communicate()
-        sys.exit(0)
+
+        with open(stdout_file, "w") as stdout, open(stderr_file, "w") as stderr:
+            process.stdout = stdout
+            process.stderr = stderr
+            try:
+                process.communicate()
+            except Exception as e:
+                logger.error(f"Error communicating with subprocess: {e}")
+            sys.exit(0)
