@@ -53,9 +53,5 @@ def bg_process_option(self: Union[RichCommand, RichGroup, Any], background_proce
         logger.debug(f"Command: {' '.join(sys.argv)}")
 
         with open(stdout_file, "w") as stdout, open(stderr_file, "w") as stderr:
-            process = subprocess.Popen(sys.argv, stdout=stdout, stderr=stderr, bufsize=-1, start_new_session=False)
-            try:
-                process.communicate()
-            except Exception as e:
-                logger.error(f"Error communicating with subprocess: {e}")
+            subprocess.Popen(sys.argv, stdout=stdout, stderr=stderr, bufsize=-1, start_new_session=True)
             sys.exit(0)
