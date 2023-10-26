@@ -1,7 +1,8 @@
 import sys
 from typing import Any, List, Optional
 
-from click import ClickException, Command, Context, HelpFormatter, Parameter, exceptions
+from click import ClickException, Command, Context, Group, HelpFormatter, Parameter, exceptions
+from rich.console import Console
 
 from cornflakes.decorator.click.rich._rich_click import rich_abort_error, rich_format_error, rich_format_help
 from cornflakes.decorator.click.rich._rich_config import RichConfig as RichConfig
@@ -21,7 +22,7 @@ class RichCommand(Command):
     ignore_unknown_options = False
     name = ""
     context_settings: dict
-    parent = None
+    parent: Group
     config: RichConfig
 
     def callback(self):
@@ -33,7 +34,7 @@ class RichCommand(Command):
             config = RichConfig()
         super().__init__(*args, **kwargs)
         self.config = config
-        self.console = None
+        self.console: Console
 
     def main(self, *args, standalone_mode: bool = True, **kwargs) -> Any:  # noqa: C901
         """Main function of RichGroup."""

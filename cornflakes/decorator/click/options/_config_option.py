@@ -1,7 +1,8 @@
 from functools import reduce, wraps
 from inspect import isclass, signature
+import logging
 from os.path import exists
-from typing import Any, Callable, List, Optional, Type, Union
+from typing import Any, Callable, List, Optional, Type, Union, get_args
 
 from click import Command, Group, option
 
@@ -59,7 +60,12 @@ def config_option(  # noqa: C901
 
 def _set_passed_key(wrapper, config, passing_key):
     params = signature(wrapper).parameters
-    passing_keys = [param.name for param in params.values() if param.annotation == config]
+    passing_keys = [
+        param.name
+        for param in params.values()
+        if param.annotation == config
+        or (getattr(param.annotation, "__origin__", None) is list and get_args(param.annotation)[0] == config)
+    ]
 
     # Check if there are multiple passing_keys
     if len(passing_keys) > 1:
@@ -76,7 +82,7 @@ def _set_passed_key(wrapper, config, passing_key):
         all(param.kind not in [param.VAR_KEYWORD, param.VAR_POSITIONAL] for param in params.values())
         and passing_key not in params
     ):
-        raise ValueError(
+        logging.error(
             f"Method parameter for {config.__name__} is required, when using config_option, but not provided in the parameters! You can pass the config with the key {passing_key} or by a custom parameter that has the provided config class annotation."
         )
 
@@ -347,7 +353,7 @@ def _validate_and_set_config(func_params, passed_key, config_type, config_name, 
 
     if is_group(config_type):
         kwargs[passed_key] = check_type(config_type, kwargs[passed_key], passed_key, skip=False)
-    elif is_config(config_type):
+    elif is_config(config_type) or config_type == list:
         return _handle_config_type_validation(passed_key, config_type, config_name, **kwargs)
     return kwargs
 
@@ -366,6 +372,8 @@ def _handle_config_type_validation(passed_key, config_type, config_name, **kwarg
 
     if isinstance(config_value, list):
         kwargs[passed_key] = check_type(list, config_value, passed_key, skip=False)
+        if config_type != list:
+            kwargs[passed_key] = kwargs[passed_key][0]
     else:
         kwargs[passed_key] = check_type(config_type, config_value, passed_key, skip=False)
 

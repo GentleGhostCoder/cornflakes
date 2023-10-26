@@ -2,9 +2,8 @@ import os
 from os.path import exists
 import re
 import sys
-from typing import Optional, Union
+from typing import List, Optional
 
-from click import Command
 from rich.syntax import Syntax
 from rich.table import Table
 
@@ -29,10 +28,10 @@ def _analyze_logs(file, files: list, error_list: list, warning_list: list):
             logs = f.read()
             if not logs:
                 return 0
-            logs = logs.split("\n")
-            logs_len += len(logs) + 1
-            warning_list.extend([line for line in logs if "WARNING" in line.upper()])
-            error_list.extend([line for line in logs if "ERROR" in line.upper()])
+            logs_list = logs.split("\n")
+            logs_len += len(logs_list) + 1
+            warning_list.extend([line for line in logs_list if "WARNING" in line.upper()])
+            error_list.extend([line for line in logs_list if "ERROR" in line.upper()])
 
     return logs_len
 
@@ -78,10 +77,10 @@ def command_stop(id: Optional[str]):
 
 
 @command("status")
-def command_status(self: Union[RichCommand, Command]):
+def command_status(self: RichCommand):
     """Default Command to get status Table of all running processes stated from the parent group."""
 
-    group_name = self.parent.name.replace(" ", "_").replace("-", "_")
+    group_name = str(self.parent.name).replace(" ", "_").replace("-", "_")
 
     log_dir = f".log_{group_name}"
 
@@ -112,7 +111,7 @@ def command_status(self: Union[RichCommand, Command]):
 
     idx = 0
     for stdout_file in log_files:
-        stderr_file = stdout_file.replace("_stderr_", "_stdout_")
+        stderr_file = stdout_file.replace("_stdout_", "_stderr_")
         pid = stdout_file.split("_stdout_", 1)[-1].split("_", 1)[0]
         is_running = pid in processes
         command = processes[pid] if is_running else "-"
@@ -120,9 +119,9 @@ def command_status(self: Union[RichCommand, Command]):
         stat = [idx, pid, command, status]
         idx += 1
 
-        files = []
-        error_list = []
-        warning_list = []
+        files: List[str] = []
+        error_list: List[str] = []
+        warning_list: List[str] = []
 
         stderr_log_len = _analyze_logs(stderr_file, files, error_list, warning_list)
         stdout_log_len = _analyze_logs(stdout_file, files, error_list, warning_list)
