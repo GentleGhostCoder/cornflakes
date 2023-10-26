@@ -20,6 +20,7 @@ from cornflakes.decorator.click.rich import RichGroup
                         "--log-config",
                         "--version",
                         "--verbose",
+                        "--verbose-all",
                         "--silent",
                         "--background-process",
                         "--install-completion",
